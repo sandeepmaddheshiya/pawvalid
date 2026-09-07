@@ -1,0 +1,111 @@
+{
+  "app": {
+    "name": "Petvia",
+    "tagline": "Viaje seguro con su mascota",
+    "description": "Verificador de cumplimiento para viajes con mascotas: evaluaciones de preparación basadas en normativas oficiales por ruta"
+  },
+  "nav": {
+    "home": "Inicio",
+    "routes": "Rutas",
+    "checker": "Verificar preparación",
+    "about": "Acerca de"
+  },
+  "hero": {
+    "title": "¿Está su mascota realmente lista para viajar?",
+    "subtitle": "No solo qué documentos existen: verificamos si su mascota cumple cada requisito reglamentario para su ruta específica, respaldado por fuentes oficiales.",
+    "cta": "Verificar preparación de su mascota",
+    "ctaSecondary": "Explorar rutas"
+  },
+  "features": {
+    "title": "Cómo funciona Petvia",
+    "subtitle": "Tres pasos para una salida sin imprevistos",
+    "step1": {
+      "title": "Ingrese los detalles de su viaje",
+      "description": "Indique país de origen, destino, aerolínea y los datos principales de su mascota."
+    },
+    "step2": {
+      "title": "Obtenga su evaluación",
+      "description": "Evaluamos cada requisito gubernamental y de aerolínea para su ruta específica, con citas de fuentes legales."
+    },
+    "step3": {
+      "title": "Siga su plan de acción",
+      "description": "Una lista de verificación cronológica y priorizada con fechas exactas para saber qué hacer y cuándo, sin dudas."
+    }
+  },
+  "routes": {
+    "title": "Rutas admitidas",
+    "subtitle": "Cada ruta está respaldada por datos regulatorios verificados y fuentes oficiales",
+    "viewDetails": "Ver requisitos",
+    "startCheck": "Iniciar verificación"
+  },
+  "checker": {
+    "title": "Verificación de preparación para viajes de mascotas",
+    "subtitle": "Complete el formulario a continuación para obtener una evaluación de cumplimiento personalizada",
+    "step1Title": "Detalles del viaje",
+    "step2Title": "Información de la mascota",
+    "step3Title": "Documentos y vacunas",
+    "next": "Continuar",
+    "back": "Atrás",
+    "submit": "Verificar preparación",
+    "processing": "Evaluando...",
+    "fields": {
+      "originCountry": "País de origen",
+      "destinationCountry": "País de destino",
+      "departureDatetime": "Fecha y hora de salida",
+      "arrivalDatetime": "Fecha y hora de llegada",
+      "airline": "Aerolínea",
+      "entryAirport": "Aeropuerto de entrada (opcional)",
+      "species": "Tipo de mascota",
+      "breed": "Raza (opcional)",
+      "age": "Edad (meses)",
+      "weight": "Peso (kg)",
+      "countryOfResidence": "País de residencia de la mascota",
+      "microchipNumber": "Número de microchip / transpondedor (15 dígitos)",
+      "microchipDate": "Fecha de implantación del microchip",
+      "rabiesVaccinationDate": "Fecha de vacunación antirrábica",
+      "rabiesVaccinationType": "Tipo de vacuna (primovacunación / refuerzo)",
+      "healthCertificate": "¿Dispone de un certificado zoosanitario oficial?",
+      "importPermit": "¿Dispone de un permiso de importación?"
+    }
+  },
+  "assessment": {
+    "title": "Su informe de evaluación",
+    "overallVerdict": "Veredicto general",
+    "requirements": "Requisitos regulatorios",
+    "timeline": "Cronograma de acciones",
+    "sources": "Fuentes y verificación legal",
+    "getPdfReport": "Descargar informe detallado en PDF",
+    "disclaimer": "Esta evaluación tiene fines puramente informativos y no constituye una certificación oficial. Verifique siempre los requisitos con las autoridades competentes antes de viajar.",
+    "verdicts": {
+      "APPEARS_READY": "Listo para viajar",
+      "MOSTLY_READY": "Casi listo: acción recomendada",
+      "ACTION_REQUIRED": "Acción obligatoria requerida",
+      "UNABLE_TO_DETERMINE": "No se puede determinar"
+    },
+    "statuses": {
+      "SATISFIED": "Cumplido",
+      "PROBLEM": "Problema detectado",
+      "MISSING": "Información faltante",
+      "UNABLE_TO_DETERMINE": "No se puede determinar"
+    }
+  },
+  "freshness": {
+    "fresh": "Verificado recientemente",
+    "due": "Verificación periódica próxima",
+    "overdue": "Actualización pendiente"
+  },
+  "footer": {
+    "disclaimer": "Petvia proporciona únicamente evaluaciones informativas de cumplimiento. No sustituye una certificación veterinaria oficial.",
+    "copyright": "© {year} Petvia. Todos los derechos reservados.",
+    "privacy": "Política de privacidad",
+    "terms": "Términos de servicio"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Se ha producido un error",
+    "retry": "Intentar de nuevo",
+    "source": "Fuente",
+    "lastVerified": "Última verificación",
+    "viewSource": "Ver texto legal"
+  }
+}

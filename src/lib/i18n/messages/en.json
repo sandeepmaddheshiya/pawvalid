@@ -1,0 +1,111 @@
+{
+  "app": {
+    "name": "Petvia",
+    "tagline": "Know before you go",
+    "description": "Pet travel compliance checker — route-specific, source-backed readiness assessments"
+  },
+  "nav": {
+    "home": "Home",
+    "routes": "Routes",
+    "checker": "Check Readiness",
+    "about": "About"
+  },
+  "hero": {
+    "title": "Is your pet actually ready to travel?",
+    "subtitle": "Not just what documents exist — whether your pet meets every requirement for your specific trip, backed by sourced regulatory data.",
+    "cta": "Check Your Pet's Readiness",
+    "ctaSecondary": "Browse Routes"
+  },
+  "features": {
+    "title": "How Petvia Works",
+    "subtitle": "Three steps to a confident departure",
+    "step1": {
+      "title": "Enter Your Trip Details",
+      "description": "Tell us where you're going, when, and which airline — plus your pet's key info."
+    },
+    "step2": {
+      "title": "Get Your Assessment",
+      "description": "We evaluate every government and airline requirement for your specific route, with sources."
+    },
+    "step3": {
+      "title": "Follow Your Action Plan",
+      "description": "A dated, prioritized checklist of exactly what to do and by when — no guessing."
+    }
+  },
+  "routes": {
+    "title": "Supported Routes",
+    "subtitle": "Each route is backed by verified, sourced regulatory data",
+    "viewDetails": "View Requirements",
+    "startCheck": "Start Check"
+  },
+  "checker": {
+    "title": "Pet Travel Readiness Check",
+    "subtitle": "Complete the form below for a personalized compliance assessment",
+    "step1Title": "Trip Details",
+    "step2Title": "Pet Information",
+    "step3Title": "Documents & Vaccinations",
+    "next": "Continue",
+    "back": "Back",
+    "submit": "Check Readiness",
+    "processing": "Evaluating...",
+    "fields": {
+      "originCountry": "Departure Country",
+      "destinationCountry": "Destination Country",
+      "departureDatetime": "Departure Date & Time",
+      "arrivalDatetime": "Arrival Date & Time",
+      "airline": "Airline",
+      "entryAirport": "Entry Airport (optional)",
+      "species": "Pet Type",
+      "breed": "Breed (optional)",
+      "age": "Age (months)",
+      "weight": "Weight (kg)",
+      "countryOfResidence": "Pet's Country of Residence",
+      "microchipNumber": "Microchip Number",
+      "microchipDate": "Microchip Date",
+      "rabiesVaccinationDate": "Rabies Vaccination Date",
+      "rabiesVaccinationType": "Vaccination Type",
+      "healthCertificate": "Do you have a health certificate?",
+      "importPermit": "Do you have an import permit?"
+    }
+  },
+  "assessment": {
+    "title": "Your Assessment",
+    "overallVerdict": "Overall Verdict",
+    "requirements": "Requirements",
+    "timeline": "Action Timeline",
+    "sources": "Sources & Verification",
+    "getPdfReport": "Get Detailed PDF Report",
+    "disclaimer": "This assessment is informational only and does not constitute official certification. Always verify requirements with the relevant authorities before travel.",
+    "verdicts": {
+      "APPEARS_READY": "Appears Ready",
+      "MOSTLY_READY": "Mostly Ready — Action Recommended",
+      "ACTION_REQUIRED": "Action Required",
+      "UNABLE_TO_DETERMINE": "Unable to Determine"
+    },
+    "statuses": {
+      "SATISFIED": "Satisfied",
+      "PROBLEM": "Issue Found",
+      "MISSING": "Information Missing",
+      "UNABLE_TO_DETERMINE": "Unable to Determine"
+    }
+  },
+  "freshness": {
+    "fresh": "Verified recently",
+    "due": "Verification due soon",
+    "overdue": "Verification overdue"
+  },
+  "footer": {
+    "disclaimer": "Petvia provides informational compliance assessments only. This is not official certification. Always verify with relevant authorities.",
+    "copyright": "© {year} Petvia. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "source": "Source",
+    "lastVerified": "Last verified",
+    "viewSource": "View source"
+  }
+}

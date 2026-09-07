@@ -1,0 +1,58 @@
+{
+  "route": {
+    "slug": "usa-to-germany",
+    "originCountry": "US",
+    "destinationCountry": "DE"
+  },
+  "species": "DOG",
+  "requirements": [
+    {
+      "id": "req-microchip",
+      "category": "MICROCHIP",
+      "severity": "BLOCKING",
+      "ruleType": "REQUIRED",
+      "ruleParams": { "field": "microchip_number" },
+      "ruleText": "ISO 11784/11785 compliant microchip is required."
+    },
+    {
+      "id": "req-microchip-before-vacc",
+      "category": "MICROCHIP",
+      "severity": "BLOCKING",
+      "ruleType": "DATE_BEFORE",
+      "ruleParams": { "field": "microchip_date", "before": "rabies_vaccination_date" },
+      "ruleText": "Microchip must be implanted before rabies vaccination."
+    },
+    {
+      "id": "req-rabies",
+      "category": "RABIES_VACCINATION",
+      "severity": "BLOCKING",
+      "ruleType": "REQUIRED",
+      "ruleParams": { "field": "rabies_vaccination_date" },
+      "ruleText": "Valid rabies vaccination is required."
+    },
+    {
+      "id": "req-rabies-21-day",
+      "category": "RABIES_VACCINATION",
+      "severity": "BLOCKING",
+      "ruleType": "MIN_WAIT",
+      "ruleParams": { "value": 21, "unit": "days", "from": "rabies_vaccination_date", "to": "arrival_datetime" },
+      "ruleText": "At least 21 days must elapse between rabies vaccination and arrival."
+    },
+    {
+      "id": "req-health-cert",
+      "category": "HEALTH_CERTIFICATE",
+      "severity": "BLOCKING",
+      "ruleType": "DOCUMENT_REQUIRED",
+      "ruleParams": { "document_type": "health_certificate", "field": "has_health_certificate" },
+      "ruleText": "EU-format veterinary health certificate required."
+    },
+    {
+      "id": "req-tapeworm",
+      "category": "TAPEWORM_TREATMENT",
+      "severity": "NON_BLOCKING",
+      "ruleType": "DOCUMENT_REQUIRED",
+      "ruleParams": { "document_type": "tapeworm_treatment", "field": "has_tapeworm_treatment" },
+      "ruleText": "Echinococcus tapeworm treatment 1-5 days before entry."
+    }
+  ]
+}

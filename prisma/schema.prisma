@@ -1,0 +1,273 @@
+// Petvia — Pet Travel Compliance Checker
+// Prisma Schema — MVP (PRD v0.3, TRD v1.0 §3)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ─────────────────────────────────────────────────────────────────────
+
+enum RouteStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUPPORTED // all mandatory requirements verified + tested
+}
+
+enum PetSpecies {
+  DOG
+  CAT
+}
+
+enum RequirementCategory {
+  MICROCHIP
+  RABIES_VACCINATION
+  RABIES_TITER
+  HEALTH_CERTIFICATE
+  TAPEWORM_TREATMENT
+  IMPORT_PERMIT
+}
+
+enum RequirementSeverity {
+  BLOCKING
+  NON_BLOCKING
+  INFORMATIONAL
+}
+
+enum RuleType {
+  REQUIRED
+  MIN_WAIT
+  DATE_WINDOW
+  DATE_BEFORE
+  DATE_AFTER
+  DOCUMENT_REQUIRED
+  // V2 (not implemented in evaluate.ts until needed):
+  // CONDITIONAL, DEPENDENCY, SEQUENCE, ENUM_MATCH, BOOLEAN, MIN_AGE, MAX_AGE
+}
+
+enum Confidence {
+  VERIFIED
+  NEEDS_REVIEW
+  UNKNOWN
+  CONDITIONAL
+  CONFLICTING
+}
+
+enum VaccinationType {
+  PRIMARY
+  BOOSTER
+}
+
+enum Verdict {
+  APPEARS_READY
+  MOSTLY_READY
+  ACTION_REQUIRED
+  UNABLE_TO_DETERMINE
+}
+
+// ─── Core Models ───────────────────────────────────────────────────────────────
+
+model Country {
+  id                String  @id @default(cuid())
+  isoCode           String  @unique
+  name              String
+  originRoutes      Route[] @relation("OriginCountry")
+  destinationRoutes Route[] @relation("DestinationCountry")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Airline {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  name         String
+  petPolicyUrl String?
+  requirements Requirement[]
+  trips        Trip[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Route {
+  id                   String      @id @default(cuid())
+  originCountryId      String
+  destinationCountryId String
+  originCountry        Country     @relation("OriginCountry", fields: [originCountryId], references: [id])
+  destinationCountry   Country     @relation("DestinationCountry", fields: [destinationCountryId], references: [id])
+  slug                 String      @unique // e.g. "usa-to-germany"
+  status               RouteStatus @default(NOT_STARTED) // PRD §9 matrix
+  requirements         Requirement[]
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  @@unique([originCountryId, destinationCountryId])
+}
+
+// ─── Source & Requirement Versioning (PRD §12–13) ──────────────────────────────
+
+model RequirementSource {
+  id            String          @id @default(cuid())
+  url           String
+  publisher     String
+  authorityTier Int             // 1=government primary, 2=government secondary, 3=airline official, etc.
+  versions      SourceVersion[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model SourceVersion {
+  id                  String               @id @default(cuid())
+  sourceId            String
+  source              RequirementSource    @relation(fields: [sourceId], references: [id])
+  retrievedAt         DateTime
+  contentHash         String
+  snapshotLocation    String               // S3/R2 key or URL to archived snapshot
+  requirementVersions RequirementVersion[]
+  createdAt           DateTime             @default(now())
+}
+
+model Requirement {
+  id               String              @id @default(cuid())
+  routeId          String
+  route            Route               @relation(fields: [routeId], references: [id])
+  airlineId        String?
+  airline          Airline?            @relation(fields: [airlineId], references: [id])
+  petSpecies       PetSpecies?
+  category         RequirementCategory
+  severity         RequirementSeverity // BLOCKING / NON_BLOCKING / INFORMATIONAL — PRD §15
+  versions         RequirementVersion[]
+  currentVersionId String?             @unique
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+}
+
+model RequirementVersion {
+  id              String     @id @default(cuid())
+  requirementId   String
+  requirement     Requirement @relation(fields: [requirementId], references: [id])
+  version         Int
+  ruleType        RuleType    // PRD §10 vocabulary, MVP subset
+  ruleParams      Json        // typed at the application layer
+  ruleText        String      // canonical human-readable English
+  sourceVersionId String
+  sourceVersion   SourceVersion @relation(fields: [sourceVersionId], references: [id])
+  effectiveFrom   DateTime
+  effectiveUntil  DateTime?
+  confidence      Confidence @default(VERIFIED)
+  lastVerifiedAt  DateTime
+  createdAt       DateTime   @default(now())
+  createdBy       String
+  verifiedBy      String?
+  changeReason    String?
+}
+
+// ─── Pet Profile (PRD §17) ─────────────────────────────────────────────────────
+
+model Pet {
+  id                 String              @id @default(cuid())
+  species            PetSpecies
+  breed              String?
+  age                Int?                // in months
+  weight             Float?              // in kg
+  countryOfResidence String
+  microchipNumber    String?
+  microchipDate      DateTime?
+  sterilized         Boolean?
+  vaccinations       RabiesVaccination[]
+  trips              Trip[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model RabiesVaccination {
+  id               String          @id @default(cuid())
+  petId            String
+  pet              Pet             @relation(fields: [petId], references: [id])
+  vaccinationDate  DateTime
+  primaryOrBooster VaccinationType
+  validityEnd      DateTime?
+  documentId       String?         // FK to Document [Phase 2]
+  createdAt        DateTime        @default(now())
+}
+
+// ─── Trip (PRD §11) ────────────────────────────────────────────────────────────
+
+model Trip {
+  id                   String       @id @default(cuid())
+  originCountryId      String
+  destinationCountryId String
+  departureDatetime    DateTime
+  arrivalDatetime      DateTime
+  originTimezone       String
+  destinationTimezone  String
+  entryAirport         String?
+  airlineId            String
+  airline              Airline      @relation(fields: [airlineId], references: [id])
+  petId                String
+  pet                  Pet          @relation(fields: [petId], references: [id])
+  assessments          Assessment[]
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
+
+// ─── Assessment (PRD §13) ──────────────────────────────────────────────────────
+
+model Assessment {
+  id                      String   @id @default(cuid())
+  tripId                  String
+  trip                    Trip     @relation(fields: [tripId], references: [id])
+  tripSnapshot            Json     // frozen copy at generation time
+  petFactsSnapshot        Json
+  requirementVersionsUsed String[] // pinned RequirementVersion IDs
+  ruleEngineVersion       String   // semver of lib/requirements at generation time
+  overallVerdict          Verdict
+  itemVerdicts            Json     // per-requirement verdicts, structured
+  generatedAt             DateTime @default(now())
+  paidReportId            String?  // set once purchased via Razorpay
+  razorpayPaymentId       String?  // Razorpay payment ID
+  razorpayOrderId         String?  @unique // Razorpay order ID
+}
+
+// ─── SavedTrip (Compliance Dashboard & Multi-Pet Management) ──────────────
+
+model SavedTrip {
+  id                  String   @id @default(cuid())
+  userEmail           String
+  petName             String
+  species             String   @default("DOG")
+  breed               String?
+  origin              String
+  destination         String
+  transitCountries    String[] @default([])
+  departureDate       String?
+  earliestFlightDate  String?
+  overallStatus       String   @default("NOT_READY")
+  statusHeadline      String?
+  needsHumanReview    Boolean  @default(false)
+  tier                String   @default("FREE")
+  whatsappNumber      String?
+  conciergeStatus     String   @default("NONE") // NONE, PENDING_REVIEW, IN_REVIEW, COMPLETED
+  conciergeNotes      String?
+  remindersEnabled    Boolean  @default(true)
+  lastReminderSent    String?
+  
+  // Stored snapshots
+  petProfile          Json
+  route               Json
+  stats               Json
+  timelineMilestones  Json
+  complianceChecklist Json
+  readinessReport     Json
+  uploadedDocuments   Json     @default("[]")
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([userEmail])
+}
+
+

@@ -1,0 +1,111 @@
+{
+  "app": {
+    "name": "Petvia",
+    "tagline": "Voyagez l'esprit tranquille avec votre animal",
+    "description": "Vérificateur de conformité pour le voyage des animaux de compagnie — évaluations d'aptitude au départ basées sur les réglementations officielles"
+  },
+  "nav": {
+    "home": "Accueil",
+    "routes": "Itinéraires",
+    "checker": "Vérifier la conformité",
+    "about": "À propos"
+  },
+  "hero": {
+    "title": "Votre animal est-il réellement prêt à voyager ?",
+    "subtitle": "Pas seulement les formalités théoriques — nous vérifions si votre animal remplit chaque exigence sanitaire pour votre vol spécifique, avec citations officielles à l'appui.",
+    "cta": "Vérifier l'aptitude au départ",
+    "ctaSecondary": "Consulter les itinéraires"
+  },
+  "features": {
+    "title": "Comment fonctionne Petvia",
+    "subtitle": "Trois étapes simples vers un embarquement serein",
+    "step1": {
+      "title": "Renseignez votre itinéraire",
+      "description": "Indiquez votre pays de départ, votre destination, votre compagnie aérienne et les informations de votre animal."
+    },
+    "step2": {
+      "title": "Obtenez votre diagnostic",
+      "description": "Nous évaluons chaque règle gouvernementale et sanitaire sur votre parcours avec les textes de loi applicables."
+    },
+    "step3": {
+      "title": "Suivez votre plan d'action",
+      "description": "Une feuille de route chronologique et priorisée indiquant exactement quand consulter votre vétérinaire."
+    }
+  },
+  "routes": {
+    "title": "Itinéraires pris en charge",
+    "subtitle": "Chaque itinéraire est validé par des données réglementaires vérifiées",
+    "viewDetails": "Voir les exigences",
+    "startCheck": "Démarrer l'audit"
+  },
+  "checker": {
+    "title": "Contrôle de conformité voyage animalier",
+    "subtitle": "Remplissez le formulaire ci-dessous pour obtenir une évaluation personnalisée",
+    "step1Title": "Détails du vol",
+    "step2Title": "Profil de l'animal",
+    "step3Title": "Papiers & Vaccinations",
+    "next": "Continuer",
+    "back": "Retour",
+    "submit": "Lancer l'évaluation",
+    "processing": "Analyse en cours...",
+    "fields": {
+      "originCountry": "Pays de départ",
+      "destinationCountry": "Pays de destination",
+      "departureDatetime": "Date et heure de départ",
+      "arrivalDatetime": "Date et heure d'arrivée",
+      "airline": "Compagnie aérienne",
+      "entryAirport": "Aéroport d'arrivée (optionnel)",
+      "species": "Espèce",
+      "breed": "Race (optionnelle)",
+      "age": "Âge (mois)",
+      "weight": "Poids (kg)",
+      "countryOfResidence": "Pays de résidence habituelle",
+      "microchipNumber": "Numéro de transpondeur / puce ISO (15 chiffres)",
+      "microchipDate": "Date d'identification / puçage",
+      "rabiesVaccinationDate": "Date de vaccination antirabique",
+      "rabiesVaccinationType": "Type de vaccin (primo-vaccination / rappel)",
+      "healthCertificate": "Disposez-vous d'un certificat sanitaire officiel ?",
+      "importPermit": "Disposez-vous d'un permis d'importation ?"
+    }
+  },
+  "assessment": {
+    "title": "Rapport de conformité",
+    "overallVerdict": "Verdict global",
+    "requirements": "Réglementations sanitaires",
+    "timeline": "Calendrier pré-vol",
+    "sources": "Textes légaux & Vérification",
+    "getPdfReport": "Télécharger le dossier de voyage (PDF officiel)",
+    "disclaimer": "Cette évaluation est fournie à titre informatif et ne constitue pas un certificat officiel. Vérifiez toujours les exigences auprès des services vétérinaires compétents.",
+    "verdicts": {
+      "APPEARS_READY": "Prêt pour le départ",
+      "MOSTLY_READY": "Presque prêt — Action recommandée",
+      "ACTION_REQUIRED": "Action obligatoire requise",
+      "UNABLE_TO_DETERMINE": "Impossible à déterminer"
+    },
+    "statuses": {
+      "SATISFIED": "Conforme",
+      "PROBLEM": "Anomalie détectée",
+      "MISSING": "Informations manquantes",
+      "UNABLE_TO_DETERMINE": "Indéterminé"
+    }
+  },
+  "freshness": {
+    "fresh": "Récemment vérifié",
+    "due": "Contrôle périodique imminent",
+    "overdue": "Actualisation en attente"
+  },
+  "footer": {
+    "disclaimer": "Petvia fournit des évaluations de conformité à titre informatif uniquement. Cela ne remplace pas une consultation vétérinaire officielle.",
+    "copyright": "© {year} Petvia. Tous droits réservés.",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation"
+  },
+  "common": {
+    "loading": "Chargement en cours...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "source": "Source",
+    "lastVerified": "Dernière vérification",
+    "viewSource": "Consulter le texte officiel"
+  }
+}

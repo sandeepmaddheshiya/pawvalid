@@ -1,0 +1,111 @@
+{
+  "app": {
+    "name": "Petvia",
+    "tagline": "Sicher reisen mit Ihrem Haustier",
+    "description": "Compliance-Prüfung für Haustierreisen — streckenspezifische, behördlich verifizierte Reisebereitschaftsprüfungen"
+  },
+  "nav": {
+    "home": "Startseite",
+    "routes": "Routen",
+    "checker": "Reisebereitschaft prüfen",
+    "about": "Über uns"
+  },
+  "hero": {
+    "title": "Ist Ihr Haustier wirklich reisebereit?",
+    "subtitle": "Nicht nur, welche Dokumente existieren — sondern ob Ihr Haustier alle behördlichen Vorschriften für Ihre konkrete Reiseroute erfüllt, gestützt auf offizielle Rechtsquellen.",
+    "cta": "Reisebereitschaft jetzt prüfen",
+    "ctaSecondary": "Routen durchsuchen"
+  },
+  "features": {
+    "title": "So funktioniert Petvia",
+    "subtitle": "Drei Schritte zu einer sorgenfreien Abreise",
+    "step1": {
+      "title": "Reisedetails eingeben",
+      "description": "Geben Sie Abreiseort, Zielland, Fluggesellschaft und die Eckdaten Ihres Haustiers an."
+    },
+    "step2": {
+      "title": "Prüfbericht erhalten",
+      "description": "Wir überprüfen jede behördliche Vorschrift und Airline-Richtlinie für Ihre spezifische Route mit offiziellen Gesetzesnachweisen."
+    },
+    "step3": {
+      "title": "Fahrplan befolgen",
+      "description": "Eine datierte, priorisierte Checkliste mit exakten Fristen für Tierarztbesuche und Behördenstempel — ohne Rätselraten."
+    }
+  },
+  "routes": {
+    "title": "Unterstützte Reiserouten",
+    "subtitle": "Jede Reiseroute basiert auf tagesaktuellen, amtlich überprüften Bestimmungen",
+    "viewDetails": "Anforderungen ansehen",
+    "startCheck": "Prüfung starten"
+  },
+  "checker": {
+    "title": "Reisebereitschaftsprüfung für Haustiere",
+    "subtitle": "Füllen Sie das Formular aus für eine maßgeschneiderte Compliance-Bewertung",
+    "step1Title": "Reisedetails",
+    "step2Title": "Tierdaten",
+    "step3Title": "Dokumente & Impfungen",
+    "next": "Weiter",
+    "back": "Zurück",
+    "submit": "Bereitschaft prüfen",
+    "processing": "Wird ausgewertet...",
+    "fields": {
+      "originCountry": "Abflugland",
+      "destinationCountry": "Zielland",
+      "departureDatetime": "Abflugdatum & Uhrzeit",
+      "arrivalDatetime": "Ankunftsdatum & Uhrzeit",
+      "airline": "Fluggesellschaft",
+      "entryAirport": "Zielflughafen (optional)",
+      "species": "Tierart",
+      "breed": "Rasse (optional)",
+      "age": "Alter (Monate)",
+      "weight": "Gewicht (kg)",
+      "countryOfResidence": "Wohnsitzland des Tieres",
+      "microchipNumber": "Mikrochip-Transpondernummer (15-stellig)",
+      "microchipDate": "Implantationsdatum",
+      "rabiesVaccinationDate": "Tollwutimpfungsdatum",
+      "rabiesVaccinationType": "Impfart (Erstimpfung / Auffrischung)",
+      "healthCertificate": "Liegt eine amtliche Tiergesundheitsbescheinigung vor?",
+      "importPermit": "Liegt eine Einfuhrgenehmigung vor?"
+    }
+  },
+  "assessment": {
+    "title": "Ihr Reisebereitschaftsbericht",
+    "overallVerdict": "Gesamturteil",
+    "requirements": "Behördliche Vorschriften",
+    "timeline": "Chronologischer Fristenplan",
+    "sources": "Gesetzesquellen & Verifikation",
+    "getPdfReport": "Detailliertes PDF-Reisedossier herunterladen",
+    "disclaimer": "Diese Auswertung dient rein informativen Zwecken und stellt kein amtliches Zertifikat dar. Bitte überprüfen Sie alle Bestimmungen vor der Abreise bei den zuständigen Veterinärämtern.",
+    "verdicts": {
+      "APPEARS_READY": "Reisebereit",
+      "MOSTLY_READY": "Weitgehend bereit — Handlung empfohlen",
+      "ACTION_REQUIRED": "Dringender Handlungsbedarf",
+      "UNABLE_TO_DETERMINE": "Nicht bestimmbar"
+    },
+    "statuses": {
+      "SATISFIED": "Erfüllt",
+      "PROBLEM": "Konflikt / Problem festgestellt",
+      "MISSING": "Angaben fehlen",
+      "UNABLE_TO_DETERMINE": "Nicht bestimmbar"
+    }
+  },
+  "freshness": {
+    "fresh": "Kürzlich amtlich verifiziert",
+    "due": "Überprüfung demnächst fällig",
+    "overdue": "Überprüfung überfällig"
+  },
+  "footer": {
+    "disclaimer": "Petvia bietet ausschließlich informative Konformitätsprüfungen. Dies ersetzt keine amtliche tierärztliche Bescheinigung.",
+    "copyright": "© {year} Petvia. Alle Rechte vorbehalten.",
+    "privacy": "Datenschutzerklärung",
+    "terms": "Nutzungsbedingungen"
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Ein Fehler ist aufgetreten",
+    "retry": "Erneut versuchen",
+    "source": "Quelle",
+    "lastVerified": "Zuletzt verifiziert",
+    "viewSource": "Gesetzestext ansehen"
+  }
+}
