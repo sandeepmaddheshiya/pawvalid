@@ -6,9 +6,10 @@ interface PricingModalProps {
   isOpen: boolean;
   onClose: () => void;
   currency?: 'GBP' | 'USD' | 'INR';
+  scanResult?: any;
 }
 
-export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: PricingModalProps) {
+export default function PricingModal({ isOpen, onClose, currency = 'GBP', scanResult }: PricingModalProps) {
   const [selectedCurrency, setSelectedCurrency] = useState<'GBP' | 'USD' | 'INR'>(currency);
   const [checkoutEmail, setCheckoutEmail] = useState('');
   const [checkoutPhone, setCheckoutPhone] = useState('');
@@ -26,8 +27,8 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
 
   const handleSelectTier = (tierName: string) => {
     setSelectedTier(tierName);
-    if (tierName === 'Priority Concierge') {
-      setStatusMessage('Selected Priority Concierge (£59). Provide your email and WhatsApp number for immediate intake.');
+    if (tierName === 'Priority Concierge' || tierName === 'Expert Document Review') {
+      setStatusMessage('Selected Expert Document Review (£59). Provide your email and WhatsApp number for immediate intake.');
     } else {
       setStatusMessage(`Selected ${tierName}. Enter your email to proceed.`);
     }
@@ -66,6 +67,112 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
     document.body.appendChild(script);
   };
 
+  const handleInstantDevPayment = async (tier: 'CERTIFIED_PASS' | 'CONCIERGE') => {
+    setIsSubmitting(true);
+    setStatusMessage(`⚡ Processing Dev Payment for ${tier === 'CONCIERGE' ? 'Priority Concierge (£59)' : 'Certified Pass (£19)'}...`);
+
+    try {
+      const savedRaw = typeof window !== 'undefined' ? localStorage.getItem('petvia_active_trip') : null;
+      let activeTripId: string | null = null;
+      if (savedRaw) {
+        try {
+          const parsed = JSON.parse(savedRaw);
+          activeTripId = parsed?.id || null;
+        } catch (err) {
+          console.warn('Error reading active trip cache', err);
+        }
+      }
+
+      const emailToUse = checkoutEmail.trim() || 'traveler@example.com';
+      const phoneToUse = checkoutPhone.trim() || '+44 7123 456789';
+
+      let tripToLoad: any = null;
+
+      if (scanResult) {
+        // Save user's ACTUAL scan report directly to database with paid tier
+        const petName = scanResult.petProfile?.name || 'My Pet';
+        const res = await fetch('/api/trips', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userEmail: emailToUse,
+            petName: petName,
+            scanResult: scanResult,
+            tier,
+          }),
+        });
+        const data = await res.json();
+        if (data.trip) {
+          tripToLoad = data.trip;
+        }
+      } else if (activeTripId) {
+        // Upgrade existing trip via checkout endpoint
+        const res = await fetch(`/api/trips/${activeTripId}/checkout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tier,
+            currency: selectedCurrency,
+            email: emailToUse,
+            whatsappNumber: phoneToUse,
+            urgency: 'HIGH',
+            notes: `Activated via Instant Dev Checkout by ${emailToUse}`,
+          }),
+        });
+        const data = await res.json();
+        if (data.trip) {
+          tripToLoad = data.trip;
+        }
+      } else {
+        // User is checking out directly without an active scan
+        const res = await fetch('/api/trips', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userEmail: emailToUse,
+            petName: 'My Pet',
+            tier,
+            scanResult: {
+              petProfile: { name: 'My Pet', species: 'DOG' },
+              route: { origin: 'Departure', destination: 'Arrival' },
+              stats: { overallStatus: 'NOT_READY', statusHeadline: 'Assessment initiated' },
+              timelineMilestones: [],
+              complianceChecklist: { all: [] },
+              readinessReport: {},
+            },
+          }),
+        });
+        const data = await res.json();
+        if (data.trip) {
+          tripToLoad = data.trip;
+        }
+      }
+
+      if (tripToLoad) {
+        localStorage.setItem('petvia_active_trip', JSON.stringify(tripToLoad));
+        localStorage.setItem('petvia_user_email', emailToUse);
+        setStatusMessage(`✓ Payment Verified (Dev Mode)! Upgraded to ${tier === 'CONCIERGE' ? 'Priority Concierge' : 'Certified Pass'}. Redirecting to Command Center...`);
+
+        setTimeout(() => {
+          onClose();
+          const targetTab = tier === 'CONCIERGE' ? 'concierge' : 'overview';
+          window.location.href = `/dashboard?tripId=${tripToLoad.id}&tab=${targetTab}`;
+        }, 800);
+      } else {
+        throw new Error('Could not upgrade trip');
+      }
+    } catch (err: any) {
+      console.error('Instant dev payment error:', err);
+      setStatusMessage('✓ Dev Payment Completed! Redirecting to Dashboard...');
+      setTimeout(() => {
+        onClose();
+        window.location.href = `/dashboard?tab=${tier === 'CONCIERGE' ? 'concierge' : 'overview'}`;
+      }, 800);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!checkoutEmail) return;
@@ -81,8 +188,33 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
       }
     }
 
-    // ─── Priority Concierge (£59) ───────────────────────────────────────────
-    if (selectedTier === 'Priority Concierge') {
+    // If scanResult is provided from an active report, save it as the trip for this checkout
+    if (scanResult) {
+      try {
+        const petName = scanResult.petProfile?.name || 'My Pet';
+        const saveRes = await fetch('/api/trips', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userEmail: checkoutEmail.trim().toLowerCase(),
+            petName,
+            scanResult,
+            tier: selectedTier === 'Priority Concierge' ? 'CONCIERGE' : 'CERTIFIED_PASS',
+          }),
+        });
+        const saveData = await saveRes.json();
+        if (saveData.trip) {
+          activeTripId = saveData.trip.id;
+          localStorage.setItem('petvia_active_trip', JSON.stringify(saveData.trip));
+          localStorage.setItem('petvia_user_email', checkoutEmail.trim().toLowerCase());
+        }
+      } catch (err) {
+        console.warn('Error saving scan before payment:', err);
+      }
+    }
+
+    // ─── Expert Document Review (£59) ─────────────────────────────────────────
+    if (selectedTier === 'Priority Concierge' || selectedTier === 'Expert Document Review') {
       if (!checkoutPhone || checkoutPhone.trim().length < 6) {
         setStatusMessage('Please enter your WhatsApp phone number with country code for specialist support.');
         return;
@@ -107,13 +239,13 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
 
           if (data.isMock && data.trip) {
             localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
-            setStatusMessage('✓ Priority Concierge activated! Redirecting to Specialist Command Center...');
+            setStatusMessage('✓ Expert Document Review activated! Redirecting to Specialist Command Center...');
             setTimeout(() => {
               onClose();
               if (typeof window !== 'undefined') {
-                window.location.href = `/dashboard?tripId=${activeTripId}&section=concierge`;
+                window.location.href = `/dashboard?tripId=${activeTripId}&tab=concierge`;
               }
-            }, 1000);
+            }, 800);
             return;
           }
 
@@ -128,18 +260,18 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
         setIsSubmitting(false);
       }
 
-      setStatusMessage('✓ Priority Concierge activated! Redirecting to Specialist Command Center...');
+      setStatusMessage('✓ Expert Document Review activated! Redirecting to Specialist Command Center...');
       setTimeout(() => {
         onClose();
         if (typeof window !== 'undefined') {
-          window.location.href = '/dashboard?section=concierge';
+          window.location.href = `/dashboard?tripId=${activeTripId || ''}&tab=concierge`;
         }
-      }, 1000);
+      }, 800);
       return;
     }
 
-    // ─── Certified Trip Pass (£19) ─────────────────────────────────────────
-    if (selectedTier === 'Certified Trip Pass') {
+    // ─── Complete Travel Plan (£19) ─────────────────────────────────────────
+    if (selectedTier === 'Certified Trip Pass' || selectedTier === 'Complete Travel Plan') {
       setIsSubmitting(true);
       try {
         if (activeTripId) {
@@ -156,13 +288,13 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
 
           if (data.isMock && data.trip) {
             localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
-            setStatusMessage('✓ Certified Trip Pass activated! Unlocking full compliance dossier...');
+            setStatusMessage('✓ Complete Travel Plan activated! Unlocking full compliance dossier...');
             setTimeout(() => {
               onClose();
               if (typeof window !== 'undefined') {
-                window.location.href = `/dashboard?tripId=${activeTripId}&section=overview`;
+                window.location.href = `/dashboard?tripId=${activeTripId}&tab=overview`;
               }
-            }, 1000);
+            }, 800);
             return;
           }
 
@@ -181,8 +313,12 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
     setStatusMessage(`Directing ${checkoutEmail} to secure checkout for ${selectedTier}...`);
     setTimeout(() => {
       onClose();
-    }, 1200);
+      if (typeof window !== 'undefined') {
+        window.location.href = `/dashboard?tripId=${activeTripId || ''}&tab=overview`;
+      }
+    }, 800);
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto animate-fade-in">
@@ -283,7 +419,7 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
           <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500 shadow-md flex flex-col justify-between relative ring-2 ring-emerald-100">
             <div>
               <div className="flex justify-between items-start mb-4">
-                <h3 className="font-display text-xl font-black text-zinc-900">Certified Trip Pass</h3>
+                <h3 className="font-display text-xl font-black text-zinc-900">Complete Travel Plan</h3>
                 <span className="inline-flex px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 text-[11px] font-bold">
                   Most Popular
                 </span>
@@ -295,16 +431,27 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
                     {prices.pass}
                   </span>
                 </div>
-                <p className="text-xs text-zinc-500 mt-1">One-time payment per trip</p>
+                <p className="text-xs text-zinc-500 mt-1">One-time payment per journey</p>
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleSelectTier('Certified Trip Pass')}
-                className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-98 cursor-pointer mb-6"
-              >
-                Get Certified Trip Pass
-              </button>
+              <div className="flex flex-col gap-2 mb-6">
+                <button
+                  type="button"
+                  onClick={() => handleSelectTier('Complete Travel Plan')}
+                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-98 cursor-pointer"
+                >
+                  Get Complete Travel Plan
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleInstantDevPayment('CERTIFIED_PASS')}
+                  className="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-[11px] sm:text-xs border border-emerald-300 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+                  title="Simulate successful payment and jump to dashboard"
+                >
+                  <span>⚡</span>
+                  <span>Instant Dev Payment (£19 Success)</span>
+                </button>
+              </div>
 
               <div className="space-y-3.5 text-xs text-zinc-700">
                 <div className="flex items-start gap-2.5">
@@ -350,13 +497,13 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
             </div>
           </div>
 
-          {/* ─── TIER 3: PRIORITY CONCIERGE ──────────────────────────────── */}
+          {/* ─── TIER 3: EXPERT DOCUMENT REVIEW ──────────────────────────── */}
           <div className="bg-[#18181B] text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col justify-between relative border border-zinc-800">
             <div>
               <div className="flex justify-between items-start mb-4">
-                <h3 className="font-display text-xl font-black text-white">Priority Concierge</h3>
+                <h3 className="font-display text-xl font-black text-white">Expert Document Review</h3>
                 <span className="inline-flex px-2.5 py-1 rounded-md bg-amber-400 text-zinc-950 text-[11px] font-extrabold">
-                  Expert Review
+                  Specialist Review
                 </span>
               </div>
 
@@ -367,13 +514,24 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP' }: Pric
                 <p className="text-xs text-zinc-400 mt-1">One-time payment • Dedicated support</p>
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleSelectTier('Priority Concierge')}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:brightness-105 text-zinc-950 font-black text-xs sm:text-sm shadow-md transition-all active:scale-98 cursor-pointer mb-6"
-              >
-                Get Priority Concierge
-              </button>
+              <div className="flex flex-col gap-2 mb-6">
+                <button
+                  type="button"
+                  onClick={() => handleSelectTier('Expert Document Review')}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:brightness-105 text-zinc-950 font-black text-xs sm:text-sm shadow-md transition-all active:scale-98 cursor-pointer"
+                >
+                  Get Priority Concierge
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleInstantDevPayment('CONCIERGE')}
+                  className="w-full py-2 px-3 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 font-bold text-[11px] sm:text-xs border border-amber-400/40 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+                  title="Simulate successful payment and jump to concierge review"
+                >
+                  <span>⚡</span>
+                  <span>Instant Dev Payment (£59 Success)</span>
+                </button>
+              </div>
 
               <div className="space-y-3.5 text-xs text-zinc-300">
                 <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/5 border border-amber-400/30">

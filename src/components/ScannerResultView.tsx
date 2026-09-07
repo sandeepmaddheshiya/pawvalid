@@ -7,13 +7,15 @@ import type { ScanResult, ComplianceItem } from '@/lib/types/scanner';
 interface ScannerResultViewProps {
   result: ScanResult;
   onReset: () => void;
-  onOpenPricing: () => void;
+  onOpenPricing: (updatedResult?: ScanResult) => void;
+  onUpdateResult?: (updatedResult: ScanResult) => void;
 }
 
 export default function ScannerResultView({
   result,
   onReset,
   onOpenPricing,
+  onUpdateResult,
 }: ScannerResultViewProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'ALL' | 'LEAVING' | 'TRANSIT' | 'ARRIVING' | 'LOGISTICS'>('ALL');
@@ -24,9 +26,54 @@ export default function ScannerResultView({
 
   // Save Trip to Dashboard state
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [customPetName, setCustomPetName] = useState(result.petProfile?.name || '');
+  const [customSpecies, setCustomSpecies] = useState<'DOG' | 'CAT'>(
+    result.petProfile?.species === 'CAT' ? 'CAT' : 'DOG'
+  );
+  const [customBreed, setCustomBreed] = useState(result.petProfile?.breed || '');
   const [savePetName, setSavePetName] = useState(result.petProfile?.name || '');
   const [saveEmail, setSaveEmail] = useState('');
   const [isSavingTrip, setIsSavingTrip] = useState(false);
+
+  // Sync pet profile fields
+  const activePetName = customPetName.trim() || savePetName.trim() || result.petProfile?.name || '';
+  const activeSpecies = customSpecies || (result.petProfile?.species === 'CAT' ? 'CAT' : 'DOG');
+  const activeBreed = customBreed.trim() || result.petProfile?.breed || '';
+
+  const getActiveScanResult = (overrides?: { name?: string; species?: 'DOG' | 'CAT'; breed?: string }): ScanResult => {
+    const petName = overrides?.name !== undefined ? overrides.name : activePetName;
+    const species = overrides?.species !== undefined ? overrides.species : activeSpecies;
+    const breed = overrides?.breed !== undefined ? overrides.breed : activeBreed;
+    return {
+      ...result,
+      petDetected: Boolean(petName || result.petDetected),
+      petProfile: {
+        ...result.petProfile,
+        name: petName || 'My Pet',
+        species: species,
+        breed: breed || 'Companion Animal',
+      },
+    };
+  };
+
+  const handleUpdateSpecies = (species: 'DOG' | 'CAT') => {
+    setCustomSpecies(species);
+    const updated = getActiveScanResult({ species });
+    onUpdateResult?.(updated);
+  };
+
+  const handleUpdatePetName = (name: string) => {
+    setCustomPetName(name);
+    setSavePetName(name);
+    const updated = getActiveScanResult({ name });
+    onUpdateResult?.(updated);
+  };
+
+  const handleUpdateBreed = (breed: string) => {
+    setCustomBreed(breed);
+    const updated = getActiveScanResult({ breed });
+    onUpdateResult?.(updated);
+  };
 
   const handleSaveTrip = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,13 +81,14 @@ export default function ScannerResultView({
 
     try {
       setIsSavingTrip(true);
+      const payloadResult = getActiveScanResult();
       const res = await fetch('/api/trips', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userEmail: saveEmail,
-          petName: savePetName || result.petProfile?.name || 'My Pet',
-          scanResult: result,
+          userEmail: saveEmail.trim().toLowerCase(),
+          petName: activePetName || 'My Pet',
+          scanResult: payloadResult,
           tier: 'FREE',
         }),
       });
@@ -49,6 +97,7 @@ export default function ScannerResultView({
       const data = await res.json();
       if (data.trip) {
         localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
+        localStorage.setItem('petvia_user_email', saveEmail.trim().toLowerCase());
         router.push(`/dashboard?tripId=${data.trip.id}`);
       }
     } catch (err) {
@@ -62,13 +111,14 @@ export default function ScannerResultView({
   const handleDownloadDossier = async () => {
     try {
       setIsDownloadingDossier(true);
+      const activeScan = getActiveScanResult();
       const payload = {
-        route: result.route,
-        petProfile: result.petProfile,
-        stats: result.stats,
-        timelineMilestones: result.timelineMilestones,
-        complianceChecklist: result.complianceChecklist,
-        readinessReport: result.readinessReport,
+        route: activeScan.route,
+        petProfile: activeScan.petProfile,
+        stats: activeScan.stats,
+        timelineMilestones: activeScan.timelineMilestones,
+        complianceChecklist: activeScan.complianceChecklist,
+        readinessReport: activeScan.readinessReport,
       };
 
       const res = await fetch('/api/documents/dossier', {
@@ -85,7 +135,7 @@ export default function ScannerResultView({
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      const safePetName = result.petProfile?.name ? result.petProfile.name.replace(/[^a-zA-Z0-9]/g, '_') : 'Pet';
+      const safePetName = activePetName ? activePetName.replace(/[^a-zA-Z0-9]/g, '_') : 'Pet';
       a.download = `Petvia_Travel_Dossier_${safePetName}.pdf`;
       document.body.appendChild(a);
       a.click();
@@ -210,7 +260,7 @@ export default function ScannerResultView({
           </button>
           <button
             type="button"
-            onClick={onOpenPricing}
+            onClick={() => onOpenPricing(getActiveScanResult())}
             className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-2 shadow-2xs hover:bg-emerald-100 transition-all cursor-pointer whitespace-nowrap"
           >
             <span>📄</span>
@@ -234,7 +284,7 @@ export default function ScannerResultView({
             <div className="text-center space-y-1">
               <div className="text-3xl">🐾</div>
               <h3 className="font-display font-black text-xl text-zinc-900">
-                Save Milo&apos;s Trip to Dashboard
+                Save {activePetName ? `${activePetName}'s` : 'Your Pet\'s'} Trip to Dashboard
               </h3>
               <p className="text-xs text-zinc-500">
                 Track departure countdowns, access your document vault, and hand instructions to your vet.
@@ -247,8 +297,11 @@ export default function ScannerResultView({
                 <input
                   type="text"
                   value={savePetName}
-                  onChange={(e) => setSavePetName(e.target.value)}
-                  placeholder="e.g. Milo"
+                  onChange={(e) => {
+                    setSavePetName(e.target.value);
+                    setCustomPetName(e.target.value);
+                  }}
+                  placeholder="e.g. Bella, Charlie, Cooper"
                   className="w-full border border-zinc-300 rounded-xl px-3 py-2 text-xs focus:outline-emerald-600 font-medium"
                 />
               </div>
@@ -284,7 +337,7 @@ export default function ScannerResultView({
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <h2 className="text-2xl sm:text-3xl font-display font-black text-zinc-900">
-            {petProfile.name ? `${petProfile.name} (${petProfile.species})` : (petDetected ? `${petProfile.species}` : 'Pet Identity Unconfirmed')}
+            {activePetName ? `${activePetName} (${activeSpecies === 'CAT' ? 'Cat' : 'Dog'})` : (petDetected && result.petProfile?.species !== 'UNKNOWN' ? `${result.petProfile.species}` : 'Pet Identity Unconfirmed')}
             <span className="text-zinc-400 font-normal mx-2">·</span>
             <span className="text-zinc-800">{route.origin} → {route.destination}</span>
           </h2>
@@ -294,6 +347,88 @@ export default function ScannerResultView({
             </div>
           )}
         </div>
+
+        {/* ─── PET IDENTITY CONFIRMATION CARD ─── */}
+        {(!petProfile.name || !petDetected || petProfile.species === 'UNKNOWN' || !activePetName) && (
+          <div className="bg-gradient-to-br from-amber-50 to-orange-50/40 border-2 border-amber-300/80 rounded-2xl p-5 mb-6 shadow-xs animate-fade-in">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div className="inline-flex items-center gap-2">
+                <span className="text-lg">🐾</span>
+                <span className="text-xs font-black uppercase tracking-wider text-amber-950">
+                  Confirm Pet Details
+                </span>
+              </div>
+              <span className="text-[11px] text-amber-800 font-semibold">
+                Required for accurate travel timeline &amp; official dossier
+              </span>
+            </div>
+
+            <p className="text-xs text-amber-950/90 leading-relaxed mb-4">
+              We couldn&apos;t automatically identify your pet from this document. Please confirm their details below to tailor route entry rules, vet milestones, and your official dossier:
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Species Toggle */}
+              <div>
+                <label className="block text-[11px] font-bold text-amber-950 mb-1.5">
+                  Species
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateSpecies('DOG')}
+                    className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
+                      customSpecies === 'DOG'
+                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
+                        : 'bg-white border-amber-300 text-zinc-700 hover:bg-amber-100/60'
+                    }`}
+                  >
+                    <span>🐶</span> Dog
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateSpecies('CAT')}
+                    className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
+                      customSpecies === 'CAT'
+                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
+                        : 'bg-white border-amber-300 text-zinc-700 hover:bg-amber-100/60'
+                    }`}
+                  >
+                    <span>🐱</span> Cat
+                  </button>
+                </div>
+              </div>
+
+              {/* Pet Name */}
+              <div>
+                <label className="block text-[11px] font-bold text-amber-950 mb-1.5">
+                  Pet&apos;s Name
+                </label>
+                <input
+                  type="text"
+                  value={customPetName}
+                  onChange={(e) => handleUpdatePetName(e.target.value)}
+                  placeholder="e.g. Bella, Charlie, Cooper"
+                  className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs font-semibold text-zinc-900 focus:outline-emerald-600 placeholder:text-zinc-400 shadow-2xs"
+                />
+              </div>
+
+              {/* Breed */}
+              <div>
+                <label className="block text-[11px] font-bold text-amber-950 mb-1.5">
+                  Breed (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={customBreed}
+                  onChange={(e) => handleUpdateBreed(e.target.value)}
+                  placeholder="e.g. Labrador, Mixed, Persian"
+                  className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs font-semibold text-zinc-900 focus:outline-emerald-600 placeholder:text-zinc-400 shadow-2xs"
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Overall Status Callout */}
         <div className={`p-4 sm:p-5 rounded-2xl border mb-6 flex items-start gap-3.5 ${getOverallStatusStyle()}`}>
@@ -341,7 +476,7 @@ export default function ScannerResultView({
                 </button>
                 <button
                   type="button"
-                  onClick={onOpenPricing}
+                  onClick={() => onOpenPricing(getActiveScanResult())}
                   className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer text-center whitespace-nowrap"
                 >
                   Request Expert Review — £59
@@ -870,7 +1005,7 @@ export default function ScannerResultView({
             </button>
             <button
               type="button"
-              onClick={onOpenPricing}
+              onClick={() => onOpenPricing(getActiveScanResult())}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-zinc-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all active:scale-95 cursor-pointer whitespace-nowrap"
             >
               <span>💳 Pricing &amp; Support Options</span>

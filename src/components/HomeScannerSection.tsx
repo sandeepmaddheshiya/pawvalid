@@ -18,11 +18,16 @@ export default function HomeScannerSection() {
         <ScannerResultView
           result={scanResult}
           onReset={() => setScanResult(null)}
-          onOpenPricing={() => setPricingModalOpen(true)}
+          onOpenPricing={(updated) => {
+            if (updated) setScanResult(updated);
+            setPricingModalOpen(true);
+          }}
+          onUpdateResult={(updated) => setScanResult(updated)}
         />
         <PricingModal
           isOpen={pricingModalOpen}
           onClose={() => setPricingModalOpen(false)}
+          scanResult={scanResult}
         />
       </div>
     );
@@ -42,10 +47,10 @@ export default function HomeScannerSection() {
                 : 'text-zinc-500 hover:text-zinc-900'
             }`}
           >
-            <span>📄</span>
-            <span>AI Document Dropzone (Instant)</span>
-            <span className="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded-full font-extrabold uppercase">
-              Free
+            <span className="text-base">📄</span>
+            <span>Automated Document Check</span>
+            <span className="text-[10px] bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
+              Instant · Free
             </span>
           </button>
 
@@ -58,8 +63,8 @@ export default function HomeScannerSection() {
                 : 'text-zinc-500 hover:text-zinc-900'
             }`}
           >
-            <span>📝</span>
-            <span>Manual Route Form</span>
+            <span className="text-base">📝</span>
+            <span>Manual Route Check</span>
           </button>
         </div>
       </div>

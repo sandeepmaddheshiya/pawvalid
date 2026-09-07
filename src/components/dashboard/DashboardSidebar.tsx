@@ -69,7 +69,7 @@ export default function DashboardSidebar({
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-zinc-200/80 shrink-0 min-h-[calc(100vh-61px)] p-4 justify-between">
+    <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-zinc-200 shrink-0 sticky top-[57px] h-[calc(100vh-57px)] p-4 justify-between overflow-y-auto">
       <div className="space-y-1">
         <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider px-3 py-2">
           Trip Navigation

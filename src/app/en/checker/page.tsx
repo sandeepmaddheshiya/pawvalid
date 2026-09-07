@@ -71,7 +71,11 @@ export default function CheckerPage() {
           <ScannerResultView
             result={scanResult}
             onReset={() => setScanResult(null)}
-            onOpenPricing={() => setPricingOpen(true)}
+            onOpenPricing={(updated) => {
+              if (updated) setScanResult(updated);
+              setPricingOpen(true);
+            }}
+            onUpdateResult={(updated) => setScanResult(updated)}
           />
         ) : formResult ? (
           <div className="max-w-3xl mx-auto">
@@ -100,7 +104,11 @@ export default function CheckerPage() {
         )}
       </div>
 
-      <PricingModal isOpen={pricingOpen} onClose={() => setPricingOpen(false)} />
+      <PricingModal
+        isOpen={pricingOpen}
+        onClose={() => setPricingOpen(false)}
+        scanResult={scanResult}
+      />
     </div>
   );
 }

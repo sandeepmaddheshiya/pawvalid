@@ -1,13 +1,47 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Logo from './Logo';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Header() {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [activeUser, setActiveUser] = useState<{ email: string; petName?: string } | null>(null);
+
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem('petvia_active_trip');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.userEmail) {
+          setActiveUser({ email: parsed.userEmail, petName: parsed.petName });
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  // Do not render marketing header on dashboard pages (dashboard has its own DashboardHeader)
+  if (pathname?.startsWith('/dashboard')) {
+    return null;
+  }
+
+  const handleSignOut = () => {
+    try {
+      localStorage.removeItem('petvia_active_trip');
+      localStorage.removeItem('petvia_user_email');
+    } catch {
+      // ignore
+    }
+    setActiveUser(null);
+    window.location.href = '/';
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-zinc-200/70 transition-all">
@@ -96,19 +130,112 @@ export default function Header() {
           {/* Right Action Buttons */}
           <div className="hidden lg:flex items-center gap-4">
             <LanguageSwitcher variant="header" />
+
+            {/* Persistent Primary CTA */}
             <Link
               href="/en/checker"
-              className="text-[15px] font-medium text-zinc-700 hover:text-zinc-900 transition-colors"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl transition-all shadow-xs hover:shadow active:scale-98 flex items-center gap-1.5 whitespace-nowrap"
             >
-              Log in
+              <span>Check Requirements →</span>
             </Link>
-            <Link
-              href="/en/checker"
-              className="bg-[#0E1B33] hover:bg-[#16274a] text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-all shadow-xs hover:shadow active:scale-98"
-            >
-              Get My Report
-            </Link>
+
+            {activeUser ? (
+              <div
+                className="relative"
+                onMouseEnter={() => setUserDropdownOpen(true)}
+                onMouseLeave={() => setUserDropdownOpen(false)}
+              >
+                {/* Profile Trigger Button */}
+                <button
+                  type="button"
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-full border border-zinc-200/90 hover:border-emerald-500 bg-white hover:bg-zinc-50 transition-all cursor-pointer shadow-2xs"
+                  aria-expanded={userDropdownOpen}
+                  aria-haspopup="true"
+                >
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                    {activeUser.email.charAt(0).toUpperCase()}
+                  </div>
+                  <svg
+                    className={`w-3 h-3 text-zinc-400 transition-transform duration-200 ${
+                      userDropdownOpen ? 'rotate-180' : ''
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {/* Dropdown Menu on Hover */}
+                {userDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-zinc-200/90 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
+                    {/* User Header */}
+                    <div className="px-4 py-3 border-b border-zinc-100 bg-zinc-50/60 rounded-t-2xl">
+                      <p className="text-xs font-bold text-zinc-900 truncate">
+                        {activeUser.email}
+                      </p>
+                      {activeUser.petName && (
+                        <p className="text-[11px] text-zinc-500 mt-0.5">
+                          Traveling pet: <strong className="text-emerald-700">{activeUser.petName}</strong>
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Menu Items */}
+                    <div className="py-1">
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-xs sm:text-sm font-semibold text-zinc-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                      >
+                        <span className="text-base">📊</span>
+                        <div>
+                          <p className="leading-tight">Dashboard</p>
+                          <p className="text-[10px] text-zinc-400 font-normal">Command center &amp; timeline</p>
+                        </div>
+                      </Link>
+
+                      <Link
+                        href="/dashboard?tab=overview"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-xs sm:text-sm font-semibold text-zinc-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                      >
+                        <span className="text-base">⚙️</span>
+                        <div>
+                          <p className="leading-tight">Settings</p>
+                          <p className="text-[10px] text-zinc-400 font-normal">Trip &amp; account preferences</p>
+                        </div>
+                      </Link>
+                    </div>
+
+                    <div className="border-t border-zinc-100 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUserDropdownOpen(false);
+                          handleSignOut();
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2 text-xs sm:text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors cursor-pointer text-left"
+                      >
+                        <span className="text-base">🚪</span>
+                        <span>Log out</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm font-semibold text-zinc-700 hover:text-zinc-900 transition-colors px-2 py-1"
+              >
+                Log in
+              </Link>
+            )}
           </div>
+
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 lg:hidden">
@@ -169,20 +296,62 @@ export default function Header() {
               </Link>
             </div>
             <div className="pt-3 border-t border-zinc-100 flex flex-col gap-2">
-              <Link
-                href="/en/checker"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-2 text-sm font-semibold text-zinc-700"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/en/checker"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center bg-[#0E1B33] text-white py-3 rounded-lg font-semibold text-sm shadow-xs"
-              >
-                Get My Report
-              </Link>
+              {activeUser ? (
+                <>
+                  <div className="px-3 py-2.5 text-xs font-bold text-zinc-700 bg-zinc-50 border border-zinc-200/70 rounded-xl flex items-center justify-between">
+                    <span>🐾 Logged in:</span>
+                    <span className="font-mono text-zinc-900 truncate max-w-[160px]">{activeUser.email}</span>
+                  </div>
+
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full py-2.5 px-3 rounded-xl text-sm font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 flex items-center gap-2"
+                  >
+                    <span>📊</span>
+                    <span>Dashboard</span>
+                  </Link>
+
+                  <Link
+                    href="/dashboard?tab=overview"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full py-2.5 px-3 rounded-xl text-sm font-semibold text-zinc-700 hover:bg-zinc-100 flex items-center gap-2"
+                  >
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleSignOut();
+                    }}
+                    className="w-full text-center py-2 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>🚪</span>
+                    <span>Log out</span>
+                  </button>
+                </>
+              ) : (
+
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 rounded-lg"
+                  >
+                    Log in / Register
+                  </Link>
+                  <Link
+                    href="/en/checker"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-sm shadow-xs"
+                  >
+                    Check Requirements →
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

@@ -4,27 +4,34 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const ORIGINS = [
+  { code: 'IN', name: 'India', flag: '🇮🇳' },
   { code: 'US', name: 'United States', flag: '🇺🇸' },
-  { code: 'CA', name: 'Canada', flag: '🇨🇦' },
   { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
+  { code: 'CA', name: 'Canada', flag: '🇨🇦' },
   { code: 'DE', name: 'Germany', flag: '🇩🇪' },
   { code: 'AU', name: 'Australia', flag: '🇦🇺' },
+  { code: 'FR', name: 'France', flag: '🇫🇷' },
+  { code: 'SG', name: 'Singapore', flag: '🇸🇬' },
+  { code: 'AE', name: 'United Arab Emirates', flag: '🇦🇪' },
 ];
 
 const DESTINATIONS = [
   { code: 'DE', name: 'Germany', flag: '🇩🇪' },
   { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'AU', name: 'Australia', flag: '🇦🇺' },
-  { code: 'CA', name: 'Canada', flag: '🇨🇦' },
+  { code: 'US', name: 'United States', flag: '🇺🇸' },
   { code: 'JP', name: 'Japan', flag: '🇯🇵' },
+  { code: 'AU', name: 'Australia', flag: '🇦🇺' },
   { code: 'FR', name: 'France', flag: '🇫🇷' },
+  { code: 'CA', name: 'Canada', flag: '🇨🇦' },
+  { code: 'SG', name: 'Singapore', flag: '🇸🇬' },
+  { code: 'AE', name: 'United Arab Emirates', flag: '🇦🇪' },
 ];
 
 export default function HeroTripForm() {
   const router = useRouter();
-  const [fromCountry, setFromCountry] = useState('US');
+  const [fromCountry, setFromCountry] = useState('IN');
   const [toCountry, setToCountry] = useState('DE');
-  const [petType, setPetType] = useState<'DOG' | 'CAT' | 'OTHER'>('DOG');
+  const [petType, setPetType] = useState<'DOG' | 'CAT'>('DOG');
   const [travelDate, setTravelDate] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -39,68 +46,74 @@ export default function HeroTripForm() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-2xl border border-zinc-200/90 p-5 sm:p-6 w-full max-w-[490px] text-left">
-      {/* Header with Title & Badge */}
-      <div className="flex items-center justify-between mb-3.5">
-        <h3 className="font-bold text-zinc-900 text-sm sm:text-[15px] tracking-tight">
-          Where are you traveling with your pet?
-        </h3>
-        <span className="text-[10px] sm:text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#f0fdf4] text-[#16a34a] border border-[#bbf7d0] shrink-0">
-          It only takes 2 minutes
-        </span>
+    <div id="hero-form" className="bg-white rounded-3xl shadow-2xl border border-zinc-200/90 p-6 sm:p-7 w-full max-w-[500px] text-left relative z-10 transition-all hover:shadow-[0_24px_50px_-12px_rgba(0,0,0,0.12)]">
+      {/* Product Header */}
+      <div className="flex items-center justify-between gap-2 pb-4 mb-4 border-b border-zinc-100">
+        <div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 border border-emerald-200/70 px-2.5 py-0.5 rounded-full inline-block mb-1">
+            Interactive Compliance Engine
+          </span>
+          <h3 className="font-display font-black text-zinc-900 text-base sm:text-lg leading-tight">
+            Where are you travelling with your pet?
+          </h3>
+        </div>
+        <div className="hidden sm:flex flex-col items-end shrink-0">
+          <span className="text-[11px] font-bold text-zinc-400">Route Check</span>
+          <span className="text-[10px] text-emerald-600 font-semibold">● 100% Free</span>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-4">
         {/* From & To in row */}
-        <div className="grid grid-cols-[1fr,auto,1fr] gap-2 items-center">
+        <div className="grid grid-cols-[1fr,auto,1fr] gap-2.5 items-center">
           <div>
-            <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
               From
             </label>
             <div className="relative">
               <select
                 value={fromCountry}
                 onChange={(e) => setFromCountry(e.target.value)}
-                className="w-full appearance-none rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs sm:text-[13px] font-medium text-zinc-800 focus:border-emerald-500 focus:outline-none pr-7 truncate shadow-2xs"
+                className="w-full appearance-none rounded-xl border border-zinc-200 bg-zinc-50/60 hover:bg-white focus:bg-white px-3 py-2.5 text-xs sm:text-sm font-semibold text-zinc-900 focus:border-emerald-600 focus:outline-none pr-8 truncate shadow-2xs transition-colors cursor-pointer"
               >
                 {ORIGINS.map((c) => (
-                  <option key={c.code} value={c.code}>
+                  <option key={`orig-${c.code}`} value={c.code}>
                     {c.flag} {c.name}
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-zinc-400">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-zinc-400">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-center pt-5 text-zinc-400">
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
+          <div className="flex items-center justify-center pt-6 text-zinc-400">
+            <span className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-xs font-bold text-zinc-500">
+              →
+            </span>
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
               To
             </label>
             <div className="relative">
               <select
                 value={toCountry}
                 onChange={(e) => setToCountry(e.target.value)}
-                className="w-full appearance-none rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs sm:text-[13px] font-medium text-zinc-800 focus:border-emerald-500 focus:outline-none pr-7 truncate shadow-2xs"
+                className="w-full appearance-none rounded-xl border border-zinc-200 bg-zinc-50/60 hover:bg-white focus:bg-white px-3 py-2.5 text-xs sm:text-sm font-semibold text-zinc-900 focus:border-emerald-600 focus:outline-none pr-8 truncate shadow-2xs transition-colors cursor-pointer"
               >
                 {DESTINATIONS.map((c) => (
-                  <option key={c.code} value={c.code}>
+                  <option key={`dest-${c.code}`} value={c.code}>
                     {c.flag} {c.name}
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-zinc-400">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-zinc-400">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
@@ -110,89 +123,66 @@ export default function HeroTripForm() {
 
         {/* Pet Type Selection */}
         <div>
-          <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
             Pet Type
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2.5">
             <button
               type="button"
               onClick={() => setPetType('DOG')}
-              className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs sm:text-[13px] font-medium transition-all ${
+              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 petType === 'DOG'
-                  ? 'border-[#14B8A6] bg-[#F0FDFA] text-[#0F766E] font-semibold shadow-2xs'
-                  : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50'
+                  ? 'border-emerald-600 bg-emerald-50 text-emerald-950 shadow-2xs ring-1 ring-emerald-500'
+                  : 'border-zinc-200 bg-zinc-50/50 text-zinc-700 hover:bg-zinc-100/70'
               }`}
             >
-              <span className="text-sm">🐶</span> Dog
+              <span className="text-base">🐕</span> Dog
             </button>
 
             <button
               type="button"
               onClick={() => setPetType('CAT')}
-              className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs sm:text-[13px] font-medium transition-all ${
+              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 petType === 'CAT'
-                  ? 'border-[#14B8A6] bg-[#F0FDFA] text-[#0F766E] font-semibold shadow-2xs'
-                  : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50'
+                  ? 'border-emerald-600 bg-emerald-50 text-emerald-950 shadow-2xs ring-1 ring-emerald-500'
+                  : 'border-zinc-200 bg-zinc-50/50 text-zinc-700 hover:bg-zinc-100/70'
               }`}
             >
-              <span className="text-sm">🐱</span> Cat
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setPetType('OTHER')}
-              className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border text-xs sm:text-[13px] font-medium transition-all ${
-                petType === 'OTHER'
-                  ? 'border-[#14B8A6] bg-[#F0FDFA] text-[#0F766E] font-semibold shadow-2xs'
-                  : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50'
-              }`}
-            >
-              <span className="text-sm">🐾</span> Other
+              <span className="text-base">🐈</span> Cat
             </button>
           </div>
         </div>
 
-        {/* Travel Date */}
+        {/* Departure Date */}
         <div>
-          <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
-            Travel Date (Optional)
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
+            Departure Date (Optional)
           </label>
           <div className="relative">
             <input
-              type="text"
-              placeholder="Select date"
-              onFocus={(e) => (e.target.type = 'date')}
-              onBlur={(e) => {
-                if (!e.target.value) e.target.type = 'text';
-              }}
+              type="date"
               value={travelDate}
               onChange={(e) => setTravelDate(e.target.value)}
-              className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs sm:text-[13px] font-medium text-zinc-800 placeholder-zinc-400 focus:border-emerald-500 focus:outline-none pr-9 shadow-2xs"
+              className="w-full rounded-xl border border-zinc-200 bg-zinc-50/60 hover:bg-white focus:bg-white px-3 py-2.5 text-xs sm:text-sm font-semibold text-zinc-900 focus:border-emerald-600 focus:outline-none shadow-2xs transition-colors"
             />
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-400">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
           </div>
+          <p className="text-[10px] text-zinc-400 mt-1">
+            Helps calculate required 21-day rabies and 90-day titer latency windows
+          </p>
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full flex items-center justify-center gap-2 bg-[#0B132B] hover:bg-[#16274a] text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-sm hover:shadow text-xs sm:text-sm"
+          className="w-full flex items-center justify-center gap-2 bg-[#0F172A] hover:bg-zinc-800 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md hover:shadow-lg text-xs sm:text-sm active:scale-98 cursor-pointer mt-2"
         >
-          <span>Get My Compliance Report</span>
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
+          <span>Check My Requirements →</span>
         </button>
 
-        {/* Trust Underneath */}
-        <div className="pt-1 flex items-center justify-center gap-1.5 text-[11px] text-zinc-500">
-          <span>Trusted by 12,500+ pet parents</span>
-          <span className="text-amber-400 font-bold">★★★★★</span>
-          <span className="font-semibold text-zinc-700">4.9/5</span>
+        {/* Security & Privacy Underneath */}
+        <div className="pt-2 flex items-center justify-center gap-2 text-[11px] text-zinc-500 font-medium">
+          <span>🔒</span>
+          <span>Your documents stay private · Deterministic legal rules engine</span>
         </div>
       </form>
     </div>

@@ -22,16 +22,26 @@ export async function POST(request: NextRequest) {
 
     const cleanEmail = userEmail.toLowerCase().trim();
     const cleanPetName =
-      petName ||
-      scanResult.petProfile?.name ||
-      (scanResult.petProfile?.species === 'CAT' ? 'Luna' : 'Milo');
+      petName?.trim() ||
+      scanResult.petProfile?.name?.trim() ||
+      'My Pet';
+
+    const species =
+      (scanResult.petProfile?.species === 'CAT' || scanResult.petProfile?.species === 'DOG')
+        ? scanResult.petProfile.species
+        : (body.species === 'CAT' ? 'CAT' : 'DOG');
+
+    const breed =
+      scanResult.petProfile?.breed?.trim() ||
+      body.breed?.trim() ||
+      'Companion Animal';
 
     const savedTrip = await db.savedTrip.create({
       data: {
         userEmail: cleanEmail,
         petName: cleanPetName,
-        species: scanResult.petProfile?.species || 'DOG',
-        breed: scanResult.petProfile?.breed || 'Standard',
+        species,
+        breed,
         origin: scanResult.route?.origin || 'Not Specified',
         destination: scanResult.route?.destination || 'Not Specified',
         transitCountries: scanResult.route?.transitCountries || [],

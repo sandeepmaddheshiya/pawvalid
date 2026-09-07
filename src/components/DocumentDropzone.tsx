@@ -144,31 +144,29 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      <div className="bg-white rounded-3xl shadow-xl border border-zinc-100 p-6 sm:p-10 relative overflow-hidden">
+    <div className="w-full max-w-4xl mx-auto">
+      <div className="bg-white rounded-3xl shadow-xl border border-zinc-200/90 p-6 sm:p-10 lg:p-12 relative overflow-hidden">
         {/* Top Trust Badge */}
         <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-bold tracking-wider text-emerald-800 uppercase shadow-2xs">
-            <svg className="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span>Official Government &amp; Airline Compliance Engine</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-bold tracking-wider text-emerald-900 uppercase shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Official Government &amp; Airline Route Compliance</span>
           </div>
         </div>
 
         {/* Big Bold Headline */}
-        <div className="text-center max-w-xl mx-auto mb-6">
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-[40px] font-black text-zinc-900 tracking-tight leading-[1.15]">
+        <div className="text-center max-w-2xl mx-auto mb-8">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-[42px] font-black text-zinc-900 tracking-tight leading-[1.12]">
             Will Your Pet Clear Border Control?<br />
-            <span className="text-emerald-600">Upload Paperwork</span> to Verify
+            <span className="text-emerald-700">Upload Paperwork</span> to Verify
           </h2>
-          <p className="mt-4 text-xs sm:text-sm text-zinc-600 leading-relaxed max-w-lg mx-auto">
+          <p className="mt-3.5 text-xs sm:text-sm text-zinc-600 leading-relaxed max-w-xl mx-auto">
             Upload photos or PDFs of your rabies certificate, microchip registration, pet passport, or export permits. Petvia evaluates prerequisites and waiting periods against official border regulations for your exact route.
           </p>
         </div>
 
         {/* Route Selectors */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4">
           {/* Origin */}
           <div>
             <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
@@ -178,7 +176,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
               <select
                 value={originCountry}
                 onChange={(e) => setOriginCountry(e.target.value)}
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm font-medium text-zinc-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-zinc-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white cursor-pointer"
               >
                 {SUPPORTED_COUNTRIES.map((c) => (
                   <option key={`orig-${c.code}`} value={c.name}>
@@ -203,7 +201,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
               <select
                 value={destinationCountry}
                 onChange={(e) => setDestinationCountry(e.target.value)}
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm font-medium text-zinc-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-zinc-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white cursor-pointer"
               >
                 {SUPPORTED_COUNTRIES.map((c) => (
                   <option key={`dest-${c.code}`} value={c.name}>
@@ -221,7 +219,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
         </div>
 
         {/* Transit Countries & Optional Departure Date Toggle */}
-        <div className="mb-5 bg-zinc-50/80 p-3.5 rounded-2xl border border-zinc-100">
+        <div className="mb-6 bg-zinc-50/80 p-4 rounded-2xl border border-zinc-100">
           <div className="flex items-center justify-between">
             <button
               type="button"
@@ -285,22 +283,22 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-2xl p-8 sm:p-10 text-center transition-all ${
+          className={`border-2 border-dashed rounded-3xl p-8 sm:p-12 text-center transition-all ${
             isDragging
               ? 'border-emerald-500 bg-emerald-50/60 scale-[1.01]'
               : 'border-zinc-300 bg-[#FAFBFB] hover:bg-[#F3F8F5]'
           }`}
         >
-          {/* Golden Passport Icon */}
-          <div className="w-12 h-14 mx-auto mb-3 bg-[#FEF08A] border-2 border-[#EAB308] rounded-md shadow-sm flex items-center justify-center transform -rotate-3 hover:rotate-0 transition-transform">
-            <span className="text-xl">🪪</span>
+          {/* Document Icon */}
+          <div className="w-14 h-14 mx-auto mb-3 bg-emerald-50 border border-emerald-200/80 rounded-2xl shadow-2xs flex items-center justify-center text-2xl">
+            📄
           </div>
 
-          <h3 className="font-display font-bold text-zinc-900 text-base sm:text-lg mb-1">
-            Drop pet paperwork &amp; documents here
+          <h3 className="font-display font-black text-zinc-900 text-lg sm:text-xl mb-1">
+            Drop your documents here
           </h3>
-          <p className="text-xs text-zinc-500 mb-4">
-            Supports PDF, Word, JPEG, PNG, Text · up to 8 documents per check
+          <p className="text-xs text-zinc-500 mb-4 max-w-md mx-auto">
+            Pet passport • Rabies certificate • Titer report • Health certificate • Export documents
           </p>
 
           <input
@@ -315,38 +313,61 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer"
           >
             <span>Choose files from device</span>
           </button>
+
+          <p className="text-[11px] text-zinc-400 mt-3 font-medium">
+            PDF, JPG or PNG · Up to 8 documents per check
+          </p>
         </div>
 
-        {/* Uploaded Files Chips */}
+        {/* Accepted Document Chips */}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5 text-[11px] text-zinc-500">
+          <span className="font-bold text-zinc-700 mr-1">Accepted paperwork:</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200/70 font-semibold text-zinc-700">Pet Passport</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200/70 font-semibold text-zinc-700">Rabies Certificate</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200/70 font-semibold text-zinc-700">Titer Report (RNATT/FAVN)</span>
+          <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200/70 font-semibold text-zinc-700">Official Health Cert</span>
+        </div>
+
+        {/* Uploaded Files Cards */}
         {files.length > 0 && (
-          <div className="mt-4 space-y-2">
-            <p className="text-xs font-semibold text-zinc-700 flex justify-between items-center">
+          <div className="mt-6 space-y-2.5">
+            <div className="text-xs font-bold text-zinc-800 flex justify-between items-center px-1">
               <span>Attached Documents ({files.length}/8):</span>
               <button
                 type="button"
                 onClick={() => setFiles([])}
-                className="text-[11px] text-red-600 hover:underline cursor-pointer"
+                className="text-[11px] font-semibold text-red-600 hover:underline cursor-pointer"
               >
                 Clear all
               </button>
-            </p>
-            <div className="flex flex-wrap gap-2">
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {files.map((file, idx) => (
                 <div
                   key={`${file.name}-${idx}`}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-100 border border-zinc-200 text-xs text-zinc-800"
+                  className="p-3 rounded-2xl bg-zinc-50/80 border border-zinc-200 flex items-center justify-between gap-3 text-left shadow-2xs hover:bg-zinc-100/70 transition-colors"
                 >
-                  <span className="text-zinc-500">📄</span>
-                  <span className="font-medium truncate max-w-[140px] sm:max-w-[200px]">{file.name}</span>
-                  <span className="text-[10px] text-zinc-400">({(file.size / 1024).toFixed(0)} KB)</span>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0">
+                      ✓
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-bold text-xs text-zinc-900 truncate max-w-[180px] sm:max-w-[220px]">
+                        {file.name}
+                      </p>
+                      <p className="text-[10px] text-zinc-500">
+                        {(file.size / 1024).toFixed(0)} KB · Ready to verify
+                      </p>
+                    </div>
+                  </div>
                   <button
                     type="button"
                     onClick={() => removeFile(idx)}
-                    className="text-zinc-400 hover:text-red-500 ml-1 font-bold cursor-pointer"
+                    className="w-6 h-6 rounded-full bg-zinc-200/60 hover:bg-red-100 text-zinc-400 hover:text-red-600 flex items-center justify-center text-xs font-bold cursor-pointer transition-colors shrink-0"
                   >
                     ✕
                   </button>

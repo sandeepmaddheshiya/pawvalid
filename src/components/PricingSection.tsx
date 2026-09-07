@@ -49,18 +49,21 @@ export default function PricingSection() {
           {/* ─── TIER 1: FREE READINESS SCAN ────────────────────────────── */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200 shadow-sm flex flex-col justify-between relative hover:border-zinc-300 transition-all">
             <div>
-              <div className="flex justify-between items-start mb-4">
+              <div className="flex justify-between items-start mb-2">
                 <h3 className="font-display text-xl font-black text-zinc-900">Readiness Scan</h3>
                 <span className="inline-flex px-2.5 py-1 rounded-md bg-[#DCFCE7] text-[#15803D] text-[11px] font-bold">
                   Free Forever
                 </span>
               </div>
+              <p className="text-xs text-emerald-700 font-semibold mb-4">
+                &ldquo;Do I have a compliance problem?&rdquo;
+              </p>
 
               <div className="mb-6">
                 <span className="font-display text-4xl sm:text-5xl font-black text-zinc-900">
                   {prices.free}
                 </span>
-                <p className="text-xs text-zinc-400 mt-1">No credit card required</p>
+                <p className="text-xs text-zinc-400 mt-1">Instant check · No card needed</p>
               </div>
 
               <button
@@ -75,39 +78,50 @@ export default function PricingSection() {
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-zinc-900">AI Document Extraction</strong>
-                    <span className="text-zinc-500">Instant scan of microchips, rabies dates, and core vaccines</span>
+                    <strong className="block text-zinc-900">Route Prerequisite Check</strong>
+                    <span className="text-zinc-500">Official export &amp; import country requirements</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-zinc-900">High-Level Route Readiness</strong>
-                    <span className="text-zinc-500">Timeline readiness status (≤1 day, ~2 weeks, ~1 month, ~3 months)</span>
+                    <strong className="block text-zinc-900">Automated Document Scan</strong>
+                    <span className="text-zinc-500">Extraction of microchips, rabies dates, and vaccines</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-zinc-900">Missing Requirements Overview</strong>
-                    <span className="text-zinc-500">Identifies missing documents and short-lead items</span>
+                    <strong className="block text-zinc-900">Major Blockers Overview</strong>
+                    <span className="text-zinc-500">Identifies missing documents and critical rules</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
+                  <div>
+                    <strong className="block text-zinc-900">Basic Readiness Timeline</strong>
+                    <span className="text-zinc-500">General estimated departure window</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* ─── TIER 2: CERTIFIED TRIP PASS ─────────────────────────────── */}
+          {/* ─── TIER 2: COMPLETE TRAVEL PLAN ────────────────────────────── */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500 shadow-md flex flex-col justify-between relative ring-2 ring-emerald-100 hover:shadow-lg transition-all">
             <div>
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="font-display text-xl font-black text-zinc-900">Certified Trip Pass</h3>
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-display text-xl font-black text-zinc-900">Complete Travel Plan</h3>
                 <span className="inline-flex px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 text-[11px] font-bold">
                   Most Popular
                 </span>
               </div>
+              <p className="text-xs text-emerald-700 font-semibold mb-4">
+                &ldquo;What exactly do I need to do?&rdquo;
+              </p>
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-2">
@@ -115,7 +129,7 @@ export default function PricingSection() {
                     {prices.pass}
                   </span>
                 </div>
-                <p className="text-xs text-zinc-500 mt-1">One-time payment per trip</p>
+                <p className="text-xs text-zinc-500 mt-1">One-time payment per journey</p>
               </div>
 
               <button
@@ -123,22 +137,22 @@ export default function PricingSection() {
                 onClick={() => setModalOpen(true)}
                 className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-98 cursor-pointer mb-6"
               >
-                Get Certified Trip Pass
+                Get Complete Travel Plan
               </button>
 
               <div className="space-y-3.5 text-xs text-zinc-700">
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-zinc-900">Full Dual-Sided Compliance Report</strong>
-                    <span className="text-zinc-500">Leaving (export) and Arriving (import) rules evaluated</span>
+                    <strong className="block text-zinc-900">Full Dual-Sided Audit</strong>
+                    <span className="text-zinc-500">Leaving (export), layover, and destination (import) rules</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-zinc-900">Verified Official Legal Citations</strong>
+                    <strong className="block text-zinc-900">Verified Legal Statute Citations</strong>
                     <span className="text-zinc-500">Direct source links to USDA, DAFF, DEFRA, and EU legislation</span>
                   </div>
                 </div>
@@ -147,44 +161,47 @@ export default function PricingSection() {
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
                     <strong className="block text-zinc-900">Chronological Action Countdown</strong>
-                    <span className="text-zinc-500">Prioritized checklist sorted by regulatory lead time</span>
+                    <span className="text-zinc-500">Day-by-day checklist sorted by mandatory lead time</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-zinc-900">Printable Travel Dossier (PDF)</strong>
-                    <span className="text-zinc-500">Dated compliance snapshot for airlines &amp; border officials</span>
+                    <strong className="block text-zinc-900">Official Travel Dossier (PDF)</strong>
+                    <span className="text-zinc-500">Dated compliance passport to hand to your vet &amp; customs</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-zinc-900">Carrier &amp; Crate Sizing Guide</strong>
-                    <span className="text-zinc-500">IATA Live Animal Regulations requirements for your breed</span>
+                    <strong className="block text-zinc-900">Airline Crate Sizing Guidelines</strong>
+                    <span className="text-zinc-500">IATA Live Animals Regulations requirements for your pet</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* ─── TIER 3: PRIORITY CONCIERGE ──────────────────────────────── */}
+          {/* ─── TIER 3: EXPERT DOCUMENT REVIEW ──────────────────────────── */}
           <div className="bg-[#18181B] text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col justify-between relative border border-zinc-800 hover:border-amber-400/40 transition-all">
             <div>
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="font-display text-xl font-black text-white">Priority Concierge</h3>
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-display text-xl font-black text-white">Expert Document Review</h3>
                 <span className="inline-flex px-2.5 py-1 rounded-md bg-amber-400 text-zinc-950 text-[11px] font-extrabold">
-                  Expert Review
+                  Specialist Review
                 </span>
               </div>
+              <p className="text-xs text-amber-300 font-semibold mb-4">
+                &ldquo;I don&apos;t want to figure this out myself.&rdquo;
+              </p>
 
               <div className="mb-6">
                 <span className="font-display text-4xl sm:text-5xl font-black text-amber-400">
                   {prices.concierge}
                 </span>
-                <p className="text-xs text-zinc-400 mt-1">One-time payment • Dedicated support</p>
+                <p className="text-xs text-zinc-400 mt-1">Dedicated human verification</p>
               </div>
 
               <button
@@ -192,31 +209,23 @@ export default function PricingSection() {
                 onClick={() => setModalOpen(true)}
                 className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:brightness-105 text-zinc-950 font-black text-xs sm:text-sm shadow-md transition-all active:scale-98 cursor-pointer mb-6"
               >
-                Get Priority Concierge
+                Get Expert Document Review
               </button>
 
               <div className="space-y-3.5 text-xs text-zinc-300">
                 <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/5 border border-amber-400/30">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-amber-300 font-bold">1-on-1 Pre-Flight Document Review</strong>
-                    <span className="text-zinc-300">Human specialist double-checks all stamps &amp; paperwork</span>
+                    <strong className="block text-amber-300 font-bold">1-on-1 Specialist Review</strong>
+                    <span className="text-zinc-300">Human travel coordinator audits stamps, titers, and dates</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-white">Everything in Certified Trip Pass</strong>
-                    <span className="text-zinc-400">PDF report, source links, and countdown plan</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-white">Real-Time Travel Day Support</strong>
-                    <span className="text-zinc-400">Direct assistance if customs or airlines have questions</span>
+                    <strong className="block text-white">Conflicting Paperwork Resolution</strong>
+                    <span className="text-zinc-400">Expert guidance if documents have conflicting information</span>
                   </div>
                 </div>
 
@@ -231,8 +240,16 @@ export default function PricingSection() {
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
+                    <strong className="block text-white">Real-Time Travel Day Support</strong>
+                    <span className="text-zinc-400">Direct assistance if customs or airlines have questions</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
+                  <div>
                     <strong className="block text-white">Guaranteed 24-Hour Review Turnaround</strong>
-                    <span className="text-zinc-400">Fast-tracked for urgent departures</span>
+                    <span className="text-zinc-400">Fast-tracked verification for departure deadlines</span>
                   </div>
                 </div>
               </div>

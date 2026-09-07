@@ -119,23 +119,25 @@ export default function OverviewView({
         </div>
 
         {/* ─── HERO TIMELINE DATE BOX ───────────────────────────────── */}
-        <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-[#FAFBFB] border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 block">
-              {stats?.earliestFlightDateTitle || 'Earliest Estimated Travel Date'}
-            </span>
-            <div className="font-display text-xl sm:text-2xl font-black text-zinc-900 mt-0.5 flex items-center gap-2">
-              <span>✈️ Earliest Estimated Travel Date:</span>
-              <span className="text-emerald-700 underline decoration-emerald-300 decoration-2">
+        <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-white border border-emerald-200/80 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-extrabold bg-emerald-100 text-emerald-800 tracking-wider uppercase">
+                Verified Departure Window
+              </span>
+            </div>
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <span className="text-xs font-semibold text-zinc-500">Earliest Safe Flight Date:</span>
+              <span className="font-display text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight">
                 {earliestFlightDate}
               </span>
             </div>
-            <p className="text-xs text-zinc-600 mt-1 max-w-lg leading-relaxed">
-              {stats?.earliestFlightDateSubtitle || 'Based on verified microchip sequence, primary rabies wait periods, and official destination entry requirements.'}
+            <p className="text-xs text-zinc-600 max-w-xl leading-relaxed">
+              {stats?.earliestFlightDateSubtitle || 'Calculated from required microchip sequence, 21-day rabies antibody latency, and destination customs regulations.'}
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <button
               type="button"
               disabled={isDownloadingDossier}
@@ -143,12 +145,12 @@ export default function OverviewView({
               className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap disabled:opacity-50"
             >
               <span>{isDownloadingDossier ? '⏳' : '📄'}</span>
-              <span>{isDownloadingDossier ? 'Generating PDF...' : 'Download Dossier (PDF)'}</span>
+              <span>{isDownloadingDossier ? 'Generating...' : 'Download Dossier (PDF)'}</span>
             </button>
             <button
               type="button"
               onClick={() => onNavigate('timeline')}
-              className="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-bold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-bold text-xs px-4 py-2.5 rounded-xl shadow-2xs transition-all cursor-pointer whitespace-nowrap"
             >
               <span>View Timeline →</span>
             </button>
@@ -167,7 +169,7 @@ export default function OverviewView({
             <span className="text-lg">🛑</span>
           </div>
           <span className="font-display font-black text-3xl text-zinc-900 block">
-            {blockerSummary.criticalBlockersCount}
+            {blockerSummary.criticalBlockersCount ?? 0}
           </span>
           <span className="text-xs text-zinc-500 mt-1 block group-hover:text-emerald-700 font-medium">
             View compliance checklist →
@@ -183,7 +185,7 @@ export default function OverviewView({
             <span className="text-lg">⏳</span>
           </div>
           <span className="font-display font-black text-3xl text-zinc-900 block">
-            {blockerSummary.requiredActionsCount}
+            {blockerSummary.requiredActionsCount ?? (trip?.timelineMilestones?.filter((m: any) => m.status !== 'COMPLETED')?.length ?? 2)}
           </span>
           <span className="text-xs text-zinc-500 mt-1 block group-hover:text-emerald-700 font-medium">
             View pre-flight milestones →
@@ -199,7 +201,7 @@ export default function OverviewView({
             <span className="text-lg">📁</span>
           </div>
           <span className="font-display font-black text-3xl text-zinc-900 block">
-            {blockerSummary.completedVerifiedCount || 2}
+            {blockerSummary.completedVerifiedCount ?? (trip?.uploadedDocuments?.length || 2)}
           </span>
           <span className="text-xs text-zinc-500 mt-1 block group-hover:text-emerald-700 font-medium">
             Open document vault →
