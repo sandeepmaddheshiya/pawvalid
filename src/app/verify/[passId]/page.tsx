@@ -18,6 +18,15 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
   const [loading, setLoading] = useState(true);
   const [copiedHash, setCopiedHash] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [currentVerificationUrl, setCurrentVerificationUrl] = useState<string>(
+    `https://petvia.com/verify/${passId}`
+  );
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentVerificationUrl(window.location.href);
+    }
+  }, [passId]);
 
   useEffect(() => {
     async function loadVerification() {
@@ -120,7 +129,6 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
   const issuedAtFormatted = passData?.issuedAt
     ? new Date(passData.issuedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
     : '10 May 2026';
-  const currentVerificationUrl = typeof window !== 'undefined' ? window.location.href : `https://petvia.com/verify/${passId}`;
 
   return (
     <div className="min-h-screen bg-[#F6F8FA] text-zinc-900 font-sans py-8 px-4 sm:px-6 lg:px-10 print:p-0 print:bg-white selection:bg-[#0FA958]/20">
@@ -128,9 +136,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
         {/* ─── TOP SYSTEM APP BAR (Hidden on Print) ─────────────────────── */}
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white px-5 py-3.5 rounded-2xl border border-zinc-200/80 shadow-2xs print:hidden">
           <div className="flex items-center gap-3.5">
-            <Link href="/" className="hover:opacity-90 transition-opacity">
-              <Logo />
-            </Link>
+            <Logo />
             <div className="h-5 w-px bg-zinc-200 hidden sm:block" />
             <span className="text-[11px] font-semibold text-zinc-500 hidden sm:inline-block">
               Official Border Verification Dossier
