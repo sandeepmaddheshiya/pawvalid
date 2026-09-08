@@ -466,6 +466,8 @@ function DashboardContent() {
                   setCurrentTrip(updated);
                   localStorage.setItem('petvia_active_trip', JSON.stringify(updated));
                 }}
+                onDownloadDossier={handleDownloadDossier}
+                isDownloadingDossier={isDownloadingDossier}
               />
             )}
 
