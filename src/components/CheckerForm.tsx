@@ -297,7 +297,16 @@ export default function CheckerForm({ onResult }: CheckerFormProps) {
                           : 'border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300'}
                       `}
                     >
-                      {s === 'DOG' ? '🐕 Dog' : '🐈 Cat'}
+                      <span className="inline-flex items-center justify-center gap-2">
+                        <svg className="w-4 h-4 opacity-75" viewBox="0 0 24 24" fill="currentColor">
+                          <circle cx="7" cy="8.5" r="2" />
+                          <circle cx="17" cy="8.5" r="2" />
+                          <circle cx="10" cy="5" r="1.8" />
+                          <circle cx="14" cy="5" r="1.8" />
+                          <path d="M12 10.5c-2.4 0-4.5 1.8-4.5 4.2 0 1.9 1.4 3.3 4.5 3.3s4.5-1.4 4.5-3.3c0-2.4-2.1-4.2-4.5-4.2z" />
+                        </svg>
+                        <span>{s === 'DOG' ? 'Dog (Canine)' : 'Cat (Feline)'}</span>
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -522,7 +531,7 @@ export default function CheckerForm({ onResult }: CheckerFormProps) {
                   Evaluating...
                 </span>
               ) : (
-                'Check Readiness ✨'
+                'Check Readiness →'
               )}
             </button>
           )}

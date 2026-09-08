@@ -106,7 +106,7 @@ export default async function AssessmentReportPage({ params }: ReportPageProps) 
           'Based on the documents provided, route requirements, known waiting periods, and currently verified rules.',
         disclaimer:
           rawStats.disclaimer ||
-          '⚠️ Airline approval and government processing times may affect your actual travel date.',
+          'Airline approval and government processing times may affect your actual travel date.',
         blockerSummary: rawStats.blockerSummary || {
           criticalBlockersCount: 0,
           requiredActionsCount: 2,

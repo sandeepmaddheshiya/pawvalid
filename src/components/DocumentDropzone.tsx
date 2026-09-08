@@ -237,7 +237,7 @@ function buildDynamicScanResult(
   };
 
   const transitRules: ComplianceItem[] = (options?.transitCodes || []).map((tCode) => {
-    const c = COUNTRIES.find((x) => x.code === tCode) || { name: tCode, flag: '🔀' };
+    const c = COUNTRIES.find((x) => x.code === tCode) || { name: tCode, flag: '' };
     if (tCode === 'SG') {
       return {
         ruleId: 'SG_NPARKS_TRANSIT_001',
@@ -246,7 +246,7 @@ function buildDynamicScanResult(
         scope: 'TRANSIT',
         status: 'REQUIRED_ACTION',
         severity: 'REQUIRED_ACTION',
-        statusBadge: '⚠️ License Required',
+        statusBadge: 'License Required',
         whatToDo: 'Obtain AVS transshipment license from Singapore NParks.',
         details: 'All live animals transiting Changi Airport require an active transshipment license and CAPQ booking if transit exceeds 4 hours.',
         authority: 'Singapore NParks / AVS',
@@ -262,7 +262,7 @@ function buildDynamicScanResult(
         scope: 'TRANSIT',
         status: 'REQUIRED_ACTION',
         severity: 'REQUIRED_ACTION',
-        statusBadge: '⚠️ Manifest Cargo Only',
+        statusBadge: 'Manifest Cargo Only',
         whatToDo: 'Confirm flight booking as manifest cargo (DEFRA requirement).',
         details: 'DEFRA strictly enforces manifest cargo for all pet transit through British airports. In-cabin or excess baggage transit is strictly prohibited.',
         authority: 'UK Animal & Plant Health Agency (APHA)',
@@ -366,7 +366,7 @@ function buildDynamicScanResult(
       scope: 'ARRIVING',
       status: 'REQUIRED_ACTION',
       severity: 'REQUIRED_ACTION',
-      statusBadge: '⚠️ 24h–120h Window',
+      statusBadge: '24h–120h Window',
       whatToDo: 'Administer praziquantel by registered veterinarian.',
       details: 'Must be administered by an official veterinarian between 24h and 120h before entering Germany.',
       authority: 'Commission Delegated Regulation (EU) 2018/772',
@@ -418,12 +418,12 @@ function buildDynamicScanResult(
     stats: {
       documentsDetectedCount: Math.max(1, items.length),
       overallStatus: 'ACTION_REQUIRED',
-      statusHeadline: '🟡 PREPARATION IN PROGRESS — 1 vet window action remaining before departure',
+      statusHeadline: 'PREPARATION IN PROGRESS — 1 vet window action remaining before departure',
       needsHumanReview: false,
       earliestFlightDate: 'September 15, 2026',
       earliestFlightDateTitle: 'Earliest Estimated Travel Date',
       earliestFlightDateSubtitle: 'Based on verified rabies vaccination, valid FAVN antibody titer test, and EU entry rules.',
-      disclaimer: '⚠️ Airline booking and vet clinic appointment times may affect your actual departure date.',
+      disclaimer: 'Airline booking and vet clinic appointment times may affect your actual departure date.',
       blockerSummary: {
         criticalBlockersCount: 0,
         requiredActionsCount: 1,
@@ -437,7 +437,7 @@ function buildDynamicScanResult(
       { date: '2024-05-10', title: 'Rabies Booster Vaccination', status: 'DONE', description: 'Booster valid until May 2027 with mandatory 21-day latency cleared.' },
       { date: '2024-06-15', title: 'FAVN Rabies Titer Test (0.82 IU/ml)', status: 'DONE', description: 'Exceeds WHO 0.50 IU/ml standard, approved laboratory serology.' },
       { date: 'September 10–13, 2026', title: 'Tapeworm (Echinococcus) Vet Window', status: 'REQUIRED_ACTION', description: 'Administer Praziquantel by official vet between 24h and 120h prior to entry.' },
-      { date: 'September 15, 2026', title: '✈️ Cleared For Departure', status: 'GOAL', description: 'All prerequisites satisfied for seamless border control clearance.' },
+      { date: 'September 15, 2026', title: 'Cleared For Departure', status: 'GOAL', description: 'All prerequisites satisfied for seamless border control clearance.' },
     ],
     complianceChecklist: {
       all: [...standardRules, ...transitRules],
@@ -452,7 +452,7 @@ function buildDynamicScanResult(
         { requirement: '15-Digit ISO Microchip', category: 'IDENTIFICATION', scope: 'ARRIVING', whatToDo: 'Confirm transponder', statusBadge: '✓ Verified', status: 'VERIFIED', severity: 'COMPLIANT', details: 'Transponder code verified in official records.' },
         { requirement: 'Rabies Booster Vaccine', category: 'VACCINATIONS', scope: 'ARRIVING', whatToDo: 'Ensure active booster', statusBadge: '✓ Active', status: 'VERIFIED', severity: 'COMPLIANT', details: 'Vaccination valid through May 2027.' },
         { requirement: 'FAVN Antibody Titer', category: 'TESTS', scope: 'ARRIVING', whatToDo: 'Maintain antibody level', statusBadge: '✓ 0.82 IU/ml', status: 'VERIFIED', severity: 'COMPLIANT', details: 'Antibody level exceeds EU threshold.' },
-        { requirement: 'Tapeworm Treatment', category: 'TREATMENTS', scope: 'ARRIVING', whatToDo: 'Administer Praziquantel', statusBadge: '⚠️ Action Required', status: 'REQUIRED_ACTION', severity: 'REQUIRED_ACTION', details: 'Visit vet 1–5 days before flight for Praziquantel dosage.' },
+        { requirement: 'Tapeworm Treatment', category: 'TREATMENTS', scope: 'ARRIVING', whatToDo: 'Administer Praziquantel', statusBadge: 'Action Required', status: 'REQUIRED_ACTION', severity: 'REQUIRED_ACTION', details: 'Visit vet 1–5 days before flight for Praziquantel dosage.' },
         ...transitRules.map((tr) => ({
           requirement: tr.name,
           category: tr.category,
@@ -1030,7 +1030,9 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                   disabled={scanning}
                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-dashed border-zinc-300 hover:border-zinc-400 bg-zinc-50/60 hover:bg-zinc-100 text-[11px] font-semibold text-zinc-600 hover:text-zinc-900 transition-all cursor-pointer active:scale-98 disabled:opacity-50"
                 >
-                  <span className="text-zinc-400 text-xs">🔀</span>
+                  <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                  </svg>
                   <span>+ Add Layover / Transit Stop</span>
                 </button>
                 <span className="text-[10px] text-zinc-400 font-medium">
@@ -1041,7 +1043,9 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
               <div className="p-3 rounded-xl bg-blue-50/40 border border-blue-100/80 space-y-2.5 relative z-35">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs">🔀</span>
+                    <svg className="w-3.5 h-3.5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
                     <span className="text-[11px] font-bold text-blue-950">
                       Flight Connections &amp; Layovers ({transitStops.length})
                     </span>
@@ -1053,25 +1057,24 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                       disabled={scanning}
                       className="text-[10px] font-bold text-blue-700 hover:text-blue-900 hover:underline cursor-pointer"
                     >
-                      + Add another stop
+                      + Add Another Stop
                     </button>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  {transitStops.map((stopCode, idx) => (
-                    <div key={`transit-${idx}`} className="flex items-center gap-2">
-                      <div className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold">
-                        {idx + 1}
-                      </div>
-                      <div className="grow">
+                  {transitStops.map((stop, sIdx) => (
+                    <div
+                      key={`transit-field-${sIdx}`}
+                      className="flex items-center gap-2"
+                    >
+                      <div className="flex-1">
                         <SearchableSelect
-                          id={`transit-stop-${idx}`}
-                          value={stopCode}
-                          onChange={(val) => handleUpdateTransitStop(idx, val)}
-                          options={getTransitOptionsForIndex(idx)}
+                          options={getTransitOptionsForIndex(sIdx)}
+                          value={stop}
+                          onChange={(val) => handleUpdateTransitStop(sIdx, val)}
                           placeholder="Select layover country..."
-                          searchPlaceholder="Search layover country (e.g. France, Singapore)..."
+                          searchPlaceholder="Search layover country..."
                           disabled={scanning}
                           allowCustom={false}
                           clearable={false}
@@ -1079,19 +1082,24 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleRemoveTransitStop(idx)}
+                        onClick={() => handleRemoveTransitStop(sIdx)}
                         disabled={scanning}
-                        title="Remove this stop"
-                        className="shrink-0 w-7 h-7 rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center text-xs transition-colors cursor-pointer disabled:opacity-40"
+                        className="p-2 text-zinc-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer shrink-0 disabled:opacity-50"
+                        title="Remove layover"
                       >
-                        ✕
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                       </button>
                     </div>
                   ))}
                 </div>
 
-                <p className="text-[10px] text-blue-800/80 leading-relaxed">
-                  💡 Petvia screens airside transit declarations, transshipment licenses (e.g. Singapore AVS), DEFRA cargo mandates &amp; EU BIP animal lounges for each stop.
+                <p className="text-[10px] text-blue-800/80 leading-relaxed flex items-start gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Petvia screens airside transit declarations, transshipment licenses (e.g. Singapore AVS), DEFRA cargo mandates &amp; EU BIP animal lounges for each stop.</span>
                 </p>
               </div>
             )}
@@ -1114,7 +1122,13 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                         : 'text-zinc-500 hover:text-zinc-800'
                     }`}
                   >
-                    <span>🐕</span>
+                    <svg className="w-3.5 h-3.5 opacity-70" viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="7" cy="8.5" r="2" />
+                      <circle cx="17" cy="8.5" r="2" />
+                      <circle cx="10" cy="5" r="1.8" />
+                      <circle cx="14" cy="5" r="1.8" />
+                      <path d="M12 10.5c-2.4 0-4.5 1.8-4.5 4.2 0 1.9 1.4 3.3 4.5 3.3s4.5-1.4 4.5-3.3c0-2.4-2.1-4.2-4.5-4.2z" />
+                    </svg>
                     <span>Dog</span>
                   </button>
                   <button
@@ -1127,7 +1141,13 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                         : 'text-zinc-500 hover:text-zinc-800'
                     }`}
                   >
-                    <span>🐈</span>
+                    <svg className="w-3.5 h-3.5 opacity-70" viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="7" cy="8.5" r="2" />
+                      <circle cx="17" cy="8.5" r="2" />
+                      <circle cx="10" cy="5" r="1.8" />
+                      <circle cx="14" cy="5" r="1.8" />
+                      <path d="M12 10.5c-2.4 0-4.5 1.8-4.5 4.2 0 1.9 1.4 3.3 4.5 3.3s4.5-1.4 4.5-3.3c0-2.4-2.1-4.2-4.5-4.2z" />
+                    </svg>
                     <span>Cat</span>
                   </button>
                 </div>

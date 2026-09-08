@@ -80,8 +80,10 @@ export default function LiveSampleReportCard() {
           {/* Item 3: Titer test */}
           <div className="flex items-center justify-between p-2 rounded-lg bg-[#FFFBEB] border border-amber-200/80">
             <div className="flex items-center gap-2">
-              <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-[10px] font-bold shrink-0">
-                ⚠
+              <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01" />
+                </svg>
               </span>
               <span className="font-medium text-amber-950">Titer test</span>
             </div>

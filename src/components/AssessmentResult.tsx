@@ -165,7 +165,10 @@ export default function AssessmentResult({
               href={`/en/checker/${assessmentId}`}
               className="btn-primary text-xs sm:text-sm inline-flex items-center gap-2 !py-2.5 !px-4"
             >
-              <span>📄 View Full Frozen Report</span>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>View Full Assessment Report</span>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
@@ -176,7 +179,10 @@ export default function AssessmentResult({
               onClick={() => setCheckoutModalOpen(true)}
               className="btn-secondary text-xs sm:text-sm inline-flex items-center gap-2 !py-2.5 !px-4 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 bg-emerald-50/70 dark:bg-emerald-950/40 hover:bg-emerald-100"
             >
-              <span>💳 Get Paid PDF Report — ₹499</span>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+              <span>Download Official PDF Dossier</span>
             </button>
 
             <button
@@ -184,7 +190,10 @@ export default function AssessmentResult({
               onClick={handleCopy}
               className="btn-secondary text-xs sm:text-sm inline-flex items-center gap-2 !py-2.5 !px-4"
             >
-              <span>{copied ? '✓ Copied Link!' : '📋 Copy Assessment Link'}</span>
+              <svg className="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+              <span>{copied ? 'Copied Link!' : 'Copy Assessment Link'}</span>
             </button>
           </div>
         )}

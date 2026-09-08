@@ -19,8 +19,10 @@ export default function CustomsQrSection() {
               {/* Header */}
               <div className="flex items-center justify-between border-b border-zinc-100 pb-4 mb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#0E2342] text-white flex items-center justify-center text-lg">
-                    🛂
+                  <div className="w-9 h-9 rounded-xl bg-[#0E2342] text-white flex items-center justify-center">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
                   </div>
                   <div>
                     <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">
@@ -99,7 +101,9 @@ export default function CustomsQrSection() {
           <div className="lg:col-span-6 space-y-6 text-left order-1 lg:order-2">
             {/* Tag Pill */}
             <div className="inline-flex items-center gap-1.5 bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-              <span>📱</span>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
               <span>Digital Travel Verification Pass</span>
             </div>
 

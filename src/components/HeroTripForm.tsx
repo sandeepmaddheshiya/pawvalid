@@ -118,8 +118,8 @@ export default function HeroTripForm() {
               onChange={(e) => setPetType(e.target.value as 'DOG' | 'CAT')}
               className="w-full appearance-none rounded-lg border border-zinc-200/90 bg-white px-2.5 py-1.5 text-xs font-semibold text-zinc-800 hover:border-zinc-300 focus:border-[#0E2342] focus:outline-none pr-6 transition-colors cursor-pointer"
             >
-              <option value="DOG">🐕 Dog</option>
-              <option value="CAT">🐈 Cat</option>
+              <option value="DOG">Dog (Canine)</option>
+              <option value="CAT">Cat (Feline)</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-zinc-400">
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
