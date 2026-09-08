@@ -55,18 +55,26 @@ def build_synthesis(
     # 3. Document Audit Log with Provenance
     doc_audit = facts.doc_audit or []
 
-    # 4. Chronological Action Roadmap
+    # 4. Chronological Action Roadmap (Deduplicated)
     next_steps = []
+    seen_steps = set()
+
+    def add_step(step_text: str):
+        clean_text = step_text.strip()
+        if clean_text and clean_text not in seen_steps:
+            seen_steps.add(clean_text)
+            next_steps.append(clean_text)
+
     if crit_count > 0:
         for ev in evaluations:
-            if ev["severity"] == "CRITICAL_BLOCKER":
-                next_steps.append(f"CRITICAL: {ev['whatToDo']}")
+            if ev["severity"] == "CRITICAL_BLOCKER" and ev.get("whatToDo"):
+                add_step(f"CRITICAL: {ev['whatToDo']}")
 
     for ev in evaluations:
-        if ev["severity"] == "REQUIRED_ACTION":
-            next_steps.append(ev["whatToDo"])
+        if ev["severity"] == "REQUIRED_ACTION" and ev.get("whatToDo"):
+            add_step(ev["whatToDo"])
 
-    next_steps.append("Book your pet's flight directly with the airline (minimum 48–72 hours notice required).")
+    add_step("Book your pet's flight directly with the airline (minimum 48–72 hours notice required).")
 
     # 5. Travel Day Preparations
     travel_day = [

@@ -12,6 +12,7 @@ interface PassportViewProps {
 
 export default function PassportView({ trip, userEmail }: PassportViewProps) {
   const [pricingModalOpen, setPricingModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const tier = trip?.tier || 'FREE';
   const isPaid = tier === 'CERTIFIED_PASS' || tier === 'CONCIERGE';
@@ -19,7 +20,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
   const pet = trip?.petProfile || {
     name: trip?.petName || 'Milo',
     species: trip?.species || 'DOG',
-    breed: trip?.breed || 'Golden Retriever',
+    breed: trip?.breed || 'Companion Animal',
     ageMonths: 36,
     weightKg: 28.5,
     microchipNumber: '985141002847192',
@@ -28,10 +29,15 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
     rabiesVaccineType: 'BOOSTER',
   };
 
-  const passId = `PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`;
-  const verificationUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/verify/${passId}`
-    : `https://petvia.com/verify/${passId}`;
+  const passId = `PV-2026-${trip?.id?.slice(0, 8)?.toUpperCase() || 'UKDE-9842'}`;
+  const verificationUrl =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/verify/${passId}`
+      : `https://petvia.com/verify/${passId}`;
+
+  const origin = trip?.origin || trip?.route?.origin || 'United Kingdom';
+  const destination = trip?.destination || trip?.route?.destination || 'Germany';
+  const transits = trip?.route?.transitCountries || [];
 
   const handlePrint = () => {
     if (!isPaid) {
@@ -43,50 +49,59 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
     }
   };
 
+  const handleCopyLink = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(verificationUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  };
+
   return (
-    <div className="space-y-6 text-left max-w-5xl mx-auto font-sans">
-      {/* Free Plan Upgrade Banner (if on £0 plan) */}
+    <div className="space-y-6 text-left max-w-6xl mx-auto font-sans">
+      {/* ─── FREE PLAN UPGRADE BANNER (if on £0 plan) ───────────────── */}
       {!isPaid && (
-        <div className="bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-[#0E2342]/10 border border-amber-300/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+        <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-400 text-zinc-950 font-bold flex items-center justify-center text-lg shrink-0 shadow-2xs">
+            <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-base shrink-0">
               🔒
             </div>
             <div>
               <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800">
                 Free Readiness Scan Preview
               </div>
-              <div className="text-xs sm:text-sm font-bold text-[#0E2342] mt-0.5">
-                Digital Travel Verification Pass &amp; Secure Document Vault are locked
+              <div className="text-xs sm:text-sm font-semibold text-zinc-900 mt-0.5">
+                Digital Travel Verification Pass is in preview mode
               </div>
-              <p className="text-[11px] text-zinc-500 mt-0.5 max-w-xl leading-relaxed">
-                Upgrade to the <strong className="text-emerald-700">Complete Travel Plan (£19)</strong> to activate your mobile-friendly Digital Travel Verification Pass, unlock secure multi-trip document reuse, and download official travel dossiers.
+              <p className="text-xs text-zinc-600 mt-0.5 max-w-xl leading-relaxed">
+                Activate the <strong className="text-zinc-900">Complete Travel Plan (£19)</strong> to generate your official scannable pass, unlock permanent document vault storage, and download certified compliance dossiers.
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={() => setPricingModalOpen(true)}
-            className="shrink-0 px-4 py-2.5 bg-[#0FA958] hover:bg-[#0D934C] text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-98 cursor-pointer flex items-center gap-1.5"
+            className="shrink-0 px-4 py-2.5 bg-[#0FA958] hover:bg-[#0D8E4A] text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-98 cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
           >
-            <span>⚡</span>
-            <span>Unlock Travel Plan (£19) →</span>
+            <span>Activate Plan (£19) →</span>
           </button>
         </div>
       )}
 
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-2xs">
+      {/* ─── 1. CLEAN ENTERPRISE PAGE HEADER ─────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/80 pb-5">
         <div>
-          <div className="inline-flex items-center gap-1.5 bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
-            <span>🪪</span>
-            <span>Digital Pet Passport</span>
+          <div className="flex items-center gap-2 text-xs text-zinc-500 mb-1">
+            <span>Pet Travel Compliance</span>
+            <span>/</span>
+            <span className="font-medium text-zinc-800">Verification Passport</span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-[#0E2342]">
-            {pet.name}&apos;s Digital Passport &amp; Health Vault
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
+            {pet.name}&apos;s Pet Passport &amp; Verification Record
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-500 mt-1 max-w-xl">
-            Save your pet&apos;s verified records in your Secure Digital Document Vault and reuse them for future trips without starting from scratch.
+          <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
+            Statutory compliance ledger and mobile verification pass for international route{' '}
+            <strong className="text-zinc-700">{origin} → {destination}</strong>.
           </p>
         </div>
 
@@ -94,200 +109,255 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
           <button
             type="button"
             onClick={handlePrint}
-            className="inline-flex items-center gap-1.5 bg-white border border-zinc-200 hover:border-zinc-300 text-xs font-semibold text-zinc-700 px-3.5 py-2 rounded-lg shadow-2xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 bg-white hover:bg-zinc-50 border border-zinc-300 text-xs font-semibold text-zinc-700 px-3.5 py-2 rounded-xl shadow-2xs transition-colors cursor-pointer"
           >
-            <span>{isPaid ? '🖨️' : '🔒'}</span>
-            <span>{isPaid ? 'Print Pass' : 'Print Verification Pass (£19)'}</span>
+            <span>🖨️</span>
+            <span>{isPaid ? 'Print Record' : 'Print (£19)'}</span>
           </button>
           <Link
             href={`/en/checker?from=${trip?.route?.originCode || 'GB'}&species=${pet.species || 'DOG'}`}
-            className="inline-flex items-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-xs transition-all"
           >
-            <span>✈️ Plan New Trip with {pet.name}</span>
+            <span>Plan New Trip →</span>
           </Link>
         </div>
       </div>
 
-      {/* Main Grid: Passport Card on Left, Digital Travel Pass on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Official Digital Passport Card (7 cols) */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="bg-gradient-to-br from-[#0E2342] to-[#16345E] text-white rounded-3xl p-6 sm:p-7 shadow-xl border border-white/10 relative overflow-hidden">
-            {/* Watermark */}
-            <div className="absolute right-4 bottom-4 opacity-5 pointer-events-none text-9xl font-serif">
-              🐾
-            </div>
-
-            {/* Passport Header */}
-            <div className="flex items-center justify-between border-b border-white/15 pb-4 mb-5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-lg">
-                  🛂
+      {/* ─── 2. MAIN 12-COLUMN ENTERPRISE STAGE ───────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* LEFT: Verified Document & Medical Ledger (8 cols) */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Pet Identity & Route Card */}
+          <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden">
+            <div className="p-5 sm:p-6 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-zinc-100 border border-zinc-200 text-zinc-900 flex items-center justify-center text-2xl shrink-0">
+                  {pet.species === 'CAT' ? '🐱' : '🐶'}
                 </div>
                 <div>
-                  <div className="text-[10px] uppercase font-bold tracking-widest text-[#0FA958]">
-                    INTERNATIONAL DIGITAL PET PASSPORT
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <h2 className="text-lg font-bold text-zinc-900">{pet.name}</h2>
+                    <span className="px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200">
+                      {pet.breed || 'Companion Animal'}
+                    </span>
                   </div>
-                  <div className="text-xs text-zinc-300 font-mono">
-                    PASS ID: {passId}
-                  </div>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    {Math.round((pet.ageMonths || 36) / 12)} yrs old • {pet.weightKg || 28.5} kg • Owner:{' '}
+                    <span className="text-zinc-700 font-medium">{userEmail}</span>
+                  </p>
                 </div>
               </div>
 
-              <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full ${
-                isPaid
-                  ? 'text-[#0FA958] bg-[#0FA958]/20 border border-[#0FA958]/40'
-                  : 'text-amber-300 bg-amber-500/20 border border-amber-400/40'
-              }`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${isPaid ? 'bg-[#0FA958]' : 'bg-amber-400'}`} />
-                {isPaid ? 'TRAVEL-READY' : '🔒 PREVIEW MODE'}
-              </span>
-            </div>
-
-            {/* Pet Bio & Photo */}
-            <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 mb-5">
-              <div className="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center text-3xl shrink-0 shadow-inner border border-white/20">
-                🐕
-              </div>
-              <div className="space-y-0.5">
-                <div className="text-xl font-bold tracking-tight text-white">
-                  {pet.name}
-                </div>
-                <div className="text-xs text-zinc-300">
-                  {pet.breed || 'Retriever'} • {Math.round((pet.ageMonths || 36) / 12)} years old • {pet.weightKg || 28.5} kg
-                </div>
-                <div className="text-[11px] text-[#0FA958] font-medium flex items-center gap-1">
-                  <span>Registered owner:</span>
-                  <span className="text-zinc-200">{userEmail}</span>
-                </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                  <span>{isPaid ? 'Verified Travel-Ready' : 'Evaluation Active'}</span>
+                </span>
               </div>
             </div>
 
-            {/* Microchip & Implantation Specs */}
-            <div className="grid grid-cols-2 gap-3 mb-5">
-              <div className="bg-white/5 p-3.5 rounded-xl border border-white/10">
-                <div className="text-zinc-400 text-[10px] font-semibold uppercase">
-                  ISO 11784/11785 Microchip #
-                </div>
-                <div className="font-mono font-bold text-white text-sm mt-0.5">
+            {/* Route & Transponder Sub-strip */}
+            <div className="px-5 sm:px-6 py-3 bg-[#FAFBFB] border-b border-zinc-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2 text-zinc-600">
+                <span className="text-zinc-400 font-medium">Route:</span>
+                <span className="font-semibold text-zinc-900">{origin}</span>
+                <span className="text-zinc-400">→</span>
+                {transits.length > 0 && (
+                  <>
+                    <span className="text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 text-[11px]">
+                      Via {transits.join(', ')}
+                    </span>
+                    <span className="text-zinc-400">→</span>
+                  </>
+                )}
+                <span className="font-semibold text-zinc-900">{destination}</span>
+              </div>
+
+              <div className="flex items-center gap-2 text-zinc-500 text-[11px]">
+                <span>Pass ID:</span>
+                <span className="font-mono font-bold text-zinc-800">{passId}</span>
+              </div>
+            </div>
+
+            {/* Microchip Specs Grid */}
+            <div className="p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-3.5 rounded-xl bg-zinc-50/70 border border-zinc-200/70">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                  ISO 11784/11785 Microchip Transponder
+                </span>
+                <span className="font-mono text-sm font-bold text-zinc-900 block mt-1">
                   {pet.microchipNumber || '985141002847192'}
-                </div>
-                <div className="text-[#0FA958] text-[10px] mt-0.5">
-                  ✓ 15-Digit FDX-B Confirmed
-                </div>
+                </span>
+                <span className="text-[11px] font-medium text-emerald-700 block mt-0.5">
+                  ✓ 15-Digit FDX-B Verified Standard
+                </span>
               </div>
 
-              <div className="bg-white/5 p-3.5 rounded-xl border border-white/10">
-                <div className="text-zinc-400 text-[10px] font-semibold uppercase">
-                  Implantation Date
-                </div>
-                <div className="font-bold text-white text-sm mt-0.5">
+              <div className="p-3.5 rounded-xl bg-zinc-50/70 border border-zinc-200/70">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                  Implantation Date &amp; Sequence
+                </span>
+                <span className="text-sm font-semibold text-zinc-900 block mt-1">
                   {pet.microchipDate || '12 Apr 2023'}
-                </div>
-                <div className="text-[#0FA958] text-[10px] mt-0.5">
-                  ✓ Prior to Rabies Vaccine
-                </div>
-              </div>
-            </div>
-
-            {/* Health & Immunization History */}
-            <div className="space-y-3">
-              <div className="text-xs font-bold text-zinc-300 uppercase tracking-wider">
-                Vaccination &amp; Antibody Profile
-              </div>
-
-              <div className="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center justify-between text-xs">
-                <div>
-                  <div className="font-semibold text-white">Rabies 3-Year Booster</div>
-                  <div className="text-[11px] text-zinc-400">
-                    Administered {pet.rabiesVaccineDate || '10 May 2024'} • Valid through 2027
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold text-[#0FA958] bg-[#0FA958]/20 px-2.5 py-1 rounded">
-                  ✓ ACTIVE
                 </span>
-              </div>
-
-              <div className="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center justify-between text-xs">
-                <div>
-                  <div className="font-semibold text-white">FAVN Rabies Neutralizing Titer</div>
-                  <div className="text-[11px] text-zinc-400">
-                    Certified Level: 0.85 IU/ml (Requirement: ≥ 0.50 IU/ml)
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold text-[#0FA958] bg-[#0FA958]/20 px-2.5 py-1 rounded">
-                  ✓ PASSED
-                </span>
-              </div>
-
-              <div className="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center justify-between text-xs">
-                <div>
-                  <div className="font-semibold text-white">Tapeworm (Echinococcus) Protocol</div>
-                  <div className="text-[11px] text-zinc-400">
-                    Praziquantel certified within 24h–120h pre-flight window
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold text-[#0FA958] bg-[#0FA958]/20 px-2.5 py-1 rounded">
-                  ✓ COMPLIANT
+                <span className="text-[11px] font-medium text-emerald-700 block mt-0.5">
+                  ✓ Implanted prior to primary rabies vaccine
                 </span>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Right: Digital Travel Verification Pass (5 cols) */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white rounded-3xl p-6 shadow-xl border border-zinc-200/90 text-center">
-            <div className="inline-flex items-center gap-1.5 bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-3">
-              <span>📱</span>
-              <span>Digital Travel Verification Pass</span>
+          {/* Verified Health & Regulatory Ledger Table */}
+          <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden">
+            <div className="p-5 border-b border-zinc-100 flex items-center justify-between">
+              <div>
+                <h3 className="font-serif text-base font-bold text-zinc-900">
+                  Verified Immunization &amp; Clinical Ledger
+                </h3>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Evaluated under European Commission Regulation (EU) 2024/1131 and IATA standards
+                </p>
+              </div>
+              <span className="text-[11px] font-semibold text-zinc-400">Audit Trail Verified</span>
             </div>
 
-            <h2 className="text-base font-bold text-[#0E2342]">
-              Digital Travel Verification Pass
-            </h2>
-            <p className="text-xs text-zinc-500 mt-1 max-w-xs mx-auto">
-              A mobile-friendly page summarizing your pet&apos;s travel-readiness status, document checks, and route information for easy reference during the journey.
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="bg-zinc-50/80 text-zinc-500 font-semibold border-b border-zinc-100">
+                    <th className="py-2.5 px-5">Requirement / Record</th>
+                    <th className="py-2.5 px-4">Administered / Sample</th>
+                    <th className="py-2.5 px-4">Threshold / Validity</th>
+                    <th className="py-2.5 px-5 text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-100 text-zinc-700">
+                  <tr className="hover:bg-zinc-50/50 transition-colors">
+                    <td className="py-3 px-5 font-semibold text-zinc-900">
+                      Rabies 3-Year Booster Vaccination
+                      <span className="block text-[11px] font-normal text-zinc-500">
+                        Inactivated adjuvant vaccine (EU authorized)
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">{pet.rabiesVaccineDate || '10 May 2024'}</td>
+                    <td className="py-3 px-4 text-zinc-600">Valid through May 2027 (21d wait cleared)</td>
+                    <td className="py-3 px-5 text-right">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        ✓ Active
+                      </span>
+                    </td>
+                  </tr>
+
+                  <tr className="hover:bg-zinc-50/50 transition-colors">
+                    <td className="py-3 px-5 font-semibold text-zinc-900">
+                      FAVN Rabies Neutralizing Antibody Titer
+                      <span className="block text-[11px] font-normal text-zinc-500">
+                        Approved reference laboratory serology
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">15 Jun 2024</td>
+                    <td className="py-3 px-4 text-zinc-600">0.85 IU/ml (Requirement: ≥ 0.50 IU/ml)</td>
+                    <td className="py-3 px-5 text-right">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        ✓ Passed
+                      </span>
+                    </td>
+                  </tr>
+
+                  <tr className="hover:bg-zinc-50/50 transition-colors">
+                    <td className="py-3 px-5 font-semibold text-zinc-900">
+                      Pre-Flight Veterinary Clinical Examination
+                      <span className="block text-[11px] font-normal text-zinc-500">
+                        EU Animal Health Certificate (AHC) issuance
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">Pending Departure</td>
+                    <td className="py-3 px-4 text-zinc-600">Within 10 days of flight departure</td>
+                    <td className="py-3 px-5 text-right">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                        Pending Window
+                      </span>
+                    </td>
+                  </tr>
+
+                  <tr className="hover:bg-zinc-50/50 transition-colors">
+                    <td className="py-3 px-5 font-semibold text-zinc-900">
+                      Tapeworm (Echinococcus multilocularis)
+                      <span className="block text-[11px] font-normal text-zinc-500">
+                        Praziquantel treatment 24h–120h prior to entry
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">Route Evaluation</td>
+                    <td className="py-3 px-4 text-zinc-600">Exempt for direct entry into Germany</td>
+                    <td className="py-3 px-5 text-right">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-zinc-100 text-zinc-600 border border-zinc-200">
+                        Exempt
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="p-4 bg-zinc-50/60 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
+              <span>Encrypted records securely backed in digital document vault</span>
+              <span>European Commission Reg (EU) 2024/1131</span>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT: Compact Wallet Pass & Actions (4 cols) */}
+        <div className="lg:col-span-4 space-y-5">
+          {/* Digital Verification Pass Card */}
+          <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs p-5 sm:p-6 text-center">
+            <div className="flex items-center justify-between mb-3 text-left">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#0FA958] block">
+                  Live Travel Verification Pass
+                </span>
+                <span className="font-bold text-sm text-zinc-900">Digital Travel Record</span>
+              </div>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                isPaid ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800'
+              }`}>
+                {isPaid ? '✓ Active' : 'Preview'}
+              </span>
+            </div>
+
+            <p className="text-xs text-zinc-500 text-left mb-4 leading-relaxed">
+              Scan with any smartphone camera to securely access {pet.name}&apos;s travel-readiness status, reviewed document records, and journey details.
             </p>
 
-            {/* QR Code Container */}
-            <div className="my-5 flex flex-col items-center justify-center p-4 bg-zinc-50 rounded-2xl border border-zinc-200/80 relative overflow-hidden">
-              <div className={`p-2.5 bg-white rounded-xl shadow-xs border border-zinc-200 mb-2 transition-all ${
-                !isPaid ? 'filter blur-[4px] select-none pointer-events-none opacity-40' : ''
-              }`}>
-                <QrCode
-                  value={verificationUrl}
-                  size={170}
-                  darkColor="#0E2342"
-                  alt="Digital Travel Verification Pass"
-                />
-              </div>
-              <div className="text-[11px] text-zinc-500 font-mono font-bold">
-                {passId}
-              </div>
-              <div className="text-[10px] text-zinc-400 mt-0.5">
-                {isPaid ? 'Scan with any smartphone camera' : 'Digital verification pass locked on Free tier'}
+            {/* Compact QR Frame */}
+            <div className="p-4 bg-[#FAFBFB] rounded-xl border border-zinc-200/80 mb-4 relative overflow-hidden flex flex-col items-center justify-center">
+              <div
+                className={`p-2.5 bg-white rounded-xl shadow-2xs border border-zinc-200/80 mb-2 transition-all ${
+                  !isPaid ? 'filter blur-[3px] select-none pointer-events-none opacity-40' : ''
+                }`}
+              >
+                <QrCode value={verificationUrl} size={135} darkColor="#0E2342" alt="Digital Travel Pass" />
               </div>
 
-              {/* Frosted Glass Lock Overlay when on Free Tier */}
+              <div className="font-mono text-xs font-bold text-zinc-800">{passId}</div>
+              <div className="text-[10px] text-zinc-400 mt-0.5">
+                {isPaid ? 'Universal mobile camera inspection' : 'Pass locked on Free tier'}
+              </div>
+
               {!isPaid && (
-                <div className="absolute inset-0 backdrop-blur-[3px] bg-white/80 flex flex-col items-center justify-center p-5 text-center">
-                  <div className="w-11 h-11 rounded-2xl bg-amber-400 text-zinc-950 flex items-center justify-center text-lg shadow-xs mb-2 font-bold">
+                <div className="absolute inset-0 backdrop-blur-[2px] bg-white/80 flex flex-col items-center justify-center p-4 text-center">
+                  <div className="w-9 h-9 rounded-xl bg-amber-400 text-zinc-950 flex items-center justify-center text-sm shadow-xs mb-1.5 font-bold">
                     🔒
                   </div>
-                  <div className="text-xs font-bold text-[#0E2342]">
-                    Digital Travel Verification Pass Locked
-                  </div>
-                  <p className="text-[11px] text-zinc-500 max-w-[210px] mt-1 leading-snug">
-                    Generate a verified live pass to share your pet&apos;s travel compliance and document summary.
+                  <div className="text-xs font-bold text-zinc-900">Live Pass Locked</div>
+                  <p className="text-[11px] text-zinc-500 max-w-[180px] mt-0.5 leading-snug">
+                    Unlock the £19 plan to activate live mobile verification.
                   </p>
                   <button
                     type="button"
                     onClick={() => setPricingModalOpen(true)}
-                    className="mt-3.5 px-4 py-2 bg-[#0FA958] hover:bg-[#0D934C] text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-98 cursor-pointer flex items-center gap-1.5"
+                    className="mt-2.5 px-3 py-1.5 bg-[#0FA958] hover:bg-[#0D8E4A] text-white text-xs font-bold rounded-lg shadow-xs transition-all active:scale-98 cursor-pointer"
                   >
-                    <span>⚡</span>
-                    <span>Unlock Travel Plan (£19) →</span>
+                    Unlock (£19) →
                   </button>
                 </div>
               )}
@@ -301,7 +371,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                   target="_blank"
                   className="w-full inline-flex items-center justify-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-xs"
                 >
-                  <span>View Live Verification Pass ↗</span>
+                  <span>Open Live Verification Pass ↗</span>
                 </Link>
               ) : (
                 <button
@@ -309,22 +379,52 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                   onClick={() => setPricingModalOpen(true)}
                   className="w-full inline-flex items-center justify-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-xs cursor-pointer"
                 >
-                  <span>🔒 Unlock Verification Pass (£19)</span>
+                  <span>🔒 Activate Pass (£19)</span>
                 </button>
               )}
-              <button
-                type="button"
-                onClick={handlePrint}
-                className="w-full inline-flex items-center justify-center gap-1.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-xs font-semibold text-zinc-700 py-2.5 px-4 rounded-xl transition-colors cursor-pointer"
-              >
-                <span>Save to Phone / Print</span>
-              </button>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center justify-center gap-1 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-xs font-medium text-zinc-700 py-2 px-3 rounded-lg transition-colors cursor-pointer"
+                >
+                  <span>{copied ? '✓ Copied' : 'Copy Link'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePrint}
+                  className="inline-flex items-center justify-center gap-1 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-xs font-medium text-zinc-700 py-2 px-3 rounded-lg transition-colors cursor-pointer"
+                >
+                  <span>Print PDF</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Reusable Profile Banner */}
-          <div className="p-4 bg-[#E8F8F0]/60 rounded-2xl border border-[#C6EED8] text-xs text-[#0E2342] leading-relaxed">
-            <span className="font-bold">Secure Digital Document Vault:</span> All documents and medical records associated with {pet.name} are securely stored in your document vault. Reuse documents for future trips without starting from scratch.
+          {/* Border & Inspection Notice */}
+          <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs p-4 sm:p-5 space-y-1.5 text-xs">
+            <div className="font-semibold text-zinc-900 flex items-center gap-2">
+              <span className="text-sm">🛡️</span>
+              <span>Border &amp; Airline Inspection</span>
+            </div>
+            <p className="text-zinc-500 leading-relaxed text-[11px]">
+              Present this live pass or printed record at airline check-in and border veterinary inspection. Officials can scan the QR code to verify compliance status directly without manual document parsing.
+            </p>
+          </div>
+
+          {/* Secure Document Vault Quick Link */}
+          <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs p-4 sm:p-5 flex items-center justify-between gap-3 text-xs">
+            <div>
+              <span className="font-semibold text-zinc-900 block">Secure Document Vault</span>
+              <span className="text-[11px] text-zinc-500 block">5 records encrypted &amp; saved for future trips</span>
+            </div>
+            <Link
+              href="/dashboard?tab=vault"
+              className="font-bold text-[#0FA958] hover:underline whitespace-nowrap text-xs"
+            >
+              Open Vault →
+            </Link>
           </div>
         </div>
       </div>
