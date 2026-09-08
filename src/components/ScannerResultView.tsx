@@ -410,10 +410,10 @@ export default function ScannerResultView({
             disabled={isDownloadingDossier}
             onClick={handleDownloadDossier}
             className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-zinc-800 hover:text-zinc-950 bg-white hover:bg-zinc-50 border border-zinc-300 rounded-lg px-3.5 py-2 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap disabled:opacity-60"
-            title="Download official PDF compliance dossier"
+            title="Download verified pet travel compliance dossier"
           >
             <FileTextIcon className="w-3.5 h-3.5 text-[#0FA958]" />
-            <span>{isDownloadingDossier ? 'Generating PDF...' : 'Download Official Dossier (PDF)'}</span>
+            <span>{isDownloadingDossier ? 'Generating Dossier...' : 'Download Travel Dossier (PDF)'}</span>
           </button>
 
           <button
@@ -516,7 +516,7 @@ export default function ScannerResultView({
 
           <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-white/10 text-emerald-400 font-semibold text-[10px] uppercase tracking-wider">
             <ShieldCheckIcon className="w-3 h-3 text-[#0FA958]" />
-            <span>AUDIT CLASSIFICATION: OFFICIAL RECORD</span>
+            <span>AUDIT CLASSIFICATION: VERIFIED RECORD</span>
           </div>
         </div>
 
@@ -525,7 +525,7 @@ export default function ScannerResultView({
           <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
             <div className="space-y-1.5">
               <div className="inline-flex items-center gap-2 text-[11px] font-bold text-[#0FA958] uppercase tracking-wider">
-                <span>International Veterinary Border Clearance Assessment</span>
+                <span>Verified Preparation &amp; Documentation Report for International Pet Travel</span>
               </div>
 
               <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#0E2342] tracking-tight">
@@ -624,13 +624,13 @@ export default function ScannerResultView({
                 </span>
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0E2342] mt-0.5 flex items-center gap-2">
                   <PlaneIcon className="w-5 h-5 text-[#0E2342]" />
-                  <span>Earliest Compliant Departure Date:</span>
+                  <span>Earliest Eligible Departure Date:</span>
                   <span className="underline decoration-[#0FA958] decoration-2">
                     {earliestFlightDate}
                   </span>
                 </h2>
                 <p className="text-xs text-zinc-600 mt-1 max-w-lg leading-relaxed">
-                  {stats.earliestFlightDateSubtitle || 'Calculated from mandatory sequential latency intervals, vaccination validity, and regulatory clinical examination lead times.'}
+                  {stats.earliestFlightDateSubtitle || 'Calculated from applicable documented requirements, sequential latency intervals, and regulatory clinical examination lead times.'}
                 </p>
               </div>
 
@@ -965,13 +965,13 @@ export default function ScannerResultView({
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 text-[10px] font-bold text-[#0FA958] uppercase tracking-wider">
               <ShieldCheckIcon className="w-3 h-3 text-[#0FA958]" />
-              <span>Certified Official Travel Dossier</span>
+              <span>Verified Travel Compliance Dossier</span>
             </div>
             <h4 className="font-serif text-xl font-bold text-white">
-              Download Official Veterinary &amp; Customs Docket (PDF)
+              Download Pet Travel Compliance Dossier (PDF)
             </h4>
             <p className="text-xs text-zinc-300 max-w-lg leading-relaxed">
-              Export a complete dated compliance package with direct statute citations to Regulation (EU) 2026/131, USDA APHIS, and DEFRA directives for your Official Veterinarian appointment.
+              Export a verified preparation and documentation report evaluating statutory rules, timeline milestones, and IATA container standards for airline check-in and veterinary appointments.
             </p>
           </div>
 
@@ -983,7 +983,7 @@ export default function ScannerResultView({
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0FA958] hover:bg-[#0D8E4A] text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-lg shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap disabled:opacity-60"
             >
               <FileTextIcon className="w-4 h-4 text-white" />
-              <span>{isDownloadingDossier ? 'Generating PDF...' : 'Download Official Dossier (PDF)'}</span>
+              <span>{isDownloadingDossier ? 'Generating Dossier...' : 'Download Travel Dossier (PDF)'}</span>
             </button>
             <button
               type="button"

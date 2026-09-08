@@ -163,7 +163,7 @@ export default function DashboardHeader({
                 <span className="text-[11px] text-zinc-400 block font-semibold">Signed in as</span>
                 <strong className="text-zinc-900 block truncate">{displayEmail}</strong>
                 <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900">
-                  {tier === 'CONCIERGE' ? '★ Priority Concierge' : tier === 'CERTIFIED_PASS' ? '✓ Certified Trip Pass' : 'Registered Member'}
+                  {tier === 'CONCIERGE' ? '★ Priority Expert Review' : tier === 'CERTIFIED_PASS' ? '✓ Complete Travel Plan' : 'Readiness Member'}
                 </span>
               </div>
               <div className="space-y-1 text-zinc-600">

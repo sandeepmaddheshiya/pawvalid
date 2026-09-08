@@ -141,8 +141,8 @@ class NumberedCanvas(canvas.Canvas):
 
         # Running Header (pages 2+)
         if self._pageNumber > 1:
-            self.drawString(54, 750, "PETVIA - OFFICIAL ANIMAL HEALTH & TRAVEL DOSSIER")
-            self.drawRightString(612 - 54, 750, "INTERNATIONAL COMPLIANCE CERTIFICATION")
+            self.drawString(54, 750, "PETVIA • TRAVEL COMPLIANCE & READINESS DOSSIER")
+            self.drawRightString(612 - 54, 750, "SUPPORTING COMPLIANCE & VERIFICATION DOCKET")
             self.setStrokeColor(BORDER)
             self.setLineWidth(0.5)
             self.line(54, 744, 612 - 54, 744)
@@ -151,7 +151,7 @@ class NumberedCanvas(canvas.Canvas):
         self.setStrokeColor(BORDER)
         self.setLineWidth(0.5)
         self.line(54, 45, 612 - 54, 45)
-        self.drawString(54, 32, "Verified via Petvia Compliance Engine - Reg (EU) 2026/131 - USDA APHIS - IATA CR-82")
+        self.drawString(54, 32, "Verified via Petvia Verification Engine • Supporting Travel Docket • Reg (EU) 2026/131 • IATA LAR")
         self.drawRightString(612 - 54, 32, f"Page {self._pageNumber} of {page_count}")
         self.restoreState()
 
@@ -343,7 +343,11 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
     # ─── 1. HEADER & VERIFICATION BADGE ─────────────────────────────
     header_data = [
         [
-            Paragraph("<b>PETVIA TRAVEL COMPLIANCE DOSSIER</b>", title_style),
+            Paragraph(
+                "<b>PETVIA TRAVEL COMPLIANCE DOSSIER</b><br/>"
+                "<font size='8' color='#52525B'>A verified preparation and documentation report for international pet travel.</font>",
+                title_style
+            ),
             Paragraph(
                 f"<b>DOSSIER ID:</b> {dossier_id}<br/>"
                 f"<b>DATE:</b> {generation_date}<br/>"
@@ -366,8 +370,8 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
     status_fg = PRIMARY if overall_status == "READY_TO_FLY" else (AMBER if overall_status == "ACTION_REQUIRED" else RED)
     status_p = Paragraph(
         f"<b>AUDIT STATUS: {status_headline}</b><br/>"
-        f"<font size='8' color='#52525B'>Official determination for international pet transit. "
-        f"Carrier boarding approval and foreign customs clearance criteria verified.</font>",
+        f"<font size='8' color='#52525B'>Supporting compliance record &amp; readiness verification docket. "
+        f"Prerequisites cross-referenced against statutory and carrier boarding criteria.</font>",
         ParagraphStyle("CalloutP", fontName="Helvetica", fontSize=9, leading=13, textColor=status_fg)
     )
     status_table = Table([[status_p]], colWidths=[504])
@@ -606,11 +610,12 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
 
     # ─── 7. OFFICIAL NOTICE & AIRLINE DESK INSTRUCTIONS ─────────────
     notice_text = (
-        "<b>NOTICE FOR AIRLINE CHECK-IN AGENTS AND BORDER VETERINARY INSPECTORS:</b><br/>"
-        "This dossier has been compiled in compliance with <b>Regulation (EU) 2026/131</b>, USDA APHIS non-commercial "
-        "movement protocols, and WOAH standards. The microchip sequence, vaccination dates, and waiting intervals have been "
-        "verified against uploaded primary health records. Airline approval, physical animal welfare at boarding, and "
-        "government endorsement stamps must be presented in conjunction with this record."
+        "<b>SUPPORTING COMPLIANCE NOTICE FOR AIRLINE CHECK-IN AGENTS AND BORDER VETERINARY INSPECTORS:</b><br/>"
+        "This dossier has been compiled by Petvia as a <b>verified preparation and documentation report</b> evaluating prerequisite compliance "
+        "with <b>Regulation (EU) 2026/131</b>, USDA APHIS protocols, and IATA Live Animals Regulations (LAR). Microchip transponder sequences, "
+        "vaccination latency windows, and route prerequisites have been audited against uploaded primary records. "
+        "This dossier serves as an indexed supporting verification record and must be presented in conjunction with original "
+        "government-endorsed veterinary health certificates, carrier boarding clearance, and border physical inspection."
     )
     story.append(KeepTogether([
         Table([[Paragraph(notice_text, body_muted)]], colWidths=[504], style=[

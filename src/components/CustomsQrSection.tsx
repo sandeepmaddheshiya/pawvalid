@@ -13,7 +13,7 @@ export default function CustomsQrSection() {
     <section id="customs-qr" className="py-16 sm:py-20 bg-[#F8FAFB] border-b border-zinc-200/80 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          {/* Left Column: Interactive Customs Pass & Live QR Code */}
+          {/* Left Column: Interactive Digital Travel Pass & Live QR Code */}
           <div className="lg:col-span-6 flex justify-center lg:justify-start order-2 lg:order-1">
             <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-zinc-200/80 relative overflow-hidden">
               {/* Header */}
@@ -24,17 +24,17 @@ export default function CustomsQrSection() {
                   </div>
                   <div>
                     <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">
-                      OFFICIAL TRAVEL PASS
+                      TRAVEL VERIFICATION PASS
                     </div>
                     <div className="text-sm font-bold text-[#0E2342]">
-                      Petvia Pet Visa
+                      Digital Travel Pass
                     </div>
                   </div>
                 </div>
 
                 <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0FA958] bg-[#E8F8F0] border border-[#C6EED8] px-2.5 py-1 rounded-full">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#0FA958] animate-pulse" />
-                  CLEARED
+                  TRAVEL-READY
                 </span>
               </div>
 
@@ -58,7 +58,7 @@ export default function CustomsQrSection() {
                     value={verificationUrl}
                     size={160}
                     darkColor="#0E2342"
-                    alt="Scan Pet Visa QR Code with your smartphone camera"
+                    alt="Scan Digital Travel Verification Pass with your smartphone camera"
                   />
                 </div>
                 <div className="text-center">
@@ -89,7 +89,7 @@ export default function CustomsQrSection() {
                   href="/verify/PV-2026-UKDE-9842"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0E2342] hover:text-[#0FA958] transition-colors"
                 >
-                  <span>Open Interactive Customs Verification Pass ↗</span>
+                  <span>Open Live Verification Pass Page ↗</span>
                 </Link>
               </div>
             </div>
@@ -100,17 +100,17 @@ export default function CustomsQrSection() {
             {/* Tag Pill */}
             <div className="inline-flex items-center gap-1.5 bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
               <span>📱</span>
-              <span>Pet Visa QR Code for Customs</span>
+              <span>Digital Travel Verification Pass</span>
             </div>
 
             {/* Headline */}
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-[42px] font-bold tracking-tight text-[#0E2342] leading-[1.15]">
-              For the ease of travel — instant digital verification at check-in &amp; customs
+              Live travel verification — mobile-friendly readiness summary at your fingertips
             </h2>
 
             {/* Subtext */}
             <p className="text-sm sm:text-base text-zinc-600 leading-relaxed max-w-xl">
-              No more carrying 30 pages of loose paperwork or trembling at the boarding gate. Airline staff and border customs officers simply scan your verifiable Pet Visa QR code for instant, authoritative clearance.
+              Keep your pet&apos;s complete travel documentation organized and accessible. Access a mobile-friendly page summarizing your pet&apos;s travel-readiness status, document checks, and route information for easy reference during the journey.
             </p>
 
             {/* Feature List */}
@@ -121,7 +121,7 @@ export default function CustomsQrSection() {
                 </div>
                 <div>
                   <h3 className="text-xs sm:text-sm font-bold text-[#0E2342]">
-                    3-Second Airport Check-In
+                    Fast Check-In Verification
                   </h3>
                   <p className="text-xs text-zinc-500 leading-relaxed">
                     Gate agents scan the QR code to see verified microchip implantation dates, valid rabies booster windows, and carrier crate specifications.
@@ -135,7 +135,7 @@ export default function CustomsQrSection() {
                 </div>
                 <div>
                   <h3 className="text-xs sm:text-sm font-bold text-[#0E2342]">
-                    DEFRA, EU &amp; USDA Border Ready
+                    DEFRA, EU &amp; USDA Route Ready
                   </h3>
                   <p className="text-xs text-zinc-500 leading-relaxed">
                     Formatted according to EU Regulation 576/2013 and international pet transit protocols with cryptographic tamper verification.
@@ -149,10 +149,10 @@ export default function CustomsQrSection() {
                 </div>
                 <div>
                   <h3 className="text-xs sm:text-sm font-bold text-[#0E2342]">
-                    Offline &amp; Apple Wallet Friendly
+                    Offline &amp; Mobile Friendly
                   </h3>
                   <p className="text-xs text-zinc-500 leading-relaxed">
-                    Save your official clearance pass directly to your phone. Works seamlessly even in underground border inspection zones without Wi-Fi.
+                    Save your digital verification pass directly to your phone. Works seamlessly even in transit zones without Wi-Fi.
                   </p>
                 </div>
               </div>
@@ -164,7 +164,7 @@ export default function CustomsQrSection() {
                 href="/verify/PV-2026-UKDE-9842"
                 className="inline-flex items-center gap-2 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs sm:text-sm font-semibold px-6 py-3 rounded-lg shadow-sm transition-all"
               >
-                <span>View Live Customs Clearance Pass →</span>
+                <span>View Live Travel Verification Pass →</span>
               </Link>
               <Link
                 href="#scanner"

@@ -24,7 +24,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
   const handleOpenWhatsApp = () => {
     const targetNumber = cleanDigits.length >= 7 ? cleanDigits : '447700900077';
     const text = encodeURIComponent(
-      `Hello Dr. Jenkins! I am requesting expert audit support for my pet ${trip?.petName || 'my pet'} (Petvia Docket #${trip?.id?.slice(-6) || 'TRIP'}). We are traveling from ${trip?.origin} to ${trip?.destination}.`
+      `Hello! I am requesting pet travel specialist review support for my pet ${trip?.petName || 'my pet'} (Petvia Docket #${trip?.id?.slice(-6) || 'TRIP'}). We are traveling from ${trip?.origin} to ${trip?.destination}.`
     );
     window.open(`https://wa.me/${targetNumber}?text=${text}`, '_blank');
   };
@@ -57,7 +57,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
         throw new Error(data.error || 'Failed to submit concierge intake');
       }
 
-      setSuccessMessage('✓ Concierge intake confirmed! Our veterinary team has received your documents and WhatsApp contact.');
+      setSuccessMessage('✓ Review intake confirmed! Our pet travel specialist team has received your documents and WhatsApp contact.');
       if (onTripUpdated && data.trip) {
         onTripUpdated(data.trip);
       }
@@ -69,18 +69,18 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-left">
       {/* Header */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xs">
         <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
           <span>★</span>
-          <span>£59 Concierge Expert Audit &amp; Departure Hotline</span>
+          <span>£59 Priority Expert Review &amp; Departure Support</span>
         </div>
         <h2 className="font-display text-xl sm:text-2xl font-black text-zinc-900">
-          Veterinary Specialist Review &amp; Departure Guard
+          Pet Travel Specialist Review &amp; Departure Support
         </h2>
         <p className="text-xs text-zinc-500 mt-1 max-w-xl leading-relaxed">
-          For pet parents facing high-risk routes, hand-written clinic entries, tight timeframes, or airline pushback. Our accredited veterinary relocation specialists manually audit every stamp and stay on standby on your departure day.
+          For travelers who don&apos;t want to leave important paperwork to chance. A dedicated specialist reviews the submitted travel documents, veterinary records, stamps, and relevant dates.
         </p>
       </div>
 
@@ -130,16 +130,16 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
                 </span>
               </div>
               <h3 className="font-display font-black text-xl text-zinc-900 mt-1">
-                Assigned Specialist: Dr. Sarah Jenkins (MRCVS)
+                Assigned Specialist: Sarah Jenkins
               </h3>
               <p className="text-xs text-zinc-500 mt-0.5">
-                Senior Veterinary Relocation Specialist &bull; USDA &amp; DEFRA Certified Auditor
+                Senior Pet Travel Specialist &bull; USDA, DEFRA &amp; EU Transit Specialist
               </p>
             </div>
 
             <div className="flex items-center gap-2">
               <span className="px-3.5 py-1.5 rounded-full text-xs font-black bg-amber-100 text-amber-950 border border-amber-300">
-                ⭐ £59 Concierge Active
+                ⭐ £59 Priority Review Active
               </span>
             </div>
           </div>
@@ -152,11 +152,11 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
                 <span>📱</span>
                 <span>+{trip.whatsappNumber || phone}</span>
               </div>
-              <p className="text-[11px] text-zinc-500">Live chat hotline linked to this number</p>
+              <p className="text-[11px] text-zinc-500">Live chat support linked to this number</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/80 space-y-1">
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Audit Turnaround SLA</span>
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">24-Hour Priority Review</span>
               <div className="font-display font-bold text-sm text-zinc-900 flex items-center gap-1.5">
                 <span>⏱️</span>
                 <span>Under 24 Hours</span>
@@ -165,19 +165,19 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
             </div>
 
             <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/80 space-y-1">
-              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Departure Day Hotline</span>
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">Priority WhatsApp Support</span>
               <div className="font-display font-bold text-sm text-emerald-700 flex items-center gap-1.5">
                 <span>🟢</span>
                 <span>Standby Ready</span>
               </div>
-              <p className="text-[11px] text-zinc-500">Instant check-in and customs clearance escalation</p>
+              <p className="text-[11px] text-zinc-500">Direct support for check-in and transit inquiries</p>
             </div>
           </div>
 
           {/* Traveler Notes on File */}
           {trip.conciergeNotes && (
             <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 text-xs">
-              <span className="font-bold text-amber-950 block mb-1">📝 Your Notes for Dr. Jenkins:</span>
+              <span className="font-bold text-amber-950 block mb-1">📝 Your Notes for the Specialist:</span>
               <p className="text-amber-900 italic">&ldquo;{trip.conciergeNotes}&rdquo;</p>
             </div>
           )}
@@ -189,7 +189,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
                 Need an immediate answer or boarding check?
               </strong>
               <p className="text-xs text-emerald-800/90 mt-0.5">
-                Message Dr. Jenkins directly on WhatsApp with your trip ID ready.
+                Message your assigned specialist directly on WhatsApp with your trip ID ready.
               </p>
             </div>
 
@@ -199,7 +199,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
             >
               <span>💬</span>
-              <span>Launch WhatsApp Specialist Hotline</span>
+              <span>Launch Priority WhatsApp Support</span>
             </button>
           </div>
         </div>
@@ -211,10 +211,10 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
               Direct Specialist Onboarding
             </span>
             <h3 className="font-display font-black text-xl text-zinc-900 mt-1">
-              Submit Your Trip for Veterinary Audit (£59)
+              Submit Your Trip for Priority Expert Review (£59)
             </h3>
             <p className="text-xs text-zinc-500 mt-1 max-w-xl leading-relaxed">
-              Enter your WhatsApp phone number below. Our review team will be dispatched immediately to audit all documents in your Travel Vault and confirm complete compliance.
+              Enter your WhatsApp phone number below. A dedicated specialist will review the submitted travel documents, veterinary records, stamps, and relevant dates.
             </p>
           </div>
 
@@ -305,25 +305,25 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-2">
               <div className="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200/80 space-y-1">
                 <span className="text-base">👩‍⚕️</span>
-                <strong className="block text-zinc-900 font-bold">1-on-1 Document Audit</strong>
+                <strong className="block text-zinc-900 font-bold">1-on-1 Document Review</strong>
                 <p className="text-zinc-500 text-[11px] leading-relaxed">
-                  Veterinary auditor examines vet signatures, RNATT microchip matches, and clinic stamps.
+                  Specialist examines signatures, microchip matches, dates, and clinic stamps.
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200/80 space-y-1">
                 <span className="text-base">💬</span>
-                <strong className="block text-zinc-900 font-bold">Direct WhatsApp Hotline</strong>
+                <strong className="block text-zinc-900 font-bold">Priority WhatsApp Support</strong>
                 <p className="text-zinc-500 text-[11px] leading-relaxed">
-                  Dedicated hotline with our review team on departure day for customs clearance queries.
+                  Direct support with our review team on departure day for transit compliance queries.
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200/80 space-y-1">
                 <span className="text-base">🛡️</span>
-                <strong className="block text-zinc-900 font-bold">Boarding Guarantee Shield</strong>
+                <strong className="block text-zinc-900 font-bold">Expert-Reviewed Seal</strong>
                 <p className="text-zinc-500 text-[11px] leading-relaxed">
-                  Carrier pushback support if airline desk staff question health certificate validity.
+                  Audit seal added to your digital travel verification pass confirming paperwork review.
                 </p>
               </div>
             </div>
@@ -343,12 +343,12 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
                 ) : (
                   <>
                     <span>★</span>
-                    <span>Confirm WhatsApp &amp; Initiate Expert Audit (£59)</span>
+                    <span>Confirm WhatsApp &amp; Initiate Priority Expert Review (£59)</span>
                   </>
                 )}
               </button>
               <span className="text-xs text-zinc-400">
-                100% money-back boarding clearance guarantee
+                100% money-back compliance review guarantee
               </span>
             </div>
           </form>

@@ -72,8 +72,8 @@ export default function PricingModal({
         name: 'Petvia Pet Travel Compliance',
         description:
           tier === 'CONCIERGE'
-            ? 'Priority Concierge & Vet Review (£59)'
-            : 'Official Travel Plan & Dossier (£19)',
+            ? 'Priority Expert Review (£59)'
+            : 'Complete Travel Plan (£19)',
         order_id: orderData.orderId,
         prefill: {
           email: checkoutEmail,
@@ -102,7 +102,7 @@ export default function PricingModal({
       tier === 'FREE'
         ? 'Free Readiness Scan (£0)'
         : tier === 'CONCIERGE'
-        ? 'Priority Concierge (£59)'
+        ? 'Priority Expert Review (£59)'
         : 'Complete Travel Plan (£19)';
     setStatusMessage(`⚡ Processing Dev Simulation for ${tierTitle}...`);
 
@@ -178,6 +178,11 @@ export default function PricingModal({
     }
   };
 
+  const isConciergeSelected =
+    selectedTier === 'Priority Expert Review' ||
+    selectedTier === 'Priority Concierge' ||
+    selectedTier === 'Expert Document Review';
+
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!checkoutEmail) {
@@ -185,11 +190,7 @@ export default function PricingModal({
       return;
     }
 
-    const isConcierge =
-      selectedTier === 'Priority Concierge' ||
-      selectedTier === 'Expert Document Review';
-
-    if (isConcierge && (!checkoutPhone || checkoutPhone.trim().length < 6)) {
+    if (isConciergeSelected && (!checkoutPhone || checkoutPhone.trim().length < 6)) {
       setStatusMessage('Please enter your WhatsApp phone number with country code for specialist intake.');
       return;
     }
@@ -217,7 +218,7 @@ export default function PricingModal({
             userEmail: checkoutEmail.trim().toLowerCase(),
             petName: scanResult.petProfile?.name || petName,
             scanResult,
-            tier: isConcierge ? 'CONCIERGE' : 'CERTIFIED_PASS',
+            tier: isConciergeSelected ? 'CONCIERGE' : 'CERTIFIED_PASS',
           }),
         });
         const saveData = await saveRes.json();
@@ -233,28 +234,28 @@ export default function PricingModal({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            tier: isConcierge ? 'CONCIERGE' : 'CERTIFIED_PASS',
+            tier: isConciergeSelected ? 'CONCIERGE' : 'CERTIFIED_PASS',
             currency: selectedCurrency,
             email: checkoutEmail.trim().toLowerCase(),
             whatsappNumber: checkoutPhone.trim(),
             urgency: 'HIGH',
-            notes: `Purchased via Dossier Modal by ${checkoutEmail}`,
+            notes: `Purchased via Travel Plan Modal by ${checkoutEmail}`,
           }),
         });
         const data = await res.json();
 
         if (data.isMock && data.trip) {
           localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
-          setStatusMessage('✓ Order confirmed! Redirecting to your travel command center...');
+          setStatusMessage('✓ Order confirmed! Redirecting to your travel dashboard...');
           setTimeout(() => {
             onClose();
-            window.location.href = `/dashboard?tripId=${activeTripId}&tab=${isConcierge ? 'concierge' : 'overview'}`;
+            window.location.href = `/dashboard?tripId=${activeTripId}&tab=${isConciergeSelected ? 'concierge' : 'overview'}`;
           }, 800);
           return;
         }
 
         if (data.orderId && !data.isMock) {
-          openRazorpayCheckout(data, activeTripId, isConcierge ? 'CONCIERGE' : 'CERTIFIED_PASS');
+          openRazorpayCheckout(data, activeTripId, isConciergeSelected ? 'CONCIERGE' : 'CERTIFIED_PASS');
           return;
         }
       }
@@ -263,7 +264,7 @@ export default function PricingModal({
       setStatusMessage('Order processed! Loading dashboard...');
       setTimeout(() => {
         onClose();
-        window.location.href = `/dashboard?tripId=${activeTripId || ''}&tab=${isConcierge ? 'concierge' : 'overview'}`;
+        window.location.href = `/dashboard?tripId=${activeTripId || ''}&tab=${isConciergeSelected ? 'concierge' : 'overview'}`;
       }, 800);
     } catch (err) {
       console.error('Checkout error:', err);
@@ -272,9 +273,6 @@ export default function PricingModal({
       setIsSubmitting(false);
     }
   };
-
-  const isConciergeSelected =
-    selectedTier === 'Priority Concierge' || selectedTier === 'Expert Document Review';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0E2342]/70 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
@@ -292,11 +290,11 @@ export default function PricingModal({
         <div className="text-center max-w-2xl mx-auto space-y-2 mb-7">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[11px] font-bold tracking-wide uppercase">
             <span>★</span>
-            <span>Official Travel Dossier &amp; Certification</span>
+            <span>Digital Travel Preparation &amp; Verification</span>
           </div>
 
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0E2342] tracking-tight">
-            Complete Your Pet Travel Dossier
+            Prepare Your Pet&apos;s Travel Plan
           </h2>
 
           <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
@@ -308,7 +306,7 @@ export default function PricingModal({
                 {earliestDate ? ` • Earliest Travel: ${earliestDate}` : ''}
               </span>
             ) : (
-              'Choose your verified compliance dossier package for smooth airline check-in and border customs clearance.'
+              'We organize, check, and explain your pet\'s travel requirements — so you know exactly what needs to be done before departure.'
             )}
           </p>
 
@@ -333,21 +331,21 @@ export default function PricingModal({
           </div>
         </div>
 
-        {/* ─── 2-OPTION COMPARISON CARDS (Customized & Clean) ─────────── */}
+        {/* ─── 2-OPTION COMPARISON CARDS (Clear & Trustworthy) ─────────── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
-          {/* Card 1: Complete Travel Plan (£19) */}
+          {/* Card 1: Complete Travel Plan (£19) [⭐ MOST POPULAR] */}
           <div
             onClick={() => handleSelectTier('Complete Travel Plan')}
-            className={`rounded-2xl p-6 transition-all cursor-pointer flex flex-col justify-between relative border-2 ${
+            className={`h-full rounded-2xl p-6 transition-all cursor-pointer flex flex-col justify-between relative border-2 ${
               !isConciergeSelected
                 ? 'border-[#0FA958] bg-[#F4FBF7] shadow-md ring-2 ring-[#0FA958]/20'
                 : 'border-zinc-200 bg-white hover:border-zinc-300'
             }`}
           >
-            <div>
+            <div className="flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-3">
                 <span className="inline-flex px-2.5 py-0.5 rounded-full bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[10px] font-bold uppercase tracking-wider">
-                  Most Popular · Instant Download
+                  ⭐ Most Popular · Travel-Preparation System
                 </span>
                 <input
                   type="radio"
@@ -359,10 +357,10 @@ export default function PricingModal({
               </div>
 
               <h3 className="font-serif text-xl font-bold text-[#0E2342]">
-                Official Travel Dossier
+                Complete Travel Plan
               </h3>
-              <p className="text-xs text-zinc-500 mt-0.5">
-                Complete compliance plan &amp; border-ready documentation
+              <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">
+                Everything you need to prepare your pet&apos;s international journey in one place.
               </p>
 
               <div className="my-4 flex items-baseline gap-1.5">
@@ -372,39 +370,53 @@ export default function PricingModal({
                 <span className="text-xs text-zinc-500 font-medium">one-time / trip</span>
               </div>
 
-              <ul className="space-y-2.5 text-xs text-zinc-700 pt-2 border-t border-zinc-200/80">
+              <ul className="space-y-2.5 text-xs text-zinc-700 pt-2 border-t border-zinc-200/80 flex-1">
                 <li className="flex items-start gap-2">
                   <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-zinc-900">Official PDF Travel Dossier:</strong> Dated
-                    compliance docket with official USDA, EU Regulation 2026/131, and DEFRA citations.
+                    <strong className="text-zinc-900">Route-Specific Travel Checklist:</strong> Step-by-step
+                    preparation docket with verified destination and transit requirements.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-zinc-900">Customs QR Travel Pass:</strong> Live-scannable
-                    entry pass for airline boarding and border inspector validation.
+                    <strong className="text-zinc-900">Digital Travel Verification Pass:</strong> A mobile-friendly
+                    page summarizing your pet&apos;s travel-readiness status, document checks, and route information for easy reference during the journey.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-zinc-900">Chronological Action Plan:</strong> Prioritized
-                    appointment countdown for vet exam (10-day window) &amp; treatments.
+                    <strong className="text-zinc-900">Document Verification &amp; Timeline:</strong> Missing-document
+                    detection, rabies latency countdown, and earliest eligible departure date based on documented requirements.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-zinc-900">Digital Pet Passport Vault:</strong> Permanent
-                    vaccination &amp; microchip record vault with 1-click reuse.
+                    <strong className="text-zinc-900">Secure Digital Document Vault:</strong> Secure storage
+                    to reuse documents for future trips without starting from scratch.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
+                  <div>
+                    <strong className="text-zinc-900">Automated Deadline Reminders:</strong> Scheduled
+                    alerts for vet window (Day -30), tapeworm (Day -5), and endorsement (Day -2).
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
+                  <div>
+                    <strong className="text-zinc-900">Printable Pet Travel Card &amp; Dossier:</strong> Comprehensive
+                    travel dossier and quick-reference pet travel card.
                   </div>
                 </li>
               </ul>
             </div>
 
-            <div className="pt-5 mt-4 border-t border-zinc-200/80">
+            <div className="pt-5 mt-auto border-t border-zinc-200/80">
               <button
                 type="button"
                 onClick={() => handleSelectTier('Complete Travel Plan')}
@@ -414,39 +426,39 @@ export default function PricingModal({
                     : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
                 }`}
               >
-                {!isConciergeSelected ? '✓ Selected: Complete Travel Plan' : `Select Official Dossier (${prices.pass})`}
+                {!isConciergeSelected ? '✓ Selected: Complete Travel Plan' : `Select Complete Travel Plan (${prices.pass})`}
               </button>
             </div>
           </div>
 
-          {/* Card 2: Priority Concierge & Specialist Review (£59) */}
+          {/* Card 2: Priority Expert Review (£59) */}
           <div
-            onClick={() => handleSelectTier('Priority Concierge')}
-            className={`rounded-2xl p-6 transition-all cursor-pointer flex flex-col justify-between relative border-2 ${
+            onClick={() => handleSelectTier('Priority Expert Review')}
+            className={`h-full rounded-2xl p-6 transition-all cursor-pointer flex flex-col justify-between relative border-2 ${
               isConciergeSelected
                 ? 'border-amber-400 bg-[#0E2342] text-white shadow-xl ring-2 ring-amber-400/30'
                 : 'border-zinc-300 bg-zinc-900 text-white hover:border-zinc-400'
             }`}
           >
-            <div>
+            <div className="flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-3">
                 <span className="inline-flex px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
-                  ★ Recommended For Flights
+                  ★ Recommended For Complex Routes
                 </span>
                 <input
                   type="radio"
                   name="tier"
                   checked={isConciergeSelected}
-                  onChange={() => handleSelectTier('Priority Concierge')}
+                  onChange={() => handleSelectTier('Priority Expert Review')}
                   className="accent-amber-400 w-4 h-4 cursor-pointer mt-0.5"
                 />
               </div>
 
               <h3 className="font-serif text-xl font-bold text-white">
-                Expert Vet Document Review
+                Priority Expert Review
               </h3>
-              <p className="text-xs text-zinc-300 mt-0.5">
-                1-on-1 specialist sign-off before departure
+              <p className="text-xs text-zinc-300 mt-0.5 leading-relaxed">
+                Everything automated + a human specialist reviewing your case.
               </p>
 
               <div className="my-4 flex items-baseline gap-1.5">
@@ -456,42 +468,49 @@ export default function PricingModal({
                 <span className="text-xs text-zinc-400 font-medium">one-time / trip</span>
               </div>
 
-              <ul className="space-y-2.5 text-xs text-zinc-200 pt-2 border-t border-white/10">
+              <ul className="space-y-2.5 text-xs text-zinc-200 pt-2 border-t border-white/10 flex-1">
                 <li className="flex items-start gap-2">
                   <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-white">Includes Full Travel Dossier:</strong> Official PDF,
-                    customs QR pass, and digital passport vault included.
+                    <strong className="text-white">Includes Full Complete Travel Plan:</strong> All checklists,
+                    digital verification pass, document vault, reminders, and comprehensive dossier.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-white">1-on-1 Veterinary Specialist Audit:</strong> An
-                    accredited pet travel specialist manually audits all stamps, dates, and health certificates.
+                    <strong className="text-white">Dedicated Specialist Review:</strong> A dedicated specialist
+                    reviews the submitted travel documents, veterinary records, stamps, and relevant dates.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-white">Dedicated WhatsApp Channel:</strong> Real-time support
-                    leading up to flight day for airline or customs inquiries.
+                    <strong className="text-white">Expert-Reviewed Seal:</strong> Confirms that the submitted
+                    documents were manually reviewed by a Pet Travel Specialist.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-white">Guaranteed 24-Hour Turnaround:</strong> Fast-tracked
-                    clearance verification to prevent airport grounding and quarantine risk.
+                    <strong className="text-white">24-Hour Priority Review:</strong> Fast-tracked review
+                    turnaround with actionable notes on complex or conflicting records.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
+                  <div>
+                    <strong className="text-white">Priority WhatsApp Support:</strong> Real-time direct
+                    messaging leading up to flight day for airline requirement questions.
                   </div>
                 </li>
               </ul>
             </div>
 
-            <div className="pt-5 mt-4 border-t border-white/10">
+            <div className="pt-5 mt-auto border-t border-white/10">
               <button
                 type="button"
-                onClick={() => handleSelectTier('Priority Concierge')}
+                onClick={() => handleSelectTier('Priority Expert Review')}
                 className={`w-full py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-xs cursor-pointer ${
                   isConciergeSelected
                     ? 'bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold'
@@ -499,8 +518,8 @@ export default function PricingModal({
                 }`}
               >
                 {isConciergeSelected
-                  ? '✓ Selected: Expert Vet Review'
-                  : `Select Expert Review (${prices.concierge})`}
+                  ? '✓ Selected: Priority Expert Review'
+                  : `Select Priority Expert Review (${prices.concierge})`}
               </button>
             </div>
           </div>
@@ -509,12 +528,12 @@ export default function PricingModal({
         {/* ─── INTEGRATED CHECKOUT BAR ───────────────────────────────── */}
         <form
           onSubmit={handleCompleteOrder}
-          className="mt-6 pt-5 border-t border-zinc-200 bg-[#FAFBFB] rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4"
+          className="mt-6 pt-5 border-t border-zinc-200 bg-[#FAFBFB] rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-end justify-between gap-4"
         >
-          <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[11px] font-semibold text-zinc-600 mb-1">
-                Your Email (to receive dossier)
+          <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+            <div className="flex flex-col justify-end">
+              <label className="block text-[11px] font-semibold text-zinc-600 mb-1.5 h-6 flex items-end">
+                Your Email (to receive dossier &amp; pass)
               </label>
               <input
                 type="email"
@@ -522,14 +541,14 @@ export default function PricingModal({
                 value={checkoutEmail}
                 onChange={(e) => setCheckoutEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-[#0FA958]"
+                className="w-full h-11 px-3.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-[#0FA958]"
               />
             </div>
 
             {isConciergeSelected ? (
-              <div>
-                <label className="block text-[11px] font-semibold text-zinc-600 mb-1">
-                  WhatsApp Number (for specialist intake)
+              <div className="flex flex-col justify-end">
+                <label className="block text-[11px] font-semibold text-zinc-600 mb-1.5 h-6 flex items-end">
+                  WhatsApp Number (specialist intake)
                 </label>
                 <input
                   type="tel"
@@ -537,12 +556,12 @@ export default function PricingModal({
                   value={checkoutPhone}
                   onChange={(e) => setCheckoutPhone(e.target.value)}
                   placeholder="+44 7123 456789"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-amber-400 font-mono"
+                  className="w-full h-11 px-3.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-amber-400 font-mono"
                 />
               </div>
             ) : (
-              <div className="flex items-center text-xs text-zinc-500 pt-6">
-                <span>🔒 256-bit SSL encrypted • Instant PDF generation</span>
+              <div className="h-11 flex items-center text-xs text-zinc-500">
+                <span>🔒 256-bit SSL encrypted • Instant plan activation</span>
               </div>
             )}
           </div>
@@ -551,11 +570,11 @@ export default function PricingModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full md:w-auto px-6 py-3 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 whitespace-nowrap"
+              className="w-full md:w-auto h-11 px-6 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 whitespace-nowrap flex items-center justify-center"
             >
               {isSubmitting
                 ? 'Processing...'
-                : `Proceed with ${isConciergeSelected ? 'Expert Review' : 'Official Dossier'} (${
+                : `Proceed with ${isConciergeSelected ? 'Priority Expert Review' : 'Complete Travel Plan'} (${
                     isConciergeSelected ? prices.concierge : prices.pass
                   }) →`}
             </button>
@@ -570,7 +589,7 @@ export default function PricingModal({
 
         {/* ─── DISCREET DEVELOPER HELPER FOOTER ───────────────────────── */}
         <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400">
-          <span>Official Pet Travel Verification Service • Petvia</span>
+          <span>Independent Pet Travel Preparation Service • Petvia</span>
           <div className="flex items-center gap-2">
             <span className="text-[10px] uppercase font-bold text-zinc-400">Dev Testing:</span>
             <button
@@ -578,7 +597,7 @@ export default function PricingModal({
               onClick={() => handleInstantDevPayment('CERTIFIED_PASS')}
               className="text-[10px] text-zinc-500 hover:text-zinc-800 underline cursor-pointer"
             >
-              Simulate £19 Pass
+              Simulate £19 Plan
             </button>
             <span>•</span>
             <button

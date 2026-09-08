@@ -57,7 +57,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
               className="inline-flex items-center gap-1.5 bg-white border border-zinc-200 hover:border-zinc-300 text-xs font-semibold text-zinc-700 px-3.5 py-1.5 rounded-lg shadow-2xs transition-colors cursor-pointer"
             >
               <span>🖨️</span>
-              <span>Print Official Pass</span>
+              <span>Print Verification Pass</span>
             </button>
             {passData?.isPaid === false ? (
               <span className="inline-flex items-center gap-1 bg-amber-100 border border-amber-200 text-amber-800 text-[11px] font-bold px-2.5 py-1 rounded-md">
@@ -73,7 +73,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
           </div>
         </div>
 
-        {/* Official Customs & Airline Verification Card */}
+        {/* Digital Travel Verification Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-zinc-200/90 overflow-hidden print:border-none print:shadow-none">
           {/* Header Banner */}
           <div className="bg-[#0E2342] text-white p-6 sm:p-7 relative overflow-hidden">
@@ -87,10 +87,10 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                 </div>
                 <div>
                   <h1 className="text-base sm:text-lg font-bold tracking-tight">
-                    Petvia Pet Visa &amp; Customs Travel Pass
+                    Petvia Digital Travel Verification Pass
                   </h1>
                   <p className="text-[11px] text-zinc-300">
-                    Official Digital Travel Clearance &amp; Port-of-Entry Verification
+                    Verified Pet Travel Readiness &amp; Compliance Summary
                   </p>
                 </div>
               </div>
@@ -104,7 +104,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
               </div>
             </div>
 
-            {/* Clearance Banner */}
+            {/* Verification Status Banner */}
             {passData?.isPaid === false ? (
               <div className="bg-amber-500/20 border border-amber-400/40 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
@@ -116,7 +116,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                       PROVISIONAL PASS · ACTIVATION REQUIRED
                     </div>
                     <div className="text-[11px] text-amber-200 leading-tight">
-                      This customs pass requires an active Complete Travel Plan (£19) for an official border clearance seal.
+                      This verification pass requires an active Complete Travel Plan (£19) for live digital travel verification.
                     </div>
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                   href="/#pricing"
                   className="shrink-0 px-3.5 py-1.5 bg-[#0FA958] hover:bg-[#0D934C] text-white text-xs font-bold rounded-lg shadow-xs transition-all active:scale-98 text-center print:hidden"
                 >
-                  Activate Pass (£19) →
+                  Activate Travel Plan (£19) →
                 </Link>
               </div>
             ) : (
@@ -134,7 +134,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                 </div>
                 <div>
                   <div className="text-xs sm:text-sm font-bold text-white tracking-wide">
-                    CLEARED FOR BOARDING &amp; BORDER ENTRY
+                    TRAVEL-READINESS VERIFIED · COMPLIANT STATUS
                   </div>
                   <div className="text-[11px] text-[#C6EED8] leading-tight">
                     All route-specific rabies, microchip, and clinical requirements verified compliant.
@@ -180,12 +180,12 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
 
               <div>
                 <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                  Inspection Status
+                  Compliance Status
                 </div>
                 <div className="text-xs sm:text-sm font-bold text-[#0FA958] mt-0.5">
-                  ✓ Pre-Approved
+                  ✓ Verified Compliant
                 </div>
-                <div className="text-[11px] text-zinc-500">Tamper-Verified</div>
+                <div className="text-[11px] text-zinc-500">Tamper-Checked</div>
               </div>
             </div>
 
@@ -228,9 +228,9 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                 </div>
 
                 <div className="p-3 bg-white rounded-lg border border-zinc-200/80">
-                  <div className="text-[10px] text-zinc-400 uppercase">Digital Passport Vault</div>
-                  <div className="text-xs font-bold text-[#0E2342]">4 Documents Linked</div>
-                  <div className="text-[10px] text-[#0FA958] font-medium">✓ Cryptographically Sealed</div>
+                  <div className="text-[10px] text-zinc-400 uppercase">Document Vault</div>
+                  <div className="text-xs font-bold text-[#0E2342]">4 Records Linked</div>
+                  <div className="text-[10px] text-[#0FA958] font-medium">✓ Secure Digital Storage</div>
                 </div>
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
             {/* Official Compliance Audit Table */}
             <div>
               <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3">
-                Border Inspection Checklist (EU / DEFRA Standards)
+                Route Readiness Checklist (EU / DEFRA Standards)
               </h2>
               <div className="divide-y divide-zinc-100 border border-zinc-200 rounded-xl overflow-hidden">
                 {/* Microchip */}
@@ -305,7 +305,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                 <div className="p-3.5 bg-white flex items-center justify-between">
                   <div className="space-y-0.5">
                     <div className="text-xs font-semibold text-[#0E2342]">
-                      Official Veterinary Health Certificate / EU Animal Health Form
+                      Veterinary Health Certificate / EU Animal Health Form
                     </div>
                     <div className="text-[11px] text-zinc-500">
                       Signed by official state-certified veterinary officer. Stamp validated.
@@ -320,8 +320,8 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
 
             {/* Officer Verification Notice */}
             <div className="p-4 bg-zinc-50 rounded-xl border border-zinc-200/80 text-[11px] text-zinc-600 leading-relaxed">
-              <span className="font-semibold text-[#0E2342]">Notice for Port &amp; Customs Officials:</span>{' '}
-              This Petvia Travel Pass has been evaluated against bilateral live-animal transit protocols. The identity of pet <span className="font-mono font-semibold text-zinc-800">985141002847192</span> matches original laboratory and veterinary certificates archived in the Petvia digital document vault.
+              <span className="font-semibold text-[#0E2342]">Notice for Airline Check-in &amp; Border Inspectors:</span>{' '}
+              This Petvia Travel Verification Pass provides a document compliance summary evaluated against applicable live-animal transit protocols. The identity of pet <span className="font-mono font-semibold text-zinc-800">985141002847192</span> matches original laboratory and veterinary certificates archived in the Petvia secure digital document vault. <span className="text-zinc-500 block mt-1">Note: This verification record supports travel preparation and does not replace official government-endorsed certificates or statutory import permits.</span>
             </div>
           </div>
 
@@ -335,8 +335,8 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                 Open Dashboard
               </Link>
               <span>•</span>
-              <a href="mailto:customs-support@petvia.com" className="text-[#0E2342] font-semibold hover:underline">
-                24/7 Port Support
+              <a href="mailto:support@petvia.com" className="text-[#0E2342] font-semibold hover:underline">
+                Traveler Support
               </a>
             </div>
           </div>

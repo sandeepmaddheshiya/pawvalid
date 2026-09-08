@@ -41,7 +41,7 @@ export default function DashboardSidebar({
       id: 'passport' as DashboardTab,
       label: 'Digital Pet Passport',
       icon: '🪪',
-      badge: isPaid ? 'Customs Ready' : '🔒 £19 Plan',
+      badge: isPaid ? 'Verified Pass' : '🔒 £19 Plan',
       badgeColor: isPaid ? 'bg-[#E8F8F0] text-[#0FA958]' : 'bg-amber-100 text-amber-800',
     },
     {
@@ -73,7 +73,7 @@ export default function DashboardSidebar({
     },
     {
       id: 'concierge' as DashboardTab,
-      label: 'Specialist Concierge',
+      label: 'Priority Expert Review',
       icon: '🛡️',
       badge: 'Expert',
       badgeColor: 'bg-amber-100 text-amber-900',

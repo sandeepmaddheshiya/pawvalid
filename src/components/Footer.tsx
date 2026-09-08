@@ -66,7 +66,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="#customs-qr" className="hover:text-white transition-colors">
-                  Pet Visa QR Code
+                  Digital Verification Pass
                 </Link>
               </li>
               <li>

@@ -132,13 +132,13 @@ export default function OverviewView({
               </span>
             </div>
             <div className="flex items-baseline gap-3 flex-wrap">
-              <span className="text-xs font-semibold text-zinc-500">Earliest Safe Flight Date:</span>
+              <span className="text-xs font-semibold text-zinc-500">Earliest Eligible Flight Date:</span>
               <span className="font-display text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight">
                 {earliestFlightDate}
               </span>
             </div>
             <p className="text-xs text-zinc-600 max-w-xl leading-relaxed">
-              {stats?.earliestFlightDateSubtitle || 'Calculated from required microchip sequence, 21-day rabies antibody latency, and destination customs regulations.'}
+              {stats?.earliestFlightDateSubtitle || 'Calculated from required microchip sequence, 21-day rabies antibody latency, and applicable documented destination requirements.'}
             </p>
           </div>
 
@@ -181,14 +181,14 @@ export default function OverviewView({
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                 isPaid ? 'text-emerald-300 bg-white/10' : 'text-amber-300 bg-amber-400/20'
               }`}>
-                {isPaid ? 'Customs Ready' : 'Preview Mode'}
+                {isPaid ? 'Verified Pass' : 'Preview Mode'}
               </span>
             </div>
             <h4 className="text-base font-bold text-white mb-1">
               {trip?.petName || 'Milo'}&apos;s Reusable Travel Profile
             </h4>
             <p className="text-xs text-zinc-300 leading-relaxed">
-              Scan your pet&apos;s documents once, save their profile, and reuse it for every trip — with personalized compliance built in.
+              Scan your pet&apos;s documents once, save their profile to your document vault, and reuse it for future trips without starting from scratch.
             </p>
           </div>
           <div className="pt-4 flex items-center justify-between border-t border-white/10 mt-3 text-xs">
@@ -201,14 +201,14 @@ export default function OverviewView({
           </div>
         </div>
 
-        {/* Pet Visa QR Code for Customs Tile */}
+        {/* Digital Travel Verification Pass Tile */}
         <div className="bg-white rounded-2xl p-5 border border-zinc-200/80 shadow-xs hover:border-zinc-300 transition-all flex items-center justify-between gap-4">
           <div className="space-y-1 text-left">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <span className="text-base">📱</span>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#0FA958]">
-                  Pet Visa for Customs
+                  Digital Travel Pass
                 </span>
               </div>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
@@ -216,14 +216,14 @@ export default function OverviewView({
                   ? 'text-emerald-800 bg-[#E8F8F0] border border-[#C6EED8]'
                   : 'text-amber-800 bg-amber-100 border border-amber-200'
               }`}>
-                {isPaid ? '✓ Customs Verified' : '🔒 £19 Complete Plan'}
+                {isPaid ? '✓ Travel-Readiness Verified' : '🔒 £19 Complete Plan'}
               </span>
             </div>
             <h4 className="text-base font-bold text-[#0E2342]">
-              Scannable Customs Travel Pass
+              Digital Travel Verification Pass
             </h4>
             <p className="text-xs text-zinc-500 leading-relaxed">
-              Instant digital verification at airline check-in &amp; border customs checkpoints.
+              Mobile-friendly pass summarizing your pet&apos;s travel-readiness status and document compliance.
             </p>
             <div className="pt-2">
               {isPaid ? (
@@ -232,7 +232,7 @@ export default function OverviewView({
                   target="_blank"
                   className="inline-flex items-center gap-1 text-xs font-bold text-[#0E2342] hover:text-[#0FA958] transition-colors"
                 >
-                  <span>View Full Customs Pass ↗</span>
+                  <span>View Verification Pass ↗</span>
                 </Link>
               ) : (
                 <button
@@ -240,7 +240,7 @@ export default function OverviewView({
                   onClick={() => onNavigate('passport')}
                   className="inline-flex items-center gap-1 text-xs font-bold text-[#0FA958] hover:underline cursor-pointer"
                 >
-                  <span>Unlock Official Pass (£19) →</span>
+                  <span>Unlock Travel Plan (£19) →</span>
                 </button>
               )}
             </div>

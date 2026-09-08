@@ -57,10 +57,10 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                 Free Readiness Scan Preview
               </div>
               <div className="text-xs sm:text-sm font-bold text-[#0E2342] mt-0.5">
-                Official Customs Pass &amp; Multi-Trip Vault are locked
+                Digital Travel Verification Pass &amp; Secure Document Vault are locked
               </div>
               <p className="text-[11px] text-zinc-500 mt-0.5 max-w-xl leading-relaxed">
-                Upgrade to the <strong className="text-emerald-700">Complete Travel Plan (£19)</strong> to activate your official live-scannable Customs QR Code, unlock unlimited 1-click trip reuse, and download official travel dossiers.
+                Upgrade to the <strong className="text-emerald-700">Complete Travel Plan (£19)</strong> to activate your mobile-friendly Digital Travel Verification Pass, unlock secure multi-trip document reuse, and download official travel dossiers.
               </p>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
             className="shrink-0 px-4 py-2.5 bg-[#0FA958] hover:bg-[#0D934C] text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-98 cursor-pointer flex items-center gap-1.5"
           >
             <span>⚡</span>
-            <span>Unlock Customs Pass (£19) →</span>
+            <span>Unlock Travel Plan (£19) →</span>
           </button>
         </div>
       )}
@@ -86,7 +86,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
             {pet.name}&apos;s Digital Passport &amp; Health Vault
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 mt-1 max-w-xl">
-            Scan your pet&apos;s documents once, save their profile, and reuse it for every trip — with personalized compliance built in.
+            Save your pet&apos;s verified records in your Secure Digital Document Vault and reuse them for future trips without starting from scratch.
           </p>
         </div>
 
@@ -97,7 +97,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
             className="inline-flex items-center gap-1.5 bg-white border border-zinc-200 hover:border-zinc-300 text-xs font-semibold text-zinc-700 px-3.5 py-2 rounded-lg shadow-2xs transition-colors cursor-pointer"
           >
             <span>{isPaid ? '🖨️' : '🔒'}</span>
-            <span>{isPaid ? 'Print Pass' : 'Print Official Pass (£19)'}</span>
+            <span>{isPaid ? 'Print Pass' : 'Print Verification Pass (£19)'}</span>
           </button>
           <Link
             href={`/en/checker?from=${trip?.route?.originCode || 'GB'}&species=${pet.species || 'DOG'}`}
@@ -108,7 +108,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
         </div>
       </div>
 
-      {/* Main Grid: Passport Card on Left, Pet Visa QR on Right */}
+      {/* Main Grid: Passport Card on Left, Digital Travel Pass on Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Official Digital Passport Card (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
@@ -140,7 +140,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                   : 'text-amber-300 bg-amber-500/20 border border-amber-400/40'
               }`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${isPaid ? 'bg-[#0FA958]' : 'bg-amber-400'}`} />
-                {isPaid ? 'CUSTOMS VERIFIED' : '🔒 PREVIEW MODE'}
+                {isPaid ? 'TRAVEL-READY' : '🔒 PREVIEW MODE'}
               </span>
             </div>
 
@@ -235,19 +235,19 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
           </div>
         </div>
 
-        {/* Right: Pet Visa QR Code for Customs (5 cols) */}
+        {/* Right: Digital Travel Verification Pass (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
           <div className="bg-white rounded-3xl p-6 shadow-xl border border-zinc-200/90 text-center">
             <div className="inline-flex items-center gap-1.5 bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-3">
               <span>📱</span>
-              <span>Customs &amp; Airline Inspection Pass</span>
+              <span>Digital Travel Verification Pass</span>
             </div>
 
             <h2 className="text-base font-bold text-[#0E2342]">
-              Pet Visa QR Code for Customs
+              Digital Travel Verification Pass
             </h2>
             <p className="text-xs text-zinc-500 mt-1 max-w-xs mx-auto">
-              Show this scannable QR code at airline check-in desks and border customs inspection checkpoints.
+              A mobile-friendly page summarizing your pet&apos;s travel-readiness status, document checks, and route information for easy reference during the journey.
             </p>
 
             {/* QR Code Container */}
@@ -259,14 +259,14 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                   value={verificationUrl}
                   size={170}
                   darkColor="#0E2342"
-                  alt="Customs QR Code"
+                  alt="Digital Travel Verification Pass"
                 />
               </div>
               <div className="text-[11px] text-zinc-500 font-mono font-bold">
                 {passId}
               </div>
               <div className="text-[10px] text-zinc-400 mt-0.5">
-                {isPaid ? 'Scan with any smartphone camera' : 'Official QR pass locked on Free tier'}
+                {isPaid ? 'Scan with any smartphone camera' : 'Digital verification pass locked on Free tier'}
               </div>
 
               {/* Frosted Glass Lock Overlay when on Free Tier */}
@@ -276,10 +276,10 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                     🔒
                   </div>
                   <div className="text-xs font-bold text-[#0E2342]">
-                    Official Customs QR Code Locked
+                    Digital Travel Verification Pass Locked
                   </div>
                   <p className="text-[11px] text-zinc-500 max-w-[210px] mt-1 leading-snug">
-                    Airline check-in desks and border customs require a paid clearance seal.
+                    Generate a verified live pass to share your pet&apos;s travel compliance and document summary.
                   </p>
                   <button
                     type="button"
@@ -287,7 +287,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                     className="mt-3.5 px-4 py-2 bg-[#0FA958] hover:bg-[#0D934C] text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-98 cursor-pointer flex items-center gap-1.5"
                   >
                     <span>⚡</span>
-                    <span>Unlock Pass (£19) →</span>
+                    <span>Unlock Travel Plan (£19) →</span>
                   </button>
                 </div>
               )}
@@ -301,7 +301,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                   target="_blank"
                   className="w-full inline-flex items-center justify-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-xs"
                 >
-                  <span>View Full Customs Pass ↗</span>
+                  <span>View Live Verification Pass ↗</span>
                 </Link>
               ) : (
                 <button
@@ -309,7 +309,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                   onClick={() => setPricingModalOpen(true)}
                   className="w-full inline-flex items-center justify-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-xs cursor-pointer"
                 >
-                  <span>🔒 Unlock Full Customs Pass (£19)</span>
+                  <span>🔒 Unlock Verification Pass (£19)</span>
                 </button>
               )}
               <button
@@ -324,7 +324,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
 
           {/* Reusable Profile Banner */}
           <div className="p-4 bg-[#E8F8F0]/60 rounded-2xl border border-[#C6EED8] text-xs text-[#0E2342] leading-relaxed">
-            <span className="font-bold">Reusable Health Profile:</span> All documents and medical records associated with {pet.name} are permanently saved to your account. When you start another trip, Petvia automatically evaluates compliance without asking for new uploads.
+            <span className="font-bold">Secure Digital Document Vault:</span> All documents and medical records associated with {pet.name} are securely stored in your document vault. Reuse documents for future trips without starting from scratch.
           </div>
         </div>
       </div>

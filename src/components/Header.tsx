@@ -145,13 +145,13 @@ export default function Header() {
                     href="#customs-qr"
                     className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                   >
-                    📱 Pet Visa QR Code
+                    📱 Digital Verification Pass
                   </Link>
                   <Link
                     href="/verify/PV-2026-UKDE-9842"
                     className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                   >
-                    🛂 Live Customs Verification Pass
+                    🛂 Live Travel Verification Pass
                   </Link>
                   <div className="my-1 border-t border-zinc-100" />
                   <Link

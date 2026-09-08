@@ -472,7 +472,7 @@ function buildDynamicScanResult(
       ],
       travelDayPrep: [
         'Ensure your pet carrier meets airline IATA regulations.',
-        'Keep the signed veterinary documents and Customs QR Code easily accessible at check-in.',
+        'Keep the signed veterinary documents and Digital Travel Verification Pass easily accessible at check-in.',
         ...(transitRules.length > 0 ? ['Have transit declarations and layover permits ready for flight connection checks.'] : []),
       ],
     },
