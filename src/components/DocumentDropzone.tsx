@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import type { ScanResult } from '@/lib/types/scanner';
+import SearchableSelect from '@/components/SearchableSelect';
 
 export const COUNTRIES = [
   { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
@@ -22,11 +23,105 @@ export const COUNTRIES = [
   { code: 'NZ', name: 'New Zealand', flag: '🇳🇿' },
 ];
 
+export const DOG_BREEDS = [
+  'Akita',
+  'Alaskan Malamute',
+  'Australian Shepherd',
+  'Basset Hound',
+  'Beagle',
+  'Belgian Malinois',
+  'Bernese Mountain Dog',
+  'Bichon Frise',
+  'Bloodhound',
+  'Border Collie',
+  'Boston Terrier',
+  'Boxer',
+  'Brittany',
+  'Bulldog',
+  'Bulldog (English)',
+  'Bulldog (French)',
+  'Bullmastiff',
+  'Cane Corso',
+  'Cavalier King Charles Spaniel',
+  'Chihuahua',
+  'Chow Chow',
+  'Cocker Spaniel',
+  'Collie',
+  'Dachshund',
+  'Dalmatian',
+  'Doberman Pinscher',
+  'English Bulldog',
+  'English Springer Spaniel',
+  'French Bulldog',
+  'German Shepherd',
+  'German Shorthaired Pointer',
+  'Golden Retriever',
+  'Great Dane',
+  'Havanese',
+  'Jack Russell Terrier',
+  'Labrador Retriever',
+  'Maltese',
+  'Mastiff',
+  'Miniature Schnauzer',
+  'Newfoundland',
+  'Pembroke Welsh Corgi',
+  'Pomeranian',
+  'Poodle',
+  'Pug',
+  'Rhodesian Ridgeback',
+  'Rottweiler',
+  'Saint Bernard',
+  'Samoyed',
+  'Shetland Sheepdog',
+  'Shiba Inu',
+  'Shih Tzu',
+  'Siberian Husky',
+  'Staffordshire Bull Terrier',
+  'Weimaraner',
+  'Whippet',
+  'Yorkshire Terrier',
+  'Mixed Breed / Crossbreed',
+  'Other / Custom Breed',
+];
+
+export const CAT_BREEDS = [
+  'Abyssinian',
+  'American Shorthair',
+  'Bengal',
+  'Birman',
+  'Bombay',
+  'British Shorthair',
+  'Burmese',
+  'Chartreux',
+  'Cornish Rex',
+  'Devon Rex',
+  'Domestic Longhair',
+  'Domestic Shorthair',
+  'Himalayan',
+  'Maine Coon',
+  'Manx',
+  'Norwegian Forest Cat',
+  'Oriental Shorthair',
+  'Persian',
+  'Ragdoll',
+  'Russian Blue',
+  'Scottish Fold',
+  'Siamese',
+  'Siberian',
+  'Sphynx',
+  'Tonkinese',
+  'Turkish Angora',
+  'Mixed Breed',
+  'Other / Custom Breed',
+];
+
 export interface DynamicRouteOptions {
   originCode: string;
   destinationCode: string;
   species: 'DOG' | 'CAT';
   petName?: string;
+  breed?: string;
+  birthday?: string;
   departureDate?: string;
 }
 
@@ -84,6 +179,8 @@ function buildDynamicScanResult(
   const toObj = COUNTRIES.find((c) => c.code === options?.destinationCode) || { name: 'Germany', flag: '🇩🇪' };
   const activePetName = options?.petName?.trim() || 'Milo';
   const activeSpecies = options?.species || 'DOG';
+  const activeBreed = options?.breed?.trim() || (activeSpecies === 'CAT' ? 'Domestic Shorthair' : 'Golden Retriever');
+  const activeBirthday = options?.birthday?.trim() || '2023-04-12';
   const activeDate = options?.departureDate || '2026-10-15';
 
   const docAudit = items.length > 0
@@ -149,7 +246,8 @@ function buildDynamicScanResult(
     petProfile: {
       name: activePetName,
       species: activeSpecies,
-      breed: activeSpecies === 'CAT' ? 'Domestic Shorthair' : 'Golden Retriever',
+      breed: activeBreed,
+      birthday: activeBirthday,
       ageMonths: 36,
       weightKg: activeSpecies === 'CAT' ? 4.5 : 28.5,
       microchipNumber: '985141002847192',
@@ -161,7 +259,7 @@ function buildDynamicScanResult(
     factsWithConfidence: {
       species: { value: activeSpecies, confidence: 0.99, status: 'VERIFIED', sourceDocument: getDocFor('passport', 0), needsConfirmation: false },
       petName: { value: activePetName, confidence: 0.99, status: 'VERIFIED', sourceDocument: getDocFor('passport', 0), needsConfirmation: false },
-      breed: { value: activeSpecies === 'CAT' ? 'Domestic Shorthair' : 'Golden Retriever', confidence: 0.98, status: 'VERIFIED', sourceDocument: getDocFor('passport', 0), needsConfirmation: false },
+      breed: { value: activeBreed, confidence: 0.98, status: 'VERIFIED', sourceDocument: getDocFor('passport', 0), needsConfirmation: false },
       microchipNumber: { value: '985141002847192', confidence: 1.0, status: 'VERIFIED', sourceDocument: getDocFor('chip', 0), needsConfirmation: false },
       microchipDate: { value: '2023-04-12', confidence: 0.99, status: 'VERIFIED', sourceDocument: getDocFor('chip', 0), needsConfirmation: false },
       rabiesVaccinationDate: { value: '2024-05-10', confidence: 1.0, status: 'VERIFIED', sourceDocument: getDocFor('rabies', 0), needsConfirmation: false },
@@ -303,8 +401,11 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
   const [toCountry, setToCountry] = useState('DE');
   const [petType, setPetType] = useState<'DOG' | 'CAT'>('DOG');
   const [petName, setPetName] = useState('');
+  const [breed, setBreed] = useState('');
+  const [birthday, setBirthday] = useState('');
   const [travelDate, setTravelDate] = useState('');
   const [dateInputType, setDateInputType] = useState<'text' | 'date'>('text');
+  const [bdayInputType, setBdayInputType] = useState<'text' | 'date'>('text');
 
   const [files, setFiles] = useState<File[]>([]);
   const [uploadedItems, setUploadedItems] = useState<UploadedItem[]>([]);
@@ -315,6 +416,42 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Dynamic breeds list based on current species
+  const availableBreeds = petType === 'CAT' ? CAT_BREEDS : DOG_BREEDS;
+
+  // Country options formatted for Select2 SearchableSelect with flags & keyword aliases
+  const countryOptions = useMemo(() => {
+    return COUNTRIES.map((c) => ({
+      value: c.code,
+      label: c.name,
+      flag: c.flag,
+      subtext: c.code,
+      keywords: [
+        c.code,
+        c.name,
+        ...(c.code === 'GB' ? ['UK', 'United Kingdom', 'Great Britain', 'England', 'Scotland', 'Wales'] : []),
+        ...(c.code === 'US' ? ['USA', 'United States', 'America'] : []),
+        ...(c.code === 'AE' ? ['UAE', 'United Arab Emirates', 'Dubai', 'Abu Dhabi'] : []),
+        ...(c.code === 'DE' ? ['Germany', 'Deutschland'] : []),
+        ...(c.code === 'ES' ? ['Spain', 'Espana'] : []),
+        ...(c.code === 'FR' ? ['France'] : []),
+        ...(c.code === 'IT' ? ['Italy', 'Italia'] : []),
+        ...(c.code === 'NL' ? ['Netherlands', 'Holland'] : []),
+        ...(c.code === 'CH' ? ['Switzerland', 'Swiss'] : []),
+      ],
+    }));
+  }, []);
+
+  const handleSelectPetSpecies = (type: 'DOG' | 'CAT') => {
+    if (scanning) return;
+    setPetType(type);
+    if (type === 'DOG' && CAT_BREEDS.includes(breed)) {
+      setBreed('');
+    } else if (type === 'CAT' && DOG_BREEDS.includes(breed)) {
+      setBreed('');
+    }
+  };
+
   // Sync with URL query parameters if arriving from HeroTripForm or direct link
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -324,6 +461,8 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
       const speciesParam = params.get('species')?.toUpperCase();
       const dateParam = params.get('date');
       const nameParam = params.get('petName') || params.get('name');
+      const breedParam = params.get('breed');
+      const bdayParam = params.get('birthday') || params.get('dob');
 
       if (fromParam && COUNTRIES.some((c) => c.code === fromParam.toUpperCase())) {
         setFromCountry(fromParam.toUpperCase());
@@ -339,6 +478,12 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
       }
       if (nameParam) {
         setPetName(nameParam);
+      }
+      if (breedParam) {
+        setBreed(breedParam);
+      }
+      if (bdayParam) {
+        setBirthday(bdayParam);
       }
     }
   }, []);
@@ -422,6 +567,8 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
         destinationCode: toCountry,
         species: petType,
         petName: petName.trim(),
+        breed: breed.trim(),
+        birthday: birthday,
         departureDate: travelDate,
       };
 
@@ -435,6 +582,8 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
         formData.append('destination_country', toObj.name);
         formData.append('species', petType);
         if (petName.trim()) formData.append('pet_name', petName.trim());
+        if (breed.trim()) formData.append('breed', breed.trim());
+        if (birthday) formData.append('birthday', birthday);
         if (travelDate) formData.append('departure_date', travelDate);
 
         // Race API request with a safety fallback so the UI never hangs indefinitely
@@ -608,36 +757,28 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
               </span>
             </div>
 
-            {/* From & To Row with Swap Button */}
-            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-2 items-center">
-              {/* Origin Dropdown */}
-              <div>
+            {/* Row 1: Origin, Destination & Swap */}
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr,auto,1fr] items-end gap-2 sm:gap-3 relative z-40">
+              {/* Origin Searchable Dropdown */}
+              <div className="relative">
                 <label className="block text-[10px] font-semibold text-zinc-500 mb-1">
                   From (Origin)
                 </label>
-                <div className="relative">
-                  <select
-                    value={fromCountry}
-                    onChange={(e) => setFromCountry(e.target.value)}
-                    disabled={scanning}
-                    className="w-full appearance-none rounded-xl border border-zinc-200 bg-zinc-50/50 hover:bg-white px-3 py-2 text-xs font-semibold text-zinc-800 hover:border-zinc-300 focus:border-[#0E2342] focus:bg-white focus:outline-none pr-7 transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    {COUNTRIES.map((c) => (
-                      <option key={`from-${c.code}`} value={c.code}>
-                        {c.flag} {c.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-zinc-400">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
+                <SearchableSelect
+                  id="origin-country-select2"
+                  value={fromCountry}
+                  onChange={(val) => setFromCountry(val)}
+                  options={countryOptions}
+                  placeholder="Select origin country..."
+                  searchPlaceholder="Search origin country (e.g. UK, Germany, US)..."
+                  disabled={scanning}
+                  allowCustom={false}
+                  clearable={false}
+                />
               </div>
 
               {/* Swap Button */}
-              <div className="flex justify-center pt-2 sm:pt-4">
+              <div className="flex justify-center pb-0.5">
                 <button
                   type="button"
                   onClick={handleSwapRoute}
@@ -649,34 +790,26 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                 </button>
               </div>
 
-              {/* Destination Dropdown */}
-              <div>
+              {/* Destination Searchable Dropdown */}
+              <div className="relative">
                 <label className="block text-[10px] font-semibold text-zinc-500 mb-1">
                   To (Destination)
                 </label>
-                <div className="relative">
-                  <select
-                    value={toCountry}
-                    onChange={(e) => setToCountry(e.target.value)}
-                    disabled={scanning}
-                    className="w-full appearance-none rounded-xl border border-zinc-200 bg-zinc-50/50 hover:bg-white px-3 py-2 text-xs font-semibold text-zinc-800 hover:border-zinc-300 focus:border-[#0E2342] focus:bg-white focus:outline-none pr-7 transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    {COUNTRIES.map((c) => (
-                      <option key={`to-${c.code}`} value={c.code}>
-                        {c.flag} {c.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-zinc-400">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
+                <SearchableSelect
+                  id="destination-country-select2"
+                  value={toCountry}
+                  onChange={(val) => setToCountry(val)}
+                  options={countryOptions}
+                  placeholder="Select destination country..."
+                  searchPlaceholder="Search destination country (e.g. Germany, France, Spain)..."
+                  disabled={scanning}
+                  allowCustom={false}
+                  clearable={false}
+                />
               </div>
             </div>
 
-            {/* Pet Species, Pet Name & Travel Date Row */}
+            {/* Row 2: Pet Species, Pet Name & Breed */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-0.5">
               {/* Pet Type Segmented Toggle */}
               <div>
@@ -686,7 +819,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                 <div className="grid grid-cols-2 gap-1 p-1 bg-zinc-100 rounded-xl border border-zinc-200/80">
                   <button
                     type="button"
-                    onClick={() => !scanning && setPetType('DOG')}
+                    onClick={() => handleSelectPetSpecies('DOG')}
                     disabled={scanning}
                     className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       petType === 'DOG'
@@ -699,7 +832,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                   </button>
                   <button
                     type="button"
-                    onClick={() => !scanning && setPetType('CAT')}
+                    onClick={() => handleSelectPetSpecies('CAT')}
                     disabled={scanning}
                     className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       petType === 'CAT'
@@ -728,10 +861,53 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                 />
               </div>
 
+              {/* Breed Select2 Searchable Dropdown */}
+              <div className="relative z-30">
+                <label className="block text-[10px] font-semibold text-zinc-500 mb-1">
+                  Breed <span className="text-zinc-400 font-normal">(optional)</span>
+                </label>
+                <SearchableSelect
+                  id="breed-select2"
+                  value={breed}
+                  onChange={(val) => setBreed(val)}
+                  options={availableBreeds}
+                  placeholder="Select breed (optional)..."
+                  searchPlaceholder={
+                    petType === 'CAT'
+                      ? 'Search cat breeds (e.g. Persian, Bengal)...'
+                      : 'Search dog breeds (e.g. Golden, Labrador)...'
+                  }
+                  disabled={scanning}
+                  allowCustom={true}
+                />
+              </div>
+            </div>
+
+            {/* Row 3: Birthday & Travel Date */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-0.5">
+              {/* Pet Birthday / Date of Birth */}
+              <div>
+                <label className="block text-[10px] font-semibold text-zinc-500 mb-1">
+                  Pet Birthday <span className="text-zinc-400 font-normal">(Date of Birth, optional)</span>
+                </label>
+                <input
+                  type={bdayInputType}
+                  value={birthday}
+                  onChange={(e) => setBirthday(e.target.value)}
+                  onFocus={() => setBdayInputType('date')}
+                  onBlur={() => {
+                    if (!birthday) setBdayInputType('text');
+                  }}
+                  disabled={scanning}
+                  placeholder="e.g. Apr 12, 2022"
+                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50/50 hover:bg-white px-3 py-2 text-xs font-medium text-zinc-800 placeholder-zinc-400 hover:border-zinc-300 focus:border-[#0E2342] focus:bg-white focus:outline-none transition-all disabled:opacity-50"
+                />
+              </div>
+
               {/* Travel Date Input */}
               <div>
                 <label className="block text-[10px] font-semibold text-zinc-500 mb-1">
-                  Travel Date <span className="text-zinc-400 font-normal">(optional)</span>
+                  Travel Date <span className="text-zinc-400 font-normal">(Departure, optional)</span>
                 </label>
                 <input
                   type={dateInputType}
