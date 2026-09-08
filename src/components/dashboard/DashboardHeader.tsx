@@ -42,9 +42,9 @@ export default function DashboardHeader({
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center font-black text-lg shadow-sm group-hover:scale-105 transition-transform">
             P
           </div>
-          <div className="hidden sm:block">
+          <div className="hidden sm:flex items-center gap-2">
             <span className="font-display font-black text-lg text-zinc-900 tracking-tight">Petvia</span>
-            <span className="ml-2 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">
+            <span className="px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-600 border border-zinc-200/80 text-[10px] font-bold uppercase tracking-wider">
               Portal
             </span>
           </div>
@@ -56,13 +56,13 @@ export default function DashboardHeader({
             <button
               type="button"
               onClick={() => setIsSwitcherOpen(!isSwitcherOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-100/80 hover:bg-zinc-200/70 border border-zinc-200 text-xs font-bold text-zinc-800 transition-all cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/90 text-xs font-semibold text-zinc-900 transition-all cursor-pointer shadow-2xs"
             >
               <span className="text-sm">{species}</span>
-              <span className="font-semibold text-zinc-900">{petName}</span>
-              <span className="hidden md:inline text-zinc-400 font-normal">·</span>
-              <span className="hidden md:inline text-zinc-600">{origin} → {destination}</span>
-              <span className="text-[10px] text-zinc-400 ml-1">▼</span>
+              <span className="font-bold text-zinc-900">{petName}</span>
+              <span className="hidden md:inline text-zinc-300 font-normal">|</span>
+              <span className="hidden md:inline text-zinc-600 font-medium">{origin} → {destination}</span>
+              <span className="text-[9px] text-zinc-400 ml-1">▼</span>
             </button>
 
             {isSwitcherOpen && (
