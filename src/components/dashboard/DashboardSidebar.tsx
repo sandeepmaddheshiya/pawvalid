@@ -4,6 +4,7 @@ import React from 'react';
 
 export type DashboardTab =
   | 'overview'
+  | 'passport'
   | 'timeline'
   | 'checklist'
   | 'vault'
@@ -31,6 +32,13 @@ export default function DashboardSidebar({
       icon: '📊',
       badge: blockersCount > 0 ? `${blockersCount} Blockers` : undefined,
       badgeColor: blockersCount > 0 ? 'bg-red-100 text-red-800' : undefined,
+    },
+    {
+      id: 'passport' as DashboardTab,
+      label: 'Digital Pet Passport',
+      icon: '🪪',
+      badge: 'Customs Ready',
+      badgeColor: 'bg-[#E8F8F0] text-[#0FA958]',
     },
     {
       id: 'timeline' as DashboardTab,

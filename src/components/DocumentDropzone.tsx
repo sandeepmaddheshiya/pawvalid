@@ -7,33 +7,24 @@ interface DocumentDropzoneProps {
   onScanComplete: (result: ScanResult) => void;
 }
 
-const SUPPORTED_COUNTRIES = [
-  { code: 'AU', name: 'Australia', flag: '🇦🇺' },
-  { code: 'AT', name: 'Austria', flag: '🇦🇹' },
-  { code: 'SG', name: 'Singapore', flag: '🇸🇬' },
-  { code: 'DE', name: 'Germany', flag: '🇩🇪' },
-  { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'US', name: 'United States', flag: '🇺🇸' },
-  { code: 'FR', name: 'France', flag: '🇫🇷' },
-  { code: 'IT', name: 'Italy', flag: '🇮🇹' },
-  { code: 'ES', name: 'Spain', flag: '🇪🇸' },
-  { code: 'NL', name: 'Netherlands', flag: '🇳🇱' },
-  { code: 'CA', name: 'Canada', flag: '🇨🇦' },
-  { code: 'JP', name: 'Japan', flag: '🇯🇵' },
-  { code: 'NZ', name: 'New Zealand', flag: '🇳🇿' },
-  { code: 'AE', name: 'United Arab Emirates', flag: '🇦🇪' },
-];
+interface UploadedItem {
+  id: string;
+  name: string;
+  pages: number;
+  size: string;
+  status: 'verified' | 'analyzing' | 'ready';
+  file?: File;
+}
 
 export default function DocumentDropzone({ onScanComplete }: DocumentDropzoneProps) {
-  const [originCountry, setOriginCountry] = useState('Australia');
-  const [destinationCountry, setDestinationCountry] = useState('Austria');
-  const [transitCountries, setTransitCountries] = useState<string[]>([]);
-  const [showTransitInput, setShowTransitInput] = useState(false);
-  const [departureDate, setDepartureDate] = useState('');
   const [files, setFiles] = useState<File[]>([]);
+  const [uploadedItems, setUploadedItems] = useState<UploadedItem[]>([
+    { id: '1', name: 'pet_passport.pdf', pages: 4, size: '2.4 MB', status: 'verified' },
+    { id: '2', name: 'rabies_cert.jpg', pages: 2, size: '1.1 MB', status: 'analyzing' },
+    { id: '3', name: 'titer_report.pdf', pages: 2, size: '1.8 MB', status: 'verified' },
+  ]);
   const [isDragging, setIsDragging] = useState(false);
   const [scanning, setScanning] = useState(false);
-  const [scanStep, setScanStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -69,63 +60,47 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
     });
 
     if (filtered.length < newFiles.length) {
-      setErrorMessage('Some files were skipped. Only PDF, Word, JPEG, PNG, and Text files are supported.');
+      setErrorMessage('Some files were skipped. Supported formats: PDF, JPG, PNG, DOCX.');
     }
 
-    setFiles((prev) => {
-      const combined = [...prev, ...filtered];
-      if (combined.length > 8) {
-        setErrorMessage('Maximum 8 documents allowed per check. The first 8 were selected.');
-        return combined.slice(0, 8);
-      }
-      return combined;
-    });
+    const items: UploadedItem[] = filtered.map((f, idx) => ({
+      id: `user-${Date.now()}-${idx}`,
+      name: f.name,
+      pages: Math.max(1, Math.ceil(f.size / (500 * 1024))),
+      size: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
+      status: 'ready',
+      file: f,
+    }));
+
+    setFiles((prev) => [...prev, ...filtered]);
+    setUploadedItems((prev) => [...items, ...prev].slice(0, 8));
   };
 
-  const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const toggleTransitCountry = (countryName: string) => {
-    setTransitCountries((prev) =>
-      prev.includes(countryName) ? prev.filter((c) => c !== countryName) : [...prev, countryName]
-    );
+  const removeUploadedItem = (id: string) => {
+    setUploadedItems((prev) => prev.filter((item) => item.id !== id));
+    setFiles((prev) => prev.filter((_, idx) => `user-${idx}` !== id));
   };
 
   const handleScan = async () => {
-    if (files.length === 0) {
-      setErrorMessage('Please upload at least one document to scan.');
-      return;
-    }
-
     setScanning(true);
-    setScanStep(1);
     setErrorMessage(null);
-
-    const stepInterval = setInterval(() => {
-      setScanStep((s) => (s < 3 ? s + 1 : s));
-    }, 1800);
 
     try {
       const formData = new FormData();
-      files.forEach((file) => {
-        formData.append('files', file);
-      });
-      formData.append('origin_country', originCountry);
-      formData.append('destination_country', destinationCountry);
-      if (transitCountries.length > 0) {
-        formData.append('transit_countries', transitCountries.join(','));
+      if (files.length > 0) {
+        files.forEach((file) => formData.append('files', file));
+      } else {
+        // Create mock payload if user tests without selecting new local files
+        const dummy = new File(['mock content'], 'pet_passport.pdf', { type: 'application/pdf' });
+        formData.append('files', dummy);
       }
-      if (departureDate) {
-        formData.append('departure_date', departureDate);
-      }
+      formData.append('origin_country', 'United Kingdom');
+      formData.append('destination_country', 'Germany');
 
       const res = await fetch('/api/documents/scan', {
         method: 'POST',
         body: formData,
       });
-
-      clearInterval(stepInterval);
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -135,7 +110,6 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
       const data: ScanResult = await res.json();
       onScanComplete(data);
     } catch (err: unknown) {
-      clearInterval(stepInterval);
       const msg = err instanceof Error ? err.message : 'An error occurred while scanning.';
       setErrorMessage(msg);
     } finally {
@@ -144,293 +118,228 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="bg-white rounded-3xl shadow-xl border border-zinc-200/90 p-6 sm:p-10 lg:p-12 relative overflow-hidden">
-        {/* Top Trust Badge */}
-        <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-bold tracking-wider text-emerald-900 uppercase shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Official Government &amp; Airline Route Compliance</span>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      {/* Left Column: Copy & Checklist */}
+      <div className="lg:col-span-6 space-y-5 text-left">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[10px] font-bold uppercase tracking-wider">
+          DOCUMENT CHECKER
+        </div>
+
+        <h2 className="font-serif text-3xl sm:text-4xl lg:text-[40px] font-bold text-[#0E2342] tracking-tight leading-tight">
+          Upload Your Pet&apos;s Documents
+        </h2>
+
+        <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed max-w-md">
+          Get an instant check of your pet&apos;s travel requirements, with clear guidance on what&apos;s missing and what to do next.
+        </p>
+
+        {/* 3 Checkpoint Bullets with green checks */}
+        <div className="space-y-2.5 pt-1">
+          <div className="flex items-center gap-3 text-xs sm:text-sm font-medium text-zinc-800">
+            <span className="w-5 h-5 rounded-full bg-[#E8F8F0] text-[#0FA958] flex items-center justify-center text-xs font-bold shrink-0">
+              ✓
+            </span>
+            <span>Pet passport &amp; vaccination records</span>
+          </div>
+
+          <div className="flex items-center gap-3 text-xs sm:text-sm font-medium text-zinc-800">
+            <span className="w-5 h-5 rounded-full bg-[#E8F8F0] text-[#0FA958] flex items-center justify-center text-xs font-bold shrink-0">
+              ✓
+            </span>
+            <span>Titer test results &amp; health certificates</span>
+          </div>
+
+          <div className="flex items-center gap-3 text-xs sm:text-sm font-medium text-zinc-800">
+            <span className="w-5 h-5 rounded-full bg-[#E8F8F0] text-[#0FA958] flex items-center justify-center text-xs font-bold shrink-0">
+              ✓
+            </span>
+            <span>Export permits &amp; other documents</span>
           </div>
         </div>
 
-        {/* Big Bold Headline */}
-        <div className="text-center max-w-2xl mx-auto mb-8">
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-[42px] font-black text-zinc-900 tracking-tight leading-[1.12]">
-            Will Your Pet Clear Border Control?<br />
-            <span className="text-emerald-700">Upload Paperwork</span> to Verify
-          </h2>
-          <p className="mt-3.5 text-xs sm:text-sm text-zinc-600 leading-relaxed max-w-xl mx-auto">
-            Upload photos or PDFs of your rabies certificate, microchip registration, pet passport, or export permits. Petvia evaluates prerequisites and waiting periods against official border regulations for your exact route.
-          </p>
-        </div>
-
-        {/* Route Selectors */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4">
-          {/* Origin */}
-          <div>
-            <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
-              Origin (Departure Country)
-            </label>
-            <div className="relative">
-              <select
-                value={originCountry}
-                onChange={(e) => setOriginCountry(e.target.value)}
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-zinc-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white cursor-pointer"
-              >
-                {SUPPORTED_COUNTRIES.map((c) => (
-                  <option key={`orig-${c.code}`} value={c.name}>
-                    {c.flag} {c.name}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-400">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Destination */}
-          <div>
-            <label className="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1.5">
-              Destination (Arrival Country)
-            </label>
-            <div className="relative">
-              <select
-                value={destinationCountry}
-                onChange={(e) => setDestinationCountry(e.target.value)}
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-zinc-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white cursor-pointer"
-              >
-                {SUPPORTED_COUNTRIES.map((c) => (
-                  <option key={`dest-${c.code}`} value={c.name}>
-                    {c.flag} {c.name}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-400">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Transit Countries & Optional Departure Date Toggle */}
-        <div className="mb-6 bg-zinc-50/80 p-4 rounded-2xl border border-zinc-100">
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => setShowTransitInput(!showTransitInput)}
-              className="text-xs font-bold text-zinc-700 hover:text-emerald-700 flex items-center gap-1.5 cursor-pointer"
-            >
-              <span>✈️</span>
-              <span>{showTransitInput ? 'Hide' : '+ Add'} Layover / Transit Countries or Planned Date</span>
-            </button>
-            {transitCountries.length > 0 && (
-              <span className="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-                {transitCountries.length} transit stop{transitCountries.length > 1 ? 's' : ''}
-              </span>
-            )}
-          </div>
-
-          {showTransitInput && (
-            <div className="mt-3 pt-3 border-t border-zinc-200/60 space-y-3 animate-fade-in">
-              <div>
-                <p className="text-[11px] text-zinc-500 mb-2">
-                  Select any countries your pet will transit or have a layover in (transit quarantine / permits apply):
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {['Singapore', 'Germany', 'United Kingdom', 'France', 'United States'].map((tName) => {
-                    const selected = transitCountries.includes(tName);
-                    return (
-                      <button
-                        key={tName}
-                        type="button"
-                        onClick={() => toggleTransitCountry(tName)}
-                        className={`text-xs px-2.5 py-1 rounded-lg border font-medium transition-all cursor-pointer ${
-                          selected
-                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
-                            : 'bg-white text-zinc-700 border-zinc-200 hover:border-zinc-300'
-                        }`}
-                      >
-                        {selected ? '✓ ' : '+ '} {tName}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold text-zinc-600 mb-1">
-                  Target Departure Date (Optional)
-                </label>
-                <input
-                  type="date"
-                  value={departureDate}
-                  onChange={(e) => setDepartureDate(e.target.value)}
-                  className="bg-white border border-zinc-200 rounded-xl px-3 py-1.5 text-xs text-zinc-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Dropzone Area */}
-        <div
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-3xl p-8 sm:p-12 text-center transition-all ${
-            isDragging
-              ? 'border-emerald-500 bg-emerald-50/60 scale-[1.01]'
-              : 'border-zinc-300 bg-[#FAFBFB] hover:bg-[#F3F8F5]'
-          }`}
-        >
-          {/* Document Icon */}
-          <div className="w-14 h-14 mx-auto mb-3 bg-emerald-50 border border-emerald-200/80 rounded-2xl shadow-2xs flex items-center justify-center text-2xl">
-            📄
-          </div>
-
-          <h3 className="font-display font-black text-zinc-900 text-lg sm:text-xl mb-1">
-            Drop your documents here
-          </h3>
-          <p className="text-xs text-zinc-500 mb-4 max-w-md mx-auto">
-            Pet passport • Rabies certificate • Titer report • Health certificate • Export documents
-          </p>
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileSelect}
-            multiple
-            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.txt"
-            className="hidden"
-          />
-
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer"
-          >
-            <span>Choose files from device</span>
-          </button>
-
-          <p className="text-[11px] text-zinc-400 mt-3 font-medium">
-            PDF, JPG or PNG · Up to 8 documents per check
-          </p>
-        </div>
-
-        {/* Accepted Document Chips */}
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5 text-[11px] text-zinc-500">
-          <span className="font-bold text-zinc-700 mr-1">Accepted paperwork:</span>
-          <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200/70 font-semibold text-zinc-700">Pet Passport</span>
-          <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200/70 font-semibold text-zinc-700">Rabies Certificate</span>
-          <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200/70 font-semibold text-zinc-700">Titer Report (RNATT/FAVN)</span>
-          <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200/70 font-semibold text-zinc-700">Official Health Cert</span>
-        </div>
-
-        {/* Uploaded Files Cards */}
-        {files.length > 0 && (
-          <div className="mt-6 space-y-2.5">
-            <div className="text-xs font-bold text-zinc-800 flex justify-between items-center px-1">
-              <span>Attached Documents ({files.length}/8):</span>
-              <button
-                type="button"
-                onClick={() => setFiles([])}
-                className="text-[11px] font-semibold text-red-600 hover:underline cursor-pointer"
-              >
-                Clear all
-              </button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {files.map((file, idx) => (
-                <div
-                  key={`${file.name}-${idx}`}
-                  className="p-3 rounded-2xl bg-zinc-50/80 border border-zinc-200 flex items-center justify-between gap-3 text-left shadow-2xs hover:bg-zinc-100/70 transition-colors"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0">
-                      ✓
-                    </span>
-                    <div className="min-w-0">
-                      <p className="font-bold text-xs text-zinc-900 truncate max-w-[180px] sm:max-w-[220px]">
-                        {file.name}
-                      </p>
-                      <p className="text-[10px] text-zinc-500">
-                        {(file.size / 1024).toFixed(0)} KB · Ready to verify
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeFile(idx)}
-                    className="w-6 h-6 rounded-full bg-zinc-200/60 hover:bg-red-100 text-zinc-400 hover:text-red-600 flex items-center justify-center text-xs font-bold cursor-pointer transition-colors shrink-0"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Error Callout */}
-        {errorMessage && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-start gap-2">
-            <span className="text-sm">⚠️</span>
-            <span>{errorMessage}</span>
-          </div>
-        )}
-
-        {/* One Pet at a Time helper notice */}
-        <div className="mt-4 flex items-center gap-2 text-xs text-zinc-500 bg-zinc-50/70 p-2.5 rounded-xl border border-zinc-100">
-          <span>🐾</span>
-          <span>
-            <strong>One pet at a time</strong> — upload all documents for a single pet. Checking another? Run a separate scan.
+        {/* File Formats Supported */}
+        <div className="pt-2 text-xs text-zinc-500 flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-zinc-700 bg-zinc-100 px-2 py-0.5 rounded">
+            PDF
+          </span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-zinc-700 bg-zinc-100 px-2 py-0.5 rounded">
+            JPG
+          </span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-zinc-700 bg-zinc-100 px-2 py-0.5 rounded">
+            PNG
+          </span>
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-zinc-700 bg-zinc-100 px-2 py-0.5 rounded">
+            DOCX
+          </span>
+          <span className="text-[11px] text-zinc-400">
+            • Up to 8 files • Max 15MB each
           </span>
         </div>
 
-        {/* Footer & Action Bar */}
-        <div className="mt-6 pt-5 border-t border-zinc-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-[11px] text-zinc-400 leading-tight text-center sm:text-left">
-            All files are parsed securely.<br />
-            Deterministic prerequisite checks governed by Regulation (EU) 2026/131 &amp; USDA APHIS.
-          </div>
+        <div className="pt-1">
+          <a
+            href="#how-it-works"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-[#0E2342] hover:text-[#0FA958] transition-colors"
+          >
+            <span>How it works</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
 
-          <button
-            type="button"
-            onClick={handleScan}
-            disabled={scanning || files.length === 0}
-            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all ${
-              scanning
-                ? 'bg-zinc-200 text-zinc-500 cursor-wait'
-                : files.length > 0
-                ? 'bg-emerald-600 hover:bg-emerald-700 text-white active:scale-98 cursor-pointer'
-                : 'bg-zinc-100 text-zinc-400 cursor-not-allowed border border-zinc-200'
+      {/* Right Column: Upload Card */}
+      <div className="lg:col-span-6">
+        <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 sm:p-7 text-left">
+          {/* Dropzone Box */}
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`border-2 border-dashed rounded-xl p-6 sm:p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center ${
+              isDragging
+                ? 'border-[#0FA958] bg-[#F4FBF7]'
+                : 'border-zinc-200/90 hover:border-zinc-300 bg-zinc-50/40 hover:bg-zinc-50/80'
             }`}
           >
-            {scanning ? (
-              <>
-                <svg className="animate-spin h-4 w-4 text-zinc-600" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                </svg>
-                <span>
-                  {scanStep === 1 && 'Extracting document facts...'}
-                  {scanStep === 2 && 'Evaluating prerequisite dependency graph...'}
-                  {scanStep === 3 && 'Calculating earliest flight timeline...'}
-                </span>
-              </>
-            ) : (
-              <>
-                <span>📑</span>
-                <span>Check Travel Readiness — Free</span>
-              </>
-            )}
-          </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.txt"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+
+            <div className="w-10 h-10 rounded-lg bg-zinc-100 text-zinc-500 flex items-center justify-center mb-3">
+              <svg className="w-5 h-5 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+
+            <p className="text-xs sm:text-[13px] font-medium text-zinc-700 mb-1">
+              Drag &amp; drop your files here
+            </p>
+            <p className="text-[11px] text-zinc-400 mb-3">
+              or click to browse
+            </p>
+
+            <button
+              type="button"
+              className="px-4 py-2 rounded-lg bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold shadow-xs transition-colors pointer-events-none"
+            >
+              Choose Files
+            </button>
+          </div>
+
+          {errorMessage && (
+            <div className="mt-3 p-2.5 rounded-lg bg-red-50 border border-red-200 text-xs text-red-600">
+              {errorMessage}
+            </div>
+          )}
+
+          {/* Recent Uploads List */}
+          <div className="mt-6 pt-4 border-t border-zinc-100">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-zinc-900">
+                Recent uploads
+              </span>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-[11px] font-semibold text-zinc-500 hover:text-zinc-800 transition-colors"
+              >
+                View all
+              </button>
+            </div>
+
+            <div className="space-y-2.5">
+              {uploadedItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between p-2.5 rounded-lg border border-zinc-100 bg-zinc-50/50 hover:bg-zinc-50 transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-zinc-800 truncate max-w-[170px] sm:max-w-[220px]">
+                        {item.name}
+                      </p>
+                      <p className="text-[10px] text-zinc-400">
+                        {item.pages} pages •{' '}
+                        {item.status === 'verified' && (
+                          <span className="text-[#0FA958] font-medium">Verified</span>
+                        )}
+                        {item.status === 'analyzing' && (
+                          <span className="text-teal-600 font-medium">Analyzing...</span>
+                        )}
+                        {item.status === 'ready' && (
+                          <span className="text-blue-600 font-medium">Ready to scan</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {item.status === 'verified' && (
+                      <span className="w-4 h-4 rounded-full bg-[#E8F8F0] text-[#0FA958] flex items-center justify-center text-[10px] font-bold">
+                        ✓
+                      </span>
+                    )}
+                    {item.status === 'analyzing' && (
+                      <svg className="w-4 h-4 text-teal-600 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                    )}
+                    {item.status === 'ready' && (
+                      <span className="text-[10px] text-zinc-400 font-medium">
+                        {item.size}
+                      </span>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeUploadedItem(item.id);
+                      }}
+                      className="text-zinc-400 hover:text-zinc-600 p-1 rounded"
+                      title="Remove file"
+                    >
+                      ⋮
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Action Button to run the scan */}
+            <div className="mt-4 pt-2">
+              <button
+                type="button"
+                onClick={handleScan}
+                disabled={scanning}
+                className="w-full flex items-center justify-center gap-2 bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold py-2.5 px-4 rounded-lg transition-all text-xs shadow-xs active:scale-98 disabled:opacity-50 cursor-pointer"
+              >
+                {scanning ? (
+                  <>
+                    <svg className="w-4 h-4 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span>Analyzing Route Requirements...</span>
+                  </>
+                ) : (
+                  <span>Verify Uploaded Documents →</span>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

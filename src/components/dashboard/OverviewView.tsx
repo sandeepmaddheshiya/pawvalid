@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+import QrCode from '@/components/QrCode';
 import type { DashboardTab } from './DashboardSidebar';
 
 interface OverviewViewProps {
@@ -158,7 +160,79 @@ export default function OverviewView({
         </div>
       </div>
 
-      {/* ─── 2. STATS & QUICK NAVIGATION TILES ─────────────────────── */}
+      {/* ─── 2. DIGITAL PET PASSPORT & PET VISA QR QUICK TILES ─────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Digital Pet Passport Tile */}
+        <div
+          onClick={() => onNavigate('passport')}
+          className="bg-gradient-to-br from-[#0E2342] to-[#16345E] text-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🪪</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0FA958]">
+                  Digital Pet Passport
+                </span>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-300 bg-white/10 px-2 py-0.5 rounded-full">
+                Customs Ready
+              </span>
+            </div>
+            <h4 className="text-base font-bold text-white mb-1">
+              {trip?.petName || 'Milo'}&apos;s Reusable Travel Profile
+            </h4>
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Scan your pet&apos;s documents once, save their profile, and reuse it for every trip — with personalized compliance built in.
+            </p>
+          </div>
+          <div className="pt-4 flex items-center justify-between border-t border-white/10 mt-3 text-xs">
+            <span className="text-zinc-300">
+              Chip: <span className="font-mono text-white font-bold">{petProfile?.microchipNumber || '985141002847192'}</span>
+            </span>
+            <span className="font-bold text-[#0FA958] group-hover:text-white transition-colors">
+              Open Passport Vault →
+            </span>
+          </div>
+        </div>
+
+        {/* Pet Visa QR Code for Customs Tile */}
+        <div className="bg-white rounded-2xl p-5 border border-zinc-200/80 shadow-xs hover:border-zinc-300 transition-all flex items-center justify-between gap-4">
+          <div className="space-y-1 text-left">
+            <div className="flex items-center gap-1.5">
+              <span className="text-base">📱</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0FA958]">
+                Pet Visa for Customs
+              </span>
+            </div>
+            <h4 className="text-base font-bold text-[#0E2342]">
+              Scannable Customs Travel Pass
+            </h4>
+            <p className="text-xs text-zinc-500 leading-relaxed">
+              Instant digital verification at airline check-in &amp; border customs checkpoints.
+            </p>
+            <div className="pt-2">
+              <Link
+                href={`/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`}
+                target="_blank"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#0E2342] hover:text-[#0FA958] transition-colors"
+              >
+                <span>View Full Customs Pass ↗</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="shrink-0 p-2 bg-zinc-50 rounded-xl border border-zinc-200/80 shadow-2xs">
+            <QrCode
+              value={typeof window !== 'undefined' ? `${window.location.origin}/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}` : `https://petvia.com/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`}
+              size={96}
+              darkColor="#0E2342"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ─── 3. STATS & QUICK NAVIGATION TILES ─────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div
           onClick={() => onNavigate('checklist')}

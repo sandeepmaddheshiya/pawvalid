@@ -3,97 +3,137 @@
 import { useState } from 'react';
 
 interface FaqItem {
+  id: string;
   question: string;
   answer: string;
-  category: string;
 }
 
-const FAQS: FaqItem[] = [
+const LEFT_FAQS: FaqItem[] = [
   {
-    category: 'Border & Airline Enforcement',
-    question: 'Can airlines deny my pet boarding even if my pet already has a passport?',
+    id: 'l1',
+    question: 'Does PawRoute provide official government approval?',
     answer:
-      'Yes. Airlines are legally required to verify that your pet meets the sovereign entry requirements of the destination country before boarding. If a health certificate is dated outside the mandatory 10-day window, a rabies vaccination was administered prior to microchip implantation, or a 90-day waiting period has not elapsed, airlines face severe fines and will turn you away at the check-in counter. An EU pet passport is only valid when every vaccination and clinical examination section complies with destination regulations.',
+      'No. Petvia is an independent regulatory compliance software platform. We cross-reference and verify your documents against official government biosecurity statutes (EU 2026/131, USDA APHIS, DEFRA UK, and MAFF Japan) so you and your accredited veterinarian can secure official government endorsement without mistakes or delays.',
   },
   {
-    category: 'Planning Timelines',
-    question: 'How far in advance should I start preparing my pet\'s paperwork?',
+    id: 'l2',
+    question: 'Can you check transit countries?',
     answer:
-      'It depends strictly on your origin and destination countries. For travel between low-risk countries (such as United States to Canada or intra-EU travel), 3 to 4 weeks is typically sufficient. However, for travel from high-risk or unlisted rabies countries (such as India, Turkey, UAE, or Brazil) to the European Union, United Kingdom, Japan, or Australia, you must begin 4 to 7 months in advance due to mandatory 21-day vaccine waiting times, blood titer lab turnaround, and mandatory 90-day to 180-day waiting periods.',
+      'Yes. Many international transit hubs (such as London Heathrow, Frankfurt, or Singapore Changi) enforce stringent transit quarantine permits, microchip checks, or carrier rules even if your pet remains airside. Petvia audits your entire travel chain.',
   },
   {
-    category: 'Authority & Certification',
-    question: 'Is Petvia an official government agency or visa issuer?',
+    id: 'l3',
+    question: 'What documents can I upload?',
     answer:
-      'No. Petvia is an independent regulatory compliance intelligence platform. We decode, cross-reference, and verify your travel itinerary against official government biosecurity statutes (such as Regulation EU 2026/131, USDA APHIS, DEFRA UK, and MAFF Japan). We provide the exact requirements, mathematical timelines, and document discrepancy checks so you and your licensed veterinarian can obtain official government endorsements without errors.',
+      'You can upload Pet Passports, Vaccination Records, Rabies Certificates, Rabies Serological Titer Reports (FAVN/RNATT), and International Veterinary Health Certificates in PDF, JPG, PNG, or DOCX format.',
+  },
+];
+
+const RIGHT_FAQS: FaqItem[] = [
+  {
+    id: 'r1',
+    question: 'What happens if documents contain different information?',
+    answer:
+      'Our engine performs multi-document cross-verification, flagging any inconsistencies between microchip dates, vaccine batch records, or pet descriptions so you can resolve them with your vet before airport check-in.',
   },
   {
-    category: 'Document Verification',
-    question: 'What documents can I upload to the Automated Document Check?',
+    id: 'r2',
+    question: 'Can you tell me when my pet can travel?',
     answer:
-      'You can upload European Pet Passports, National Vaccination Records, Rabies Certificates, Rabies Neutralising Antibody Titre Test reports (FAVN or RNATT laboratory reports), and International Veterinary Health Certificates in PDF, JPEG, or PNG format. Our engine verifies microchip ISO compliance, vaccination validity dates, laboratory authorization, and wait period windows.',
+      'Yes. Petvia calculates your exact earliest legal travel date by mathematically computing mandatory 21-day primary vaccination lags, 90-day EU titer windows, or 180-day rabies latency periods.',
   },
   {
-    category: 'Plans & Pricing',
-    question: 'What is the difference between the Readiness Scan and the Complete Travel Plan?',
+    id: 'r3',
+    question: 'How accurate is the information?',
     answer:
-      'The free Readiness Scan flags whether your route has mandatory waiting periods or critical blockers based on high-level inputs. The Complete Travel Plan (£19) delivers an exhaustive, route-specific itinerary: date-locked milestone calendars, step-by-step instructions for your veterinarian, required bilingual health certificate forms, entry port biosecurity instructions, and ongoing airline policy checklists.',
+      'Our requirements database is continuously audited against official government agriculture and border control statutes, IATA live animal regulations, and embassy protocols across 120+ countries.',
   },
 ];
 
 export default function FaqAccordion() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIds, setOpenIds] = useState<string[]>([]);
 
-  const toggle = (idx: number) => {
-    setOpenIndex(openIndex === idx ? null : idx);
+  const toggle = (id: string) => {
+    setOpenIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
   };
 
   return (
-    <div className="space-y-3 max-w-4xl mx-auto">
-      {FAQS.map((faq, idx) => {
-        const isOpen = openIndex === idx;
-        return (
-          <div
-            key={idx}
-            className={`border rounded-2xl transition-all duration-200 ${
-              isOpen
-                ? 'bg-white border-zinc-300 shadow-sm'
-                : 'bg-white/80 hover:bg-white border-zinc-200/80 hover:border-zinc-300'
-            }`}
-          >
-            <button
-              type="button"
-              onClick={() => toggle(idx)}
-              className="w-full px-6 py-5 text-left flex items-start justify-between gap-4 focus:outline-none"
-              aria-expanded={isOpen}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto text-left">
+      {/* Left Column */}
+      <div className="space-y-3">
+        {LEFT_FAQS.map((faq) => {
+          const isOpen = openIds.includes(faq.id);
+          return (
+            <div
+              key={faq.id}
+              className={`border rounded-xl transition-all duration-200 ${
+                isOpen
+                  ? 'bg-white border-zinc-300 shadow-xs'
+                  : 'bg-white border-zinc-200/80 hover:border-zinc-300'
+              }`}
             >
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
-                  {faq.category}
-                </span>
-                <h4 className="font-display font-bold text-zinc-900 text-sm sm:text-base leading-snug">
+              <button
+                type="button"
+                onClick={() => toggle(faq.id)}
+                className="w-full px-5 py-4 text-left flex items-center justify-between gap-3 focus:outline-none"
+                aria-expanded={isOpen}
+              >
+                <h4 className="text-xs sm:text-[13px] font-semibold text-[#0E2342] leading-snug">
                   {faq.question}
                 </h4>
-              </div>
-              <span
-                className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-zinc-500 border border-zinc-200 transition-transform duration-200 mt-0.5 ${
-                  isOpen ? 'rotate-180 bg-zinc-100 text-zinc-900' : 'bg-zinc-50'
-                }`}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                </svg>
-              </span>
-            </button>
+                <span className="text-sm font-bold text-zinc-400 shrink-0">
+                  {isOpen ? '−' : '+'}
+                </span>
+              </button>
 
-            {isOpen && (
-              <div className="px-6 pb-6 pt-1 text-xs sm:text-sm text-zinc-600 leading-relaxed border-t border-zinc-100 mt-1">
-                {faq.answer}
-              </div>
-            )}
-          </div>
-        );
-      })}
+              {isOpen && (
+                <div className="px-5 pb-4 pt-1 text-xs text-zinc-600 leading-relaxed border-t border-zinc-100">
+                  {faq.answer}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Right Column */}
+      <div className="space-y-3">
+        {RIGHT_FAQS.map((faq) => {
+          const isOpen = openIds.includes(faq.id);
+          return (
+            <div
+              key={faq.id}
+              className={`border rounded-xl transition-all duration-200 ${
+                isOpen
+                  ? 'bg-white border-zinc-300 shadow-xs'
+                  : 'bg-white border-zinc-200/80 hover:border-zinc-300'
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() => toggle(faq.id)}
+                className="w-full px-5 py-4 text-left flex items-center justify-between gap-3 focus:outline-none"
+                aria-expanded={isOpen}
+              >
+                <h4 className="text-xs sm:text-[13px] font-semibold text-[#0E2342] leading-snug">
+                  {faq.question}
+                </h4>
+                <span className="text-sm font-bold text-zinc-400 shrink-0">
+                  {isOpen ? '−' : '+'}
+                </span>
+              </button>
+
+              {isOpen && (
+                <div className="px-5 pb-4 pt-1 text-xs text-zinc-600 leading-relaxed border-t border-zinc-100">
+                  {faq.answer}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

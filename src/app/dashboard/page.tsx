@@ -12,6 +12,7 @@ import VaultView from '@/components/dashboard/VaultView';
 import VetSheetView from '@/components/dashboard/VetSheetView';
 import CrateView from '@/components/dashboard/CrateView';
 import ConciergeView from '@/components/dashboard/ConciergeView';
+import PassportView from '@/components/dashboard/PassportView';
 
 function DashboardContent() {
   const searchParams = useSearchParams();
@@ -378,6 +379,13 @@ function DashboardContent() {
                 onNavigate={handleTabChange}
                 onDownloadDossier={handleDownloadDossier}
                 isDownloadingDossier={isDownloadingDossier}
+              />
+            )}
+
+            {activeTab === 'passport' && (
+              <PassportView
+                trip={currentTrip}
+                userEmail={currentUserEmail || currentTrip.userEmail}
               />
             )}
 

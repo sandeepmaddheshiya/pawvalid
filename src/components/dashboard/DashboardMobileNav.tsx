@@ -14,10 +14,10 @@ export default function DashboardMobileNav({
 }: DashboardMobileNavProps) {
   const items: Array<{ id: DashboardTab; label: string; icon: string }> = [
     { id: 'overview', label: 'Overview', icon: '📊' },
+    { id: 'passport', label: 'Passport', icon: '🪪' },
     { id: 'timeline', label: 'Timeline', icon: '⏳' },
     { id: 'checklist', label: 'Checklist', icon: '📋' },
     { id: 'vault', label: 'Vault', icon: '📁' },
-    { id: 'vetsheet', label: 'Vet Sheet', icon: '👨‍⚕️' },
   ];
 
   return (

@@ -8,11 +8,11 @@ export default function Logo({ size = 'default' }: { size?: 'small' | 'default' 
       {/* Brand Paw Badge */}
       <div
         className={`${
-          isSmall ? 'w-8 h-8' : 'w-10 h-10'
-        } rounded-xl bg-[#e6f7f0] border border-[#a8e8cc] flex items-center justify-center text-[#10b981] group-hover:scale-105 transition-transform shadow-xs shrink-0`}
+          isSmall ? 'w-8 h-8' : 'w-9 h-9'
+        } rounded-xl bg-transparent flex items-center justify-center text-[#0E2342] group-hover:scale-105 transition-transform shrink-0`}
       >
         <svg
-          className={isSmall ? 'w-5 h-5' : 'w-6 h-6'}
+          className={isSmall ? 'w-6 h-6' : 'w-7 h-7'}
           viewBox="0 0 24 24"
           fill="currentColor"
         >
@@ -30,20 +30,18 @@ export default function Logo({ size = 'default' }: { size?: 'small' | 'default' 
       </div>
 
       {/* Brand text */}
-      <div className="flex flex-col leading-none">
+      <div className="flex flex-col leading-tight">
         <span
           className={`font-display ${
-            isSmall ? 'text-lg' : 'text-xl'
-          } font-black text-[#0f172a] tracking-tight`}
+            isSmall ? 'text-base' : 'text-lg'
+          } font-black text-[#0E2342] tracking-tight`}
         >
-          PetTravel
+          Petvia
         </span>
         <span
-          className={`font-sans ${
-            isSmall ? 'text-[11px]' : 'text-xs'
-          } font-bold text-[#10b981] tracking-wide`}
+          className="text-[9px] font-medium text-zinc-500 tracking-normal"
         >
-          Compliance
+          Pet Travel Compliance
         </span>
       </div>
     </Link>

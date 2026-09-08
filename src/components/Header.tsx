@@ -44,29 +44,35 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-zinc-200/70 transition-all">
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-zinc-200/80 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Logo />
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8 text-[15px] font-medium text-zinc-700">
+          <nav className="hidden lg:flex items-center gap-7 text-[13px] font-medium text-zinc-600">
+            <Link
+              href="/"
+              className="hover:text-zinc-900 transition-colors"
+            >
+              Home
+            </Link>
             <Link
               href="#how-it-works"
-              className="hover:text-emerald-600 transition-colors"
+              className="hover:text-zinc-900 transition-colors"
             >
               How It Works
             </Link>
             <Link
               href="/en/pet-travel"
-              className="hover:text-emerald-600 transition-colors"
+              className="hover:text-zinc-900 transition-colors"
             >
               Destinations
             </Link>
             <Link
-              href="/en/checker"
-              className="hover:text-emerald-600 transition-colors"
+              href="#pricing"
+              className="hover:text-zinc-900 transition-colors"
             >
               Pricing
             </Link>
@@ -77,11 +83,11 @@ export default function Header() {
                 type="button"
                 onClick={() => setResourcesOpen(!resourcesOpen)}
                 onMouseEnter={() => setResourcesOpen(true)}
-                className="flex items-center gap-1 hover:text-emerald-600 transition-colors focus:outline-none"
+                className="flex items-center gap-1 hover:text-zinc-900 transition-colors focus:outline-none"
               >
                 <span>Resources</span>
                 <svg
-                  className={`w-3.5 h-3.5 text-zinc-500 transition-transform ${
+                  className={`w-3.5 h-3.5 text-zinc-400 transition-transform ${
                     resourcesOpen ? 'rotate-180' : ''
                   }`}
                   fill="none"
@@ -98,20 +104,39 @@ export default function Header() {
                   className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-zinc-100 py-2 z-50 animate-fade-in"
                 >
                   <Link
+                    href="#pet-passport"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                  >
+                    🪪 Digital Pet Passport
+                  </Link>
+                  <Link
+                    href="#customs-qr"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                  >
+                    📱 Pet Visa QR Code
+                  </Link>
+                  <Link
+                    href="/verify/PV-2026-UKDE-9842"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                  >
+                    🛂 Live Customs Verification Pass
+                  </Link>
+                  <div className="my-1 border-t border-zinc-100" />
+                  <Link
                     href="/en/pet-travel/usa-to-germany"
-                    className="block px-4 py-2 text-sm text-zinc-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                   >
                     Sample Report (Germany)
                   </Link>
                   <Link
                     href="/en/pet-travel"
-                    className="block px-4 py-2 text-sm text-zinc-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                   >
                     Country Requirements
                   </Link>
                   <Link
                     href="/en/checker"
-                    className="block px-4 py-2 text-sm text-zinc-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                   >
                     Airline Policies Guide
                   </Link>
@@ -121,20 +146,20 @@ export default function Header() {
 
             <Link
               href="#about"
-              className="hover:text-emerald-600 transition-colors"
+              className="hover:text-zinc-900 transition-colors"
             >
-              About Us
+              About
             </Link>
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-3">
             <LanguageSwitcher variant="header" />
 
-            {/* Persistent Primary CTA */}
+            {/* Persistent Primary CTA matching reference */}
             <Link
-              href="/en/checker"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl transition-all shadow-xs hover:shadow active:scale-98 flex items-center gap-1.5 whitespace-nowrap"
+              href="#hero-form"
+              className="bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-all shadow-xs hover:shadow active:scale-98 flex items-center gap-1.5 whitespace-nowrap"
             >
               <span>Check Requirements →</span>
             </Link>
