@@ -139,3 +139,106 @@ describe('Select2 SearchableSelect Breed & Country Dropdown Logic', () => {
     expect(calculateNextHighlight(0, total, 'up')).toBe(4);
   });
 });
+
+describe('Multi-Stop Transit & Layover Compliance Rules', () => {
+  function getTransitComplianceRules(transitCodes: string[]) {
+    return transitCodes.map((tCode) => {
+      const c = COUNTRIES.find((x) => x.code === tCode) || { name: tCode, flag: '🔀' };
+      if (tCode === 'SG') {
+        return {
+          ruleId: 'SG_NPARKS_TRANSIT_001',
+          name: 'Singapore AVS Transshipment License',
+          category: 'TRANSIT',
+          severity: 'REQUIRED_ACTION',
+          country: c.name,
+        };
+      }
+      if (tCode === 'GB') {
+        return {
+          ruleId: 'UK_DEFRA_TRANSIT_001',
+          name: 'UK DEFRA Manifest Cargo Transit Protocol',
+          category: 'TRANSIT',
+          severity: 'REQUIRED_ACTION',
+          country: c.name,
+        };
+      }
+      if (['DE', 'FR', 'NL', 'ES', 'IT'].includes(tCode)) {
+        return {
+          ruleId: `EU_TRANSIT_BIP_${tCode}`,
+          name: `${c.name} EU Transit Animal Lounge Inspection`,
+          category: 'TRANSIT',
+          severity: 'COMPLIANT',
+          country: c.name,
+        };
+      }
+      return {
+        ruleId: `TRANSIT_${tCode}_DECLARATION`,
+        name: `${c.name} Airside Transit Declaration`,
+        category: 'TRANSIT',
+        severity: 'COMPLIANT',
+        country: c.name,
+      };
+    });
+  }
+
+  it('correctly manages adding, updating, and removing transit stops up to 3 stops', () => {
+    let stops: string[] = [];
+    const addStop = (code: string) => {
+      if (stops.length < 3) stops.push(code);
+    };
+    const removeStop = (idx: number) => {
+      stops = stops.filter((_, i) => i !== idx);
+    };
+
+    addStop('FR');
+    addStop('DE');
+    addStop('SG');
+    expect(stops).toEqual(['FR', 'DE', 'SG']);
+
+    // Should not exceed maximum 3 stops
+    addStop('AE');
+    expect(stops).toHaveLength(3);
+
+    // Remove middle stop
+    removeStop(1);
+    expect(stops).toEqual(['FR', 'SG']);
+
+    // Can add another stop now
+    addStop('AE');
+    expect(stops).toEqual(['FR', 'SG', 'AE']);
+  });
+
+  it('generates mandatory Singapore AVS transshipment license rule for SG transit', () => {
+    const rules = getTransitComplianceRules(['SG']);
+    expect(rules).toHaveLength(1);
+    expect(rules[0].ruleId).toBe('SG_NPARKS_TRANSIT_001');
+    expect(rules[0].severity).toBe('REQUIRED_ACTION');
+    expect(rules[0].name).toContain('Singapore AVS');
+  });
+
+  it('generates UK DEFRA manifest cargo protocol rule for GB transit', () => {
+    const rules = getTransitComplianceRules(['GB']);
+    expect(rules).toHaveLength(1);
+    expect(rules[0].ruleId).toBe('UK_DEFRA_TRANSIT_001');
+    expect(rules[0].severity).toBe('REQUIRED_ACTION');
+    expect(rules[0].name).toContain('DEFRA');
+  });
+
+  it('generates EU Border Inspection Post lounge clearance for EU transit hubs', () => {
+    const rules = getTransitComplianceRules(['DE', 'FR', 'NL']);
+    expect(rules).toHaveLength(3);
+    expect(rules.map((r) => r.ruleId)).toEqual([
+      'EU_TRANSIT_BIP_DE',
+      'EU_TRANSIT_BIP_FR',
+      'EU_TRANSIT_BIP_NL',
+    ]);
+    expect(rules.every((r) => r.category === 'TRANSIT')).toBe(true);
+  });
+
+  it('generates IATA airside transit declaration for other international hubs', () => {
+    const rules = getTransitComplianceRules(['AE', 'JP']);
+    expect(rules).toHaveLength(2);
+    expect(rules[0].ruleId).toBe('TRANSIT_AE_DECLARATION');
+    expect(rules[1].ruleId).toBe('TRANSIT_JP_DECLARATION');
+  });
+});

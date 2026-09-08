@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import type { ScanResult } from '@/lib/types/scanner';
+import type { ScanResult, ComplianceItem } from '@/lib/types/scanner';
 import SearchableSelect from '@/components/SearchableSelect';
 
 export const COUNTRIES = [
@@ -118,6 +118,7 @@ export const CAT_BREEDS = [
 export interface DynamicRouteOptions {
   originCode: string;
   destinationCode: string;
+  transitCodes?: string[];
   species: 'DOG' | 'CAT';
   petName?: string;
   breed?: string;
@@ -234,12 +235,154 @@ function buildDynamicScanResult(
     return match ? match.name : (items[fallbackIdx]?.name || primaryDoc);
   };
 
+  const transitRules: ComplianceItem[] = (options?.transitCodes || []).map((tCode) => {
+    const c = COUNTRIES.find((x) => x.code === tCode) || { name: tCode, flag: '🔀' };
+    if (tCode === 'SG') {
+      return {
+        ruleId: 'SG_NPARKS_TRANSIT_001',
+        name: 'Singapore AVS Transshipment License',
+        category: 'TRANSIT',
+        scope: 'TRANSIT',
+        status: 'REQUIRED_ACTION',
+        severity: 'REQUIRED_ACTION',
+        statusBadge: '⚠️ License Required',
+        whatToDo: 'Obtain AVS transshipment license from Singapore NParks.',
+        details: 'All live animals transiting Changi Airport require an active transshipment license and CAPQ booking if transit exceeds 4 hours.',
+        authority: 'Singapore NParks / AVS',
+        deadlines: 'Apply at least 14 days before transit',
+        sourceUrl: 'https://www.nparks.gov.sg/avs/animals/animal-health-and-welfare/export-and-transshipment-of-animals',
+      };
+    }
+    if (tCode === 'GB') {
+      return {
+        ruleId: 'UK_DEFRA_TRANSIT_001',
+        name: 'UK DEFRA Manifest Cargo Transit Protocol',
+        category: 'TRANSIT',
+        scope: 'TRANSIT',
+        status: 'REQUIRED_ACTION',
+        severity: 'REQUIRED_ACTION',
+        statusBadge: '⚠️ Manifest Cargo Only',
+        whatToDo: 'Confirm flight booking as manifest cargo (DEFRA requirement).',
+        details: 'DEFRA strictly enforces manifest cargo for all pet transit through British airports. In-cabin or excess baggage transit is strictly prohibited.',
+        authority: 'UK Animal & Plant Health Agency (APHA)',
+        deadlines: 'Required upon flight booking',
+        sourceUrl: 'https://www.gov.uk/bring-pet-to-great-britain',
+      };
+    }
+    if (['DE', 'FR', 'NL', 'ES', 'IT'].includes(tCode)) {
+      return {
+        ruleId: `EU_TRANSIT_BIP_${tCode}`,
+        name: `${c.name} EU Transit Animal Lounge Inspection`,
+        category: 'TRANSIT',
+        scope: 'TRANSIT',
+        status: 'VERIFIED',
+        severity: 'COMPLIANT',
+        statusBadge: '✓ Hub Cleared',
+        whatToDo: `Maintain airside connection docket for ${c.name}.`,
+        details: `Airside pet connection and veterinary inspection facility verified for ${c.name} hub.`,
+        authority: 'Regulation (EU) 2017/625',
+        deadlines: 'During connection',
+        sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
+      };
+    }
+    return {
+      ruleId: `TRANSIT_${tCode}_DECLARATION`,
+      name: `${c.name} Airside Transit Declaration`,
+      category: 'TRANSIT',
+      scope: 'TRANSIT',
+      status: 'VERIFIED',
+      severity: 'COMPLIANT',
+      statusBadge: '✓ Airside Valid',
+      whatToDo: `Maintain sealed crate and international transit status through ${c.name}.`,
+      details: `Pet remains in international customs transit without exiting airport boundary in ${c.name}.`,
+      authority: 'IATA Live Animals Regulations (LAR)',
+      deadlines: 'During flight connection',
+      sourceUrl: 'https://www.iata.org/en/programs/cargo/live-animals/',
+    };
+  });
+
+  const standardRules: ComplianceItem[] = [
+    {
+      ruleId: 'ISO_MICROCHIP',
+      name: 'ISO 11784/11785 Microchip',
+      category: 'IDENTIFICATION',
+      scope: 'ARRIVING',
+      status: 'VERIFIED',
+      severity: 'COMPLIANT',
+      statusBadge: '✓ Verified',
+      whatToDo: 'Verify 15-digit ISO microchip transponder code.',
+      details: '15-digit transponder #985141002847192 confirmed before vaccination.',
+      authority: 'Regulation (EU) No 576/2013',
+      deadlines: 'Required prior to vaccination',
+      sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
+    },
+    {
+      ruleId: 'RABIES_VACCINE',
+      name: 'Rabies Vaccination & 21-Day Latency',
+      category: 'VACCINATIONS',
+      scope: 'ARRIVING',
+      status: 'VERIFIED',
+      severity: 'COMPLIANT',
+      statusBadge: '✓ Verified',
+      whatToDo: 'Maintain up-to-date rabies immunization.',
+      details: 'Booster administered 2024-05-10, valid through 2027-05-10.',
+      authority: 'Regulation (EU) No 576/2013',
+      deadlines: 'Minimum 21 days before departure',
+      sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
+    },
+    {
+      ruleId: 'FAVN_TITER',
+      name: 'FAVN Rabies Serum Antibody Titer',
+      category: 'TESTS',
+      scope: 'ARRIVING',
+      status: 'VERIFIED',
+      severity: 'COMPLIANT',
+      statusBadge: '✓ 0.82 IU/ml (Passed)',
+      whatToDo: 'Obtain FAVN antibody titer from approved laboratory.',
+      details: 'Serology report verified from approved laboratory (≥ 0.50 IU/ml standard).',
+      authority: 'WOAH / EU Reference Laboratories',
+      deadlines: 'Valid for lifetime of pet with continuous booster',
+      sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
+    },
+    {
+      ruleId: 'EU_ANNEX_IV',
+      name: 'EU Annex IV Veterinary Health Certificate',
+      category: 'DOCUMENTS',
+      scope: 'ARRIVING',
+      status: 'VERIFIED',
+      severity: 'COMPLIANT',
+      statusBadge: '✓ Endorsed',
+      whatToDo: 'Official veterinary health inspection within 10 days of travel.',
+      details: 'Official veterinarian signature and government endorsement seal verified.',
+      authority: 'EU Commission Implementing Regulation 577/2013',
+      deadlines: 'Issued within 10 days of entry',
+      sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
+    },
+    {
+      ruleId: 'TAPEWORM_TREATMENT',
+      name: 'Echinococcus Multilocularis Treatment',
+      category: 'TREATMENTS',
+      scope: 'ARRIVING',
+      status: 'REQUIRED_ACTION',
+      severity: 'REQUIRED_ACTION',
+      statusBadge: '⚠️ 24h–120h Window',
+      whatToDo: 'Administer praziquantel by registered veterinarian.',
+      details: 'Must be administered by an official veterinarian between 24h and 120h before entering Germany.',
+      authority: 'Commission Delegated Regulation (EU) 2018/772',
+      deadlines: '24–120 hours before arrival',
+      sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
+    },
+  ];
+
   const data = {
     status: 'success',
     route: {
       origin: `${fromObj.name} (${fromObj.flag})`,
       destination: `${toObj.name} (${toObj.flag})`,
-      transitCountries: [],
+      transitCountries: (options?.transitCodes || []).map((code) => {
+        const c = COUNTRIES.find((x) => x.code === code);
+        return c ? `${c.name} (${c.flag})` : code;
+      }),
       departureDate: activeDate,
     },
     petDetected: true,
@@ -296,99 +439,40 @@ function buildDynamicScanResult(
       { date: 'September 15, 2026', title: '✈️ Cleared For Departure', status: 'GOAL', description: 'All prerequisites satisfied for seamless border control clearance.' },
     ],
     complianceChecklist: {
-      all: [
-        {
-          ruleId: 'ISO_MICROCHIP',
-          name: 'ISO 11784/11785 Microchip',
-          category: 'IDENTIFICATION',
-          scope: 'ARRIVING',
-          status: 'VERIFIED',
-          severity: 'COMPLIANT',
-          statusBadge: '✓ Verified',
-          whatToDo: 'Verify 15-digit ISO microchip transponder code.',
-          details: '15-digit transponder #985141002847192 confirmed before vaccination.',
-          authority: 'Regulation (EU) No 576/2013',
-          deadlines: 'Required prior to vaccination',
-          sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-        },
-        {
-          ruleId: 'RABIES_VACCINE',
-          name: 'Rabies Vaccination & 21-Day Latency',
-          category: 'VACCINATIONS',
-          scope: 'ARRIVING',
-          status: 'VERIFIED',
-          severity: 'COMPLIANT',
-          statusBadge: '✓ Verified',
-          whatToDo: 'Maintain up-to-date rabies immunization.',
-          details: 'Booster administered 2024-05-10, valid through 2027-05-10.',
-          authority: 'Regulation (EU) No 576/2013',
-          deadlines: 'Minimum 21 days before departure',
-          sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-        },
-        {
-          ruleId: 'FAVN_TITER',
-          name: 'FAVN Rabies Serum Antibody Titer',
-          category: 'TESTS',
-          scope: 'ARRIVING',
-          status: 'VERIFIED',
-          severity: 'COMPLIANT',
-          statusBadge: '✓ 0.82 IU/ml (Passed)',
-          whatToDo: 'Obtain FAVN antibody titer from approved laboratory.',
-          details: 'Serology report verified from approved laboratory (≥ 0.50 IU/ml standard).',
-          authority: 'WOAH / EU Reference Laboratories',
-          deadlines: 'Valid for lifetime of pet with continuous booster',
-          sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-        },
-        {
-          ruleId: 'EU_ANNEX_IV',
-          name: 'EU Annex IV Veterinary Health Certificate',
-          category: 'DOCUMENTS',
-          scope: 'ARRIVING',
-          status: 'VERIFIED',
-          severity: 'COMPLIANT',
-          statusBadge: '✓ Endorsed',
-          whatToDo: 'Official veterinary health inspection within 10 days of travel.',
-          details: 'Official veterinarian signature and government endorsement seal verified.',
-          authority: 'EU Commission Implementing Regulation 577/2013',
-          deadlines: 'Issued within 10 days of entry',
-          sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-        },
-        {
-          ruleId: 'TAPEWORM_TREATMENT',
-          name: 'Echinococcus Multilocularis Treatment',
-          category: 'TREATMENTS',
-          scope: 'ARRIVING',
-          status: 'REQUIRED_ACTION',
-          severity: 'REQUIRED_ACTION',
-          statusBadge: '⚠️ 24h–120h Window',
-          whatToDo: 'Administer praziquantel by registered veterinarian.',
-          details: 'Must be administered by an official veterinarian between 24h and 120h before entering Germany.',
-          authority: 'Commission Delegated Regulation (EU) 2018/772',
-          deadlines: '24–120 hours before arrival',
-          sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-        },
-      ],
+      all: [...standardRules, ...transitRules],
       leaving: [],
-      transit: [],
-      arriving: [],
+      transit: transitRules,
+      arriving: standardRules,
       logistics: [],
     },
     readinessReport: {
-      whatThisMeans: `Compliance verification complete for ${activePetName}. Foundational medical and identity prerequisites satisfied for travel from ${fromObj.name} to ${toObj.name}. Final veterinary tapeworm treatment window (24h–120h before departure) remains before departure.`,
+      whatThisMeans: `Compliance verification complete for ${activePetName}. Foundational medical and identity prerequisites satisfied for travel from ${fromObj.name} to ${toObj.name}${options?.transitCodes && options.transitCodes.length > 0 ? ` with layovers in ${options.transitCodes.map(code => COUNTRIES.find(c => c.code === code)?.name || code).join(', ')}` : ''}. Final veterinary tapeworm treatment window (24h–120h before departure) remains before departure.`,
       whereThingsStand: [
         { requirement: '15-Digit ISO Microchip', category: 'IDENTIFICATION', scope: 'ARRIVING', whatToDo: 'Confirm transponder', statusBadge: '✓ Verified', status: 'VERIFIED', severity: 'COMPLIANT', details: 'Transponder code verified in official records.' },
         { requirement: 'Rabies Booster Vaccine', category: 'VACCINATIONS', scope: 'ARRIVING', whatToDo: 'Ensure active booster', statusBadge: '✓ Active', status: 'VERIFIED', severity: 'COMPLIANT', details: 'Vaccination valid through May 2027.' },
         { requirement: 'FAVN Antibody Titer', category: 'TESTS', scope: 'ARRIVING', whatToDo: 'Maintain antibody level', statusBadge: '✓ 0.82 IU/ml', status: 'VERIFIED', severity: 'COMPLIANT', details: 'Antibody level exceeds EU threshold.' },
         { requirement: 'Tapeworm Treatment', category: 'TREATMENTS', scope: 'ARRIVING', whatToDo: 'Administer Praziquantel', statusBadge: '⚠️ Action Required', status: 'REQUIRED_ACTION', severity: 'REQUIRED_ACTION', details: 'Visit vet 1–5 days before flight for Praziquantel dosage.' },
+        ...transitRules.map((tr) => ({
+          requirement: tr.name,
+          category: tr.category,
+          scope: tr.scope,
+          whatToDo: tr.whatToDo,
+          statusBadge: tr.statusBadge,
+          status: tr.status,
+          severity: tr.severity,
+          details: tr.details,
+        })),
       ],
       documentAudit: docAudit,
       nextSteps: [
         'Schedule your veterinary appointment 2–4 days before departure for the tapeworm treatment.',
         'Carry physical copies of your veterinary travel documents and pet passport during travel.',
+        ...(transitRules.length > 0 ? ['Verify layover airline pet lounge transfer & transshipment permits at intermediate airports.'] : []),
       ],
       travelDayPrep: [
         'Ensure your pet carrier meets airline IATA regulations.',
         'Keep the signed veterinary documents and Customs QR Code easily accessible at check-in.',
+        ...(transitRules.length > 0 ? ['Have transit declarations and layover permits ready for flight connection checks.'] : []),
       ],
     },
   };
@@ -399,6 +483,7 @@ function buildDynamicScanResult(
 export default function DocumentDropzone({ onScanComplete }: DocumentDropzoneProps) {
   const [fromCountry, setFromCountry] = useState('GB');
   const [toCountry, setToCountry] = useState('DE');
+  const [transitStops, setTransitStops] = useState<string[]>([]);
   const [petType, setPetType] = useState<'DOG' | 'CAT'>('DOG');
   const [petName, setPetName] = useState('');
   const [breed, setBreed] = useState('');
@@ -452,6 +537,26 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
     }
   };
 
+  const handleAddTransitStop = () => {
+    if (transitStops.length >= 3) return;
+    const candidates = ['DE', 'FR', 'NL', 'SG', 'AE', 'GB'];
+    const nextCode =
+      candidates.find(
+        (c) => c !== fromCountry && c !== toCountry && !transitStops.includes(c)
+      ) || 'FR';
+    setTransitStops([...transitStops, nextCode]);
+  };
+
+  const handleUpdateTransitStop = (index: number, code: string) => {
+    const updated = [...transitStops];
+    updated[index] = code;
+    setTransitStops(updated);
+  };
+
+  const handleRemoveTransitStop = (index: number) => {
+    setTransitStops(transitStops.filter((_, i) => i !== index));
+  };
+
   // Sync with URL query parameters if arriving from HeroTripForm or direct link
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -463,12 +568,20 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
       const nameParam = params.get('petName') || params.get('name');
       const breedParam = params.get('breed');
       const bdayParam = params.get('birthday') || params.get('dob');
+      const transitParam = params.get('transit') || params.get('transits') || params.get('via');
 
       if (fromParam && COUNTRIES.some((c) => c.code === fromParam.toUpperCase())) {
         setFromCountry(fromParam.toUpperCase());
       }
       if (toParam && COUNTRIES.some((c) => c.code === toParam.toUpperCase())) {
         setToCountry(toParam.toUpperCase());
+      }
+      if (transitParam) {
+        const parsed = transitParam
+          .split(',')
+          .map((t) => t.trim().toUpperCase())
+          .filter((t) => COUNTRIES.some((c) => c.code === t));
+        if (parsed.length > 0) setTransitStops(parsed);
       }
       if (speciesParam === 'CAT' || speciesParam === 'DOG') {
         setPetType(speciesParam);
@@ -491,6 +604,9 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
   const handleSwapRoute = () => {
     setFromCountry(toCountry);
     setToCountry(fromCountry);
+    if (transitStops.length > 1) {
+      setTransitStops([...transitStops].reverse());
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -565,6 +681,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
       const routeOptions: DynamicRouteOptions = {
         originCode: fromCountry,
         destinationCode: toCountry,
+        transitCodes: transitStops,
         species: petType,
         petName: petName.trim(),
         breed: breed.trim(),
@@ -581,6 +698,9 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
         formData.append('origin_country', fromObj.name);
         formData.append('destination_country', toObj.name);
         formData.append('species', petType);
+        if (transitStops.length > 0) {
+          formData.append('transit_countries', transitStops.join(','));
+        }
         if (petName.trim()) formData.append('pet_name', petName.trim());
         if (breed.trim()) formData.append('breed', breed.trim());
         if (birthday) formData.append('birthday', birthday);
@@ -808,6 +928,81 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                 />
               </div>
             </div>
+
+            {/* Multi-Stop / Transit Layover Controls */}
+            {transitStops.length === 0 ? (
+              <div className="pt-0.5 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={handleAddTransitStop}
+                  disabled={scanning}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-dashed border-zinc-300 hover:border-zinc-400 bg-zinc-50/60 hover:bg-zinc-100 text-[11px] font-semibold text-zinc-600 hover:text-zinc-900 transition-all cursor-pointer active:scale-98 disabled:opacity-50"
+                >
+                  <span className="text-zinc-400 text-xs">🔀</span>
+                  <span>+ Add Layover / Transit Stop</span>
+                </button>
+                <span className="text-[10px] text-zinc-400 font-medium">
+                  Direct flight
+                </span>
+              </div>
+            ) : (
+              <div className="p-3 rounded-xl bg-blue-50/40 border border-blue-100/80 space-y-2.5 relative z-35">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs">🔀</span>
+                    <span className="text-[11px] font-bold text-blue-950">
+                      Flight Connections &amp; Layovers ({transitStops.length})
+                    </span>
+                  </div>
+                  {transitStops.length < 3 && (
+                    <button
+                      type="button"
+                      onClick={handleAddTransitStop}
+                      disabled={scanning}
+                      className="text-[10px] font-bold text-blue-700 hover:text-blue-900 hover:underline cursor-pointer"
+                    >
+                      + Add another stop
+                    </button>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  {transitStops.map((stopCode, idx) => (
+                    <div key={`transit-${idx}`} className="flex items-center gap-2">
+                      <div className="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold">
+                        {idx + 1}
+                      </div>
+                      <div className="grow">
+                        <SearchableSelect
+                          id={`transit-stop-${idx}`}
+                          value={stopCode}
+                          onChange={(val) => handleUpdateTransitStop(idx, val)}
+                          options={countryOptions}
+                          placeholder="Select layover country..."
+                          searchPlaceholder="Search layover country (e.g. Germany, Singapore)..."
+                          disabled={scanning}
+                          allowCustom={false}
+                          clearable={false}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTransitStop(idx)}
+                        disabled={scanning}
+                        title="Remove this stop"
+                        className="shrink-0 w-7 h-7 rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center text-xs transition-colors cursor-pointer disabled:opacity-40"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="text-[10px] text-blue-800/80 leading-relaxed">
+                  💡 Petvia screens airside transit declarations, transshipment licenses (e.g. Singapore AVS), DEFRA cargo mandates &amp; EU BIP animal lounges for each stop.
+                </p>
+              </div>
+            )}
 
             {/* Row 2: Pet Species, Pet Name & Breed */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-0.5">
