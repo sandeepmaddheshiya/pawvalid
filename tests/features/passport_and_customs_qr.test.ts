@@ -4,6 +4,8 @@ import QRCode from 'qrcode';
 import { GET as getCustomsVerification } from '@/app/api/verify/[passId]/route';
 import { GET as getPassports, POST as createPassport } from '@/app/api/passport/route';
 import { POST as reusePassportTrip } from '@/app/api/passport/[id]/reuse/route';
+import { POST as createTrip } from '@/app/api/trips/route';
+import { db } from '@/lib/db';
 
 describe('Digital Pet Passport & Pet Visa Customs QR Features', () => {
   const testEmail = `passport_tester_${Date.now()}@petvia.com`;
@@ -59,7 +61,7 @@ describe('Digital Pet Passport & Pet Visa Customs QR Features', () => {
 
   // ─── Backend API Tests ───────────────────────────────────────────────────────
   describe('Backend Customs Verification API (/api/verify/[passId])', () => {
-    it('returns cryptographically signed customs clearance pass for valid pass ID', async () => {
+    it('returns cryptographically signed customs clearance pass for valid demo pass ID', async () => {
       const passId = 'PV-2026-UKDE-9842';
       const req = new NextRequest(`http://localhost:3000/api/verify/${passId}`);
       const res = await getCustomsVerification(req, { params: Promise.resolve({ passId }) });
@@ -69,11 +71,51 @@ describe('Digital Pet Passport & Pet Visa Customs QR Features', () => {
       expect(data.success).toBe(true);
       expect(data.pass).toBeDefined();
       expect(data.pass.passId).toBe(passId);
+      expect(data.pass.isPaid).toBe(true);
       expect(data.pass.status).toBe('CLEARED_FOR_BORDER_ENTRY');
       expect(data.pass.cryptographicSeal).toBeDefined();
       expect(data.pass.cryptographicSeal.algorithm).toBe('SHA-256');
       expect(data.pass.pet.microchip.number).toBe('985141002847192');
       expect(data.pass.checkpoints.length).toBeGreaterThanOrEqual(4);
+    });
+
+    it('requires plan activation (isPaid=false) for free trips without paid tier', async () => {
+      const tripReq = new NextRequest('http://localhost:3000/api/trips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userEmail: 'unpaid_traveler@example.com',
+          petName: 'Rocky',
+          tier: 'FREE',
+          scanResult: {
+            route: { origin: 'UK', destination: 'France' },
+            petProfile: { name: 'Rocky', species: 'DOG' },
+            stats: { overallStatus: 'ACTION_REQUIRED' },
+            timelineMilestones: [],
+            complianceChecklist: { all: [] },
+            readinessReport: {},
+          },
+        }),
+      });
+
+      const tripRes = await createTrip(tripReq);
+      const tripJson = await tripRes.json();
+      expect(tripJson.success).toBe(true);
+      const freeTripId = tripJson.trip.id;
+
+      const passId = `PV-2026-${freeTripId.slice(0, 8)}`;
+      const req = new NextRequest(`http://localhost:3000/api/verify/${passId}`);
+      const res = await getCustomsVerification(req, { params: Promise.resolve({ passId }) });
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.success).toBe(true);
+      expect(data.pass.isPaid).toBe(false);
+      expect(data.pass.status).toBe('PROVISIONAL_PENDING_ACTIVATION');
+      expect(data.pass.isVerified).toBe(false);
+
+      // Clean up
+      await db.savedTrip.delete({ where: { id: freeTripId } });
     });
   });
 

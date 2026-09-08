@@ -52,6 +52,9 @@ export default function OverviewView({
     return '🟢 READY TO FLY';
   };
 
+  const tier = trip?.tier || 'FREE';
+  const isPaid = tier === 'CERTIFIED_PASS' || tier === 'CONCIERGE';
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* ─── 1. HERO JOURNEY BANNER ─────────────────────────────────── */}
@@ -175,8 +178,10 @@ export default function OverviewView({
                   Digital Pet Passport
                 </span>
               </div>
-              <span className="text-[10px] font-bold text-emerald-300 bg-white/10 px-2 py-0.5 rounded-full">
-                Customs Ready
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                isPaid ? 'text-emerald-300 bg-white/10' : 'text-amber-300 bg-amber-400/20'
+              }`}>
+                {isPaid ? 'Customs Ready' : 'Preview Mode'}
               </span>
             </div>
             <h4 className="text-base font-bold text-white mb-1">
@@ -199,10 +204,19 @@ export default function OverviewView({
         {/* Pet Visa QR Code for Customs Tile */}
         <div className="bg-white rounded-2xl p-5 border border-zinc-200/80 shadow-xs hover:border-zinc-300 transition-all flex items-center justify-between gap-4">
           <div className="space-y-1 text-left">
-            <div className="flex items-center gap-1.5">
-              <span className="text-base">📱</span>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#0FA958]">
-                Pet Visa for Customs
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <span className="text-base">📱</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0FA958]">
+                  Pet Visa for Customs
+                </span>
+              </div>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                isPaid
+                  ? 'text-emerald-800 bg-[#E8F8F0] border border-[#C6EED8]'
+                  : 'text-amber-800 bg-amber-100 border border-amber-200'
+              }`}>
+                {isPaid ? '✓ Customs Verified' : '🔒 £19 Complete Plan'}
               </span>
             </div>
             <h4 className="text-base font-bold text-[#0E2342]">
@@ -212,22 +226,44 @@ export default function OverviewView({
               Instant digital verification at airline check-in &amp; border customs checkpoints.
             </p>
             <div className="pt-2">
-              <Link
-                href={`/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`}
-                target="_blank"
-                className="inline-flex items-center gap-1 text-xs font-bold text-[#0E2342] hover:text-[#0FA958] transition-colors"
-              >
-                <span>View Full Customs Pass ↗</span>
-              </Link>
+              {isPaid ? (
+                <Link
+                  href={`/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`}
+                  target="_blank"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-[#0E2342] hover:text-[#0FA958] transition-colors"
+                >
+                  <span>View Full Customs Pass ↗</span>
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onNavigate('passport')}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-[#0FA958] hover:underline cursor-pointer"
+                >
+                  <span>Unlock Official Pass (£19) →</span>
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="shrink-0 p-2 bg-zinc-50 rounded-xl border border-zinc-200/80 shadow-2xs">
-            <QrCode
-              value={typeof window !== 'undefined' ? `${window.location.origin}/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}` : `https://petvia.com/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`}
-              size={96}
-              darkColor="#0E2342"
-            />
+          <div
+            onClick={() => onNavigate('passport')}
+            className="shrink-0 p-2 bg-zinc-50 rounded-xl border border-zinc-200/80 shadow-2xs relative overflow-hidden cursor-pointer group"
+            title={isPaid ? 'View Pass' : 'Unlock Official Pass'}
+          >
+            <div className={!isPaid ? 'filter blur-[2px] opacity-40 select-none' : ''}>
+              <QrCode
+                value={typeof window !== 'undefined' ? `${window.location.origin}/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}` : `https://petvia.com/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`}
+                size={96}
+                darkColor="#0E2342"
+              />
+            </div>
+            {!isPaid && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1px]">
+                <span className="text-base">🔒</span>
+                <span className="text-[9px] font-bold text-amber-800 mt-0.5">£19 Plan</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

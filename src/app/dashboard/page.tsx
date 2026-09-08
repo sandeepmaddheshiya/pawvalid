@@ -368,6 +368,7 @@ function DashboardContent() {
           onSelectTab={handleTabChange}
           blockersCount={blockerCount}
           docsCount={docsCount}
+          tier={currentTrip.tier}
         />
 
         {/* Main Content Viewport */}

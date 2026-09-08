@@ -5,6 +5,12 @@ import PricingModal from './PricingModal';
 
 export default function PricingSection() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedTier, setSelectedTier] = useState<string>('Complete Travel Plan');
+
+  const handleOpenPlan = (tier: string) => {
+    setSelectedTier(tier);
+    setModalOpen(true);
+  };
 
   return (
     <section id="pricing" className="py-16 sm:py-20 bg-white border-t border-zinc-200/70 relative">
@@ -73,7 +79,7 @@ export default function PricingSection() {
             {/* CTA Button */}
             <button
               type="button"
-              onClick={() => setModalOpen(true)}
+              onClick={() => handleOpenPlan('Readiness Scan')}
               className="w-full py-2.5 rounded-lg border border-zinc-300 hover:border-zinc-400 text-zinc-800 font-semibold text-xs transition-all active:scale-98 cursor-pointer text-center"
             >
               Get started →
@@ -117,11 +123,15 @@ export default function PricingSection() {
               <div className="space-y-2.5 text-xs text-zinc-700 mb-6">
                 <div className="flex items-center gap-2.5">
                   <span className="text-[#0FA958] font-bold text-xs">✓</span>
-                  <span>Full document analysis</span>
+                  <span className="font-semibold text-zinc-900">Pet Visa QR Code for Customs</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <span className="text-[#0FA958] font-bold text-xs">✓</span>
-                  <span>Requirement-by-requirement audit</span>
+                  <span className="font-semibold text-zinc-900">Digital Pet Passport Vault (Trip Reuse)</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-[#0FA958] font-bold text-xs">✓</span>
+                  <span>Full document analysis &amp; audit</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <span className="text-[#0FA958] font-bold text-xs">✓</span>
@@ -129,7 +139,7 @@ export default function PricingSection() {
                 </div>
                 <div className="flex items-center gap-2.5">
                   <span className="text-[#0FA958] font-bold text-xs">✓</span>
-                  <span>Action plan &amp; next steps</span>
+                  <span>Printable travel dossier (PDF)</span>
                 </div>
               </div>
             </div>
@@ -137,7 +147,7 @@ export default function PricingSection() {
             {/* CTA Button */}
             <button
               type="button"
-              onClick={() => setModalOpen(true)}
+              onClick={() => handleOpenPlan('Complete Travel Plan')}
               className="w-full py-2.5 rounded-lg bg-[#0FA958] hover:bg-[#0D934C] text-white font-semibold text-xs shadow-xs transition-all active:scale-98 cursor-pointer text-center"
             >
               Get started →
@@ -176,19 +186,23 @@ export default function PricingSection() {
               <div className="space-y-2.5 text-xs text-zinc-200 mb-6">
                 <div className="flex items-center gap-2.5">
                   <span className="text-emerald-400 font-bold text-xs">✓</span>
-                  <span>Expert document review</span>
+                  <span className="font-semibold text-white">Everything in Complete Travel Plan</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <span className="text-emerald-400 font-bold text-xs">✓</span>
-                  <span>Complex/conflicting documents</span>
+                  <span className="font-semibold text-white">Pet Visa QR with Vet Specialist Seal</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <span className="text-emerald-400 font-bold text-xs">✓</span>
-                  <span>Human verification</span>
+                  <span>Human veterinary audit &amp; sign-off</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <span className="text-emerald-400 font-bold text-xs">✓</span>
-                  <span>Personalized recommendations</span>
+                  <span>Complex/conflicting documents check</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-emerald-400 font-bold text-xs">✓</span>
+                  <span>Personalized recommendations &amp; WhatsApp</span>
                 </div>
               </div>
             </div>
@@ -196,7 +210,7 @@ export default function PricingSection() {
             {/* CTA Button */}
             <button
               type="button"
-              onClick={() => setModalOpen(true)}
+              onClick={() => handleOpenPlan('Expert Document Review')}
               className="w-full py-2.5 rounded-lg bg-[#183664] hover:bg-[#1E437C] text-white border border-white/20 font-semibold text-xs shadow-xs transition-all active:scale-98 cursor-pointer text-center"
             >
               Get started →
@@ -205,7 +219,11 @@ export default function PricingSection() {
         </div>
       </div>
 
-      <PricingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <PricingModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        initialTier={selectedTier}
+      />
     </section>
   );
 }

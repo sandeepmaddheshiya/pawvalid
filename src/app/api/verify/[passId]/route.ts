@@ -51,14 +51,21 @@ export async function GET(
       .update(signaturePayload)
       .digest('hex');
 
-    const clearanceStatus = overallStatus === 'READY'
-      ? 'CLEARED_FOR_BORDER_ENTRY'
-      : (overallStatus === 'ACTION_REQUIRED' ? 'ACTION_REQUIRED' : 'NOT_CLEARED');
+    const isDemoPass = passId === 'PV-2026-UKDE-9842';
+    const isPaid = isDemoPass || (trip ? (trip.tier === 'CERTIFIED_PASS' || trip.tier === 'CONCIERGE') : false);
+
+    const clearanceStatus = !isPaid
+      ? 'PROVISIONAL_PENDING_ACTIVATION'
+      : (overallStatus === 'READY'
+        ? 'CLEARED_FOR_BORDER_ENTRY'
+        : (overallStatus === 'ACTION_REQUIRED' ? 'ACTION_REQUIRED' : 'NOT_CLEARED'));
 
     const passData = {
       passId,
       status: clearanceStatus,
-      isVerified: true,
+      isVerified: isPaid,
+      isPaid,
+      tier: trip?.tier || (isDemoPass ? 'CERTIFIED_PASS' : 'FREE'),
       issuedAt: trip?.createdAt ? new Date(trip.createdAt).toISOString() : new Date('2026-05-10T10:00:00Z').toISOString(),
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
       cryptographicSeal: {

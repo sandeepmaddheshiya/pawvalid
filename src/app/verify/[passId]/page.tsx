@@ -59,10 +59,17 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
               <span>🖨️</span>
               <span>Print Official Pass</span>
             </button>
-            <span className="inline-flex items-center gap-1 bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[11px] font-bold px-2.5 py-1 rounded-md">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0FA958] animate-pulse" />
-              LIVE VERIFIED
-            </span>
+            {passData?.isPaid === false ? (
+              <span className="inline-flex items-center gap-1 bg-amber-100 border border-amber-200 text-amber-800 text-[11px] font-bold px-2.5 py-1 rounded-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                PROVISIONAL (UNPAID)
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[11px] font-bold px-2.5 py-1 rounded-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0FA958] animate-pulse" />
+                LIVE VERIFIED
+              </span>
+            )}
           </div>
         </div>
 
@@ -98,19 +105,43 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
             </div>
 
             {/* Clearance Banner */}
-            <div className="bg-[#0FA958]/20 border border-[#0FA958]/40 rounded-xl p-3.5 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#0FA958] flex items-center justify-center text-white text-base shrink-0 shadow-sm">
-                ✓
-              </div>
-              <div>
-                <div className="text-xs sm:text-sm font-bold text-white tracking-wide">
-                  CLEARED FOR BOARDING &amp; BORDER ENTRY
+            {passData?.isPaid === false ? (
+              <div className="bg-amber-500/20 border border-amber-400/40 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-zinc-950 font-bold text-base shrink-0 shadow-sm">
+                    🔒
+                  </div>
+                  <div>
+                    <div className="text-xs sm:text-sm font-bold text-white tracking-wide">
+                      PROVISIONAL PASS · ACTIVATION REQUIRED
+                    </div>
+                    <div className="text-[11px] text-amber-200 leading-tight">
+                      This customs pass requires an active Complete Travel Plan (£19) for an official border clearance seal.
+                    </div>
+                  </div>
                 </div>
-                <div className="text-[11px] text-[#C6EED8] leading-tight">
-                  All route-specific rabies, microchip, and clinical requirements verified compliant.
+                <Link
+                  href="/#pricing"
+                  className="shrink-0 px-3.5 py-1.5 bg-[#0FA958] hover:bg-[#0D934C] text-white text-xs font-bold rounded-lg shadow-xs transition-all active:scale-98 text-center print:hidden"
+                >
+                  Activate Pass (£19) →
+                </Link>
+              </div>
+            ) : (
+              <div className="bg-[#0FA958]/20 border border-[#0FA958]/40 rounded-xl p-3.5 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#0FA958] flex items-center justify-center text-white text-base shrink-0 shadow-sm">
+                  ✓
+                </div>
+                <div>
+                  <div className="text-xs sm:text-sm font-bold text-white tracking-wide">
+                    CLEARED FOR BOARDING &amp; BORDER ENTRY
+                  </div>
+                  <div className="text-[11px] text-[#C6EED8] leading-tight">
+                    All route-specific rabies, microchip, and clinical requirements verified compliant.
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Body Content */}

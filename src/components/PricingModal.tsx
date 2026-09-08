@@ -7,15 +7,33 @@ interface PricingModalProps {
   onClose: () => void;
   currency?: 'GBP' | 'USD' | 'INR';
   scanResult?: any;
+  initialTier?: string;
 }
 
-export default function PricingModal({ isOpen, onClose, currency = 'GBP', scanResult }: PricingModalProps) {
+export default function PricingModal({
+  isOpen,
+  onClose,
+  currency = 'GBP',
+  scanResult,
+  initialTier,
+}: PricingModalProps) {
   const [selectedCurrency, setSelectedCurrency] = useState<'GBP' | 'USD' | 'INR'>(currency);
   const [checkoutEmail, setCheckoutEmail] = useState('');
   const [checkoutPhone, setCheckoutPhone] = useState('');
-  const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const [selectedTier, setSelectedTier] = useState<string | null>(initialTier || null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  React.useEffect(() => {
+    if (initialTier) {
+      setSelectedTier(initialTier);
+      if (initialTier === 'Priority Concierge' || initialTier === 'Expert Document Review') {
+        setStatusMessage('Selected Expert Document Review (£59). Provide your email and WhatsApp number for immediate intake.');
+      } else if (initialTier === 'Certified Trip Pass' || initialTier === 'Complete Travel Plan') {
+        setStatusMessage('Selected Complete Travel Plan (£19). Enter your email to proceed.');
+      }
+    }
+  }, [initialTier, isOpen]);
 
   if (!isOpen) return null;
 
@@ -457,6 +475,22 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP', scanRe
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
+                    <strong className="block text-zinc-900">Pet Visa QR Code for Customs</strong>
+                    <span className="text-zinc-500">Live-scannable boarding pass for airline check-in &amp; border inspection</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
+                  <div>
+                    <strong className="block text-zinc-900">Digital Pet Passport Vault</strong>
+                    <span className="text-zinc-500">Permanent medical record vault with 1-click trip reuse</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
+                  <div>
                     <strong className="block text-zinc-900">Full Dual-Sided Compliance Report</strong>
                     <span className="text-zinc-500">Leaving (export) and Arriving (import) rules evaluated</span>
                   </div>
@@ -545,8 +579,16 @@ export default function PricingModal({ isOpen, onClose, currency = 'GBP', scanRe
                 <div className="flex items-start gap-2.5">
                   <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
                   <div>
-                    <strong className="block text-white">Everything in Certified Trip Pass</strong>
-                    <span className="text-zinc-400">PDF report, source links, and countdown plan</span>
+                    <strong className="block text-white">Everything in Complete Travel Plan</strong>
+                    <span className="text-zinc-400">Pet Visa QR pass, Digital Passport vault, PDF dossier &amp; countdown</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
+                  <div>
+                    <strong className="block text-white">Vet Specialist Verification Seal</strong>
+                    <span className="text-zinc-400">Official human veterinarian authentication on your Customs Pass</span>
                   </div>
                 </div>
 

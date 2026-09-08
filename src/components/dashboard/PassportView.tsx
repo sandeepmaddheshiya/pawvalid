@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import QrCode from '@/components/QrCode';
+import PricingModal from '@/components/PricingModal';
 
 interface PassportViewProps {
   trip: any;
@@ -10,6 +11,11 @@ interface PassportViewProps {
 }
 
 export default function PassportView({ trip, userEmail }: PassportViewProps) {
+  const [pricingModalOpen, setPricingModalOpen] = useState(false);
+
+  const tier = trip?.tier || 'FREE';
+  const isPaid = tier === 'CERTIFIED_PASS' || tier === 'CONCIERGE';
+
   const pet = trip?.petProfile || {
     name: trip?.petName || 'Milo',
     species: trip?.species || 'DOG',
@@ -28,6 +34,10 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
     : `https://petvia.com/verify/${passId}`;
 
   const handlePrint = () => {
+    if (!isPaid) {
+      setPricingModalOpen(true);
+      return;
+    }
     if (typeof window !== 'undefined') {
       window.print();
     }
@@ -35,6 +45,36 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
 
   return (
     <div className="space-y-6 text-left max-w-5xl mx-auto font-sans">
+      {/* Free Plan Upgrade Banner (if on £0 plan) */}
+      {!isPaid && (
+        <div className="bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-[#0E2342]/10 border border-amber-300/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-400 text-zinc-950 font-bold flex items-center justify-center text-lg shrink-0 shadow-2xs">
+              🔒
+            </div>
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800">
+                Free Readiness Scan Preview
+              </div>
+              <div className="text-xs sm:text-sm font-bold text-[#0E2342] mt-0.5">
+                Official Customs Pass &amp; Multi-Trip Vault are locked
+              </div>
+              <p className="text-[11px] text-zinc-500 mt-0.5 max-w-xl leading-relaxed">
+                Upgrade to the <strong className="text-emerald-700">Complete Travel Plan (£19)</strong> to activate your official live-scannable Customs QR Code, unlock unlimited 1-click trip reuse, and download official travel dossiers.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setPricingModalOpen(true)}
+            className="shrink-0 px-4 py-2.5 bg-[#0FA958] hover:bg-[#0D934C] text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-98 cursor-pointer flex items-center gap-1.5"
+          >
+            <span>⚡</span>
+            <span>Unlock Customs Pass (£19) →</span>
+          </button>
+        </div>
+      )}
+
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-2xs">
         <div>
@@ -56,8 +96,8 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
             onClick={handlePrint}
             className="inline-flex items-center gap-1.5 bg-white border border-zinc-200 hover:border-zinc-300 text-xs font-semibold text-zinc-700 px-3.5 py-2 rounded-lg shadow-2xs transition-colors cursor-pointer"
           >
-            <span>🖨️</span>
-            <span>Print Pass</span>
+            <span>{isPaid ? '🖨️' : '🔒'}</span>
+            <span>{isPaid ? 'Print Pass' : 'Print Official Pass (£19)'}</span>
           </button>
           <Link
             href={`/en/checker?from=${trip?.route?.originCode || 'GB'}&species=${pet.species || 'DOG'}`}
@@ -94,9 +134,13 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                 </div>
               </div>
 
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#0FA958] bg-[#0FA958]/20 border border-[#0FA958]/40 px-2.5 py-1 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#0FA958]" />
-                CUSTOMS VERIFIED
+              <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                isPaid
+                  ? 'text-[#0FA958] bg-[#0FA958]/20 border border-[#0FA958]/40'
+                  : 'text-amber-300 bg-amber-500/20 border border-amber-400/40'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${isPaid ? 'bg-[#0FA958]' : 'bg-amber-400'}`} />
+                {isPaid ? 'CUSTOMS VERIFIED' : '🔒 PREVIEW MODE'}
               </span>
             </div>
 
@@ -207,8 +251,10 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
             </p>
 
             {/* QR Code Container */}
-            <div className="my-5 flex flex-col items-center justify-center p-4 bg-zinc-50 rounded-2xl border border-zinc-200/80">
-              <div className="p-2.5 bg-white rounded-xl shadow-xs border border-zinc-200 mb-2">
+            <div className="my-5 flex flex-col items-center justify-center p-4 bg-zinc-50 rounded-2xl border border-zinc-200/80 relative overflow-hidden">
+              <div className={`p-2.5 bg-white rounded-xl shadow-xs border border-zinc-200 mb-2 transition-all ${
+                !isPaid ? 'filter blur-[4px] select-none pointer-events-none opacity-40' : ''
+              }`}>
                 <QrCode
                   value={verificationUrl}
                   size={170}
@@ -220,19 +266,52 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                 {passId}
               </div>
               <div className="text-[10px] text-zinc-400 mt-0.5">
-                Scan with any smartphone camera
+                {isPaid ? 'Scan with any smartphone camera' : 'Official QR pass locked on Free tier'}
               </div>
+
+              {/* Frosted Glass Lock Overlay when on Free Tier */}
+              {!isPaid && (
+                <div className="absolute inset-0 backdrop-blur-[3px] bg-white/80 flex flex-col items-center justify-center p-5 text-center">
+                  <div className="w-11 h-11 rounded-2xl bg-amber-400 text-zinc-950 flex items-center justify-center text-lg shadow-xs mb-2 font-bold">
+                    🔒
+                  </div>
+                  <div className="text-xs font-bold text-[#0E2342]">
+                    Official Customs QR Code Locked
+                  </div>
+                  <p className="text-[11px] text-zinc-500 max-w-[210px] mt-1 leading-snug">
+                    Airline check-in desks and border customs require a paid clearance seal.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setPricingModalOpen(true)}
+                    className="mt-3.5 px-4 py-2 bg-[#0FA958] hover:bg-[#0D934C] text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-98 cursor-pointer flex items-center gap-1.5"
+                  >
+                    <span>⚡</span>
+                    <span>Unlock Pass (£19) →</span>
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Quick Actions */}
             <div className="space-y-2">
-              <Link
-                href={`/verify/${passId}`}
-                target="_blank"
-                className="w-full inline-flex items-center justify-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-xs"
-              >
-                <span>View Full Customs Pass ↗</span>
-              </Link>
+              {isPaid ? (
+                <Link
+                  href={`/verify/${passId}`}
+                  target="_blank"
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-xs"
+                >
+                  <span>View Full Customs Pass ↗</span>
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setPricingModalOpen(true)}
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-all shadow-xs cursor-pointer"
+                >
+                  <span>🔒 Unlock Full Customs Pass (£19)</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={handlePrint}
@@ -249,6 +328,12 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
           </div>
         </div>
       </div>
+
+      <PricingModal
+        isOpen={pricingModalOpen}
+        onClose={() => setPricingModalOpen(false)}
+        initialTier="Complete Travel Plan"
+      />
     </div>
   );
 }
