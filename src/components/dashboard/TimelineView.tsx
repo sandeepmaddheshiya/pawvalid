@@ -10,19 +10,21 @@ interface TimelineViewProps {
 export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps) {
   const milestones = trip?.timelineMilestones || [];
   const stats = trip?.stats || {};
-  const earliestDate = stats?.earliestFlightDate || 'Calculated after prerequisites';
+  const earliestDate = stats?.earliestFlightDate || trip?.earliestFlightDate || 'Calculated after prerequisites';
+  const petName = trip?.petName || trip?.petProfile?.name || 'Your Pet';
+  const origin = trip?.origin || trip?.route?.origin || 'United Kingdom';
+  const destination = trip?.destination || trip?.route?.destination || 'Germany';
+  const userEmail = trip?.userEmail || 'traveler@example.com';
 
   const [remindersEnabled, setRemindersEnabled] = useState(trip?.remindersEnabled ?? true);
-  const [activeSendingType, setActiveSendingType] = useState<string | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleAddToCalendar = () => {
-    const petName = trip?.petName || 'Pet';
     const departure = trip?.route?.departureDate || earliestDate;
-    const title = encodeURIComponent(`${petName}'s Flight Departure to ${trip?.destination}`);
+    const title = encodeURIComponent(`${petName}'s Flight Departure to ${destination}`);
     const details = encodeURIComponent(
-      `Petvia Compliance Dossier Verified.\nEarliest Estimated Flight Date: ${earliestDate}\nDestination: ${trip?.destination}`
+      `Petvia Travel Compliance Dossier Verified.\nEarliest Estimated Flight Date: ${earliestDate}\nRoute: ${origin} to ${destination}`
     );
     const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}`;
     window.open(googleCalUrl, '_blank');
@@ -31,6 +33,8 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
   const handleToggleReminders = async () => {
     const nextState = !remindersEnabled;
     setRemindersEnabled(nextState);
+    setFeedbackMessage(null);
+    setErrorMessage(null);
     try {
       const res = await fetch(`/api/trips/${trip.id}/reminders`, {
         method: 'POST',
@@ -39,6 +43,11 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to update preferences');
+      setFeedbackMessage(
+        nextState
+          ? `Automatic pre-flight email reminders enabled for ${userEmail}.`
+          : 'Pre-flight email reminders paused.'
+      );
       if (onTripUpdated) {
         onTripUpdated({ ...trip, remindersEnabled: nextState });
       }
@@ -48,107 +57,108 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
     }
   };
 
-  const handleSendTestReminder = async (type: 'DAY_30' | 'DAY_5' | 'DAY_2') => {
-    setActiveSendingType(type);
-    setFeedbackMessage(null);
-    setErrorMessage(null);
-
-    try {
-      const res = await fetch(`/api/trips/${trip.id}/reminders`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to dispatch reminder');
-      }
-
-      const typeLabel = type === 'DAY_30' ? 'Day -30 (Airline/Crate)' : type === 'DAY_5' ? 'Day -5 (Tapeworm)' : 'Day -2 (Endorsement/Folder)';
-      setFeedbackMessage(`✓ Test reminder for ${typeLabel} dispatched to ${trip.userEmail}!`);
-      if (onTripUpdated) {
-        onTripUpdated({
-          ...trip,
-          lastReminderSent: `${type}_${new Date().toISOString()}`,
-        });
-      }
-    } catch (err: any) {
-      setErrorMessage(err.message || 'Error sending test reminder email');
-    } finally {
-      setActiveSendingType(null);
-    }
-  };
-
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 text-left max-w-6xl mx-auto font-sans animate-fade-in">
+      {/* ─── 1. PAGE HEADER ────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/80 pb-5">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 block">
-            Milestone Timeline &amp; Pre-Flight Windows
-          </span>
-          <h2 className="font-display text-xl sm:text-2xl font-black text-zinc-900 mt-1">
-            Chronological Journey Roadmap
-          </h2>
-          <p className="text-xs text-zinc-500 mt-1 max-w-xl leading-relaxed">
-            Strict dependency chain ensuring every prerequisite (microchip, vaccine wait periods, tapeworm windows) is satisfied in statutory order.
+          <div className="flex items-center gap-2 text-xs text-zinc-500 mb-1">
+            <span>Pet Travel Compliance</span>
+            <span>/</span>
+            <span className="font-medium text-zinc-800">Timeline &amp; Deadlines</span>
+          </div>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
+            {petName}&apos;s Travel Timeline &amp; Milestones
+          </h1>
+          <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
+            Key deadlines, mandatory vaccination waiting periods, and clinical examination windows for{' '}
+            <strong className="text-zinc-700">{origin} → {destination}</strong>.
           </p>
         </div>
 
         <button
           type="button"
           onClick={handleAddToCalendar}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap"
         >
-          <span>📅</span>
+          <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
           <span>Add Departure to Calendar</span>
         </button>
       </div>
 
-      {/* Hero Clearance Banner */}
-      <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 block">
-            Official Travel Clearance Date
-          </span>
-          <div className="font-display text-lg sm:text-xl font-black text-emerald-950 mt-0.5">
-            ✈️ Earliest Estimated Travel Date: {earliestDate}
+      {/* ─── 2. EXECUTIVE DEPARTURE CLEARANCE CARD ─────────────────── */}
+      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 sm:p-6 shadow-2xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-50 shrink-0" />
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+              Earliest Eligible Departure Date
+            </span>
           </div>
-          <p className="text-xs text-emerald-800/90 mt-1">
-            Based on the documents provided, route requirements, known waiting periods, and currently verified rules.
-          </p>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/80 self-start sm:self-auto">
+            <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Prerequisites Met for Travel Window</span>
+          </span>
         </div>
-        <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-900 shrink-0">
-          ✓ Prerequisites In Progress
-        </span>
+
+        <div className="mt-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+          <div>
+            <div className="font-serif text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
+              {earliestDate}
+            </div>
+            <p className="text-xs text-zinc-500 mt-1 leading-relaxed max-w-2xl">
+              Calculated based on your verified microchip sequence, 21-day rabies vaccination waiting interval,
+              and destination border entry regulations.
+            </p>
+          </div>
+          <div className="text-xs font-mono text-zinc-400 shrink-0">
+            Route: {origin} → {destination}
+          </div>
+        </div>
       </div>
 
-      {/* ─── NEW: AUTOMATED PRE-FLIGHT EMAIL REMINDERS (RESEND) ───────────── */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200 shadow-sm space-y-5">
+      {/* ─── 3. PRE-FLIGHT NOTIFICATION PREFERENCES ────────────────── */}
+      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 sm:p-6 shadow-2xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-base">🔔</span>
-              <h3 className="font-display font-black text-lg text-zinc-900">
+              <span className="w-6 h-6 rounded-lg bg-zinc-100 text-zinc-700 flex items-center justify-center text-xs">
+                <svg className="w-3.5 h-3.5 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              </span>
+              <h2 className="text-base font-bold text-zinc-900">
                 Automated Pre-Flight Email Reminders
-              </h3>
+              </h2>
             </div>
-            <p className="text-xs text-zinc-500 mt-0.5">
-              Powered by Resend. Automated regulatory alerts delivered directly to{' '}
-              <strong className="text-zinc-800 font-mono">{trip.userEmail}</strong>.
+            <p className="text-xs text-zinc-500 mt-1">
+              {remindersEnabled ? (
+                <>
+                  Alerts are active. Milestone emails are delivered automatically to{' '}
+                  <strong className="text-zinc-800 font-medium">{userEmail}</strong>.
+                </>
+              ) : (
+                'Reminders are paused. Toggle on to receive automated deadline alerts.'
+              )}
             </p>
           </div>
 
           {/* Toggle Control */}
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold text-zinc-600">
-              {remindersEnabled ? 'Reminders Active' : 'Reminders Paused'}
+          <div className="flex items-center gap-3 self-start sm:self-auto">
+            <span className="text-xs font-semibold text-zinc-700">
+              {remindersEnabled ? 'Alerts Enabled' : 'Alerts Disabled'}
             </span>
             <button
               type="button"
+              role="switch"
+              aria-checked={remindersEnabled}
               onClick={handleToggleReminders}
               className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
-                remindersEnabled ? 'bg-emerald-600' : 'bg-zinc-200'
+                remindersEnabled ? 'bg-[#0FA958]' : 'bg-zinc-300'
               }`}
             >
               <span
@@ -162,25 +172,30 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
 
         {/* Feedback messages */}
         {feedbackMessage && (
-          <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-semibold flex items-center justify-between">
-            <span>{feedbackMessage}</span>
+          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-900 text-xs font-medium flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span>{feedbackMessage}</span>
+            </div>
             <button
               type="button"
               onClick={() => setFeedbackMessage(null)}
-              className="text-emerald-700 hover:text-emerald-950 font-bold ml-2 cursor-pointer"
+              className="text-emerald-700 hover:text-emerald-950 font-bold ml-2 cursor-pointer text-xs"
             >
-              ✕
+              Dismiss
             </button>
           </div>
         )}
 
         {errorMessage && (
-          <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-900 text-xs font-semibold flex items-center justify-between">
-            <span>⚠️ {errorMessage}</span>
+          <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-900 text-xs font-medium flex items-center justify-between">
+            <span>{errorMessage}</span>
             <button
               type="button"
               onClick={() => setErrorMessage(null)}
-              className="text-red-700 hover:text-red-950 font-bold ml-2 cursor-pointer"
+              className="text-red-700 hover:text-red-950 font-bold ml-2 cursor-pointer text-xs"
             >
               ✕
             </button>
@@ -188,132 +203,179 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
         )}
 
         {/* 3 Scheduled Milestone Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
           {/* Day -30 */}
-          <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/80 flex flex-col justify-between space-y-3">
+          <div className={`p-4 rounded-xl border flex flex-col justify-between space-y-3 transition-opacity ${
+            remindersEnabled ? 'bg-zinc-50/70 border-zinc-200/80' : 'bg-zinc-50/40 border-zinc-200/50 opacity-70'
+          }`}>
             <div>
-              <div className="flex items-center justify-between gap-1 mb-1">
-                <span className="px-2 py-0.5 rounded-md bg-blue-100 text-blue-900 font-bold text-[10px] uppercase">
-                  Day -30
+              <div className="flex items-center justify-between gap-1 mb-1.5">
+                <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200/60 font-semibold text-[10px] uppercase tracking-wider">
+                  30 Days Out
                 </span>
-                <span className="text-[10px] text-zinc-400 font-mono">1 Month Out</span>
+                <span className="text-[11px] text-zinc-400 font-mono">1 Month</span>
               </div>
-              <strong className="block text-zinc-900 font-bold text-sm">
-                Airline Booking &amp; CR-82 Crate
-              </strong>
-              <p className="text-zinc-500 text-[11px] mt-1 leading-relaxed">
-                Live-animal hold reservation confirmation, crate headroom calculations, and metal fastener audit.
+              <h3 className="text-sm font-bold text-zinc-900">
+                Airline Booking &amp; Crate Prep
+              </h3>
+              <p className="text-zinc-500 text-xs mt-1 leading-relaxed">
+                Reconfirm live-animal reservation with your carrier and verify IATA CR-82 crate dimensions and ventilation.
               </p>
             </div>
 
-            <button
-              type="button"
-              disabled={activeSendingType === 'DAY_30'}
-              onClick={() => handleSendTestReminder('DAY_30')}
-              className="w-full py-2 px-3 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-300 text-zinc-800 font-bold text-[11px] transition-all cursor-pointer disabled:opacity-50 text-center"
-            >
-              {activeSendingType === 'DAY_30' ? 'Sending...' : '✉️ Send Test Day -30 Email'}
-            </button>
+            <div className="pt-2 border-t border-zinc-200/60 flex items-center justify-between">
+              {remindersEnabled ? (
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-700 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  Automated delivery active
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-zinc-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 shrink-0" />
+                  Paused
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Day -5 */}
-          <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200/80 flex flex-col justify-between space-y-3">
+          <div className={`p-4 rounded-xl border flex flex-col justify-between space-y-3 transition-opacity ${
+            remindersEnabled ? 'bg-amber-50/40 border-amber-200/70' : 'bg-zinc-50/40 border-zinc-200/50 opacity-70'
+          }`}>
             <div>
-              <div className="flex items-center justify-between gap-1 mb-1">
-                <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold text-[10px] uppercase">
-                  Day -5
+              <div className="flex items-center justify-between gap-1 mb-1.5">
+                <span className="px-2 py-0.5 rounded-md bg-amber-100/70 text-amber-900 border border-amber-200/80 font-semibold text-[10px] uppercase tracking-wider">
+                  5 Days Out
                 </span>
-                <span className="text-[10px] text-amber-700 font-mono">Mandatory Window</span>
+                <span className="text-[11px] text-amber-700 font-mono">24h–120h Window</span>
               </div>
-              <strong className="block text-zinc-900 font-bold text-sm">
-                Tapeworm Administration
-              </strong>
-              <p className="text-zinc-500 text-[11px] mt-1 leading-relaxed">
-                Strict 24h&ndash;120h Praziquantel treatment window alert with clinic instruction sheet.
+              <h3 className="text-sm font-bold text-zinc-900">
+                Tapeworm Treatment Window
+              </h3>
+              <p className="text-zinc-600 text-xs mt-1 leading-relaxed">
+                Visit your veterinarian for mandatory Praziquantel administration within 1 to 5 days prior to arrival.
               </p>
             </div>
 
-            <button
-              type="button"
-              disabled={activeSendingType === 'DAY_5'}
-              onClick={() => handleSendTestReminder('DAY_5')}
-              className="w-full py-2 px-3 rounded-xl bg-white hover:bg-amber-100/50 border border-amber-300 text-amber-900 font-bold text-[11px] transition-all cursor-pointer disabled:opacity-50 text-center"
-            >
-              {activeSendingType === 'DAY_5' ? 'Sending...' : '✉️ Send Test Day -5 Email'}
-            </button>
+            <div className="pt-2 border-t border-amber-200/60 flex items-center justify-between">
+              {remindersEnabled ? (
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-amber-800 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                  Mandatory window alert
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-zinc-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 shrink-0" />
+                  Paused
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Day -2 */}
-          <div className="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-200/80 flex flex-col justify-between space-y-3">
+          <div className={`p-4 rounded-xl border flex flex-col justify-between space-y-3 transition-opacity ${
+            remindersEnabled ? 'bg-zinc-50/70 border-zinc-200/80' : 'bg-zinc-50/40 border-zinc-200/50 opacity-70'
+          }`}>
             <div>
-              <div className="flex items-center justify-between gap-1 mb-1">
-                <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 font-bold text-[10px] uppercase">
-                  Day -2
+              <div className="flex items-center justify-between gap-1 mb-1.5">
+                <span className="px-2 py-0.5 rounded-md bg-zinc-200/70 text-zinc-800 border border-zinc-300/60 font-semibold text-[10px] uppercase tracking-wider">
+                  48 Hours Out
                 </span>
-                <span className="text-[10px] text-emerald-700 font-mono">48 Hours Out</span>
+                <span className="text-[11px] text-zinc-500 font-mono">2 Days</span>
               </div>
-              <strong className="block text-zinc-900 font-bold text-sm">
-                Endorsement &amp; Travel Folder
-              </strong>
-              <p className="text-zinc-500 text-[11px] mt-1 leading-relaxed">
-                Collect physical USDA/DEFRA health certificate endorsement and assemble carry-on document binder.
+              <h3 className="text-sm font-bold text-zinc-900">
+                Health Certificate &amp; Travel Folder
+              </h3>
+              <p className="text-zinc-500 text-xs mt-1 leading-relaxed">
+                Collect endorsed official veterinary health certificate and assemble carry-on waterproof documents.
               </p>
             </div>
 
-            <button
-              type="button"
-              disabled={activeSendingType === 'DAY_2'}
-              onClick={() => handleSendTestReminder('DAY_2')}
-              className="w-full py-2 px-3 rounded-xl bg-white hover:bg-emerald-100/50 border border-emerald-300 text-emerald-900 font-bold text-[11px] transition-all cursor-pointer disabled:opacity-50 text-center"
-            >
-              {activeSendingType === 'DAY_2' ? 'Sending...' : '✉️ Send Test Day -2 Email'}
-            </button>
+            <div className="pt-2 border-t border-zinc-200/60 flex items-center justify-between">
+              {remindersEnabled ? (
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-zinc-600 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0" />
+                  Final checklist delivery
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-zinc-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 shrink-0" />
+                  Paused
+                </span>
+              )}
+            </div>
           </div>
         </div>
-
-        {trip.lastReminderSent && (
-          <p className="text-[10px] text-zinc-400 font-mono">
-            Last reminder activity: {trip.lastReminderSent}
-          </p>
-        )}
       </div>
 
-      {/* Chronological Step List */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xs space-y-4">
-        <h3 className="font-bold text-sm text-zinc-900">Pre-Flight Regulatory Milestones</h3>
+      {/* ─── 4. CHRONOLOGICAL MILESTONES LEDGER ────────────────────── */}
+      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 sm:p-7 shadow-2xs space-y-5">
+        <div>
+          <h2 className="text-base font-bold text-zinc-900">
+            Journey Milestones &amp; Compliance History
+          </h2>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Audit trail of verified medical prerequisites, statutory latency periods, and upcoming border clearance steps.
+          </p>
+        </div>
 
-        <div className="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-3 sm:before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-zinc-200">
+        <div className="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-3 sm:before:left-3.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-zinc-200">
           {milestones.map((ms: any, idx: number) => {
             const isCompleted = ms.status === 'COMPLETED';
             const isGoal = ms.status === 'GOAL';
 
             return (
-              <div key={`ms-${idx}`} className="relative group">
+              <div key={`ms-${idx}`} className="relative">
                 {/* Node Icon */}
                 <span
-                  className={`absolute -left-6 sm:-left-8 top-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all ${
+                  className={`absolute -left-6 sm:-left-8 top-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
                     isCompleted
-                      ? 'bg-emerald-500 border-emerald-600 text-white shadow-2xs'
+                      ? 'bg-[#0FA958] text-white ring-4 ring-emerald-50'
                       : isGoal
-                      ? 'bg-amber-400 border-amber-500 text-zinc-950 shadow-2xs'
-                      : 'bg-white border-zinc-300 text-zinc-400'
+                      ? 'bg-[#0E2342] text-white ring-4 ring-blue-50'
+                      : 'bg-white border-2 border-zinc-300 text-zinc-500'
                   }`}
                 >
-                  {isCompleted ? '✓' : isGoal ? '🏁' : idx + 1}
+                  {isCompleted ? (
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : isGoal ? (
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                  ) : (
+                    <span className="text-[11px] font-semibold">{idx + 1}</span>
+                  )}
                 </span>
 
+                {/* Milestone Card */}
                 <div
-                  className={`p-4 rounded-2xl border transition-all ${
+                  className={`p-4 rounded-xl border transition-all ${
                     isCompleted
-                      ? 'bg-emerald-50/40 border-emerald-200/70 text-emerald-950'
+                      ? 'bg-white border-zinc-200/90 shadow-2xs hover:border-zinc-300'
                       : isGoal
-                      ? 'bg-amber-50/50 border-amber-300/80 text-zinc-900'
-                      : 'bg-zinc-50/70 border-zinc-200/80 text-zinc-800'
+                      ? 'bg-blue-50/40 border-blue-200/80 shadow-2xs'
+                      : 'bg-zinc-50/60 border-zinc-200/70'
                   }`}
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1">
-                    <strong className="text-sm font-bold block text-zinc-900">{ms.title}</strong>
-                    <span className="font-mono text-xs font-bold text-zinc-500">{ms.date}</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <strong className="text-sm font-bold text-zinc-900">{ms.title}</strong>
+                      {isCompleted && (
+                        <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[10px] font-semibold">
+                          Verified
+                        </span>
+                      )}
+                      {isGoal && (
+                        <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/60 text-[10px] font-semibold">
+                          Departure Clearance
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-mono text-xs font-semibold text-zinc-500 tabular-nums">
+                      {ms.date}
+                    </span>
                   </div>
                   <p className="text-xs text-zinc-600 leading-relaxed">{ms.description}</p>
                 </div>
@@ -325,3 +387,4 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
     </div>
   );
 }
+
