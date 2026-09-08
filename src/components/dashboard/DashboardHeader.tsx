@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Logo from '../Logo';
 
 interface DashboardHeaderProps {
   trip?: any;
@@ -28,7 +29,6 @@ export default function DashboardHeader({
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const petName = trip?.petName || 'My Pet';
-  const species = trip?.species === 'CAT' ? '🐱' : '🐶';
   const origin = trip?.origin || 'Origin';
   const destination = trip?.destination || 'Destination';
   const displayEmail = userEmail || trip?.userEmail || 'traveler@petvia.com';
@@ -38,17 +38,12 @@ export default function DashboardHeader({
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/80 px-4 sm:px-8 py-3.5 flex items-center justify-between">
       {/* Left: Brand & Trip Switcher */}
       <div className="flex items-center gap-4 sm:gap-6">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center font-black text-lg shadow-sm group-hover:scale-105 transition-transform">
-            P
-          </div>
-          <div className="hidden sm:flex items-center gap-2">
-            <span className="font-display font-black text-lg text-zinc-900 tracking-tight">Petvia</span>
-            <span className="px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-600 border border-zinc-200/80 text-[10px] font-bold uppercase tracking-wider">
-              Portal
-            </span>
-          </div>
-        </Link>
+        <div className="flex items-center gap-2.5">
+          <Logo size="small" />
+          <span className="hidden sm:inline-block px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-600 border border-zinc-200/80 text-[10px] font-bold uppercase tracking-wider">
+            Portal
+          </span>
+        </div>
 
         {/* Pet & Trip Switcher Dropdown */}
         {trip ? (
@@ -58,11 +53,25 @@ export default function DashboardHeader({
               onClick={() => setIsSwitcherOpen(!isSwitcherOpen)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/90 text-xs font-semibold text-zinc-900 transition-all cursor-pointer shadow-2xs"
             >
-              <span className="text-sm">{species}</span>
+              <svg className="w-3.5 h-3.5 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 11c-2.4 0-4 1.8-4 3.5 0 2.2 2 3.5 4 3.5s4-1.3 4-3.5C16 12.8 14.4 11 12 11z" />
+                <ellipse cx="6.5" cy="11.5" rx="1.8" ry="2.2" />
+                <ellipse cx="9.2" cy="7" rx="1.8" ry="2.2" />
+                <ellipse cx="14.8" cy="7" rx="1.8" ry="2.2" />
+                <ellipse cx="17.5" cy="11.5" rx="1.8" ry="2.2" />
+              </svg>
               <span className="font-bold text-zinc-900">{petName}</span>
               <span className="hidden md:inline text-zinc-300 font-normal">|</span>
               <span className="hidden md:inline text-zinc-600 font-medium">{origin} → {destination}</span>
-              <span className="text-[9px] text-zinc-400 ml-1">▼</span>
+              <svg
+                className={`w-3 h-3 text-zinc-400 transition-transform ${isSwitcherOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
 
             {isSwitcherOpen && (
@@ -73,7 +82,6 @@ export default function DashboardHeader({
                 <div className="space-y-1 max-h-60 overflow-y-auto">
                   {allTrips.map((t) => {
                     const isCurrent = t.id === trip?.id;
-                    const petIcon = t.species === 'CAT' ? '🐱' : '🐶';
                     return (
                       <button
                         key={t.id}
@@ -88,8 +96,14 @@ export default function DashboardHeader({
                             : 'hover:bg-zinc-50 text-zinc-700'
                         }`}
                       >
-                        <div className="flex items-center gap-2 truncate">
-                          <span>{petIcon}</span>
+                        <div className="flex items-center gap-2.5 truncate">
+                          <svg className="w-3.5 h-3.5 text-zinc-400 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 11c-2.4 0-4 1.8-4 3.5 0 2.2 2 3.5 4 3.5s4-1.3 4-3.5C16 12.8 14.4 11 12 11z" />
+                            <ellipse cx="6.5" cy="11.5" rx="1.8" ry="2.2" />
+                            <ellipse cx="9.2" cy="7" rx="1.8" ry="2.2" />
+                            <ellipse cx="14.8" cy="7" rx="1.8" ry="2.2" />
+                            <ellipse cx="17.5" cy="11.5" rx="1.8" ry="2.2" />
+                          </svg>
                           <div className="truncate">
                             <strong className="block text-zinc-900 truncate">{t.petName}</strong>
                             <span className="text-[11px] text-zinc-500">{t.origin} → {t.destination}</span>
@@ -108,9 +122,11 @@ export default function DashboardHeader({
                       setIsSwitcherOpen(false);
                       onNewTrip();
                     }}
-                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold text-emerald-700 hover:bg-emerald-50 flex items-center gap-2 cursor-pointer transition-colors"
+                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-emerald-700 hover:bg-emerald-50 flex items-center gap-2 cursor-pointer transition-colors"
                   >
-                    <span>+</span>
+                    <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
                     <span>Add Another Pet / New Trip</span>
                   </button>
                 </div>
@@ -123,7 +139,9 @@ export default function DashboardHeader({
             onClick={onNewTrip}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition-all cursor-pointer"
           >
-            <span>+</span>
+            <svg className="w-3.5 h-3.5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
             <span>Check Pet Compliance</span>
           </button>
         )}
@@ -137,9 +155,18 @@ export default function DashboardHeader({
             type="button"
             disabled={isDownloadingDossier}
             onClick={onDownloadDossier}
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 sm:px-4 py-2 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer disabled:opacity-60 whitespace-nowrap"
+            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-3.5 sm:px-4 py-2 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer disabled:opacity-60 whitespace-nowrap"
           >
-            <span>{isDownloadingDossier ? '⏳' : '📄'}</span>
+            {isDownloadingDossier ? (
+              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            ) : (
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+              </svg>
+            )}
             <span className="hidden sm:inline">
               {isDownloadingDossier ? 'Generating PDF...' : 'Download Dossier (PDF)'}
             </span>
@@ -152,33 +179,72 @@ export default function DashboardHeader({
           <button
             type="button"
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 flex items-center justify-center text-xs font-black text-zinc-700 cursor-pointer"
+            className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-zinc-200/90 hover:border-zinc-300 bg-white hover:bg-zinc-50/80 transition-all cursor-pointer shadow-2xs group"
+            aria-expanded={isProfileOpen}
+            aria-haspopup="true"
           >
-            {displayEmail.charAt(0).toUpperCase()}
+            <div className="w-7 h-7 rounded-full bg-[#0E2342] text-white font-semibold text-xs flex items-center justify-center tracking-tight shadow-xs">
+              {displayEmail.charAt(0).toUpperCase()}
+            </div>
+            <span className="text-xs font-medium text-zinc-700 group-hover:text-zinc-900 max-w-[120px] truncate hidden sm:inline">
+              {displayEmail.split('@')[0]}
+            </span>
+            <svg
+              className={`w-3 h-3 text-zinc-400 group-hover:text-zinc-600 transition-transform duration-200 ${
+                isProfileOpen ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
 
           {isProfileOpen && (
-            <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-zinc-200 p-3 z-50 animate-fade-in text-xs">
-              <div className="border-b border-zinc-100 pb-2 mb-2">
-                <span className="text-[11px] text-zinc-400 block font-semibold">Signed in as</span>
-                <strong className="text-zinc-900 block truncate">{displayEmail}</strong>
-                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900">
-                  {tier === 'CONCIERGE' ? '★ Priority Expert Review' : tier === 'CERTIFIED_PASS' ? '✓ Complete Travel Plan' : 'Readiness Member'}
-                </span>
+            <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-zinc-200/90 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-100 text-xs">
+              {/* Identity Header */}
+              <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100 mb-1">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#0E2342] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                    {displayEmail.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold text-zinc-900 truncate leading-tight">
+                      {displayEmail}
+                    </p>
+                    <span className="inline-block mt-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200/80">
+                      {tier === 'CONCIERGE' ? '★ Priority Review' : tier === 'CERTIFIED_PASS' ? '✓ Travel Plan Active' : 'Readiness Member'}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-1 text-zinc-600">
-                <Link href="/" className="block px-2.5 py-1.5 rounded-lg hover:bg-zinc-50 hover:text-zinc-900">
-                  Return to Home
+
+              {/* Menu items */}
+              <div className="py-0.5 space-y-0.5">
+                <Link
+                  href="/"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors group"
+                >
+                  <svg className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                  </svg>
+                  <span className="font-medium">Return to Home</span>
                 </Link>
+
                 <button
                   type="button"
                   onClick={() => {
                     setIsProfileOpen(false);
                     onNewTrip();
                   }}
-                  className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-zinc-50 hover:text-zinc-900 cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors group text-left cursor-pointer"
                 >
-                  New Trip Assessment
+                  <svg className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  </svg>
+                  <span className="font-medium">New Trip Assessment</span>
                 </button>
 
                 {onDeleteTrip && trip?.id && (
@@ -190,13 +256,17 @@ export default function DashboardHeader({
                         onDeleteTrip(trip.id);
                       }
                     }}
-                    className="w-full text-left px-2.5 py-1.5 rounded-lg text-amber-700 hover:bg-amber-50 font-medium cursor-pointer transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-amber-700 hover:bg-amber-50 transition-colors group text-left cursor-pointer"
                   >
-                    Remove Current Journey
+                    <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                    <span className="font-medium">Remove Current Journey</span>
                   </button>
                 )}
+              </div>
 
-                <div className="border-t border-zinc-100 my-1"></div>
+              <div className="border-t border-zinc-100 pt-1 mt-1">
                 <button
                   type="button"
                   onClick={() => {
@@ -208,9 +278,12 @@ export default function DashboardHeader({
                     }
                     window.location.href = '/login';
                   }}
-                  className="w-full text-left px-2.5 py-1.5 rounded-lg text-red-600 hover:bg-red-50 hover:text-red-700 font-semibold cursor-pointer transition-colors"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-zinc-600 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer group text-left"
                 >
-                  Sign Out
+                  <svg className="w-3.5 h-3.5 text-zinc-400 group-hover:text-red-600 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                  </svg>
+                  <span className="font-semibold">Sign Out</span>
                 </button>
               </div>
             </div>
