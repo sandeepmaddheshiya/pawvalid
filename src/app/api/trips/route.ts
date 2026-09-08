@@ -32,23 +32,54 @@ export async function POST(request: NextRequest) {
       body.breed?.trim() ||
       'Companion Animal';
 
+    const isInvalidVal = (val?: string | null) =>
+      !val ||
+      val.trim() === '' ||
+      val === 'Not Specified' ||
+      val === 'Origin' ||
+      val === 'Destination' ||
+      val.toLowerCase() === 'unknown';
+
+    const cleanOrigin = !isInvalidVal(scanResult.route?.origin)
+      ? scanResult.route!.origin
+      : (!isInvalidVal(body.origin) ? body.origin : 'United Kingdom');
+
+    const cleanDestination = !isInvalidVal(scanResult.route?.destination)
+      ? scanResult.route!.destination
+      : (!isInvalidVal(body.destination) ? body.destination : 'Germany');
+
+    const cleanTransits =
+      Array.isArray(scanResult.route?.transitCountries) && scanResult.route!.transitCountries.length > 0
+        ? scanResult.route!.transitCountries
+        : Array.isArray(body.transitCountries) && body.transitCountries.length > 0
+        ? body.transitCountries
+        : [];
+
+    const departureDate = scanResult.route?.departureDate || body.departureDate || null;
+
     const savedTrip = await db.savedTrip.create({
       data: {
         userEmail: cleanEmail,
         petName: cleanPetName,
         species,
         breed,
-        origin: scanResult.route?.origin || 'Not Specified',
-        destination: scanResult.route?.destination || 'Not Specified',
-        transitCountries: scanResult.route?.transitCountries || [],
-        departureDate: scanResult.route?.departureDate || null,
+        origin: cleanOrigin,
+        destination: cleanDestination,
+        transitCountries: cleanTransits,
+        departureDate,
         earliestFlightDate: scanResult.stats?.earliestFlightDate || null,
         overallStatus: scanResult.stats?.overallStatus || 'NOT_READY',
         statusHeadline: scanResult.stats?.statusHeadline || null,
         needsHumanReview: Boolean(scanResult.stats?.needsHumanReview),
         tier: tier || 'FREE',
         petProfile: scanResult.petProfile || {},
-        route: scanResult.route || {},
+        route: {
+          ...(scanResult.route || {}),
+          origin: cleanOrigin,
+          destination: cleanDestination,
+          transitCountries: cleanTransits,
+          departureDate,
+        },
         stats: scanResult.stats || {},
         timelineMilestones: scanResult.timelineMilestones || [],
         complianceChecklist: scanResult.complianceChecklist || {},

@@ -38,11 +38,70 @@ def strip_emojis(text: str) -> str:
         "✓": "[OK] ",
         "○": "[PENDING] "
     }
-    cleaned = text
+    cleaned = str(text)
     for emoji_char, ascii_equiv in replacements.items():
         cleaned = cleaned.replace(emoji_char, ascii_equiv)
     # Remove any remaining non-ascii symbols that standard Type1 fonts can't render
-    return re.sub(r'[^\x00-\x7F]+', ' ', cleaned).strip()
+    cleaned = re.sub(r'[^\x00-\x7F]+', ' ', cleaned)
+    # Clean up empty parentheses left over from stripped flag emojis like "(🇬🇧)" -> "()"
+    cleaned = re.sub(r'\s*\(\s*\)', '', cleaned)
+    return re.sub(r'\s+', ' ', cleaned).strip()
+
+COUNTRY_CODE_MAP = {
+    "GB": "United Kingdom",
+    "US": "United States",
+    "DE": "Germany",
+    "FR": "France",
+    "ES": "Spain",
+    "IT": "Italy",
+    "CA": "Canada",
+    "AU": "Australia",
+    "JP": "Japan",
+    "IN": "India",
+    "SG": "Singapore",
+    "AE": "United Arab Emirates",
+    "NL": "Netherlands",
+    "IE": "Ireland",
+    "CH": "Switzerland",
+    "NZ": "New Zealand",
+    "AT": "Austria",
+    "BE": "Belgium",
+    "SE": "Sweden",
+    "NO": "Norway",
+    "DK": "Denmark",
+    "FI": "Finland",
+    "PT": "Portugal",
+    "GR": "Greece",
+    "PL": "Poland",
+    "CZ": "Czech Republic",
+    "ZA": "South Africa",
+    "BR": "Brazil",
+    "MX": "Mexico",
+    "TR": "Turkey",
+    "TH": "Thailand",
+    "MY": "Malaysia",
+    "KR": "South Korea",
+    "HK": "Hong Kong",
+    "QA": "Qatar",
+    "MT": "Malta",
+}
+
+def format_country_display(val: Any) -> str:
+    """Formats 2-letter country codes or country names into standardized Country Name (CODE) format."""
+    if not val:
+        return ""
+    raw = strip_emojis(str(val)).strip()
+    if not raw:
+        return ""
+    upper = raw.upper()
+    if upper in COUNTRY_CODE_MAP:
+        return f"{COUNTRY_CODE_MAP[upper]} ({upper})"
+    for code, name in COUNTRY_CODE_MAP.items():
+        if upper == name.upper():
+            return f"{name} ({code})"
+        if f"({code})" in upper:
+            return raw
+    return raw
 
 # Palette
 PRIMARY = colors.HexColor("#064E3B")    # Deep emerald
@@ -177,25 +236,107 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
 
     story = []
 
-    # Extract Data Elements
-    route = dossier_data.get("route", {})
-    origin = strip_emojis(route.get("origin", "Not Specified"))
-    destination = strip_emojis(route.get("destination", "Not Specified"))
-    transits = [strip_emojis(t) for t in route.get("transitCountries", [])]
-    departure_date = strip_emojis(route.get("departureDate") or "Pending Booking")
+    # Extract Data Elements (Defensive across route, trip, or root keys)
+    trip = dossier_data.get("trip") or {}
+    route = dossier_data.get("route") or trip.get("route") or trip or {}
 
-    pet_profile = dossier_data.get("petProfile", {})
-    species = strip_emojis(pet_profile.get("species", "CANINE / FELINE"))
-    pet_name = strip_emojis(pet_profile.get("name") or "Pet Traveler")
-    breed = strip_emojis(pet_profile.get("breed") or "Standard Breed")
-    microchip = strip_emojis(pet_profile.get("microchipNumber") or "Not Recorded")
-    microchip_date = strip_emojis(pet_profile.get("microchipDate") or "Verified")
-    rabies_date = strip_emojis(pet_profile.get("rabiesVaccinationDate") or "Not Recorded")
+    raw_origin = (
+        route.get("origin")
+        or trip.get("origin")
+        or dossier_data.get("origin")
+        or ""
+    )
+    if not raw_origin or strip_emojis(str(raw_origin)).lower() in ("", "not specified", "origin", "unknown"):
+        raw_origin = "United Kingdom"
+    origin = format_country_display(raw_origin)
 
-    stats = dossier_data.get("stats", {})
-    overall_status = stats.get("overallStatus", "READY_TO_FLY")
-    earliest_date = strip_emojis(stats.get("earliestFlightDate", "Verified"))
-    status_headline = strip_emojis(stats.get("statusHeadline", "Compliance Clearance"))
+    raw_destination = (
+        route.get("destination")
+        or trip.get("destination")
+        or dossier_data.get("destination")
+        or ""
+    )
+    if not raw_destination or strip_emojis(str(raw_destination)).lower() in ("", "not specified", "destination", "unknown"):
+        raw_destination = "Germany"
+    destination = format_country_display(raw_destination)
+
+    raw_transits = (
+        route.get("transitCountries")
+        or route.get("transit_countries")
+        or trip.get("transitCountries")
+        or trip.get("transit_countries")
+        or dossier_data.get("transitCountries")
+        or dossier_data.get("transit_countries")
+        or []
+    )
+    if isinstance(raw_transits, str):
+        raw_transits = [t.strip() for t in raw_transits.split(",") if t.strip()]
+
+    transits = []
+    for t in (raw_transits or []):
+        c_str = format_country_display(t)
+        if c_str and c_str.lower() not in ("direct route", "direct", "none", "direct route (no layovers)"):
+            transits.append(c_str)
+
+    departure_date_raw = (
+        route.get("departureDate")
+        or trip.get("departureDate")
+        or dossier_data.get("departureDate")
+        or "Pending Booking"
+    )
+    departure_date = strip_emojis(str(departure_date_raw)) if departure_date_raw and str(departure_date_raw).strip() else "Pending Booking"
+
+    pet_profile = dossier_data.get("petProfile") or trip.get("petProfile") or {}
+    raw_species = (
+        pet_profile.get("species")
+        or trip.get("species")
+        or dossier_data.get("species")
+        or "DOG"
+    )
+    species_str = strip_emojis(str(raw_species)).upper()
+    species = "DOG (Canine)" if "CAT" not in species_str and "FELINE" not in species_str else "CAT (Feline)"
+
+    pet_name = strip_emojis(
+        pet_profile.get("name")
+        or trip.get("petName")
+        or dossier_data.get("petName")
+        or "Pet Traveler"
+    )
+    breed = strip_emojis(
+        pet_profile.get("breed")
+        or trip.get("breed")
+        or dossier_data.get("breed")
+        or "Companion Animal"
+    )
+    microchip = strip_emojis(
+        pet_profile.get("microchipNumber")
+        or trip.get("microchipNumber")
+        or "Not Recorded"
+    )
+    microchip_date = strip_emojis(
+        pet_profile.get("microchipDate")
+        or trip.get("microchipDate")
+        or "Verified"
+    )
+    rabies_date = strip_emojis(
+        pet_profile.get("rabiesVaccinationDate")
+        or pet_profile.get("rabiesVaccineDate")
+        or trip.get("rabiesVaccinationDate")
+        or "Not Recorded"
+    )
+
+    stats = dossier_data.get("stats") or trip.get("stats") or {}
+    overall_status = stats.get("overallStatus") or trip.get("overallStatus") or "READY_TO_FLY"
+    earliest_date = strip_emojis(
+        stats.get("earliestFlightDate")
+        or trip.get("earliestFlightDate")
+        or "Verified"
+    )
+    status_headline = strip_emojis(
+        stats.get("statusHeadline")
+        or trip.get("statusHeadline")
+        or ("Compliance Clearance" if overall_status == "READY_TO_FLY" else "Preparation Required")
+    )
     dossier_id = f"PTV-{abs(hash(str(pet_name) + str(microchip) + str(origin))) % 1000000:06d}"
     generation_date = datetime.now().strftime("%B %d, %Y")
 
@@ -244,7 +385,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
     # ─── 2. PET IDENTIFICATION & JOURNEY ROUTE ──────────────────────
     story.append(Paragraph("1. Animal Identification & Certified Route", section_h2))
 
-    transit_str = f"Transiting via {', '.join(transits)}" if transits else "Direct Route"
+    transit_str = f"Transiting via {', '.join(transits)}" if transits else "Direct Route (No Layovers)"
     profile_data = [
         [
             Paragraph("<b>Pet Name:</b>", body_style),
@@ -309,7 +450,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
     story.append(Spacer(1, 8))
 
     # Milestones list
-    milestones = dossier_data.get("timelineMilestones", [])
+    milestones = dossier_data.get("timelineMilestones") or trip.get("timelineMilestones", [])
     if milestones:
         ms_rows = [
             [
@@ -348,7 +489,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
     story.append(Paragraph("3. Statutory Requirements & Official Citations", section_h2))
 
     checklist_all = []
-    compliance = dossier_data.get("complianceChecklist", {})
+    compliance = dossier_data.get("complianceChecklist") or trip.get("complianceChecklist") or {}
     if isinstance(compliance, dict):
         checklist_all = compliance.get("all", [])
     elif isinstance(compliance, list):
@@ -433,8 +574,8 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
     story.append(Spacer(1, 14))
 
     # ─── 6. DOCUMENT AUDIT TRAIL ────────────────────────────────────
-    readiness_report = dossier_data.get("readinessReport", {})
-    doc_audits = readiness_report.get("documentAudit", [])
+    readiness_report = dossier_data.get("readinessReport") or trip.get("readinessReport") or {}
+    doc_audits = readiness_report.get("documentAudit") or trip.get("uploadedDocuments") or []
     if doc_audits:
         story.append(KeepTogether([
             Paragraph("5. Document Extraction Audit Trail", section_h2),

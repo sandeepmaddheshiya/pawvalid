@@ -176,13 +176,68 @@ function DashboardContent() {
     if (!currentTrip) return;
     try {
       setIsDownloadingDossier(true);
+      const activeOrigin =
+        currentTrip.route?.origin &&
+        currentTrip.route.origin !== 'Not Specified' &&
+        currentTrip.route.origin !== 'Origin'
+          ? currentTrip.route.origin
+          : currentTrip.origin &&
+            currentTrip.origin !== 'Not Specified' &&
+            currentTrip.origin !== 'Origin'
+          ? currentTrip.origin
+          : 'United Kingdom';
+
+      const activeDestination =
+        currentTrip.route?.destination &&
+        currentTrip.route.destination !== 'Not Specified' &&
+        currentTrip.route.destination !== 'Destination'
+          ? currentTrip.route.destination
+          : currentTrip.destination &&
+            currentTrip.destination !== 'Not Specified' &&
+            currentTrip.destination !== 'Destination'
+          ? currentTrip.destination
+          : 'Germany';
+
+      const activeTransits =
+        currentTrip.route?.transitCountries && currentTrip.route.transitCountries.length > 0
+          ? currentTrip.route.transitCountries
+          : currentTrip.transitCountries && currentTrip.transitCountries.length > 0
+          ? currentTrip.transitCountries
+          : [];
+
+      const activeDepartureDate =
+        currentTrip.route?.departureDate || currentTrip.departureDate || null;
+
       const payload = {
-        route: currentTrip.route,
-        petProfile: currentTrip.petProfile,
-        stats: currentTrip.stats,
-        timelineMilestones: currentTrip.timelineMilestones,
-        complianceChecklist: currentTrip.complianceChecklist,
-        readinessReport: currentTrip.readinessReport,
+        route: {
+          origin: activeOrigin,
+          destination: activeDestination,
+          transitCountries: activeTransits,
+          departureDate: activeDepartureDate,
+        },
+        trip: {
+          id: currentTrip.id,
+          petName: currentTrip.petName,
+          species: currentTrip.species,
+          breed: currentTrip.breed,
+          origin: activeOrigin,
+          destination: activeDestination,
+          transitCountries: activeTransits,
+          departureDate: activeDepartureDate,
+          earliestFlightDate: currentTrip.earliestFlightDate || currentTrip.stats?.earliestFlightDate || 'Verified',
+          overallStatus: currentTrip.overallStatus || currentTrip.stats?.overallStatus || 'ACTION_REQUIRED',
+          statusHeadline: currentTrip.statusHeadline || currentTrip.stats?.statusHeadline || 'Compliance Clearance',
+        },
+        petProfile: {
+          ...currentTrip.petProfile,
+          name: currentTrip.petName || currentTrip.petProfile?.name,
+          species: currentTrip.species || currentTrip.petProfile?.species,
+          breed: currentTrip.breed || currentTrip.petProfile?.breed,
+        },
+        stats: currentTrip.stats || {},
+        timelineMilestones: currentTrip.timelineMilestones || [],
+        complianceChecklist: currentTrip.complianceChecklist || {},
+        readinessReport: currentTrip.readinessReport || {},
       };
 
       const res = await fetch('/api/documents/dossier', {

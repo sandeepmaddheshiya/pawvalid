@@ -49,15 +49,39 @@ export default async function AssessmentReportPage({ params }: ReportPageProps) 
     const rawChecklist = (savedTrip.complianceChecklist as any) || {};
     const rawReport = (savedTrip.readinessReport as any) || {};
 
+    const isInvalidLoc = (val?: string | null) =>
+      !val ||
+      val.trim() === '' ||
+      val === 'Not Specified' ||
+      val === 'Origin' ||
+      val === 'Destination' ||
+      val.toLowerCase() === 'unknown';
+
+    const origin = !isInvalidLoc(savedTrip.origin)
+      ? savedTrip.origin
+      : !isInvalidLoc(rawRoute.origin)
+      ? rawRoute.origin
+      : 'United Kingdom';
+
+    const destination = !isInvalidLoc(savedTrip.destination)
+      ? savedTrip.destination
+      : !isInvalidLoc(rawRoute.destination)
+      ? rawRoute.destination
+      : 'Germany';
+
+    const transitCountries =
+      savedTrip.transitCountries && savedTrip.transitCountries.length > 0
+        ? savedTrip.transitCountries
+        : rawRoute.transitCountries && rawRoute.transitCountries.length > 0
+        ? rawRoute.transitCountries
+        : [];
+
     const scanResult: ScanResult = {
       status: savedTrip.overallStatus || 'SUCCESS',
       route: {
-        origin: savedTrip.origin || rawRoute.origin || 'United Kingdom',
-        destination: savedTrip.destination || rawRoute.destination || 'Germany',
-        transitCountries:
-          savedTrip.transitCountries && savedTrip.transitCountries.length > 0
-            ? savedTrip.transitCountries
-            : rawRoute.transitCountries || [],
+        origin,
+        destination,
+        transitCountries,
         departureDate: savedTrip.departureDate || rawRoute.departureDate || null,
       },
       petDetected: true,

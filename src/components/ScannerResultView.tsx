@@ -85,6 +85,72 @@ function PrinterIcon({ className = 'w-4 h-4' }: { className?: string }) {
   );
 }
 
+const COUNTRY_NAME_MAP: Record<string, string> = {
+  GB: 'United Kingdom',
+  US: 'United States',
+  DE: 'Germany',
+  FR: 'France',
+  ES: 'Spain',
+  IT: 'Italy',
+  CA: 'Canada',
+  AU: 'Australia',
+  JP: 'Japan',
+  IN: 'India',
+  SG: 'Singapore',
+  AE: 'United Arab Emirates',
+  NL: 'Netherlands',
+  IE: 'Ireland',
+  CH: 'Switzerland',
+  NZ: 'New Zealand',
+  AT: 'Austria',
+  BE: 'Belgium',
+  SE: 'Sweden',
+  NO: 'Norway',
+  DK: 'Denmark',
+  FI: 'Finland',
+  PT: 'Portugal',
+  GR: 'Greece',
+  PL: 'Poland',
+  CZ: 'Czech Republic',
+  ZA: 'South Africa',
+  BR: 'Brazil',
+  MX: 'Mexico',
+  TR: 'Turkey',
+  TH: 'Thailand',
+  MY: 'Malaysia',
+  KR: 'South Korea',
+  HK: 'Hong Kong',
+  QA: 'Qatar',
+  MT: 'Malta',
+};
+
+function formatCountryDisplay(val?: string | null, fallback = 'Not Specified'): string {
+  if (
+    !val ||
+    val.trim() === '' ||
+    val === 'Origin' ||
+    val === 'Destination' ||
+    val === 'Not Specified' ||
+    val.toLowerCase() === 'unknown'
+  ) {
+    return fallback;
+  }
+  const clean = val.replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]+/g, '').replace(/\s*\(\s*\)/g, '').trim();
+  const upper = clean.toUpperCase();
+  if (COUNTRY_NAME_MAP[upper]) {
+    return `${COUNTRY_NAME_MAP[upper]} (${upper})`;
+  }
+  for (const [code, name] of Object.entries(COUNTRY_NAME_MAP)) {
+    if (upper === name.toUpperCase()) {
+      return `${name} (${code})`;
+    }
+    if (clean.includes(`(${code})`)) {
+      return clean;
+    }
+  }
+  return clean;
+}
+
 interface ScannerResultViewProps {
   result: ScanResult;
   tripId?: string;
@@ -106,6 +172,15 @@ export default function ScannerResultView({
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
   const [isDownloadingDossier, setIsDownloadingDossier] = useState(false);
+
+  // Robust location resolution
+  const rawOrigin = result.route?.origin;
+  const rawDestination = result.route?.destination;
+  const rawTransits = result.route?.transitCountries || [];
+
+  const displayOrigin = formatCountryDisplay(rawOrigin, 'United Kingdom (GB)');
+  const displayDestination = formatCountryDisplay(rawDestination, 'Germany (DE)');
+  const displayTransits = rawTransits.map((t) => formatCountryDisplay(t, t));
 
   // Save Trip to Dashboard state
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -219,18 +294,40 @@ export default function ScannerResultView({
   const handleDownloadDossier = async () => {
     try {
       setIsDownloadingDossier(true);
+      const activeDepartureDate = result.route?.departureDate || null;
+
       const payload = {
+        route: {
+          origin: displayOrigin,
+          destination: displayDestination,
+          transitCountries: displayTransits,
+          departureDate: activeDepartureDate,
+        },
         trip: {
           id: tripId || 'TRIP-DEMO',
           petName: activePetName,
           species: activeSpecies,
           breed: activeBreed,
-          origin: result.route?.origin || 'Origin',
-          destination: result.route?.destination || 'Destination',
+          origin: displayOrigin,
+          destination: displayDestination,
+          transitCountries: displayTransits,
+          departureDate: activeDepartureDate,
           earliestFlightDate: result.stats?.earliestFlightDate || 'Verified',
           overallStatus: result.stats?.overallStatus || 'ACTION_REQUIRED',
+          statusHeadline: result.stats?.statusHeadline || 'Compliance Clearance',
         },
-        petProfile: result.petProfile || {},
+        petProfile: {
+          ...result.petProfile,
+          name: activePetName,
+          species: activeSpecies,
+          breed: activeBreed,
+        },
+        stats: {
+          ...result.stats,
+          overallStatus: result.stats?.overallStatus || 'ACTION_REQUIRED',
+          statusHeadline: result.stats?.statusHeadline || 'Compliance Clearance',
+          earliestFlightDate: result.stats?.earliestFlightDate || 'Verified',
+        },
         complianceChecklist: result.complianceChecklist || {},
         timelineMilestones: result.timelineMilestones || [],
         readinessReport: result.readinessReport || {},
@@ -439,12 +536,12 @@ export default function ScannerResultView({
                 <span className="font-semibold text-zinc-900">{activePetName}</span>
                 <span className="text-zinc-400">({activeSpecies === 'CAT' ? 'Feline' : 'Canine'} • {activeBreed})</span>
                 <span className="text-zinc-300">|</span>
-                <span className="font-semibold text-zinc-800">{route.origin}</span>
+                <span className="font-semibold text-zinc-800">{displayOrigin}</span>
                 <span className="text-zinc-400">➔</span>
-                <span className="font-semibold text-zinc-800">{route.destination}</span>
-                {route.transitCountries && route.transitCountries.length > 0 && (
+                <span className="font-semibold text-zinc-800">{displayDestination}</span>
+                {displayTransits && displayTransits.length > 0 && (
                   <span className="inline-flex items-center px-2 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-zinc-200 text-[11px] font-mono">
-                    Transit: {route.transitCountries.join(', ')}
+                    Transit: {displayTransits.join(', ')}
                   </span>
                 )}
               </div>

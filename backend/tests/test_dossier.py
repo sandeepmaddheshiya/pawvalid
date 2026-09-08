@@ -112,3 +112,33 @@ def test_export_dossier_pdf_endpoint():
     assert "Petvia_Travel_Dossier_Bella.pdf" in response.headers.get("content-disposition", "")
     assert response.content.startswith(b"%PDF-")
 
+def test_dossier_pdf_with_trip_payload_and_layovers():
+    """Verify that payload structured inside trip with country codes and layovers resolves properly."""
+    payload = {
+        "trip": {
+            "id": "TRIP-12345",
+            "petName": "Pilluu bhai",
+            "species": "DOG",
+            "breed": "Beagle",
+            "origin": "GB",
+            "destination": "DE",
+            "transitCountries": ["FR"],
+            "earliestFlightDate": "September 15, 2026",
+            "overallStatus": "ACTION_REQUIRED"
+        },
+        "petProfile": {
+            "microchipNumber": "985112003456789",
+            "microchipDate": "2021-05-01"
+        }
+    }
+    pdf_buffer = generate_dossier_pdf(payload)
+    reader = PdfReader(pdf_buffer)
+    full_text = "".join([p.extract_text() for p in reader.pages])
+
+    assert "Pilluu bhai" in full_text
+    assert "United Kingdom (GB)" in full_text
+    assert "Germany (DE)" in full_text
+    assert "Transiting via France (FR)" in full_text
+    assert "Direct Route" not in full_text
+    assert "Not Specified" not in full_text
+
