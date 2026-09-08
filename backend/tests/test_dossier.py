@@ -142,3 +142,43 @@ def test_dossier_pdf_with_trip_payload_and_layovers():
     assert "Direct Route" not in full_text
     assert "Not Specified" not in full_text
 
+def test_dossier_pdf_audit_trail_rendering_with_multi_documents():
+    """Verify that multi-document audit trail table renders with distinct types and summaries."""
+    payload = {
+        "trip": {
+            "petName": "Pilluu bhai",
+            "species": "DOG",
+            "origin": "GB",
+            "destination": "DE",
+            "earliestFlightDate": "September 15, 2026",
+            "overallStatus": "READY_TO_FLY"
+        },
+        "petProfile": {
+            "microchipNumber": "985112003456789"
+        },
+        "readinessReport": {
+            "documentAudit": [
+                {"filename": "eu_annex_iv_health_certificate.pdf", "detected_type": "EU Annex IV Health Certificate", "summary": "Official EU Annex IV health certificate verified."},
+                {"filename": "owner_declaration.pdf", "detected_type": "Non-Commercial Owner Declaration", "summary": "Non-commercial owner declaration verified."},
+                {"filename": "rabies_cert.pdf", "detected_type": "Rabies / Vaccination Certificate", "summary": "Rabies vaccination certificate verified."},
+                {"filename": "pet_passport.pdf", "detected_type": "Official Pet Passport", "summary": "Official Pet Passport verified."},
+                {"filename": "titer_report.pdf", "detected_type": "Rabies Titer (FAVN/RNATT) Lab Report", "summary": "Rabies antibody titer serology report verified."},
+                {"filename": "health_certificate.pdf", "detected_type": "Official Veterinary Health Certificate", "summary": "Veterinary health certificate verified."},
+                {"filename": "microchip_record.pdf", "detected_type": "Microchip Registration Record", "summary": "ISO 11784/11785 15-digit microchip registration certificate verified."}
+            ]
+        }
+    }
+    pdf_buffer = generate_dossier_pdf(payload)
+    reader = PdfReader(pdf_buffer)
+    full_text = "".join([p.extract_text() for p in reader.pages])
+
+    assert "5. Document Extraction Audit Trail" in full_text
+    clean_text = full_text.replace("\n", " ")
+    assert "eu_annex_iv_health_certificate.pdf" in clean_text or "eu_annex_iv_health_certific" in full_text
+    assert "owner_declaration.pdf" in clean_text
+    assert "titer_report.pdf" in clean_text
+    assert "pet_passport.pdf" in clean_text
+    assert "EU Annex IV Health Certificate" in clean_text
+    assert "Rabies Titer (FAVN/RNATT) Lab Report" in clean_text
+    assert "Non-Commercial Owner Declaration" in clean_text
+

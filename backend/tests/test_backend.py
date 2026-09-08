@@ -23,6 +23,79 @@ def test_document_classification():
     assert classify_document("Rabies vaccination batch 123", "vax.pdf") == "Rabies / Vaccination Certificate"
     assert classify_document("ISO 11784 microchip transponder 985141000123456", "chip.txt") == "Microchip Registration Record"
     assert classify_document("Department of Agriculture DAFF Notice of Intention export permit", "permit.txt") == "Government Export / Endorsement Permit"
+    # Specific document types from traveler uploads
+    assert classify_document("Non-commercial entry model health certificate", "eu_annex_iv_health_certificate.pdf") == "EU Annex IV Health Certificate"
+    assert classify_document("Owner declaration non-commercial movement 5 days", "owner_declaration.pdf") == "Non-Commercial Owner Declaration"
+    assert classify_document("Rabies vaccination primary shot", "rabies_cert.pdf") == "Rabies / Vaccination Certificate"
+    assert classify_document("Official Pet Passport identity docket", "pet_passport.pdf") == "Official Pet Passport"
+    assert classify_document("Rabies virus antibody titer titration 0.82 IU/ml", "titer_report.pdf") == "Rabies Titer (FAVN/RNATT) Lab Report"
+    assert classify_document("Veterinary inspection health certificate", "health_certificate.pdf") == "Official Veterinary Health Certificate"
+    assert classify_document("ISO 11784 microchip certificate 985112003456789", "microchip_record.pdf") == "Microchip Registration Record"
+
+def test_distinct_verification_summaries_in_audit_trail():
+    from app.parsers.doc_extractor import ExtractedDocument
+    from app.engine.entity_extractor import regex_fallback_extract
+
+    docs = [
+        ExtractedDocument(
+            filename="eu_annex_iv_health_certificate.pdf",
+            content_type="application/pdf",
+            raw_text="EU Annex IV Health Certificate. Official veterinarian endorsement. ISO Microchip 985112003456789.",
+            detected_type=classify_document("EU Annex IV", "eu_annex_iv_health_certificate.pdf")
+        ),
+        ExtractedDocument(
+            filename="owner_declaration.pdf",
+            content_type="application/pdf",
+            raw_text="Owner declaration of non-commercial movement within 5-day window. Microchip 985112003456789.",
+            detected_type=classify_document("Owner declaration", "owner_declaration.pdf")
+        ),
+        ExtractedDocument(
+            filename="rabies_cert.pdf",
+            content_type="application/pdf",
+            raw_text="Rabies vaccination certificate administered: 2026-05-10. Microchip 985112003456789.",
+            detected_type=classify_document("Rabies vaccination certificate", "rabies_cert.pdf")
+        ),
+        ExtractedDocument(
+            filename="pet_passport.pdf",
+            content_type="application/pdf",
+            raw_text="Official Pet Passport. Identity docket and vaccination stamps. Microchip 985112003456789.",
+            detected_type=classify_document("Official Pet Passport", "pet_passport.pdf")
+        ),
+        ExtractedDocument(
+            filename="titer_report.pdf",
+            content_type="application/pdf",
+            raw_text="FAVN rabies antibody titer serology report. Result: 0.82 IU/ml. Microchip 985112003456789.",
+            detected_type=classify_document("FAVN rabies titer 0.82 IU/ml", "titer_report.pdf")
+        ),
+        ExtractedDocument(
+            filename="health_certificate.pdf",
+            content_type="application/pdf",
+            raw_text="Official Veterinary Health Certificate. Clinical inspection completed. Microchip 985112003456789.",
+            detected_type=classify_document("Veterinary Health Certificate", "health_certificate.pdf")
+        ),
+        ExtractedDocument(
+            filename="microchip_record.pdf",
+            content_type="application/pdf",
+            raw_text="ISO 11784/11785 microchip transponder registration certificate. Implanted 2026-04-12. Number: 985112003456789.",
+            detected_type=classify_document("ISO microchip", "microchip_record.pdf")
+        )
+    ]
+
+    facts = regex_fallback_extract(docs)
+    assert len(facts.doc_audit) == 7
+
+    # Verify that each document has a distinct type and distinct summary (no duplicates!)
+    types = [item["detected_type"] for item in facts.doc_audit]
+    summaries = [item["summary"] for item in facts.doc_audit]
+
+    assert len(set(summaries)) == 7, f"Summaries must be completely distinct, got: {summaries}"
+    assert "EU Annex IV Health Certificate" in types
+    assert "Non-Commercial Owner Declaration" in types
+    assert "Rabies / Vaccination Certificate" in types
+    assert "Official Pet Passport" in types
+    assert "Rabies Titer (FAVN/RNATT) Lab Report" in types
+    assert "Official Veterinary Health Certificate" in types
+    assert "Microchip Registration Record" in types
 
 def test_declarative_prerequisite_rabies_before_microchip_blocker():
     """

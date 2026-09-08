@@ -33,21 +33,61 @@ class ExtractedDocument:
         }
 
 def classify_document(text: str, filename: str) -> str:
-    text_lower = (text + " " + filename).lower()
-    if any(k in text_lower for k in ["rabies", "vaccination", "immunisation", "vaccin"]):
-        return "Rabies / Vaccination Certificate"
-    if any(k in text_lower for k in ["microchip", "transponder", "iso 11784", "iso 11785", "implant"]):
-        return "Microchip Registration Record"
-    if any(k in text_lower for k in ["passport", "pet passport", "eu pet", "animal health certificate", "ahc"]):
-        return "Pet Passport / Official Health Certificate"
-    if any(k in text_lower for k in ["export permit", "notice of intention", "daff", "usda", "defra"]):
-        return "Government Export / Endorsement Permit"
-    if any(k in text_lower for k in ["titer", "favn", "rnatt", "serology", "rabies antibody"]):
+    fn_lower = filename.lower()
+    text_lower = text.lower()
+    combined = f"{fn_lower} {text_lower}"
+
+    # 1. Titer / Serology Lab Report (Prioritize before Rabies, because titer reports always contain 'rabies')
+    if any(k in fn_lower for k in ["titer", "favn", "rnatt", "serolog"]) or \
+       any(k in text_lower for k in ["titer", "favn", "rnatt", "serology", "antibody titration", "fluorescent antibody"]):
         return "Rabies Titer (FAVN/RNATT) Lab Report"
-    if any(k in text_lower for k in ["tapeworm", "echinococcus", "praziquantel", "parasite"]):
-        return "Internal Parasite / Tapeworm Treatment Record"
-    if any(k in text_lower for k in ["declaration", "non-commercial", "owner declaration"]):
+
+    # 2. EU Annex IV Health Certificate
+    if any(k in fn_lower for k in ["annex_iv", "annex-iv", "annex iv", "annex4", "annex_4"]) or \
+       any(k in text_lower for k in ["annex iv", "annex 4", "model animal health certificate", "non-commercial movement into a member state"]):
+        return "EU Annex IV Health Certificate"
+
+    # 3. Owner Non-Commercial Declaration
+    if any(k in fn_lower for k in ["declaration", "owner_dec", "owner-dec", "non_commercial", "non-commercial"]) or \
+       any(k in text_lower for k in ["owner declaration", "non-commercial declaration", "declaration of owner", "declaration of non-commercial", "5-day window", "5 days of the movement"]):
         return "Non-Commercial Owner Declaration"
+
+    # 4. Official Pet Passport
+    if any(k in fn_lower for k in ["passport", "passeport", "pet_pass"]) or \
+       any(k in text_lower for k in ["pet passport", "passeport pour animaux", "official pet passport", "veterinary passport"]):
+        return "Official Pet Passport"
+
+    # 5. Official Veterinary Health Certificate (General/Non-Annex)
+    if any(k in fn_lower for k in ["health_cert", "health-cert", "healthcert", "vet_cert", "ahc"]) or \
+       any(k in text_lower for k in ["veterinary health certificate", "animal health certificate", "official health certificate", "certificate of veterinary inspection", "fit to travel", "clinical examination"]):
+        return "Official Veterinary Health Certificate"
+
+    # 6. Government Export / Endorsement Permit
+    if any(k in fn_lower for k in ["export", "permit", "daff", "endorsement", "import_permit"]) or \
+       any(k in text_lower for k in ["export permit", "notice of intention", "daff", "usda endorsed", "aphis form", "import permit"]):
+        return "Government Export / Endorsement Permit"
+
+    # 7. Internal Parasite / Tapeworm Treatment Record
+    if any(k in fn_lower for k in ["tapeworm", "echinococcus", "worm", "deworm", "parasite"]) or \
+       any(k in text_lower for k in ["echinococcus", "praziquantel", "tapeworm", "parasite treatment"]):
+        return "Internal Parasite / Tapeworm Treatment Record"
+
+    # 8. Microchip Registration Record
+    if any(k in fn_lower for k in ["microchip", "chip", "transponder", "iso11784"]) or \
+       any(k in text_lower for k in ["transponder implantation", "microchip registration", "petlog", "avid", "homeagain", "identichip", "iso 11784", "iso 11785"]):
+        return "Microchip Registration Record"
+
+    # 9. Rabies / Vaccination Certificate
+    if any(k in fn_lower for k in ["rabies", "vaccin", "vax", "immunis"]) or \
+       any(k in text_lower for k in ["rabies", "vaccination", "immunisation", "rabisin", "defensor", "nobivac rabies", "dhpp"]):
+        return "Rabies / Vaccination Certificate"
+
+    # 10. Fallbacks based on weaker keyword occurrences
+    if any(k in combined for k in ["microchip", "transponder"]):
+        return "Microchip Registration Record"
+    if any(k in combined for k in ["health certificate", "certificate"]):
+        return "Official Veterinary Health Certificate"
+
     return "General Pet Record / Photo"
 
 def extract_from_bytes(file_bytes: bytes, filename: str, content_type: str) -> ExtractedDocument:
