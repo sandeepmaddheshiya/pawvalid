@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import type { ScanResult, ComplianceItem } from '@/lib/types/scanner';
 import SearchableSelect from '@/components/SearchableSelect';
 
@@ -481,6 +482,7 @@ function buildDynamicScanResult(
 }
 
 export default function DocumentDropzone({ onScanComplete }: DocumentDropzoneProps) {
+  const router = useRouter();
   const [fromCountry, setFromCountry] = useState('GB');
   const [toCountry, setToCountry] = useState('DE');
   const [transitStops, setTransitStops] = useState<string[]>([]);
@@ -836,6 +838,35 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
 
       // Celebrate full verification briefly before transitioning
       await sleep(350);
+
+      // Auto-persist to database so the user is navigated to a permanent route that survives reloads
+      try {
+        const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('petvia_user_email') : null;
+        const res = await fetch('/api/trips', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userEmail: storedEmail || `guest_${Date.now()}@petvia.com`,
+            petName: data.petProfile?.name || petName || 'My Pet',
+            scanResult: data,
+            tier: 'FREE',
+          }),
+        });
+
+        if (res.ok) {
+          const json = await res.json();
+          if (json?.trip?.id) {
+            const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+            const match = pathname.match(/^\/(en|de|fr|es)/);
+            const locale = match ? match[1] : 'en';
+            router.push(`/${locale}/checker/${json.trip.id}`);
+            return;
+          }
+        }
+      } catch (saveErr) {
+        console.warn('Auto-save to database failed, falling back to in-memory state:', saveErr);
+      }
+
       onScanComplete(data);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'An error occurred while scanning.';

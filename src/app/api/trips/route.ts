@@ -6,13 +6,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { userEmail, petName, scanResult, tier } = body;
 
-    if (!userEmail) {
-      return NextResponse.json(
-        { error: 'Email address is required to save a trip' },
-        { status: 400 }
-      );
-    }
-
     if (!scanResult) {
       return NextResponse.json(
         { error: 'Scan results payload is required' },
@@ -20,7 +13,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const cleanEmail = userEmail.toLowerCase().trim();
+    const cleanEmail =
+      userEmail && typeof userEmail === 'string' && userEmail.trim()
+        ? userEmail.toLowerCase().trim()
+        : `guest_${Date.now()}_${Math.random().toString(36).substring(2, 7)}@guest.petvia.com`;
     const cleanPetName =
       petName?.trim() ||
       scanResult.petProfile?.name?.trim() ||

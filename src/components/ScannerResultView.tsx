@@ -6,6 +6,7 @@ import type { ScanResult, ComplianceItem } from '@/lib/types/scanner';
 
 interface ScannerResultViewProps {
   result: ScanResult;
+  tripId?: string;
   onReset: () => void;
   onOpenPricing: (updatedResult?: ScanResult) => void;
   onUpdateResult?: (updatedResult: ScanResult) => void;
@@ -13,6 +14,7 @@ interface ScannerResultViewProps {
 
 export default function ScannerResultView({
   result,
+  tripId,
   onReset,
   onOpenPricing,
   onUpdateResult,
@@ -82,6 +84,31 @@ export default function ScannerResultView({
     try {
       setIsSavingTrip(true);
       const payloadResult = getActiveScanResult();
+
+      if (tripId) {
+        const patchRes = await fetch(`/api/trips/${tripId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userEmail: saveEmail.trim().toLowerCase(),
+            petName: savePetName.trim() || activePetName || 'My Pet',
+            stats: payloadResult.stats,
+            complianceChecklist: payloadResult.complianceChecklist,
+            timelineMilestones: payloadResult.timelineMilestones,
+            uploadedDocuments: payloadResult.readinessReport?.documentAudit,
+          }),
+        });
+
+        if (!patchRes.ok) throw new Error('Failed to update trip');
+        const data = await patchRes.json();
+        if (data.trip) {
+          localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
+          localStorage.setItem('petvia_user_email', saveEmail.trim().toLowerCase());
+          router.push(`/dashboard?tripId=${data.trip.id}`);
+          return;
+        }
+      }
+
       const res = await fetch('/api/trips', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

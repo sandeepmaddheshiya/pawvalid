@@ -36,6 +36,7 @@ export async function PATCH(
     const updatedTrip = await db.savedTrip.update({
       where: { id },
       data: {
+        ...(body.userEmail && { userEmail: body.userEmail.toLowerCase().trim() }),
         ...(body.petName && { petName: body.petName }),
         ...(body.departureDate && { departureDate: body.departureDate }),
         ...(body.tier && { tier: body.tier }),

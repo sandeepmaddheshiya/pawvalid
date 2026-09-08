@@ -8,22 +8,121 @@ import type { ItemVerdict, OverallVerdict } from '@/lib/requirements/schema';
 import PrintButton from './PrintButton';
 import Link from 'next/link';
 
-export const metadata: Metadata = {
-  title: 'Pet Travel Compliance Assessment Report | Petvia',
-  description: 'Frozen, reproducible pet travel compliance assessment report.',
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+import CheckerResultClient from '@/components/CheckerResultClient';
+import type { ScanResult } from '@/lib/types/scanner';
 
 interface ReportPageProps {
   params: Promise<{ id: string }>;
 }
 
+export async function generateMetadata({ params }: ReportPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const savedTrip = await db.savedTrip.findUnique({ where: { id } });
+  if (savedTrip) {
+    return {
+      title: `${savedTrip.petName} (${savedTrip.origin} → ${savedTrip.destination}) — Compliance Report | Petvia`,
+      description: `Official pet travel compliance dossier for ${savedTrip.petName}. Earliest departure: ${savedTrip.earliestFlightDate || 'Verified'}.`,
+    };
+  }
+  return {
+    title: 'Pet Travel Compliance Assessment Report | Petvia',
+    description: 'Frozen, reproducible pet travel compliance assessment report.',
+    robots: {
+      index: false,
+      follow: false,
+    },
+  };
+}
+
 export default async function AssessmentReportPage({ params }: ReportPageProps) {
   const { id } = await params;
 
+  // 1. Check for modern document scan SavedTrip
+  const savedTrip = await db.savedTrip.findUnique({
+    where: { id },
+  });
+
+  if (savedTrip) {
+    const rawRoute = (savedTrip.route as any) || {};
+    const rawPet = (savedTrip.petProfile as any) || {};
+    const rawStats = (savedTrip.stats as any) || {};
+    const rawChecklist = (savedTrip.complianceChecklist as any) || {};
+    const rawReport = (savedTrip.readinessReport as any) || {};
+
+    const scanResult: ScanResult = {
+      status: savedTrip.overallStatus || 'SUCCESS',
+      route: {
+        origin: savedTrip.origin || rawRoute.origin || 'United Kingdom',
+        destination: savedTrip.destination || rawRoute.destination || 'Germany',
+        transitCountries:
+          savedTrip.transitCountries && savedTrip.transitCountries.length > 0
+            ? savedTrip.transitCountries
+            : rawRoute.transitCountries || [],
+        departureDate: savedTrip.departureDate || rawRoute.departureDate || null,
+      },
+      petDetected: true,
+      petProfile: {
+        species: savedTrip.species || rawPet.species || 'DOG',
+        name: savedTrip.petName || rawPet.name || 'My Pet',
+        breed: savedTrip.breed || rawPet.breed || 'Companion Animal',
+        microchipNumber: rawPet.microchipNumber,
+        microchipDate: rawPet.microchipDate,
+        rabiesVaccinationDate: rawPet.rabiesVaccinationDate,
+        rabiesVaccinationType: rawPet.rabiesVaccinationType,
+      },
+      stats: {
+        documentsDetectedCount: rawStats.documentsDetectedCount || 1,
+        overallStatus: savedTrip.overallStatus || rawStats.overallStatus || 'ACTION_REQUIRED',
+        statusHeadline: savedTrip.statusHeadline || rawStats.statusHeadline || 'PREPARATION NEEDED',
+        needsHumanReview: savedTrip.needsHumanReview ?? rawStats.needsHumanReview ?? false,
+        earliestFlightDate: savedTrip.earliestFlightDate || rawStats.earliestFlightDate || 'September 08, 2026',
+        earliestFlightDateTitle: rawStats.earliestFlightDateTitle || 'Earliest Estimated Travel Date',
+        earliestFlightDateSubtitle:
+          rawStats.earliestFlightDateSubtitle ||
+          'Based on the documents provided, route requirements, known waiting periods, and currently verified rules.',
+        disclaimer:
+          rawStats.disclaimer ||
+          '⚠️ Airline approval and government processing times may affect your actual travel date.',
+        blockerSummary: rawStats.blockerSummary || {
+          criticalBlockersCount: 0,
+          requiredActionsCount: 2,
+          travelDayActionsCount: 2,
+          completedVerifiedCount: 5,
+        },
+        confidenceLevel: rawStats.confidenceLevel || 'High',
+      },
+      timelineMilestones: (savedTrip.timelineMilestones as any) || [],
+      complianceChecklist: {
+        all: rawChecklist.all || [],
+        leaving: rawChecklist.leaving || [],
+        transit: rawChecklist.transit || [],
+        arriving: rawChecklist.arriving || [],
+        logistics: rawChecklist.logistics || [],
+      },
+      readinessReport: {
+        whatThisMeans:
+          rawReport.whatThisMeans ||
+          `Compliance verification complete for ${savedTrip.petName}. Foundational requirements evaluated for travel from ${savedTrip.origin} to ${savedTrip.destination}.`,
+        whereThingsStand: rawReport.whereThingsStand || [],
+        documentAudit:
+          rawReport.documentAudit ||
+          (savedTrip.uploadedDocuments as any) ||
+          [],
+        nextSteps: rawReport.nextSteps || [],
+        travelDayPrep: rawReport.travelDayPrep || [],
+      },
+    };
+
+    return (
+      <CheckerResultClient
+        tripId={savedTrip.id}
+        initialResult={scanResult}
+        tier={savedTrip.tier}
+      />
+    );
+  }
+
+  // 2. Legacy fallback to Assessment table
   const assessment = await db.assessment.findUnique({
     where: { id },
   });
