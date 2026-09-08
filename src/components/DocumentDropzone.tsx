@@ -527,6 +527,33 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
     }));
   }, []);
 
+  // Filtered country options for Origin: cannot be destination or any transit stop
+  const originCountryOptions = useMemo(() => {
+    return countryOptions.filter(
+      (opt) => opt.value !== toCountry && !transitStops.includes(opt.value)
+    );
+  }, [countryOptions, toCountry, transitStops]);
+
+  // Filtered country options for Destination: cannot be origin or any transit stop
+  const destinationCountryOptions = useMemo(() => {
+    return countryOptions.filter(
+      (opt) => opt.value !== fromCountry && !transitStops.includes(opt.value)
+    );
+  }, [countryOptions, fromCountry, transitStops]);
+
+  // Filtered country options for a layover stop at index idx:
+  // MUST NOT contain fromCountry (Origin), MUST NOT contain toCountry (Destination),
+  // and MUST NOT contain any other already-chosen layover stop.
+  const getTransitOptionsForIndex = (index: number) => {
+    const otherStops = transitStops.filter((_, i) => i !== index);
+    return countryOptions.filter(
+      (opt) =>
+        opt.value !== fromCountry &&
+        opt.value !== toCountry &&
+        !otherStops.includes(opt.value)
+    );
+  };
+
   const handleSelectPetSpecies = (type: 'DOG' | 'CAT') => {
     if (scanning) return;
     setPetType(type);
@@ -537,13 +564,29 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
     }
   };
 
+  const handleOriginChange = (val: string) => {
+    setFromCountry(val);
+    if (transitStops.includes(val)) {
+      setTransitStops((prev) => prev.filter((c) => c !== val));
+    }
+  };
+
+  const handleDestinationChange = (val: string) => {
+    setToCountry(val);
+    if (transitStops.includes(val)) {
+      setTransitStops((prev) => prev.filter((c) => c !== val));
+    }
+  };
+
   const handleAddTransitStop = () => {
     if (transitStops.length >= 3) return;
-    const candidates = ['DE', 'FR', 'NL', 'SG', 'AE', 'GB'];
+    const popularHubs = ['FR', 'DE', 'NL', 'SG', 'AE', 'GB', 'ES', 'IT', 'CH', 'CA', 'US', 'JP', 'AU'];
+    const available = COUNTRIES.filter(
+      (c) => c.code !== fromCountry && c.code !== toCountry && !transitStops.includes(c.code)
+    );
+    if (available.length === 0) return;
     const nextCode =
-      candidates.find(
-        (c) => c !== fromCountry && c !== toCountry && !transitStops.includes(c)
-      ) || 'FR';
+      popularHubs.find((h) => available.some((a) => a.code === h)) || available[0].code;
     setTransitStops([...transitStops, nextCode]);
   };
 
@@ -556,6 +599,17 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
   const handleRemoveTransitStop = (index: number) => {
     setTransitStops(transitStops.filter((_, i) => i !== index));
   };
+
+  // Ensure transitStops never contains fromCountry or toCountry
+  useEffect(() => {
+    setTransitStops((prev) => {
+      const sanitized = prev.filter((c) => c !== fromCountry && c !== toCountry);
+      if (sanitized.length !== prev.length) {
+        return sanitized;
+      }
+      return prev;
+    });
+  }, [fromCountry, toCountry]);
 
   // Sync with URL query parameters if arriving from HeroTripForm or direct link
   useEffect(() => {
@@ -570,18 +624,25 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
       const bdayParam = params.get('birthday') || params.get('dob');
       const transitParam = params.get('transit') || params.get('transits') || params.get('via');
 
+      let targetFrom = fromCountry;
+      let targetTo = toCountry;
+
       if (fromParam && COUNTRIES.some((c) => c.code === fromParam.toUpperCase())) {
-        setFromCountry(fromParam.toUpperCase());
+        targetFrom = fromParam.toUpperCase();
+        setFromCountry(targetFrom);
       }
       if (toParam && COUNTRIES.some((c) => c.code === toParam.toUpperCase())) {
-        setToCountry(toParam.toUpperCase());
+        targetTo = toParam.toUpperCase();
+        setToCountry(targetTo);
       }
       if (transitParam) {
         const parsed = transitParam
           .split(',')
           .map((t) => t.trim().toUpperCase())
-          .filter((t) => COUNTRIES.some((c) => c.code === t));
-        if (parsed.length > 0) setTransitStops(parsed);
+          .filter((t) => COUNTRIES.some((c) => c.code === t))
+          .filter((t) => t !== targetFrom && t !== targetTo);
+        const unique = Array.from(new Set(parsed)).slice(0, 3);
+        if (unique.length > 0) setTransitStops(unique);
       }
       if (speciesParam === 'CAT' || speciesParam === 'DOG') {
         setPetType(speciesParam);
@@ -887,8 +948,8 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                 <SearchableSelect
                   id="origin-country-select2"
                   value={fromCountry}
-                  onChange={(val) => setFromCountry(val)}
-                  options={countryOptions}
+                  onChange={handleOriginChange}
+                  options={originCountryOptions}
                   placeholder="Select origin country..."
                   searchPlaceholder="Search origin country (e.g. UK, Germany, US)..."
                   disabled={scanning}
@@ -918,8 +979,8 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                 <SearchableSelect
                   id="destination-country-select2"
                   value={toCountry}
-                  onChange={(val) => setToCountry(val)}
-                  options={countryOptions}
+                  onChange={handleDestinationChange}
+                  options={destinationCountryOptions}
                   placeholder="Select destination country..."
                   searchPlaceholder="Search destination country (e.g. Germany, France, Spain)..."
                   disabled={scanning}
@@ -977,9 +1038,9 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                           id={`transit-stop-${idx}`}
                           value={stopCode}
                           onChange={(val) => handleUpdateTransitStop(idx, val)}
-                          options={countryOptions}
+                          options={getTransitOptionsForIndex(idx)}
                           placeholder="Select layover country..."
-                          searchPlaceholder="Search layover country (e.g. Germany, Singapore)..."
+                          searchPlaceholder="Search layover country (e.g. France, Singapore)..."
                           disabled={scanning}
                           allowCustom={false}
                           clearable={false}

@@ -68,7 +68,7 @@ export default function HeroTripForm() {
                 onChange={(e) => setFromCountry(e.target.value)}
                 className="w-full appearance-none rounded-lg border border-zinc-200/90 bg-white px-2 py-1.5 text-xs font-semibold text-zinc-800 hover:border-zinc-300 focus:border-[#0E2342] focus:outline-none pr-5 truncate transition-colors cursor-pointer"
               >
-                {ORIGINS.map((c) => (
+                {ORIGINS.filter((c) => c.code !== toCountry).map((c) => (
                   <option key={`orig-${c.code}`} value={c.code}>
                     {c.flag} {c.name}
                   </option>
@@ -92,7 +92,7 @@ export default function HeroTripForm() {
                 onChange={(e) => setToCountry(e.target.value)}
                 className="w-full appearance-none rounded-lg border border-zinc-200/90 bg-white px-2 py-1.5 text-xs font-semibold text-zinc-800 hover:border-zinc-300 focus:border-[#0E2342] focus:outline-none pr-5 truncate transition-colors cursor-pointer"
               >
-                {DESTINATIONS.map((c) => (
+                {DESTINATIONS.filter((c) => c.code !== fromCountry).map((c) => (
                   <option key={`dest-${c.code}`} value={c.code}>
                     {c.flag} {c.name}
                   </option>
