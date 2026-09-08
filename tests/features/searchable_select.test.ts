@@ -241,4 +241,72 @@ describe('Multi-Stop Transit & Layover Compliance Rules', () => {
     expect(rules[0].ruleId).toBe('TRANSIT_AE_DECLARATION');
     expect(rules[1].ruleId).toBe('TRANSIT_JP_DECLARATION');
   });
+
+  it('strictly excludes origin (From) and destination (To) from layover options', () => {
+    const fromCountry = 'GB'; // United Kingdom
+    const toCountry = 'DE'; // Germany
+    const transitStops = ['FR']; // France is Stop 1
+
+    const getTransitOptions = (index: number) => {
+      const otherStops = transitStops.filter((_, i) => i !== index);
+      return COUNTRIES.filter(
+        (c) => c.code !== fromCountry && c.code !== toCountry && !otherStops.includes(c.code)
+      );
+    };
+
+    // For Stop 1 (FR):
+    const stop1Options = getTransitOptions(0);
+    const stop1Codes = stop1Options.map((c) => c.code);
+
+    // MUST NOT allow UK or Germany
+    expect(stop1Codes).not.toContain('GB');
+    expect(stop1Codes).not.toContain('DE');
+    // CAN contain France (its own current value) and others like SG, NL, US
+    expect(stop1Codes).toContain('FR');
+    expect(stop1Codes).toContain('SG');
+    expect(stop1Codes).toContain('NL');
+
+    // For Stop 2 (adding a new stop):
+    const stop2Options = COUNTRIES.filter(
+      (c) => c.code !== fromCountry && c.code !== toCountry && !transitStops.includes(c.code)
+    );
+    const stop2Codes = stop2Options.map((c) => c.code);
+
+    // MUST NOT allow UK, Germany, or France (already Stop 1)
+    expect(stop2Codes).not.toContain('GB');
+    expect(stop2Codes).not.toContain('DE');
+    expect(stop2Codes).not.toContain('FR');
+    expect(stop2Codes).toContain('SG');
+    expect(stop2Codes).toContain('AE');
+  });
+
+  it('strictly excludes destination and layover stops from origin options', () => {
+    const fromCountry = 'GB';
+    const toCountry = 'DE';
+    const transitStops = ['FR', 'SG'];
+
+    const originOptions = COUNTRIES.filter(
+      (c) => c.code !== toCountry && !transitStops.includes(c.code)
+    ).map((c) => c.code);
+
+    expect(originOptions).not.toContain('DE'); // Destination excluded
+    expect(originOptions).not.toContain('FR'); // Layover 1 excluded
+    expect(originOptions).not.toContain('SG'); // Layover 2 excluded
+    expect(originOptions).toContain('GB'); // Origin itself included
+  });
+
+  it('strictly excludes origin and layover stops from destination options', () => {
+    const fromCountry = 'GB';
+    const toCountry = 'DE';
+    const transitStops = ['FR', 'SG'];
+
+    const destinationOptions = COUNTRIES.filter(
+      (c) => c.code !== fromCountry && !transitStops.includes(c.code)
+    ).map((c) => c.code);
+
+    expect(destinationOptions).not.toContain('GB'); // Origin excluded
+    expect(destinationOptions).not.toContain('FR'); // Layover 1 excluded
+    expect(destinationOptions).not.toContain('SG'); // Layover 2 excluded
+    expect(destinationOptions).toContain('DE'); // Destination itself included
+  });
 });
