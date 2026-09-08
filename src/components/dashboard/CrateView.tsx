@@ -1,28 +1,80 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface CrateViewProps {
   trip: any;
+  onTripUpdated?: (updatedTrip: any) => void;
 }
 
-export default function CrateView({ trip }: CrateViewProps) {
+function deriveDefaultMeasurements(species: string, breed: string, weightKg?: number) {
+  const normSpecies = (species || 'DOG').toUpperCase();
+  const normBreed = (breed || '').toLowerCase();
+
+  if (normSpecies === 'CAT') {
+    return {
+      preset: 'cat' as const,
+      lengthA: 40,
+      heightB: 14,
+      widthC: 14,
+      heightD: 30,
+      reason: 'Feline profile',
+    };
+  }
+
+  // Weight-based derivation if weight is extracted
+  if (weightKg && weightKg > 0) {
+    if (weightKg < 7) {
+      return { preset: 'cat' as const, lengthA: 38, heightB: 12, widthC: 12, heightD: 28, reason: `Extracted weight: ${weightKg} kg` };
+    }
+    if (weightKg <= 16) {
+      return { preset: 'medium' as const, lengthA: 55, heightB: 22, widthC: 18, heightD: 48, reason: `Extracted weight: ${weightKg} kg` };
+    }
+    if (weightKg <= 35) {
+      return { preset: 'large' as const, lengthA: 76, heightB: 30, widthC: 24, heightD: 66, reason: `Extracted weight: ${weightKg} kg` };
+    }
+    return { preset: 'giant' as const, lengthA: 94, heightB: 40, widthC: 32, heightD: 84, reason: `Extracted weight: ${weightKg} kg` };
+  }
+
+  // Breed-based derivation
+  if (normBreed.match(/chihuahua|pomeranian|yorkie|yorkshire|maltese|toy poodle|dachshund|pug/)) {
+    return { preset: 'cat' as const, lengthA: 38, heightB: 12, widthC: 12, heightD: 28, reason: `Breed profile: ${breed}` };
+  }
+  if (normBreed.match(/beagle|corgi|french bulldog|frenchie|cocker|spaniel|jack russell|staffordshire|schnauzer/)) {
+    return { preset: 'medium' as const, lengthA: 55, heightB: 22, widthC: 18, heightD: 48, reason: `Breed profile: ${breed}` };
+  }
+  if (normBreed.match(/labrador|golden|retriever|boxer|shepherd|husky|collie|doberman|dalmatian/)) {
+    return { preset: 'large' as const, lengthA: 76, heightB: 30, widthC: 24, heightD: 66, reason: `Breed profile: ${breed}` };
+  }
+  if (normBreed.match(/great dane|mastiff|saint bernard|rottweiler|newfoundland|irish wolfhound/)) {
+    return { preset: 'giant' as const, lengthA: 94, heightB: 40, widthC: 32, heightD: 84, reason: `Breed profile: ${breed}` };
+  }
+
+  // Default medium dog
+  return { preset: 'medium' as const, lengthA: 55, heightB: 22, widthC: 18, heightD: 48, reason: `Breed profile: ${breed}` };
+}
+
+export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
   const petName = trip?.petName || trip?.petProfile?.name || 'Your Pet';
   const species = (trip?.species || trip?.petProfile?.species || 'DOG').toUpperCase();
   const breed = trip?.breed || trip?.petProfile?.breed || (species === 'CAT' ? 'Domestic Shorthair' : 'Companion Animal');
+  const weightKg = trip?.petProfile?.weightKg || trip?.weightKg;
   const origin = trip?.origin || trip?.route?.origin || 'United Kingdom';
   const destination = trip?.destination || trip?.route?.destination || 'Germany';
   const microchip = trip?.petProfile?.microchipNumber || '985141002847192';
   const ownerEmail = trip?.userEmail || 'traveler@example.com';
 
+  const derived = deriveDefaultMeasurements(species, breed, weightKg);
+
   const [activeTab, setActiveTab] = useState<'cargo' | 'cabin' | 'policies' | 'placard'>('cargo');
   const [unit, setUnit] = useState<'cm' | 'in'>('cm');
+  const [activePreset, setActivePreset] = useState<'cat' | 'medium' | 'large' | 'giant' | 'custom'>(derived.preset);
 
-  // Measurements (internally stored in cm)
-  const [lengthA, setLengthA] = useState<number>(55);
-  const [heightB, setHeightB] = useState<number>(22);
-  const [widthC, setWidthC] = useState<number>(18);
-  const [heightD, setHeightD] = useState<number>(48);
+  // Measurements (internally stored in cm, auto-calibrated from documents)
+  const [lengthA, setLengthA] = useState<number>(derived.lengthA);
+  const [heightB, setHeightB] = useState<number>(derived.heightB);
+  const [widthC, setWidthC] = useState<number>(derived.widthC);
+  const [heightD, setHeightD] = useState<number>(derived.heightD);
 
   // Placard custom fields
   const [flightNumber, setFlightNumber] = useState<string>('LH 921');
@@ -32,29 +84,72 @@ export default function CrateView({ trip }: CrateViewProps) {
     'Feed dry kibble only. Provide fresh water at every transit station. Do not open door without animal handler present.'
   );
 
+  // Load saved custom measurements from localStorage if available
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storageKey = `petvia_crate_${trip?.id || 'active'}`;
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (typeof parsed.lengthA === 'number') setLengthA(parsed.lengthA);
+          if (typeof parsed.heightB === 'number') setHeightB(parsed.heightB);
+          if (typeof parsed.widthC === 'number') setWidthC(parsed.widthC);
+          if (typeof parsed.heightD === 'number') setHeightD(parsed.heightD);
+          if (parsed.unit) setUnit(parsed.unit);
+          if (parsed.activePreset) setActivePreset(parsed.activePreset);
+          if (parsed.flightNumber) setFlightNumber(parsed.flightNumber);
+          if (parsed.contactPhone) setContactPhone(parsed.contactPhone);
+          if (parsed.emergencyPhone) setEmergencyPhone(parsed.emergencyPhone);
+          if (parsed.feedingInstructions) setFeedingInstructions(parsed.feedingInstructions);
+        } catch (err) {
+          // ignore corrupted storage
+        }
+      }
+    }
+  }, [trip?.id]);
+
+  // Persist state changes
+  const saveState = (overrides: Record<string, any> = {}) => {
+    if (typeof window !== 'undefined') {
+      const storageKey = `petvia_crate_${trip?.id || 'active'}`;
+      const data = {
+        lengthA,
+        heightB,
+        widthC,
+        heightD,
+        unit,
+        flightNumber,
+        contactPhone,
+        emergencyPhone,
+        feedingInstructions,
+        ...overrides,
+      };
+      localStorage.setItem(storageKey, JSON.stringify(data));
+      if (onTripUpdated) {
+        onTripUpdated({ ...trip, crateMeasurements: data });
+      }
+    }
+  };
+
   // Quick Breed Presets (cm)
   const applyPreset = (preset: 'cat' | 'medium' | 'large' | 'giant') => {
+    let a = 55, b = 22, c = 18, d = 48;
     if (preset === 'cat') {
-      setLengthA(40);
-      setHeightB(14);
-      setWidthC(14);
-      setHeightD(30);
+      a = 40; b = 14; c = 14; d = 30;
     } else if (preset === 'medium') {
-      setLengthA(55);
-      setHeightB(22);
-      setWidthC(18);
-      setHeightD(48);
+      a = 55; b = 22; c = 18; d = 48;
     } else if (preset === 'large') {
-      setLengthA(76);
-      setHeightB(30);
-      setWidthC(24);
-      setHeightD(66);
+      a = 76; b = 30; c = 24; d = 66;
     } else if (preset === 'giant') {
-      setLengthA(94);
-      setHeightB(40);
-      setWidthC(32);
-      setHeightD(84);
+      a = 94; b = 40; c = 32; d = 84;
     }
+    setActivePreset(preset);
+    setLengthA(a);
+    setHeightB(b);
+    setWidthC(c);
+    setHeightD(d);
+    saveState({ activePreset: preset, lengthA: a, heightB: b, widthC: c, heightD: d });
   };
 
   // IATA LAR Formula (Container Requirement 82):
@@ -234,7 +329,7 @@ export default function CrateView({ trip }: CrateViewProps) {
 
       {/* ─── TAB 1: CARGO CRATE SIZING & HARDWARE ────────────────────── */}
       {activeTab === 'cargo' && (
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Preset Chips & Unit Bar */}
           <div className="bg-white rounded-2xl border border-zinc-200/80 p-4 sm:p-5 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex items-center gap-2 flex-wrap">
@@ -242,7 +337,11 @@ export default function CrateView({ trip }: CrateViewProps) {
               <button
                 type="button"
                 onClick={() => applyPreset('cat')}
-                className="px-3 py-1.5 rounded-xl text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-medium transition-colors cursor-pointer flex items-center gap-1.5"
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  activePreset === 'cat'
+                    ? 'bg-emerald-50 text-emerald-900 border border-emerald-300 font-semibold'
+                    : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
+                }`}
               >
                 <span>🐱</span>
                 <span>Cat / Toy (under 6 kg)</span>
@@ -250,7 +349,11 @@ export default function CrateView({ trip }: CrateViewProps) {
               <button
                 type="button"
                 onClick={() => applyPreset('medium')}
-                className="px-3 py-1.5 rounded-xl text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  activePreset === 'medium'
+                    ? 'bg-emerald-50 text-emerald-900 border border-emerald-300 font-semibold'
+                    : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
+                }`}
               >
                 <span>🐶</span>
                 <span>Medium Dog (Beagle, Corgi)</span>
@@ -258,7 +361,11 @@ export default function CrateView({ trip }: CrateViewProps) {
               <button
                 type="button"
                 onClick={() => applyPreset('large')}
-                className="px-3 py-1.5 rounded-xl text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-medium transition-colors cursor-pointer flex items-center gap-1.5"
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  activePreset === 'large'
+                    ? 'bg-emerald-50 text-emerald-900 border border-emerald-300 font-semibold'
+                    : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
+                }`}
               >
                 <span>🦮</span>
                 <span>Large Dog (Labrador, Golden)</span>
@@ -266,7 +373,11 @@ export default function CrateView({ trip }: CrateViewProps) {
               <button
                 type="button"
                 onClick={() => applyPreset('giant')}
-                className="px-3 py-1.5 rounded-xl text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-medium transition-colors cursor-pointer flex items-center gap-1.5"
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  activePreset === 'giant'
+                    ? 'bg-emerald-50 text-emerald-900 border border-emerald-300 font-semibold'
+                    : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
+                }`}
               >
                 <span>🐕‍🦺</span>
                 <span>Giant Dog (German Shepherd)</span>
@@ -297,6 +408,21 @@ export default function CrateView({ trip }: CrateViewProps) {
                 Imperial (inches)
               </button>
             </div>
+          </div>
+
+          {/* Document Inferred Calibration Banner */}
+          <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-2xl px-4 py-3 text-xs text-emerald-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-[10px] font-bold shrink-0">
+                ✓
+              </span>
+              <span>
+                <strong>Document Auto-Calibration:</strong> Sizing initialized for <strong className="text-zinc-900">{petName}</strong> ({species} · {breed}{weightKg ? `, ${weightKg} kg` : ''}) using {derived.reason}.
+              </span>
+            </div>
+            <span className="text-[11px] text-emerald-700 font-medium shrink-0">
+              {activePreset === 'custom' ? 'Custom dimensions active' : 'Recommended breed baseline'}
+            </span>
           </div>
 
           {/* Calculator Inputs and Sizing Output */}
