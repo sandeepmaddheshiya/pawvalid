@@ -76,6 +76,7 @@ export default {
         '4xl': '2rem',
       },
       boxShadow: {
+        'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
         'glow': '0 0 20px rgba(124, 107, 241, 0.15)',
         'glow-lg': '0 0 40px rgba(124, 107, 241, 0.2)',
         'card': '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04)',

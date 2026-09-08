@@ -10,25 +10,25 @@
   :root {
     --background: 250 250 250;
     --foreground: 23 23 23;
-    --primary: 124 107 241;
+    --primary: 14 35 66;
     --primary-foreground: 255 255 255;
-    --accent: 245 158 11;
+    --accent: 15 169 88;
     --muted: 244 244 245;
     --muted-foreground: 113 113 122;
     --border: 228 228 231;
-    --ring: 124 107 241;
+    --ring: 14 35 66;
   }
 
   .dark {
     --background: 10 10 18;
     --foreground: 237 237 237;
-    --primary: 139 130 248;
+    --primary: 22 52 94;
     --primary-foreground: 255 255 255;
-    --accent: 251 191 36;
+    --accent: 15 169 88;
     --muted: 30 30 46;
     --muted-foreground: 161 161 170;
     --border: 63 63 70;
-    --ring: 139 130 248;
+    --ring: 22 52 94;
   }
 
   * {
@@ -51,10 +51,10 @@
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 
-           bg-primary-600 hover:bg-primary-700 text-white
-           font-semibold rounded-xl shadow-md hover:shadow-lg
+           bg-[#0E2342] hover:bg-[#16345E] text-white
+           font-semibold rounded-xl shadow-sm hover:shadow-md
            transition-all duration-200 ease-out
-           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+           focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
