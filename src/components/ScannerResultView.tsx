@@ -276,22 +276,23 @@ export default function ScannerResultView({
           <span>Scan Another Document or Route</span>
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={() => setIsSaveModalOpen(true)}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl px-4 py-2 shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-emerald-800 bg-[#E8F8F0] hover:bg-[#D3F3E3] border border-[#C6EED8] rounded-xl px-4 py-2 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
           >
             <span>💾</span>
-            <span>Save Trip to Dashboard</span>
+            <span>Save to Dashboard</span>
           </button>
           <button
             type="button"
             onClick={() => onOpenPricing(getActiveScanResult())}
-            className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl px-3.5 py-2 shadow-2xs hover:bg-emerald-100 transition-all cursor-pointer whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-[#0E2342] hover:bg-[#16345E] rounded-xl px-4 py-2 shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
           >
-            <span>📄</span>
-            <span>Dossier Options</span>
+            <span className="text-[#0FA958]">★</span>
+            <span>Official Travel Dossier</span>
+            <span className="ml-1 px-1.5 py-0.5 rounded-md bg-white/15 text-[10px] font-bold text-white/90">£19</span>
           </button>
         </div>
       </div>
@@ -1006,18 +1007,18 @@ export default function ScannerResultView({
           </ol>
         </div>
 
-        {/* Official Travel Dossier CTA Banner */}
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-zinc-900 to-zinc-800 text-white flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+        {/* ─── DOWNLOAD DOSSIER & PRICING BAR ───────────────────────── */}
+        <div className="p-6 rounded-2xl bg-[#0E2342] text-white flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 border border-[#16345E] shadow-sm">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-300 uppercase tracking-wider mb-1">
+            <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#0FA958] uppercase tracking-wider mb-1">
               <span>★</span>
-              <span>Official-Source Compliance Dossier</span>
+              <span>Official Government-Citing Travel Dossier</span>
             </div>
-            <h4 className="font-display text-lg font-bold">
+            <h4 className="font-serif text-xl font-bold text-white">
               Official Animal Health &amp; Travel Dossier (PDF)
             </h4>
-            <p className="text-xs text-zinc-300 mt-1 max-w-md">
-              Download your complete dated travel dossier with direct statute links to USDA, DAFF, and EU Regulation 2026/131, or order a 1-on-1 specialist document review.
+            <p className="text-xs text-zinc-300 mt-1 max-w-md leading-relaxed">
+              Download your complete dated compliance dossier with verified legal citations to USDA, DAFF, and EU Regulation 2026/131, or order a 1-on-1 specialist document review.
             </p>
           </div>
 
@@ -1026,16 +1027,16 @@ export default function ScannerResultView({
               type="button"
               disabled={isDownloadingDossier}
               onClick={handleDownloadDossier}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all active:scale-95 cursor-pointer whitespace-nowrap disabled:opacity-60"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#0FA958] hover:bg-[#0D8E4A] text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap disabled:opacity-60"
             >
               <span>{isDownloadingDossier ? '⏳ Generating PDF...' : '📄 Download Official Dossier (PDF)'}</span>
             </button>
             <button
               type="button"
               onClick={() => onOpenPricing(getActiveScanResult())}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-zinc-950 font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl border border-white/20 transition-all active:scale-95 cursor-pointer whitespace-nowrap"
             >
-              <span>💳 Pricing &amp; Support Options</span>
+              <span>★ View Certification Options</span>
             </button>
           </div>
         </div>

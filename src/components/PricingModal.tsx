@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface PricingModalProps {
   isOpen: boolean;
@@ -20,20 +20,26 @@ export default function PricingModal({
   const [selectedCurrency, setSelectedCurrency] = useState<'GBP' | 'USD' | 'INR'>(currency);
   const [checkoutEmail, setCheckoutEmail] = useState('');
   const [checkoutPhone, setCheckoutPhone] = useState('');
-  const [selectedTier, setSelectedTier] = useState<string | null>(initialTier || null);
+  const [selectedTier, setSelectedTier] = useState<string | null>(initialTier || 'Complete Travel Plan');
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  React.useEffect(() => {
+  // Auto-fill stored user email if available
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedEmail = localStorage.getItem('petvia_user_email');
+      if (storedEmail) setCheckoutEmail(storedEmail);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (initialTier) {
       setSelectedTier(initialTier);
-      if (initialTier === 'Priority Concierge' || initialTier === 'Expert Document Review') {
-        setStatusMessage('Selected Expert Document Review (£59). Provide your email and WhatsApp number for immediate intake.');
-      } else if (initialTier === 'Certified Trip Pass' || initialTier === 'Complete Travel Plan') {
-        setStatusMessage('Selected Complete Travel Plan (£19). Enter your email to proceed.');
-      }
+    } else if (scanResult) {
+      // Default to the popular £19 Complete Travel Plan for scan results
+      setSelectedTier('Complete Travel Plan');
     }
-  }, [initialTier, isOpen]);
+  }, [initialTier, scanResult, isOpen]);
 
   if (!isOpen) return null;
 
@@ -43,13 +49,15 @@ export default function PricingModal({
     INR: { free: '₹0', pass: '₹1,499', concierge: '₹4,999' },
   }[selectedCurrency];
 
+  const petName = scanResult?.petProfile?.name || 'Your Pet';
+  const species = scanResult?.petProfile?.species === 'CAT' ? 'Cat' : 'Dog';
+  const origin = scanResult?.route?.origin || 'Origin';
+  const destination = scanResult?.route?.destination || 'Destination';
+  const earliestDate = scanResult?.stats?.earliestFlightDate;
+
   const handleSelectTier = (tierName: string) => {
     setSelectedTier(tierName);
-    if (tierName === 'Priority Concierge' || tierName === 'Expert Document Review') {
-      setStatusMessage('Selected Expert Document Review (£59). Provide your email and WhatsApp number for immediate intake.');
-    } else {
-      setStatusMessage(`Selected ${tierName}. Enter your email to proceed.`);
-    }
+    setStatusMessage(null);
   };
 
   const openRazorpayCheckout = (orderData: any, tripId: string, tier: string) => {
@@ -61,18 +69,21 @@ export default function PricingModal({
         key: orderData.keyId,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'Petvia Travel Compliance',
-        description: tier === 'CONCIERGE' ? 'Priority Concierge Review (£59)' : 'Certified Trip Pass (£19)',
+        name: 'Petvia Pet Travel Compliance',
+        description:
+          tier === 'CONCIERGE'
+            ? 'Priority Concierge & Vet Review (£59)'
+            : 'Official Travel Plan & Dossier (£19)',
         order_id: orderData.orderId,
         prefill: {
           email: checkoutEmail,
           contact: checkoutPhone,
         },
         theme: {
-          color: tier === 'CONCIERGE' ? '#d97706' : '#10b981',
+          color: '#0E2342',
         },
         handler: function () {
-          setStatusMessage('Payment verified! Redirecting to your updated command center...');
+          setStatusMessage('Payment verified! Loading your travel dossier...');
           setTimeout(() => {
             onClose();
             window.location.href = `/dashboard?tripId=${tripId}&section=${tier === 'CONCIERGE' ? 'concierge' : 'overview'}`;
@@ -87,7 +98,12 @@ export default function PricingModal({
 
   const handleInstantDevPayment = async (tier: 'FREE' | 'CERTIFIED_PASS' | 'CONCIERGE') => {
     setIsSubmitting(true);
-    const tierTitle = tier === 'FREE' ? 'Free Readiness Scan (£0)' : tier === 'CONCIERGE' ? 'Priority Concierge (£59)' : 'Complete Travel Plan (£19)';
+    const tierTitle =
+      tier === 'FREE'
+        ? 'Free Readiness Scan (£0)'
+        : tier === 'CONCIERGE'
+        ? 'Priority Concierge (£59)'
+        : 'Complete Travel Plan (£19)';
     setStatusMessage(`⚡ Processing Dev Simulation for ${tierTitle}...`);
 
     try {
@@ -108,24 +124,19 @@ export default function PricingModal({
       let tripToLoad: any = null;
 
       if (scanResult) {
-        // Save user's ACTUAL scan report directly to database with chosen tier
-        const petName = scanResult.petProfile?.name || 'My Pet';
         const res = await fetch('/api/trips', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             userEmail: emailToUse,
-            petName: petName,
+            petName: scanResult.petProfile?.name || petName,
             scanResult: scanResult,
             tier,
           }),
         });
         const data = await res.json();
-        if (data.trip) {
-          tripToLoad = data.trip;
-        }
+        if (data.trip) tripToLoad = data.trip;
       } else if (activeTripId) {
-        // Upgrade existing trip via checkout endpoint
         const res = await fetch(`/api/trips/${activeTripId}/checkout`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -135,46 +146,11 @@ export default function PricingModal({
             email: emailToUse,
             whatsappNumber: phoneToUse,
             urgency: 'HIGH',
-            notes: `Activated via Instant Dev Checkout by ${emailToUse}`,
+            notes: `Activated via Dev Simulation by ${emailToUse}`,
           }),
         });
         const data = await res.json();
-        if (data.trip) {
-          tripToLoad = data.trip;
-        }
-      } else {
-        // User is checking out directly without an active scan
-        const res = await fetch('/api/trips', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userEmail: emailToUse,
-            petName: 'Milo',
-            tier,
-            scanResult: {
-              petProfile: {
-                name: 'Milo',
-                species: 'DOG',
-                breed: 'Golden Retriever',
-                ageMonths: 36,
-                weightKg: 28.5,
-                microchipNumber: '985141002847192',
-                microchipDate: '2023-04-12',
-                rabiesVaccineDate: '2024-05-10',
-                rabiesVaccineType: 'BOOSTER',
-              },
-              route: { origin: 'United Kingdom (London LHR)', destination: 'Germany (Frankfurt FRA)' },
-              stats: { overallStatus: 'READY', statusHeadline: 'Compliance Verified', earliestFlightDate: 'Cleared for Travel' },
-              timelineMilestones: [],
-              complianceChecklist: { all: [] },
-              readinessReport: {},
-            },
-          }),
-        });
-        const data = await res.json();
-        if (data.trip) {
-          tripToLoad = data.trip;
-        }
+        if (data.trip) tripToLoad = data.trip;
       }
 
       if (tripToLoad) {
@@ -190,9 +166,9 @@ export default function PricingModal({
       } else {
         throw new Error('Could not update trip tier');
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Instant dev payment error:', err);
-      setStatusMessage('✓ Dev Payment Completed! Redirecting to Dashboard...');
+      setStatusMessage('✓ Activated! Redirecting to Dashboard...');
       setTimeout(() => {
         onClose();
         window.location.href = `/dashboard?tab=${tier === 'CONCIERGE' ? 'concierge' : 'overview'}`;
@@ -204,31 +180,44 @@ export default function PricingModal({
 
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!checkoutEmail) return;
-
-    const savedRaw = typeof window !== 'undefined' ? localStorage.getItem('petvia_active_trip') : null;
-    let activeTripId: string | null = null;
-    if (savedRaw) {
-      try {
-        const parsed = JSON.parse(savedRaw);
-        activeTripId = parsed?.id || null;
-      } catch (err) {
-        console.warn('Error reading active trip cache', err);
-      }
+    if (!checkoutEmail) {
+      setStatusMessage('Please enter your email to proceed.');
+      return;
     }
 
-    // If scanResult is provided from an active report, save it as the trip for this checkout
-    if (scanResult) {
-      try {
-        const petName = scanResult.petProfile?.name || 'My Pet';
+    const isConcierge =
+      selectedTier === 'Priority Concierge' ||
+      selectedTier === 'Expert Document Review';
+
+    if (isConcierge && (!checkoutPhone || checkoutPhone.trim().length < 6)) {
+      setStatusMessage('Please enter your WhatsApp phone number with country code for specialist intake.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setStatusMessage('Initiating secure checkout...');
+
+    try {
+      const savedRaw = typeof window !== 'undefined' ? localStorage.getItem('petvia_active_trip') : null;
+      let activeTripId: string | null = null;
+      if (savedRaw) {
+        try {
+          const parsed = JSON.parse(savedRaw);
+          activeTripId = parsed?.id || null;
+        } catch (err) {
+          console.warn('Error reading active trip cache', err);
+        }
+      }
+
+      if (scanResult) {
         const saveRes = await fetch('/api/trips', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             userEmail: checkoutEmail.trim().toLowerCase(),
-            petName,
+            petName: scanResult.petProfile?.name || petName,
             scanResult,
-            tier: selectedTier === 'Priority Concierge' ? 'CONCIERGE' : 'CERTIFIED_PASS',
+            tier: isConcierge ? 'CONCIERGE' : 'CERTIFIED_PASS',
           }),
         });
         const saveData = await saveRes.json();
@@ -237,450 +226,370 @@ export default function PricingModal({
           localStorage.setItem('petvia_active_trip', JSON.stringify(saveData.trip));
           localStorage.setItem('petvia_user_email', checkoutEmail.trim().toLowerCase());
         }
-      } catch (err) {
-        console.warn('Error saving scan before payment:', err);
-      }
-    }
-
-    // ─── Expert Document Review (£59) ─────────────────────────────────────────
-    if (selectedTier === 'Priority Concierge' || selectedTier === 'Expert Document Review') {
-      if (!checkoutPhone || checkoutPhone.trim().length < 6) {
-        setStatusMessage('Please enter your WhatsApp phone number with country code for specialist support.');
-        return;
       }
 
-      setIsSubmitting(true);
-      try {
-        if (activeTripId) {
-          const res = await fetch(`/api/trips/${activeTripId}/checkout`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              tier: 'CONCIERGE',
-              currency: selectedCurrency,
-              email: checkoutEmail,
-              whatsappNumber: checkoutPhone,
-              urgency: 'HIGH',
-              notes: `Activated via Pricing Modal by ${checkoutEmail}`,
-            }),
-          });
-          const data = await res.json();
+      if (activeTripId) {
+        const res = await fetch(`/api/trips/${activeTripId}/checkout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tier: isConcierge ? 'CONCIERGE' : 'CERTIFIED_PASS',
+            currency: selectedCurrency,
+            email: checkoutEmail.trim().toLowerCase(),
+            whatsappNumber: checkoutPhone.trim(),
+            urgency: 'HIGH',
+            notes: `Purchased via Dossier Modal by ${checkoutEmail}`,
+          }),
+        });
+        const data = await res.json();
 
-          if (data.isMock && data.trip) {
-            localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
-            setStatusMessage('✓ Expert Document Review activated! Redirecting to Specialist Command Center...');
-            setTimeout(() => {
-              onClose();
-              if (typeof window !== 'undefined') {
-                window.location.href = `/dashboard?tripId=${activeTripId}&tab=concierge`;
-              }
-            }, 800);
-            return;
-          }
-
-          if (data.orderId && !data.isMock) {
-            openRazorpayCheckout(data, activeTripId, 'CONCIERGE');
-            return;
-          }
+        if (data.isMock && data.trip) {
+          localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
+          setStatusMessage('✓ Order confirmed! Redirecting to your travel command center...');
+          setTimeout(() => {
+            onClose();
+            window.location.href = `/dashboard?tripId=${activeTripId}&tab=${isConcierge ? 'concierge' : 'overview'}`;
+          }, 800);
+          return;
         }
-      } catch (err) {
-        console.warn('[PricingModal] Concierge checkout:', err);
-      } finally {
-        setIsSubmitting(false);
+
+        if (data.orderId && !data.isMock) {
+          openRazorpayCheckout(data, activeTripId, isConcierge ? 'CONCIERGE' : 'CERTIFIED_PASS');
+          return;
+        }
       }
 
-      setStatusMessage('✓ Expert Document Review activated! Redirecting to Specialist Command Center...');
+      // Fallback
+      setStatusMessage('Order processed! Loading dashboard...');
       setTimeout(() => {
         onClose();
-        if (typeof window !== 'undefined') {
-          window.location.href = `/dashboard?tripId=${activeTripId || ''}&tab=concierge`;
-        }
+        window.location.href = `/dashboard?tripId=${activeTripId || ''}&tab=${isConcierge ? 'concierge' : 'overview'}`;
       }, 800);
-      return;
+    } catch (err) {
+      console.error('Checkout error:', err);
+      setStatusMessage('Payment initialization failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // ─── Complete Travel Plan (£19) ─────────────────────────────────────────
-    if (selectedTier === 'Certified Trip Pass' || selectedTier === 'Complete Travel Plan') {
-      setIsSubmitting(true);
-      try {
-        if (activeTripId) {
-          const res = await fetch(`/api/trips/${activeTripId}/checkout`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              tier: 'CERTIFIED_PASS',
-              currency: selectedCurrency,
-              email: checkoutEmail,
-            }),
-          });
-          const data = await res.json();
-
-          if (data.isMock && data.trip) {
-            localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
-            setStatusMessage('✓ Complete Travel Plan activated! Unlocking full compliance dossier...');
-            setTimeout(() => {
-              onClose();
-              if (typeof window !== 'undefined') {
-                window.location.href = `/dashboard?tripId=${activeTripId}&tab=overview`;
-              }
-            }, 800);
-            return;
-          }
-
-          if (data.orderId && !data.isMock) {
-            openRazorpayCheckout(data, activeTripId, 'CERTIFIED_PASS');
-            return;
-          }
-        }
-      } catch (err) {
-        console.warn('[PricingModal] Pass checkout:', err);
-      } finally {
-        setIsSubmitting(false);
-      }
-    }
-
-    setStatusMessage(`Directing ${checkoutEmail} to secure checkout for ${selectedTier}...`);
-    setTimeout(() => {
-      onClose();
-      if (typeof window !== 'undefined') {
-        window.location.href = `/dashboard?tripId=${activeTripId || ''}&tab=overview`;
-      }
-    }, 800);
   };
 
+  const isConciergeSelected =
+    selectedTier === 'Priority Concierge' || selectedTier === 'Expert Document Review';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto animate-fade-in">
-      <div className="relative w-full max-w-5xl bg-[#FAF9F6] rounded-3xl p-6 sm:p-10 shadow-2xl border border-zinc-200 my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0E2342]/70 backdrop-blur-sm p-4 overflow-y-auto animate-fade-in">
+      <div className="relative w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-2xl border border-zinc-200 my-6">
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white border border-zinc-200 text-zinc-500 hover:text-zinc-900 flex items-center justify-center font-bold text-sm shadow-xs transition-colors cursor-pointer"
+          className="absolute top-5 right-5 w-9 h-9 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-600 hover:text-zinc-900 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer"
         >
           ✕
         </button>
 
-        {/* Currency Switcher */}
-        <div className="flex justify-center mb-3">
-          <div className="inline-flex p-1 rounded-xl bg-white border border-zinc-200 shadow-2xs text-xs font-bold">
-            {(['GBP', 'USD', 'INR'] as const).map((curr) => (
+        {/* Header Pill & Title */}
+        <div className="text-center max-w-2xl mx-auto space-y-2 mb-7">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[11px] font-bold tracking-wide uppercase">
+            <span>★</span>
+            <span>Official Travel Dossier &amp; Certification</span>
+          </div>
+
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#0E2342] tracking-tight">
+            Complete Your Pet Travel Dossier
+          </h2>
+
+          <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+            {scanResult ? (
+              <span>
+                Personalized for <strong className="text-zinc-900">{petName}</strong> ({species}) ·{' '}
+                <strong className="text-zinc-900">{origin}</strong> →{' '}
+                <strong className="text-zinc-900">{destination}</strong>
+                {earliestDate ? ` • Earliest Travel: ${earliestDate}` : ''}
+              </span>
+            ) : (
+              'Choose your verified compliance dossier package for smooth airline check-in and border customs clearance.'
+            )}
+          </p>
+
+          {/* Currency Switcher */}
+          <div className="pt-2 flex justify-center">
+            <div className="inline-flex p-1 rounded-xl bg-zinc-100 border border-zinc-200 text-xs font-semibold">
+              {(['GBP', 'USD', 'INR'] as const).map((curr) => (
+                <button
+                  key={curr}
+                  type="button"
+                  onClick={() => setSelectedCurrency(curr)}
+                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                    selectedCurrency === curr
+                      ? 'bg-[#0E2342] text-white shadow-xs'
+                      : 'text-zinc-600 hover:text-zinc-900'
+                  }`}
+                >
+                  {curr === 'GBP' ? '£ GBP' : curr === 'USD' ? '$ USD' : '₹ INR'}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ─── 2-OPTION COMPARISON CARDS (Customized & Clean) ─────────── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+          {/* Card 1: Complete Travel Plan (£19) */}
+          <div
+            onClick={() => handleSelectTier('Complete Travel Plan')}
+            className={`rounded-2xl p-6 transition-all cursor-pointer flex flex-col justify-between relative border-2 ${
+              !isConciergeSelected
+                ? 'border-[#0FA958] bg-[#F4FBF7] shadow-md ring-2 ring-[#0FA958]/20'
+                : 'border-zinc-200 bg-white hover:border-zinc-300'
+            }`}
+          >
+            <div>
+              <div className="flex justify-between items-start mb-3">
+                <span className="inline-flex px-2.5 py-0.5 rounded-full bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[10px] font-bold uppercase tracking-wider">
+                  Most Popular · Instant Download
+                </span>
+                <input
+                  type="radio"
+                  name="tier"
+                  checked={!isConciergeSelected}
+                  onChange={() => handleSelectTier('Complete Travel Plan')}
+                  className="accent-[#0FA958] w-4 h-4 cursor-pointer mt-0.5"
+                />
+              </div>
+
+              <h3 className="font-serif text-xl font-bold text-[#0E2342]">
+                Official Travel Dossier
+              </h3>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                Complete compliance plan &amp; border-ready documentation
+              </p>
+
+              <div className="my-4 flex items-baseline gap-1.5">
+                <span className="font-serif text-3xl sm:text-4xl font-extrabold text-[#0E2342]">
+                  {prices.pass}
+                </span>
+                <span className="text-xs text-zinc-500 font-medium">one-time / trip</span>
+              </div>
+
+              <ul className="space-y-2.5 text-xs text-zinc-700 pt-2 border-t border-zinc-200/80">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
+                  <div>
+                    <strong className="text-zinc-900">Official PDF Travel Dossier:</strong> Dated
+                    compliance docket with official USDA, EU Regulation 2026/131, and DEFRA citations.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
+                  <div>
+                    <strong className="text-zinc-900">Customs QR Travel Pass:</strong> Live-scannable
+                    entry pass for airline boarding and border inspector validation.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
+                  <div>
+                    <strong className="text-zinc-900">Chronological Action Plan:</strong> Prioritized
+                    appointment countdown for vet exam (10-day window) &amp; treatments.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
+                  <div>
+                    <strong className="text-zinc-900">Digital Pet Passport Vault:</strong> Permanent
+                    vaccination &amp; microchip record vault with 1-click reuse.
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div className="pt-5 mt-4 border-t border-zinc-200/80">
               <button
-                key={curr}
                 type="button"
-                onClick={() => setSelectedCurrency(curr)}
-                className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
-                  selectedCurrency === curr ? 'bg-amber-400 text-zinc-950 shadow-2xs' : 'text-zinc-500 hover:text-zinc-900'
+                onClick={() => handleSelectTier('Complete Travel Plan')}
+                className={`w-full py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-xs cursor-pointer ${
+                  !isConciergeSelected
+                    ? 'bg-[#0FA958] hover:bg-[#0D8E4A] text-white'
+                    : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
                 }`}
               >
-                {curr === 'GBP' ? '£ GBP' : curr === 'USD' ? '$ USD' : '₹ INR'}
+                {!isConciergeSelected ? '✓ Selected: Complete Travel Plan' : `Select Official Dossier (${prices.pass})`}
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Headline */}
-        <div className="text-center max-w-xl mx-auto mb-8">
-          <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight">
-            Transparent Pricing for Worry-Free Pet Travel
-          </h2>
-          <p className="mt-1.5 text-xs sm:text-sm text-zinc-600">
-            Choose the level of compliance verification and expert support that matches your journey.
-          </p>
-        </div>
-
-        {/* 3 Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-          {/* ─── TIER 1: FREE READINESS SCAN ────────────────────────────── */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200 shadow-sm flex flex-col justify-between relative">
-            <div>
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="font-display text-xl font-black text-zinc-900">Readiness Scan</h3>
-                <span className="inline-flex px-2.5 py-1 rounded-md bg-[#DCFCE7] text-[#15803D] text-[11px] font-bold">
-                  Free Forever
-                </span>
-              </div>
-
-              <div className="mb-6">
-                <span className="font-display text-4xl sm:text-5xl font-black text-zinc-900">
-                  {prices.free}
-                </span>
-                <p className="text-xs text-zinc-400 mt-1">No credit card required</p>
-              </div>
-
-              <div className="flex flex-col gap-2 mb-6">
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    window.location.href = '/en/checker';
-                  }}
-                  className="w-full py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-98 cursor-pointer"
-                >
-                  Start Free Document Scan →
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleInstantDevPayment('FREE')}
-                  className="w-full py-2 px-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold text-[11px] sm:text-xs border border-zinc-300 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
-                  title="Simulate Free Tier (Preview Customs Pass & Digital Passport)"
-                >
-                  <span>🐾</span>
-                  <span>Instant Dev Free Plan (Test Locked Mode)</span>
-                </button>
-              </div>
-
-              <div className="space-y-3.5 text-xs text-zinc-700">
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">AI Document Extraction</strong>
-                    <span className="text-zinc-500">Instant scan of microchips, rabies dates, and core vaccines</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">High-Level Route Readiness</strong>
-                    <span className="text-zinc-500">Timeline readiness status (≤1 day, ~2 weeks, ~1 month, ~3 months)</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">Missing Requirements Overview</strong>
-                    <span className="text-zinc-500">Identifies missing documents and short-lead items</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
-          {/* ─── TIER 2: CERTIFIED TRIP PASS ─────────────────────────────── */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500 shadow-md flex flex-col justify-between relative ring-2 ring-emerald-100">
+          {/* Card 2: Priority Concierge & Specialist Review (£59) */}
+          <div
+            onClick={() => handleSelectTier('Priority Concierge')}
+            className={`rounded-2xl p-6 transition-all cursor-pointer flex flex-col justify-between relative border-2 ${
+              isConciergeSelected
+                ? 'border-amber-400 bg-[#0E2342] text-white shadow-xl ring-2 ring-amber-400/30'
+                : 'border-zinc-300 bg-zinc-900 text-white hover:border-zinc-400'
+            }`}
+          >
             <div>
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="font-display text-xl font-black text-zinc-900">Complete Travel Plan</h3>
-                <span className="inline-flex px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 text-[11px] font-bold">
-                  Most Popular
+              <div className="flex justify-between items-start mb-3">
+                <span className="inline-flex px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
+                  ★ Recommended For Flights
                 </span>
+                <input
+                  type="radio"
+                  name="tier"
+                  checked={isConciergeSelected}
+                  onChange={() => handleSelectTier('Priority Concierge')}
+                  className="accent-amber-400 w-4 h-4 cursor-pointer mt-0.5"
+                />
               </div>
 
-              <div className="mb-6">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-display text-4xl sm:text-5xl font-black text-zinc-900">
-                    {prices.pass}
-                  </span>
-                </div>
-                <p className="text-xs text-zinc-500 mt-1">One-time payment per journey</p>
-              </div>
+              <h3 className="font-serif text-xl font-bold text-white">
+                Expert Vet Document Review
+              </h3>
+              <p className="text-xs text-zinc-300 mt-0.5">
+                1-on-1 specialist sign-off before departure
+              </p>
 
-              <div className="flex flex-col gap-2 mb-6">
-                <button
-                  type="button"
-                  onClick={() => handleSelectTier('Complete Travel Plan')}
-                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-98 cursor-pointer"
-                >
-                  Get Complete Travel Plan
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleInstantDevPayment('CERTIFIED_PASS')}
-                  className="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-[11px] sm:text-xs border border-emerald-300 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
-                  title="Simulate successful payment and jump to dashboard"
-                >
-                  <span>⚡</span>
-                  <span>Instant Dev Payment (£19 Success)</span>
-                </button>
-              </div>
-
-              <div className="space-y-3.5 text-xs text-zinc-700">
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">Pet Visa QR Code for Customs</strong>
-                    <span className="text-zinc-500">Live-scannable boarding pass for airline check-in &amp; border inspection</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">Digital Pet Passport Vault</strong>
-                    <span className="text-zinc-500">Permanent medical record vault with 1-click trip reuse</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">Full Dual-Sided Compliance Report</strong>
-                    <span className="text-zinc-500">Leaving (export) and Arriving (import) rules evaluated</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">Verified Official Legal Citations</strong>
-                    <span className="text-zinc-500">Direct source links to USDA, DAFF, DEFRA, and EU legislation</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">Chronological Action Countdown</strong>
-                    <span className="text-zinc-500">Prioritized checklist sorted by regulatory lead time</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">Printable Travel Dossier (PDF)</strong>
-                    <span className="text-zinc-500">Dated compliance snapshot for airlines &amp; border officials</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-zinc-900">Carrier &amp; Crate Sizing Guide</strong>
-                    <span className="text-zinc-500">IATA Live Animal Regulations requirements for your breed</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ─── TIER 3: EXPERT DOCUMENT REVIEW ──────────────────────────── */}
-          <div className="bg-[#18181B] text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col justify-between relative border border-zinc-800">
-            <div>
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="font-display text-xl font-black text-white">Expert Document Review</h3>
-                <span className="inline-flex px-2.5 py-1 rounded-md bg-amber-400 text-zinc-950 text-[11px] font-extrabold">
-                  Specialist Review
-                </span>
-              </div>
-
-              <div className="mb-6">
-                <span className="font-display text-4xl sm:text-5xl font-black text-amber-400">
+              <div className="my-4 flex items-baseline gap-1.5">
+                <span className="font-serif text-3xl sm:text-4xl font-extrabold text-amber-400">
                   {prices.concierge}
                 </span>
-                <p className="text-xs text-zinc-400 mt-1">One-time payment • Dedicated support</p>
+                <span className="text-xs text-zinc-400 font-medium">one-time / trip</span>
               </div>
 
-              <div className="flex flex-col gap-2 mb-6">
-                <button
-                  type="button"
-                  onClick={() => handleSelectTier('Expert Document Review')}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:brightness-105 text-zinc-950 font-black text-xs sm:text-sm shadow-md transition-all active:scale-98 cursor-pointer"
-                >
-                  Get Priority Concierge
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleInstantDevPayment('CONCIERGE')}
-                  className="w-full py-2 px-3 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 font-bold text-[11px] sm:text-xs border border-amber-400/40 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
-                  title="Simulate successful payment and jump to concierge review"
-                >
-                  <span>⚡</span>
-                  <span>Instant Dev Payment (£59 Success)</span>
-                </button>
-              </div>
-
-              <div className="space-y-3.5 text-xs text-zinc-300">
-                <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white/5 border border-amber-400/30">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
+              <ul className="space-y-2.5 text-xs text-zinc-200 pt-2 border-t border-white/10">
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="block text-amber-300 font-bold">1-on-1 Pre-Flight Document Review</strong>
-                    <span className="text-zinc-300">Human specialist double-checks all stamps &amp; paperwork</span>
+                    <strong className="text-white">Includes Full Travel Dossier:</strong> Official PDF,
+                    customs QR pass, and digital passport vault included.
                   </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="block text-white">Everything in Complete Travel Plan</strong>
-                    <span className="text-zinc-400">Pet Visa QR pass, Digital Passport vault, PDF dossier &amp; countdown</span>
+                    <strong className="text-white">1-on-1 Veterinary Specialist Audit:</strong> An
+                    accredited pet travel specialist manually audits all stamps, dates, and health certificates.
                   </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="block text-white">Vet Specialist Verification Seal</strong>
-                    <span className="text-zinc-400">Official human veterinarian authentication on your Customs Pass</span>
+                    <strong className="text-white">Dedicated WhatsApp Channel:</strong> Real-time support
+                    leading up to flight day for airline or customs inquiries.
                   </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="block text-white">Real-Time Travel Day Support</strong>
-                    <span className="text-zinc-400">Direct assistance if customs or airlines have questions</span>
+                    <strong className="text-white">Guaranteed 24-Hour Turnaround:</strong> Fast-tracked
+                    clearance verification to prevent airport grounding and quarantine risk.
                   </div>
-                </div>
+                </li>
+              </ul>
+            </div>
 
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-white">Official Government Form Fill Templates</strong>
-                    <span className="text-zinc-400">Sample filled certificates and declaration templates</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <span className="w-4 h-4 rounded-full bg-[#10b981] text-white flex items-center justify-center shrink-0 mt-0.5 text-[10px]">✓</span>
-                  <div>
-                    <strong className="block text-white">Guaranteed 24-Hour Review Turnaround</strong>
-                    <span className="text-zinc-400">Fast-tracked for urgent departures</span>
-                  </div>
-                </div>
-              </div>
+            <div className="pt-5 mt-4 border-t border-white/10">
+              <button
+                type="button"
+                onClick={() => handleSelectTier('Priority Concierge')}
+                className={`w-full py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-xs cursor-pointer ${
+                  isConciergeSelected
+                    ? 'bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold'
+                    : 'bg-white/10 hover:bg-white/20 text-white'
+                }`}
+              >
+                {isConciergeSelected
+                  ? '✓ Selected: Expert Vet Review'
+                  : `Select Expert Review (${prices.concierge})`}
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Selected Plan Form if clicked */}
-        {selectedTier && (
-          <form onSubmit={handleCompleteOrder} className="mt-8 pt-6 border-t border-zinc-200 flex flex-col sm:flex-row items-center gap-3 justify-center">
-            <input
-              type="email"
-              required
-              value={checkoutEmail}
-              onChange={(e) => setCheckoutEmail(e.target.value)}
-              placeholder="Enter your email to activate plan..."
-              className="w-full sm:w-64 px-4 py-2.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-amber-400"
-            />
-            {selectedTier === 'Priority Concierge' && (
+        {/* ─── INTEGRATED CHECKOUT BAR ───────────────────────────────── */}
+        <form
+          onSubmit={handleCompleteOrder}
+          className="mt-6 pt-5 border-t border-zinc-200 bg-[#FAFBFB] rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4"
+        >
+          <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-zinc-600 mb-1">
+                Your Email (to receive dossier)
+              </label>
               <input
-                type="tel"
+                type="email"
                 required
-                value={checkoutPhone}
-                onChange={(e) => setCheckoutPhone(e.target.value)}
-                placeholder="WhatsApp (+44 7123 456789)..."
-                className="w-full sm:w-64 px-4 py-2.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-amber-400 font-mono"
+                value={checkoutEmail}
+                onChange={(e) => setCheckoutEmail(e.target.value)}
+                placeholder="name@example.com"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-[#0FA958]"
               />
+            </div>
+
+            {isConciergeSelected ? (
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-600 mb-1">
+                  WhatsApp Number (for specialist intake)
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={checkoutPhone}
+                  onChange={(e) => setCheckoutPhone(e.target.value)}
+                  placeholder="+44 7123 456789"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-amber-400 font-mono"
+                />
+              </div>
+            ) : (
+              <div className="flex items-center text-xs text-zinc-500 pt-6">
+                <span>🔒 256-bit SSL encrypted • Instant PDF generation</span>
+              </div>
             )}
+          </div>
+
+          <div className="shrink-0 w-full md:w-auto">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs cursor-pointer disabled:opacity-50"
+              className="w-full md:w-auto px-6 py-3 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 whitespace-nowrap"
             >
-              {isSubmitting ? 'Activating Concierge...' : `Continue to ${selectedTier}`}
+              {isSubmitting
+                ? 'Processing...'
+                : `Proceed with ${isConciergeSelected ? 'Expert Review' : 'Official Dossier'} (${
+                    isConciergeSelected ? prices.concierge : prices.pass
+                  }) →`}
             </button>
-          </form>
-        )}
+          </div>
+        </form>
 
         {statusMessage && (
-          <p className="mt-4 text-center text-xs text-emerald-700 font-semibold">
+          <p className="mt-3 text-center text-xs font-semibold text-emerald-700">
             {statusMessage}
           </p>
         )}
+
+        {/* ─── DISCREET DEVELOPER HELPER FOOTER ───────────────────────── */}
+        <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Official Pet Travel Verification Service • Petvia</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase font-bold text-zinc-400">Dev Testing:</span>
+            <button
+              type="button"
+              onClick={() => handleInstantDevPayment('CERTIFIED_PASS')}
+              className="text-[10px] text-zinc-500 hover:text-zinc-800 underline cursor-pointer"
+            >
+              Simulate £19 Pass
+            </button>
+            <span>•</span>
+            <button
+              type="button"
+              onClick={() => handleInstantDevPayment('CONCIERGE')}
+              className="text-[10px] text-zinc-500 hover:text-zinc-800 underline cursor-pointer"
+            >
+              Simulate £59 Review
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
