@@ -44,11 +44,43 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-zinc-200/80 transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Logo />
+    <header className="sticky top-0 z-50 w-full transition-all">
+      {/* ─── TOP ANNOUNCEMENT & TRUST BAR (matching reference) ──── */}
+      <div className="w-full bg-[#08162A] text-zinc-300 border-b border-white/10 text-[10px] sm:text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 sm:h-9 flex items-center justify-between gap-2">
+          {/* Left / Center: Shield + Verification Statement */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-hidden min-w-0">
+            <svg className="w-3.5 h-3.5 text-[#0FA958] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <span className="font-medium tracking-wide truncate text-zinc-300">
+              Independent Pet Travel Service <span className="text-zinc-500 mx-1">•</span> Verified Against Official Government Rules
+            </span>
+          </div>
+
+          {/* Right: Language Switcher + Help Center */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <LanguageSwitcher variant="topbar" />
+            <span className="text-zinc-600 text-xs hidden sm:inline">|</span>
+            <Link
+              href="#faqs"
+              className="hidden sm:inline-flex items-center gap-1 text-zinc-300 hover:text-white transition-colors text-[10px] sm:text-[11px]"
+            >
+              <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Help Center</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── MAIN NAVBAR ─────────────────────────────────────────── */}
+      <div className="w-full bg-white/95 backdrop-blur-md border-b border-zinc-200/80 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Logo />
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-7 text-[13px] font-medium text-zinc-600">
@@ -154,8 +186,6 @@ export default function Header() {
 
           {/* Right Action Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <LanguageSwitcher variant="header" />
-
             {/* Persistent Primary CTA matching reference */}
             <Link
               href="#scanner"
@@ -380,6 +410,7 @@ export default function Header() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </header>
   );

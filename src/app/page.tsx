@@ -5,7 +5,6 @@ import HomeScannerSection from '@/components/HomeScannerSection';
 import LiveSampleReportCard from '@/components/LiveSampleReportCard';
 import FaqAccordion from '@/components/FaqAccordion';
 import PricingSection from '@/components/PricingSection';
-import StickyBottomCta from '@/components/StickyBottomCta';
 import DigitalPetPassportSection from '@/components/DigitalPetPassportSection';
 import CustomsQrSection from '@/components/CustomsQrSection';
 
@@ -524,9 +523,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ─── 10. MOBILE STICKY BOTTOM CTA BAR ──────────────────────────────── */}
-      <StickyBottomCta />
     </div>
   );
 }

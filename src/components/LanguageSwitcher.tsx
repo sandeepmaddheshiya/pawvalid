@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { locales, TRANSIT_HUBS, type AppLocale } from '@/lib/i18n';
 
 interface LanguageSwitcherProps {
-  variant?: 'header' | 'footer' | 'compact';
+  variant?: 'header' | 'footer' | 'compact' | 'topbar';
 }
 
 export default function LanguageSwitcher({ variant = 'header' }: LanguageSwitcherProps) {
@@ -66,18 +66,27 @@ export default function LanguageSwitcher({ variant = 'header' }: LanguageSwitche
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`inline-flex items-center gap-1.5 rounded-lg border transition-all cursor-pointer font-medium text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${
-          variant === 'footer'
-            ? 'bg-zinc-50 dark:bg-surface-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 hover:bg-zinc-100'
-            : 'bg-white border-zinc-200 text-zinc-700 px-2.5 py-1.5 hover:bg-zinc-50 hover:border-zinc-300'
-        }`}
+        className={
+          variant === 'topbar'
+            ? 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] text-zinc-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer focus:outline-none'
+            : `inline-flex items-center gap-1.5 rounded-lg border transition-all cursor-pointer font-medium text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${
+                variant === 'footer'
+                  ? 'bg-zinc-50 dark:bg-surface-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3 py-1.5 hover:bg-zinc-100'
+                  : 'bg-white border-zinc-200 text-zinc-700 px-2.5 py-1.5 hover:bg-zinc-50 hover:border-zinc-300'
+              }`
+        }
         aria-expanded={isOpen}
         aria-haspopup="true"
         title={`Transit Hub: ${currentHub.primaryHub}`}
       >
-        <span className="text-base leading-none">{currentHub.flag}</span>
-        <span className="font-semibold uppercase tracking-wider text-[11px] sm:text-xs">
-          {detectedLocale}
+        {variant === 'topbar' && (
+          <svg className="w-3.5 h-3.5 text-zinc-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+          </svg>
+        )}
+        <span className="text-sm leading-none">{currentHub.flag}</span>
+        <span className={variant === 'topbar' ? 'font-medium text-zinc-200' : 'font-semibold uppercase tracking-wider text-[11px] sm:text-xs'}>
+          {variant === 'topbar' ? currentHub.nativeName : detectedLocale}
         </span>
         <svg
           className={`w-3 h-3 text-zinc-400 transition-transform duration-200 ${
