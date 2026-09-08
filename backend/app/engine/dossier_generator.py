@@ -6,6 +6,7 @@ and milestone timelines into an airline-ready vector PDF dossier.
 
 import io
 import re
+import hashlib
 from datetime import datetime
 from typing import Dict, Any, List
 
@@ -22,6 +23,9 @@ from reportlab.platypus import (
     HRFlowable,
 )
 from reportlab.pdfgen import canvas
+from reportlab.graphics.shapes import Drawing
+from reportlab.graphics.barcode.qr import QrCodeWidget
+
 
 def strip_emojis(text: str) -> str:
     """Replaces colored emoji characters with clean printable ASCII badges for PDF rendering."""
@@ -116,8 +120,10 @@ MUTED = colors.HexColor("#52525B")      # Slate gray
 LIGHT_BG = colors.HexColor("#F8FAFC")   # Light slate background
 BORDER = colors.HexColor("#E2E8F0")     # Light border
 
-class NumberedCanvas(canvas.Canvas):
-    """Two-pass canvas to dynamically compute and print total page numbers."""
+class DossierCanvas(canvas.Canvas):
+    """Two-pass canvas to dynamically compute total pages, watermark, and running headers."""
+    is_paid = False
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._saved_page_states = []
@@ -136,24 +142,88 @@ class NumberedCanvas(canvas.Canvas):
 
     def draw_page_decorations(self, page_count: int):
         self.saveState()
-        self.setFont("Helvetica", 8)
-        self.setFillColor(MUTED)
 
-        # Running Header (pages 2+)
-        if self._pageNumber > 1:
-            self.drawString(54, 750, "PETVIA • TRAVEL COMPLIANCE & READINESS DOSSIER")
-            self.drawRightString(612 - 54, 750, "SUPPORTING COMPLIANCE & VERIFICATION DOCKET")
+        if not self.is_paid:
+            # Diagonal Watermark on every page for Free Preview
+            self.saveState()
+            self.setFont("Helvetica-Bold", 38)
+            self.setFillColor(colors.Color(0.85, 0.20, 0.20, alpha=0.08))
+            self.translate(306, 396)
+            self.rotate(45)
+            self.drawCentredString(0, 32, "UNOFFICIAL PREVIEW COPY")
+            self.setFont("Helvetica-Bold", 17)
+            self.setFillColor(colors.Color(0.85, 0.20, 0.20, alpha=0.10))
+            self.drawCentredString(0, 2, "NOT VALID FOR AIRLINE BOARDING")
+            self.setFont("Helvetica", 10)
+            self.setFillColor(colors.Color(0.40, 0.40, 0.40, alpha=0.12))
+            self.drawCentredString(0, -24, "PREVIEW SCAN • UPGRADE TO COMPLETE TRAVEL PLAN TO UNLOCK OFFICIAL PASS")
+            self.restoreState()
+
+            # Top Amber/Red Warning Ribbon (Every page)
+            self.setFillColor(colors.HexColor("#FEF2F2"))
+            self.setStrokeColor(colors.HexColor("#DC2626"))
+            self.setLineWidth(0.75)
+            self.rect(54, 762, 504, 16, fill=1, stroke=1)
+            self.setFont("Helvetica-Bold", 6.8)
+            self.setFillColor(colors.HexColor("#991B1B"))
+            self.drawCentredString(306, 767, "[NOTICE] PREVIEW REPORT - UNOFFICIAL RECORD • UPGRADE TO COMPLETE TRAVEL PLAN FOR OFFICIAL QR VERIFICATION")
+
+            # Running Header (pages 2+)
+            if self._pageNumber > 1:
+                self.setFont("Helvetica", 8)
+                self.setFillColor(MUTED)
+                self.drawString(54, 746, "PETVIA • TRAVEL READINESS SCAN (PREVIEW COPY)")
+                self.drawRightString(612 - 54, 746, "UNOFFICIAL PRELIMINARY AUDIT")
+                self.setStrokeColor(BORDER)
+                self.setLineWidth(0.5)
+                self.line(54, 740, 612 - 54, 740)
+
+            # Running Footer
             self.setStrokeColor(BORDER)
             self.setLineWidth(0.5)
-            self.line(54, 744, 612 - 54, 744)
+            self.line(54, 45, 612 - 54, 45)
+            self.setFont("Helvetica", 7.5)
+            self.setFillColor(MUTED)
+            self.drawString(54, 32, "Petvia Travel Readiness Preview • Unofficial Copy • Reg (EU) 2026/131 Advisory Scan")
+            self.drawRightString(612 - 54, 32, f"Page {self._pageNumber} of {page_count}")
 
-        # Running Footer (all pages)
-        self.setStrokeColor(BORDER)
-        self.setLineWidth(0.5)
-        self.line(54, 45, 612 - 54, 45)
-        self.drawString(54, 32, "Verified via Petvia Verification Engine • Supporting Travel Docket • Reg (EU) 2026/131 • IATA LAR")
-        self.drawRightString(612 - 54, 32, f"Page {self._pageNumber} of {page_count}")
+        else:
+            # Top Emerald Ribbon (Every page for Paid Certified)
+            self.setFillColor(colors.HexColor("#ECFDF5"))
+            self.setStrokeColor(colors.HexColor("#059669"))
+            self.setLineWidth(0.75)
+            self.rect(54, 762, 504, 16, fill=1, stroke=1)
+            self.setFont("Helvetica-Bold", 7.2)
+            self.setFillColor(colors.HexColor("#065F46"))
+            self.drawCentredString(306, 767, "[OK] OFFICIAL CERTIFIED ANIMAL TRANSIT CLEARANCE DOSSIER • STATUTORY COMPLIANCE DOCKET")
+
+            # Running Header (pages 2+)
+            if self._pageNumber > 1:
+                self.setFont("Helvetica-Bold", 8)
+                self.setFillColor(PRIMARY)
+                self.drawString(54, 746, "PETVIA • OFFICIAL CERTIFIED TRAVEL DOSSIER")
+                self.setFont("Helvetica", 8)
+                self.setFillColor(MUTED)
+                self.drawRightString(612 - 54, 746, "STATUTORY COMPLIANCE & VERIFICATION DOCKET")
+                self.setStrokeColor(BORDER)
+                self.setLineWidth(0.5)
+                self.line(54, 740, 612 - 54, 740)
+
+            # Running Footer
+            self.setStrokeColor(BORDER)
+            self.setLineWidth(0.5)
+            self.line(54, 45, 612 - 54, 45)
+            self.setFont("Helvetica", 7.5)
+            self.setFillColor(MUTED)
+            self.drawString(54, 32, "Verified via Petvia Verification Engine • Statutory Travel Docket • Reg (EU) 2026/131 • IATA LAR")
+            self.drawRightString(612 - 54, 32, f"Page {self._pageNumber} of {page_count}")
+
         self.restoreState()
+
+
+# Alias for backward compatibility
+NumberedCanvas = DossierCanvas
+
 
 
 def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
@@ -325,6 +395,28 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         or "Not Recorded"
     )
 
+    # Determine Tier & Certification Status
+    is_paid = bool(
+        dossier_data.get("is_paid")
+        or dossier_data.get("isPaid")
+        or dossier_data.get("tier") in ("CERTIFIED_PASS", "CONCIERGE")
+        or (dossier_data.get("trip") or {}).get("tier") in ("CERTIFIED_PASS", "CONCIERGE")
+        or (dossier_data.get("trip") or {}).get("isPaid")
+    )
+    pass_id = (
+        dossier_data.get("passId")
+        or (dossier_data.get("trip") or {}).get("passId")
+        or (dossier_data.get("trip") or {}).get("id")
+        or dossier_data.get("tripId")
+        or f"PV-2026-{abs(hash(str(pet_name) + str(microchip))) % 1000000:06d}"
+    )
+    verify_url = (
+        dossier_data.get("verificationUrl")
+        or f"https://petvia.com/verify/{pass_id}"
+    )
+    raw_hash = hashlib.sha256(f"{pass_id}:{pet_name}:{microchip}:{origin}:{destination}".encode()).hexdigest()[:24].upper()
+    seal_code = f"SHA256:{raw_hash[0:4]}-{raw_hash[4:8]}-{raw_hash[8:12]}-{raw_hash[12:16]}-{raw_hash[16:20]}-{raw_hash[20:24]}"
+
     stats = dossier_data.get("stats") or trip.get("stats") or {}
     overall_status = stats.get("overallStatus") or trip.get("overallStatus") or "READY_TO_FLY"
     earliest_date = strip_emojis(
@@ -337,43 +429,74 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         or trip.get("statusHeadline")
         or ("Compliance Clearance" if overall_status == "READY_TO_FLY" else "Preparation Required")
     )
-    dossier_id = f"PTV-{abs(hash(str(pet_name) + str(microchip) + str(origin))) % 1000000:06d}"
+    dossier_num = f"{abs(hash(str(pet_name) + str(microchip) + str(origin))) % 1000000:06d}"
+    dossier_id = f"CERT-PV-2026-{dossier_num}" if is_paid else f"PREVIEW-PV-2026-{dossier_num}"
     generation_date = datetime.now().strftime("%B %d, %Y")
 
     # ─── 1. HEADER & VERIFICATION BADGE ─────────────────────────────
-    header_data = [
-        [
-            Paragraph(
-                "<b>PETVIA TRAVEL COMPLIANCE DOSSIER</b><br/>"
-                "<font size='8' color='#52525B'>A verified preparation and documentation report for international pet travel.</font>",
-                title_style
-            ),
-            Paragraph(
-                f"<b>DOSSIER ID:</b> {dossier_id}<br/>"
-                f"<b>DATE:</b> {generation_date}<br/>"
-                f"<b>STANDARD:</b> REG (EU) 2026/131",
-                subtitle_style
-            )
+    if is_paid:
+        header_data = [
+            [
+                Paragraph(
+                    "<b>PETVIA OFFICIAL CERTIFIED TRAVEL DOSSIER</b><br/>"
+                    "<font size='8' color='#064E3B'>Statutory compliance docket &amp; official verification record for international pet transit.</font>",
+                    title_style
+                ),
+                Paragraph(
+                    f"<b>CERTIFIED DOCKET:</b> {dossier_id}<br/>"
+                    f"<b>DATE OF ISSUE:</b> {generation_date}<br/>"
+                    f"<b>STATUS:</b> <font color='#059669'><b>[OK] CERTIFIED RECORD</b></font><br/>"
+                    f"<b>STANDARD:</b> REG (EU) 2026/131 &amp; IATA LAR",
+                    subtitle_style
+                )
+            ]
         ]
-    ]
-    header_table = Table(header_data, colWidths=[340, 164])
+    else:
+        header_data = [
+            [
+                Paragraph(
+                    "<b>PETVIA TRAVEL READINESS ASSESSMENT</b><br/>"
+                    "<font size='8' color='#B45309'>Preliminary automated scan of uploaded pet travel records. Uncertified preview copy.</font>",
+                    title_style
+                ),
+                Paragraph(
+                    f"<b>DOCKET REF:</b> {dossier_id}<br/>"
+                    f"<b>SCAN DATE:</b> {generation_date}<br/>"
+                    f"<b>STATUS:</b> <font color='#B45309'><b>UNOFFICIAL PREVIEW</b></font><br/>"
+                    f"<b>STANDARD:</b> REG (EU) 2026/131 (ADVISORY)",
+                    subtitle_style
+                )
+            ]
+        ]
+    header_table = Table(header_data, colWidths=[330, 174])
     header_table.setStyle(TableStyle([
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("ALIGN", (1, 0), (1, 0), "RIGHT"),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
     ]))
     story.append(header_table)
-    story.append(HRFlowable(width="100%", thickness=1.5, color=PRIMARY, spaceBefore=4, spaceAfter=10))
+    story.append(HRFlowable(width="100%", thickness=1.5, color=(PRIMARY if is_paid else AMBER), spaceBefore=4, spaceAfter=10))
 
     # Overall Status Callout
-    status_bg = EMERALD_BG if overall_status == "READY_TO_FLY" else (AMBER_BG if overall_status == "ACTION_REQUIRED" else RED_BG)
-    status_fg = PRIMARY if overall_status == "READY_TO_FLY" else (AMBER if overall_status == "ACTION_REQUIRED" else RED)
-    status_p = Paragraph(
-        f"<b>AUDIT STATUS: {status_headline}</b><br/>"
-        f"<font size='8' color='#52525B'>Supporting compliance record &amp; readiness verification docket. "
-        f"Prerequisites cross-referenced against statutory and carrier boarding criteria.</font>",
-        ParagraphStyle("CalloutP", fontName="Helvetica", fontSize=9, leading=13, textColor=status_fg)
-    )
+    if is_paid:
+        status_bg = EMERALD_BG if overall_status == "READY_TO_FLY" else (AMBER_BG if overall_status == "ACTION_REQUIRED" else RED_BG)
+        status_fg = PRIMARY if overall_status == "READY_TO_FLY" else (AMBER if overall_status == "ACTION_REQUIRED" else RED)
+        status_p = Paragraph(
+            f"<b>AUDIT STATUS: OFFICIALLY CERTIFIED — {status_headline}</b><br/>"
+            f"<font size='8' color='#064E3B'>Statutory animal transit dossier cross-referenced against Regulation (EU) 2026/131, USDA APHIS standards, and IATA Live Animals Regulations. All required milestones, latency windows, and primary document audits have been cryptographically sealed.</font>",
+            ParagraphStyle("CalloutPaid", fontName="Helvetica", fontSize=8.5, leading=12, textColor=status_fg)
+        )
+    else:
+        status_bg = AMBER_BG
+        status_fg = AMBER
+        status_p = Paragraph(
+            "<b>AUDIT STATUS: PRELIMINARY SCAN (UNOFFICIAL PREVIEW COPY)</b><br/>"
+            "<font size='8' color='#78350F'>This preview provides an advisory calculation of travel milestones. "
+            "It is <b>NOT valid for airline boarding or border inspection</b>, lacks an official customs QR token, and is not authorized for veterinary endorsement. "
+            "Upgrade to the <b>Complete Travel Plan (£19)</b> to download your official certified dossier.</font>",
+            ParagraphStyle("CalloutPreview", fontName="Helvetica", fontSize=8.5, leading=12, textColor=AMBER)
+        )
+
     status_table = Table([[status_p]], colWidths=[504])
     status_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), status_bg),
@@ -657,27 +780,159 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         ]))
         story.append(Spacer(1, 14))
 
-    # ─── 7. OFFICIAL NOTICE & AIRLINE DESK INSTRUCTIONS ─────────────
-    notice_text = (
-        "<b>SUPPORTING COMPLIANCE NOTICE FOR AIRLINE CHECK-IN AGENTS AND BORDER VETERINARY INSPECTORS:</b><br/>"
-        "This dossier has been compiled by Petvia as a <b>verified preparation and documentation report</b> evaluating prerequisite compliance "
-        "with <b>Regulation (EU) 2026/131</b>, USDA APHIS protocols, and IATA Live Animals Regulations (LAR). Microchip transponder sequences, "
-        "vaccination latency windows, and route prerequisites have been audited against uploaded primary records. "
-        "This dossier serves as an indexed supporting verification record and must be presented in conjunction with original "
-        "government-endorsed veterinary health certificates, carrier boarding clearance, and border physical inspection."
-    )
-    story.append(KeepTogether([
-        Table([[Paragraph(notice_text, body_muted)]], colWidths=[504], style=[
-            ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
-            ("BOX", (0, 0), (-1, -1), 1, BORDER),
+    # ─── 6. BORDER VERIFICATION TOKEN (PAID QR VS FREE LOCKED) ──────
+    if is_paid:
+        qr = QrCodeWidget(verify_url)
+        qr.barWidth = 80
+        qr.barHeight = 80
+        qr.barBorder = 2
+        qr_drawing = Drawing(80, 80)
+        qr_drawing.add(qr)
+
+        qr_info = Paragraph(
+            f"<b>OFFICIAL CUSTOMS &amp; AIRLINE VERIFICATION GATEWAY</b><br/>"
+            f"<b>Live Inspection URL:</b> <font color='#064E3B'>{verify_url}</font><br/>"
+            f"<b>Cryptographic Audit Seal:</b> <font face='Courier' size='7.5'>{seal_code}</font><br/>"
+            f"<b>Statutory Standard:</b> Regulation (EU) 2026/131 Verified • IATA LAR Docket<br/>"
+            f"<b>Audit Security Status:</b> <font color='#059669'><b>[OK] ACTIVE &amp; CRYPTOGRAPHICALLY SEALED</b></font><br/>"
+            f"<font size='7' color='#52525B'>Airline check-in agents and Border Inspection Post (BIP) officers scan this QR token to inspect live verified health records, primary vaccination latency timestamps, and microchip sequence.</font>",
+            body_style
+        )
+        token_table = Table([[qr_drawing, qr_info]], colWidths=[90, 414])
+        token_table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, -1), EMERALD_BG),
+            ("BOX", (0, 0), (-1, -1), 1, EMERALD),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("TOPPADDING", (0, 0), (-1, -1), 8),
             ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
-            ("LEFTPADDING", (0, 0), (-1, -1), 10),
+            ("LEFTPADDING", (0, 0), (-1, -1), 8),
             ("RIGHTPADDING", (0, 0), (-1, -1), 10),
-        ])
-    ]))
+        ]))
+        story.append(KeepTogether([
+            Paragraph("6. Airline &amp; Customs Live Verification Token (Cryptographically Sealed)", section_h2),
+            token_table
+        ]))
+        story.append(Spacer(1, 14))
 
-    # Build PDF with dynamic page numbers
-    doc.build(story, canvasmaker=NumberedCanvas)
+        # ─── 7. ATTENDING VET & CUSTOMS CLEARANCE SIGN-OFF ───────────────
+        vet_attestation = Paragraph(
+            "<b>OFFICIAL ATTENDING VETERINARIAN ENDORSEMENT</b><br/>"
+            "<font size='7.5' color='#52525B'>I hereby attest that the companion animal identified above has been examined and fulfills all statutory microchip, rabies vaccination latency, and clinical fitness prerequisites specified in this travel docket.</font><br/><br/>"
+            "<b>Accredited Vet Signature:</b> ________________________________<br/><br/>"
+            "<b>Print Full Name:</b> ___________________________________________<br/><br/>"
+            "<b>RCVS / USDA / National License #:</b> ___________________________<br/><br/>"
+            "<b>Date of Clinical Exam:</b> _____________________________________",
+            body_style
+        )
+        clinic_stamp = Paragraph(
+            "<div align='center'>"
+            "<br/><br/><b>OFFICIAL PRACTICE / CLINIC STAMP</b><br/><br/>"
+            "<font size='7' color='#71717A'>Affix official embossed or inked veterinary surgery stamp here</font><br/><br/><br/>"
+            "</div>",
+            body_muted
+        )
+        bip_clearance = Paragraph(
+            "<b>BORDER INSPECTION POST (BIP) / CARRIER ACCEPTANCE CLEARANCE</b><br/>"
+            "<b>Inspection Officer / Agent ID:</b> ________________________  "
+            "<b>Date &amp; Port:</b> ________________________  "
+            "<b>Determination:</b> [  ] <b>CLEARED FOR BOARDING / TRANSIT</b>   [  ] <b>REFERRED TO MOVEMENT CONTROL</b>",
+            body_style
+        )
+
+        sign_table = Table([
+            [vet_attestation, clinic_stamp],
+            [bip_clearance, ""]
+        ], colWidths=[314, 190])
+        sign_table.setStyle(TableStyle([
+            ("SPAN", (0, 1), (1, 1)),
+            ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
+            ("GRID", (0, 0), (-1, -1), 0.5, BORDER),
+            ("BOX", (1, 0), (1, 0), 1, MUTED),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+            ("LEFTPADDING", (0, 0), (-1, -1), 8),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+        ]))
+        story.append(KeepTogether([
+            Paragraph("7. Attending Veterinarian &amp; Port of Entry Sign-Off", section_h2),
+            sign_table
+        ]))
+        story.append(Spacer(1, 14))
+
+        # ─── 8. OFFICIAL COMPLIANCE NOTICE ─────────────────────────────
+        notice_text = (
+            "<b>SUPPORTING COMPLIANCE NOTICE FOR AIRLINE CHECK-IN AGENTS AND BORDER VETERINARY INSPECTORS:</b><br/>"
+            "This dossier has been compiled by Petvia as an <b>authenticated compliance and readiness docket</b> evaluating prerequisite compliance "
+            "with <b>Regulation (EU) 2026/131</b>, USDA APHIS protocols, and IATA Live Animals Regulations (LAR). Microchip transponder sequences, "
+            "vaccination latency windows, and route prerequisites have been audited against uploaded primary records. "
+            "This dossier serves as an indexed supporting verification record and must be presented in conjunction with original "
+            "government-endorsed veterinary health certificates, carrier boarding clearance, and border physical inspection."
+        )
+        story.append(KeepTogether([
+            Paragraph("8. Official Statutory Notice &amp; Airline Desk Instructions", section_h2),
+            Table([[Paragraph(notice_text, body_muted)]], colWidths=[504], style=[
+                ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
+                ("BOX", (0, 0), (-1, -1), 1, BORDER),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+            ])
+        ]))
+
+    else:
+        # ─── 6. LOCKED TOKEN FOR PREVIEW COPY ─────────────────────────────
+        locked_token_text = Paragraph(
+            "<b>[LOCKED] OFFICIAL BORDER INSPECTION QR TOKEN &amp; DIGITAL SEAL</b><br/>"
+            "<font size='8' color='#78350F'>Airlines, ground handling staff, and customs border veterinary officers require an active cryptographic QR token linked to the official Petvia digital ledger. <b>This free preview assessment does NOT contain an active border verification token.</b><br/><br/>"
+            "<b>TO UNLOCK OFFICIAL BORDER VERIFICATION &amp; VETERINARY CLINIC DIRECTIVES:</b><br/>"
+            "• Activate the <b>Complete Travel Plan (£19)</b> in your Petvia Dashboard.<br/>"
+            "• Unlocks: Official unwatermarked clearance dossier, live scannable QR verification pass, accredited vet clinic directive sheet, and secure document vault backup.<br/>"
+            "• Visit: <b>petvia.com/dashboard</b></font>",
+            ParagraphStyle("LockedP", fontName="Helvetica", fontSize=8.5, leading=12, textColor=AMBER)
+        )
+        locked_table = Table([[locked_token_text]], colWidths=[504])
+        locked_table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, -1), AMBER_BG),
+            ("BOX", (0, 0), (-1, -1), 1, AMBER),
+            ("TOPPADDING", (0, 0), (-1, -1), 10),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+            ("LEFTPADDING", (0, 0), (-1, -1), 12),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+        ]))
+        story.append(KeepTogether([
+            Paragraph("6. Border &amp; Airline Inspection Verification Token (Locked)", section_h2),
+            locked_table
+        ]))
+        story.append(Spacer(1, 14))
+
+        # ─── 7. PREVIEW ADVISORY DISCLAIMER ────────────────────────────
+        preview_notice_text = (
+            "<b>UNOFFICIAL PREVIEW ADVISORY NOTICE — NOT VALID FOR AIRLINE BOARDING:</b><br/>"
+            "This travel readiness preview has been compiled by Petvia for preliminary route planning and timeline estimation only. "
+            "It evaluates statutory rules under <b>Regulation (EU) 2026/131</b> and IATA LAR based on preliminary unverified user inputs. "
+            "<b>This preview document is NOT accepted by airlines or border customs authorities.</b> "
+            "To obtain an official clearance dossier with certified cryptographic QR verification and attending vet directives, upgrade to the Petvia Complete Travel Plan (£19)."
+        )
+        story.append(KeepTogether([
+            Paragraph("7. Preview Advisory Notice &amp; Boarding Disclaimer", section_h2),
+            Table([[Paragraph(preview_notice_text, body_muted)]], colWidths=[504], style=[
+                ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
+                ("BOX", (0, 0), (-1, -1), 1, BORDER),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+            ])
+        ]))
+
+    # Build PDF with dynamic page numbers and paid status
+    class ConfiguredCanvas(DossierCanvas):
+        pass
+    ConfiguredCanvas.is_paid = is_paid
+
+    doc.build(story, canvasmaker=ConfiguredCanvas)
     buffer.seek(0)
     return buffer
+

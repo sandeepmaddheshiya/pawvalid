@@ -89,18 +89,32 @@ def test_generate_dossier_pdf_structure():
     assert len(reader.pages) >= 1
     
     full_text = "".join([p.extract_text() for p in reader.pages])
-    assert "PETVIA TRAVEL COMPLIANCE" in full_text
-    assert "DOSSIER" in full_text
+    assert "PETVIA TRAVEL READINESS" in full_text
+    assert "ASSESSMENT" in full_text
+    assert "UNOFFICIAL PREVIEW" in full_text
     assert "985141000987654" in full_text
     assert "Milo" in full_text
     assert "Regulation (EU) 2026/131" in full_text
     assert "IATA Live Animals Regulations" in full_text
+
+    # Also verify paid certified structure
+    sample_data_paid = {**sample_data, "is_paid": True}
+    pdf_buffer_paid = generate_dossier_pdf(sample_data_paid)
+    reader_paid = PdfReader(pdf_buffer_paid)
+    paid_text = "".join([p.extract_text() for p in reader_paid.pages])
+    assert "PETVIA OFFICIAL CERTIFIED TRAVEL" in paid_text
+    assert "DOSSIER" in paid_text
+    assert "OFFICIALLY CERTIFIED" in paid_text
+    assert "Attending Veterinarian" in paid_text
+    assert "Border Inspection Post" in paid_text
+
 
 def test_export_dossier_pdf_endpoint():
     from fastapi.testclient import TestClient
     from app.main import app
     client = TestClient(app)
 
+    # Free Preview Request
     payload = {
         "route": {"origin": "Australia", "destination": "Austria"},
         "petProfile": {"name": "Bella", "microchipNumber": "985141000999999"},
@@ -109,8 +123,18 @@ def test_export_dossier_pdf_endpoint():
     response = client.post("/api/v1/dossier/pdf", json=payload)
     assert response.status_code == 200
     assert response.headers["content-type"] == "application/pdf"
-    assert "Petvia_Travel_Dossier_Bella.pdf" in response.headers.get("content-disposition", "")
+    assert "Petvia_Preview_Dossier_Bella.pdf" in response.headers.get("content-disposition", "")
     assert response.content.startswith(b"%PDF-")
+
+    # Paid Certified Request
+    payload_paid = {
+        **payload,
+        "is_paid": True
+    }
+    res_paid = client.post("/api/v1/dossier/pdf", json=payload_paid)
+    assert res_paid.status_code == 200
+    assert "Petvia_Certified_Travel_Dossier_Bella.pdf" in res_paid.headers.get("content-disposition", "")
+
 
 def test_dossier_pdf_with_trip_payload_and_layovers():
     """Verify that payload structured inside trip with country codes and layovers resolves properly."""

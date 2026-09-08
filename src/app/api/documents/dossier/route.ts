@@ -5,12 +5,28 @@ export async function POST(request: NextRequest) {
     const payload = await request.json();
     const pythonBackendUrl = process.env.PYTHON_BACKEND_URL || 'http://127.0.0.1:8000';
 
+    const isPaid = Boolean(
+      payload.isPaid ||
+      payload.is_paid ||
+      payload.tier === 'CERTIFIED_PASS' ||
+      payload.tier === 'CONCIERGE' ||
+      payload.trip?.tier === 'CERTIFIED_PASS' ||
+      payload.trip?.tier === 'CONCIERGE' ||
+      payload.trip?.isPaid
+    );
+
+    const enrichedPayload = {
+      ...payload,
+      is_paid: isPaid,
+      isPaid: isPaid,
+    };
+
     const response = await fetch(`${pythonBackendUrl}/api/v1/dossier/pdf`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(enrichedPayload),
     });
 
     if (!response.ok) {
@@ -22,9 +38,12 @@ export async function POST(request: NextRequest) {
     }
 
     const pdfBuffer = await response.arrayBuffer();
+    const defaultFilename = isPaid
+      ? 'Petvia_Certified_Travel_Dossier.pdf'
+      : 'Petvia_Preview_Dossier.pdf';
     const contentDisposition =
       response.headers.get('content-disposition') ||
-      'attachment; filename="Petvia_Travel_Dossier.pdf"';
+      `attachment; filename="${defaultFilename}"`;
 
     return new NextResponse(pdfBuffer, {
       status: 200,

@@ -208,7 +208,16 @@ function DashboardContent() {
       const activeDepartureDate =
         currentTrip.route?.departureDate || currentTrip.departureDate || null;
 
+      const isPaidTrip = currentTrip.tier === 'CERTIFIED_PASS' || currentTrip.tier === 'CONCIERGE';
+      const hostOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://petvia.com';
+      const passId = currentTrip.id || 'PV-2026';
+      const verificationUrl = `${hostOrigin}/verify/${passId}`;
+
       const payload = {
+        isPaid: isPaidTrip,
+        tier: currentTrip.tier || (isPaidTrip ? 'CERTIFIED_PASS' : 'FREE'),
+        passId: passId,
+        verificationUrl: verificationUrl,
         route: {
           origin: activeOrigin,
           destination: activeDestination,
@@ -217,6 +226,9 @@ function DashboardContent() {
         },
         trip: {
           id: currentTrip.id,
+          passId: passId,
+          tier: currentTrip.tier,
+          isPaid: isPaidTrip,
           petName: currentTrip.petName,
           species: currentTrip.species,
           breed: currentTrip.breed,
@@ -253,7 +265,8 @@ function DashboardContent() {
       const a = document.createElement('a');
       a.href = url;
       const petName = currentTrip.petName ? currentTrip.petName.replace(/[^a-zA-Z0-9]/g, '_') : 'Pet';
-      a.download = `Petvia_Travel_Dossier_${petName}.pdf`;
+      const filePrefix = isPaidTrip ? 'Petvia_Certified_Travel_Dossier' : 'Petvia_Preview_Dossier';
+      a.download = `${filePrefix}_${petName}.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);

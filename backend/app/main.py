@@ -185,10 +185,23 @@ async def export_dossier_pdf(dossier_data: Dict[str, Any]):
     Compiles verified compliance evaluations into an airline-ready vector PDF dossier.
     """
     try:
+        is_paid = bool(
+            dossier_data.get("is_paid")
+            or dossier_data.get("isPaid")
+            or dossier_data.get("tier") in ("CERTIFIED_PASS", "CONCIERGE")
+            or (dossier_data.get("trip") or {}).get("tier") in ("CERTIFIED_PASS", "CONCIERGE")
+            or (dossier_data.get("trip") or {}).get("isPaid")
+        )
         pdf_buffer = generate_dossier_pdf(dossier_data)
-        pet_name = dossier_data.get("petProfile", {}).get("name") or "Pet"
+        pet_name = (
+            dossier_data.get("petProfile", {}).get("name")
+            or (dossier_data.get("trip") or {}).get("petName")
+            or dossier_data.get("petName")
+            or "Pet"
+        )
         safe_name = "".join(c for c in pet_name if c.isalnum() or c in (' ', '_', '-')).strip() or "Pet"
-        filename = f"Petvia_Travel_Dossier_{safe_name}.pdf"
+        prefix = "Petvia_Certified_Travel_Dossier" if is_paid else "Petvia_Preview_Dossier"
+        filename = f"{prefix}_{safe_name}.pdf"
 
         return StreamingResponse(
             pdf_buffer,

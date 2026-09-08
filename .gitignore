@@ -49,3 +49,7 @@ __pycache__/
 venv/
 .venv/
 
+# temporary scratch directory
+scratch/
+
+
