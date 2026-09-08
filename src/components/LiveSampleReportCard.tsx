@@ -130,7 +130,7 @@ export default function LiveSampleReportCard() {
       {/* View Full Report Link */}
       <div className="mt-4 pt-3 border-t border-zinc-100">
         <Link
-          href="#hero-form"
+          href="#scanner"
           className="inline-flex items-center gap-1 text-xs font-semibold text-[#0E2342] hover:text-[#0FA958] transition-colors"
         >
           <span>View full report</span>

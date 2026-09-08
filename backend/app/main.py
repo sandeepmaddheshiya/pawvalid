@@ -43,6 +43,8 @@ async def scan_documents(
     files: List[UploadFile] = File(...),
     origin_country: str = Form(...),
     destination_country: str = Form(...),
+    species: Optional[str] = Form(None),
+    pet_name: Optional[str] = Form(None),
     transit_countries: Optional[str] = Form(None),
     departure_date: Optional[str] = Form(None)
 ):
@@ -72,6 +74,14 @@ async def scan_documents(
 
     # 2. Extract facts with provenance using strict LLM boundary
     facts = await extract_facts_with_ai(extracted_docs)
+
+    # Honor user-specified species and pet_name if provided
+    if species:
+        spec_clean = species.strip().upper()
+        if spec_clean in ["DOG", "CAT"]:
+            facts.species = spec_clean
+    if pet_name and pet_name.strip():
+        facts.pet_name = pet_name.strip()
 
     transits = [t.strip() for t in transit_countries.split(",") if t.strip()] if transit_countries else []
 
@@ -127,11 +137,11 @@ async def scan_documents(
             "transitCountries": transits,
             "departureDate": departure_date
         },
-        "petDetected": facts.species != "UNKNOWN" or bool(facts.microchip_number) or bool(facts.pet_name),
+        "petDetected": facts.species != "UNKNOWN" or bool(facts.microchip_number) or bool(facts.pet_name) or bool(pet_name),
         "petProfile": {
-            "species": facts.species,
-            "name": facts.pet_name,
-            "breed": facts.breed,
+            "species": facts.species if facts.species != "UNKNOWN" else (species.upper() if species else "DOG"),
+            "name": facts.pet_name or pet_name or "My Pet",
+            "breed": facts.breed or "Companion Animal",
             "microchipNumber": facts.microchip_number,
             "microchipDate": facts.microchip_date,
             "rabiesVaccinationDate": facts.rabies_date,

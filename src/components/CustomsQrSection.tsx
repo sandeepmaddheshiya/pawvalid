@@ -167,7 +167,7 @@ export default function CustomsQrSection() {
                 <span>View Live Customs Clearance Pass →</span>
               </Link>
               <Link
-                href="#hero-form"
+                href="#scanner"
                 className="inline-flex items-center gap-2 bg-white hover:bg-zinc-50 border border-zinc-200 text-xs sm:text-sm font-semibold text-zinc-700 px-5 py-3 rounded-lg transition-all"
               >
                 <span>Check Your Route Requirements</span>

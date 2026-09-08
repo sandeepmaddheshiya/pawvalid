@@ -85,9 +85,10 @@ export default function PricingModal({
     document.body.appendChild(script);
   };
 
-  const handleInstantDevPayment = async (tier: 'CERTIFIED_PASS' | 'CONCIERGE') => {
+  const handleInstantDevPayment = async (tier: 'FREE' | 'CERTIFIED_PASS' | 'CONCIERGE') => {
     setIsSubmitting(true);
-    setStatusMessage(`⚡ Processing Dev Payment for ${tier === 'CONCIERGE' ? 'Priority Concierge (£59)' : 'Certified Pass (£19)'}...`);
+    const tierTitle = tier === 'FREE' ? 'Free Readiness Scan (£0)' : tier === 'CONCIERGE' ? 'Priority Concierge (£59)' : 'Complete Travel Plan (£19)';
+    setStatusMessage(`⚡ Processing Dev Simulation for ${tierTitle}...`);
 
     try {
       const savedRaw = typeof window !== 'undefined' ? localStorage.getItem('petvia_active_trip') : null;
@@ -107,7 +108,7 @@ export default function PricingModal({
       let tripToLoad: any = null;
 
       if (scanResult) {
-        // Save user's ACTUAL scan report directly to database with paid tier
+        // Save user's ACTUAL scan report directly to database with chosen tier
         const petName = scanResult.petProfile?.name || 'My Pet';
         const res = await fetch('/api/trips', {
           method: 'POST',
@@ -148,12 +149,22 @@ export default function PricingModal({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             userEmail: emailToUse,
-            petName: 'My Pet',
+            petName: 'Milo',
             tier,
             scanResult: {
-              petProfile: { name: 'My Pet', species: 'DOG' },
-              route: { origin: 'Departure', destination: 'Arrival' },
-              stats: { overallStatus: 'NOT_READY', statusHeadline: 'Assessment initiated' },
+              petProfile: {
+                name: 'Milo',
+                species: 'DOG',
+                breed: 'Golden Retriever',
+                ageMonths: 36,
+                weightKg: 28.5,
+                microchipNumber: '985141002847192',
+                microchipDate: '2023-04-12',
+                rabiesVaccineDate: '2024-05-10',
+                rabiesVaccineType: 'BOOSTER',
+              },
+              route: { origin: 'United Kingdom (London LHR)', destination: 'Germany (Frankfurt FRA)' },
+              stats: { overallStatus: 'READY', statusHeadline: 'Compliance Verified', earliestFlightDate: 'Cleared for Travel' },
               timelineMilestones: [],
               complianceChecklist: { all: [] },
               readinessReport: {},
@@ -169,15 +180,15 @@ export default function PricingModal({
       if (tripToLoad) {
         localStorage.setItem('petvia_active_trip', JSON.stringify(tripToLoad));
         localStorage.setItem('petvia_user_email', emailToUse);
-        setStatusMessage(`✓ Payment Verified (Dev Mode)! Upgraded to ${tier === 'CONCIERGE' ? 'Priority Concierge' : 'Certified Pass'}. Redirecting to Command Center...`);
+        setStatusMessage(`✓ Dev Mode Activated: ${tierTitle}. Loading dashboard...`);
 
         setTimeout(() => {
           onClose();
-          const targetTab = tier === 'CONCIERGE' ? 'concierge' : 'overview';
+          const targetTab = tier === 'CONCIERGE' ? 'concierge' : tier === 'FREE' ? 'passport' : 'overview';
           window.location.href = `/dashboard?tripId=${tripToLoad.id}&tab=${targetTab}`;
         }, 800);
       } else {
-        throw new Error('Could not upgrade trip');
+        throw new Error('Could not update trip tier');
       }
     } catch (err: any) {
       console.error('Instant dev payment error:', err);
@@ -397,13 +408,27 @@ export default function PricingModal({
                 <p className="text-xs text-zinc-400 mt-1">No credit card required</p>
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleSelectTier('Free Readiness Scan')}
-                className="w-full py-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-900 font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-98 cursor-pointer mb-6"
-              >
-                Start Free Scan
-              </button>
+              <div className="flex flex-col gap-2 mb-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    window.location.href = '/en/checker';
+                  }}
+                  className="w-full py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-98 cursor-pointer"
+                >
+                  Start Free Document Scan →
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleInstantDevPayment('FREE')}
+                  className="w-full py-2 px-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold text-[11px] sm:text-xs border border-zinc-300 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+                  title="Simulate Free Tier (Preview Customs Pass & Digital Passport)"
+                >
+                  <span>🐾</span>
+                  <span>Instant Dev Free Plan (Test Locked Mode)</span>
+                </button>
+              </div>
 
               <div className="space-y-3.5 text-xs text-zinc-700">
                 <div className="flex items-start gap-2.5">

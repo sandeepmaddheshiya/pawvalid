@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import HeroTripForm from '@/components/HeroTripForm';
 import HomeScannerSection from '@/components/HomeScannerSection';
 import LiveSampleReportCard from '@/components/LiveSampleReportCard';
 import FaqAccordion from '@/components/FaqAccordion';
@@ -18,46 +17,28 @@ export const metadata: Metadata = {
 
 const POPULAR_COUNTRIES = [
   { flag: '🇬🇧', name: 'United Kingdom' },
-  { flag: '🇩🇪', name: 'Germany' },
-  { flag: '🇯🇵', name: 'Japan' },
   { flag: '🇺🇸', name: 'United States' },
-  { flag: '🇨🇦', name: 'Canada' },
-  { flag: '🇦🇪', name: 'UAE' },
+  { flag: '🇩🇪', name: 'Germany' },
   { flag: '🇫🇷', name: 'France' },
+  { flag: '🇪🇸', name: 'Spain' },
+  { flag: '🇮🇹', name: 'Italy' },
+  { flag: '🇨🇦', name: 'Canada' },
   { flag: '🇦🇺', name: 'Australia' },
-  { flag: '🇸🇬', name: 'Singapore' },
 ];
 
 export default function HomePage() {
   return (
     <div className="bg-[#F8FAFB] text-zinc-900 overflow-hidden font-sans">
       {/* ─── 1. HERO SECTION ──────────────────────────────────────────────── */}
-      <section className="relative pt-8 pb-14 lg:pt-10 lg:pb-16 bg-[#F8FAFB] overflow-hidden">
-        {/* Right-Side Desktop Backdrop Image with Golden Retriever, Airplane & Suitcase */}
-        <div
-          className="hidden lg:block absolute top-0 right-0 bottom-0 w-[86%] xl:w-[88%] z-0 pointer-events-none"
-          style={{
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 14%, black 28%, black 100%)',
-            maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 14%, black 28%, black 100%)',
-          }}
-        >
-          <Image
-            src="/hero-clean-terminal.jpg"
-            alt="Golden retriever at airport departure gate with travel suitcase and airplane on tarmac"
-            fill
-            priority
-            className="object-cover object-[right_bottom]"
-            sizes="88vw"
-          />
-        </div>
-
+      <section className="relative pt-10 pb-14 lg:pt-14 lg:pb-18 bg-[#F8FAFB] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start lg:min-h-[540px]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center min-h-[480px]">
             {/* Left Column: Heading, Subtitle & Value Pills */}
-            <div className="lg:col-span-6 xl:col-span-5 space-y-5 text-left pt-2">
+            <div className="lg:col-span-7 xl:col-span-6 space-y-6 text-left">
               {/* Pill Label */}
-              <div className="inline-flex items-center text-[10px] font-bold tracking-widest text-zinc-500 uppercase">
-                PET TRAVEL DOCUMENT CHECKER
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-900 text-[10px] font-bold uppercase tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>PET TRAVEL COMPLIANCE CHECKER</span>
               </div>
 
               {/* Main Headline (Editorial Serif) */}
@@ -75,45 +56,45 @@ export default function HomePage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-1">
                 {/* 1. Official source */}
                 <div className="space-y-1.5">
-                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342]">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="w-7 h-7 rounded-lg bg-white border border-zinc-200/80 flex items-center justify-center text-[#0E2342] shadow-2xs">
+                    <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                   </div>
                   <p className="text-[11px] font-medium text-zinc-600 leading-tight">
-                    Official source requirements
+                    Official source rules
                   </p>
                 </div>
 
                 {/* 2. 120+ countries */}
                 <div className="space-y-1.5">
-                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342]">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="w-7 h-7 rounded-lg bg-white border border-zinc-200/80 flex items-center justify-center text-[#0E2342] shadow-2xs">
+                    <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <circle cx="12" cy="12" r="10" strokeWidth={1.8} />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
                     </svg>
                   </div>
                   <p className="text-[11px] font-medium text-zinc-600 leading-tight">
-                    120+ countries &amp; territories
+                    120+ destinations
                   </p>
                 </div>
 
                 {/* 3. Document verification */}
                 <div className="space-y-1.5">
-                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342]">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="w-7 h-7 rounded-lg bg-white border border-zinc-200/80 flex items-center justify-center text-[#0E2342] shadow-2xs">
+                    <svg className="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
                   <p className="text-[11px] font-medium text-zinc-600 leading-tight">
-                    Document verification
+                    Document audit
                   </p>
                 </div>
 
                 {/* 4. Clear next steps */}
                 <div className="space-y-1.5">
-                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342]">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="w-7 h-7 rounded-lg bg-white border border-zinc-200/80 flex items-center justify-center text-[#0E2342] shadow-2xs">
+                    <svg className="w-4 h-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <circle cx="12" cy="12" r="10" strokeWidth={1.8} />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 6v6l4 2" />
                     </svg>
@@ -127,35 +108,78 @@ export default function HomePage() {
               {/* Hero CTA Button */}
               <div className="pt-2">
                 <Link
-                  href="#hero-form"
-                  className="inline-flex items-center gap-2 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs sm:text-sm font-semibold px-6 py-3 rounded-lg shadow-sm transition-all"
+                  href="#scanner"
+                  className="inline-flex items-center gap-2 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs sm:text-sm font-semibold px-6 py-3.5 rounded-xl shadow-md transition-all active:scale-98"
                 >
                   <span>Check My Pet&apos;s Requirements →</span>
                 </Link>
                 <div className="flex items-center gap-1.5 mt-2.5 text-[11px] text-zinc-400">
                   <span>🔒</span>
-                  <span>Your documents stay private and secure</span>
+                  <span>Free instant scan · Your documents stay private and secure</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Hero Form Card */}
-            <div className="lg:col-span-6 xl:col-span-7 flex flex-col items-center lg:items-end pt-2 lg:pt-3">
-              {/* Mobile hero image banner */}
-              <div className="lg:hidden w-full relative h-64 sm:h-72 rounded-2xl overflow-hidden mb-4 shadow-md">
-                <Image
-                  src="/hero-clean-terminal.jpg"
-                  alt="Golden retriever at airport departure gate"
-                  fill
-                  priority
-                  className="object-cover object-center"
-                  sizes="(max-width: 1024px) 100vw, 88vw"
-                />
-              </div>
+            {/* Right Column: Hero Visual Showcase */}
+            <div className="lg:col-span-5 xl:col-span-6 flex justify-center lg:justify-end">
+              <div className="relative w-full max-w-md lg:max-w-lg">
+                {/* Decorative subtle ambient glow */}
+                <div className="absolute -inset-2 bg-gradient-to-tr from-emerald-500/15 via-blue-500/15 to-teal-400/15 rounded-3xl blur-xl opacity-80" />
 
-              {/* Floating Form Card */}
-              <div className="w-full flex justify-center lg:justify-end">
-                <HeroTripForm />
+                {/* Main Showcase Card */}
+                <div className="relative rounded-3xl bg-white p-2.5 sm:p-3 shadow-xl border border-zinc-200/80 overflow-hidden">
+                  {/* Image container */}
+                  <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-inner bg-zinc-100">
+                    <Image
+                      src="/hero-golden-retriever.jpg"
+                      alt="Golden retriever Bailey sitting with official Pet Passport and travel bag at airport terminal"
+                      fill
+                      priority
+                      className="object-cover object-center"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 42vw"
+                    />
+
+                    {/* Gradient shade for bottom readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E2342]/75 via-transparent to-black/10 pointer-events-none" />
+
+                    {/* Floating Badge: Top Left */}
+                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md border border-white/80 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-[10px] sm:text-[11px] font-bold text-zinc-900">
+                        ISO 11784 Microchip Verified
+                      </span>
+                    </div>
+
+                    {/* Floating Badge: Top Right */}
+                    <div className="absolute top-3 right-3 bg-emerald-600/95 backdrop-blur-md text-white px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold">
+                      <span>✓</span>
+                      <span>FAVN Titer: 0.82 IU/ml</span>
+                    </div>
+
+                    {/* Bottom Floating Dossier Summary */}
+                    <div className="absolute bottom-3 inset-x-3 bg-white/95 backdrop-blur-md rounded-xl p-3 sm:p-3.5 shadow-lg border border-white/90 text-left">
+                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#0E2342]">
+                          <span>🇬🇧 London LHR</span>
+                          <span className="text-zinc-400 font-normal">→</span>
+                          <span>🇩🇪 Frankfurt FRA</span>
+                        </div>
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[10px] font-bold shrink-0">
+                          ✓ Ready for Departure
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-zinc-500 pt-1.5 border-t border-zinc-100">
+                        <span className="truncate">
+                          Pet: <strong className="text-zinc-800 font-semibold">Bailey (Golden Retriever)</strong>
+                        </span>
+                        <span className="shrink-0 text-emerald-700 font-semibold">
+                          EU Annex IV Endorsed
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -220,8 +244,10 @@ export default function HomePage() {
 
       {/* ─── 3. DOCUMENT CHECKER SECTION ─────────────────────────────────── */}
       <section id="scanner" className="py-16 sm:py-20 bg-white border-b border-zinc-200/70 scroll-mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <HomeScannerSection />
+        <div id="hero-form" className="scroll-mt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <HomeScannerSection />
+          </div>
         </div>
       </section>
 
@@ -561,7 +587,7 @@ export default function HomePage() {
 
             <div className="pt-2">
               <Link
-                href="#hero-form"
+                href="#scanner"
                 className="inline-flex items-center gap-2 bg-white hover:bg-zinc-100 text-[#0E2342] font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-lg shadow-md transition-all"
               >
                 <span>Check Requirements →</span>

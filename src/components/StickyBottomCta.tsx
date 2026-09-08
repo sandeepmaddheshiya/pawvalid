@@ -35,7 +35,7 @@ export default function StickyBottomCta() {
         </div>
 
         <Link
-          href="#hero-form"
+          href="#scanner"
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-transform active:scale-95 shrink-0"
         >
           <span>Check Requirements</span>

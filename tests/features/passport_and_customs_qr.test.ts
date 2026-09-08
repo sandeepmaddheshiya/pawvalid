@@ -103,7 +103,7 @@ describe('Digital Pet Passport & Pet Visa Customs QR Features', () => {
       expect(tripJson.success).toBe(true);
       const freeTripId = tripJson.trip.id;
 
-      const passId = `PV-2026-${freeTripId.slice(0, 8)}`;
+      const passId = `PV-2026-${freeTripId}`;
       const req = new NextRequest(`http://localhost:3000/api/verify/${passId}`);
       const res = await getCustomsVerification(req, { params: Promise.resolve({ passId }) });
 

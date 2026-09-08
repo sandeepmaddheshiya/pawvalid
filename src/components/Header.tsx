@@ -158,7 +158,7 @@ export default function Header() {
 
             {/* Persistent Primary CTA matching reference */}
             <Link
-              href="#hero-form"
+              href="#scanner"
               className="bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-all shadow-xs hover:shadow active:scale-98 flex items-center gap-1.5 whitespace-nowrap"
             >
               <span>Check Requirements →</span>
