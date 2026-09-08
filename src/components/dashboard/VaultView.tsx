@@ -339,7 +339,11 @@ export default function VaultView({
 
         {filteredDocs.length === 0 ? (
           <div className="p-12 text-center text-zinc-400 text-xs space-y-2">
-            <div className="text-2xl">📁</div>
+            <div className="w-10 h-10 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center mx-auto text-zinc-400">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
+            </div>
             <p>No documents found matching this filter.</p>
           </div>
         ) : (
@@ -468,7 +472,9 @@ export default function VaultView({
                   onClick={() => window.print()}
                   className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-300 text-xs font-semibold text-zinc-700 transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
                 >
-                  <span>🖨️</span>
+                  <svg className="w-3.5 h-3.5 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                  </svg>
                   <span>Print</span>
                 </button>
 

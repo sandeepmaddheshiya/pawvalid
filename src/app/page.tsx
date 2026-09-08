@@ -60,7 +60,9 @@ export default function HomePage() {
                   <span>↓</span>
                 </Link>
                 <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-medium">
-                  <span>🔒</span>
+                  <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                  </svg>
                   <span>Free instant check • Private &amp; secure</span>
                 </div>
               </div>
@@ -201,7 +203,9 @@ export default function HomePage() {
                 {/* Card 1: Microchip */}
                 <div className="bg-white rounded-xl border border-zinc-200/80 p-4 text-left shadow-2xs hover:shadow-xs transition-shadow">
                   <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342] mb-3">
-                    <span className="text-xs">🐾</span>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V5.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 5.25v13.5A2.25 2.25 0 006.75 21z" />
+                    </svg>
                   </div>
                   <h4 className="font-bold text-xs text-[#0E2342]">Microchip</h4>
                   <p className="text-[11px] text-zinc-400 mt-0.5">ID &amp; registration</p>
@@ -209,8 +213,10 @@ export default function HomePage() {
 
                 {/* Card 2: Rabies vaccination */}
                 <div className="bg-white rounded-xl border border-zinc-200/80 p-4 text-left shadow-2xs hover:shadow-xs transition-shadow">
-                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342] mb-3">
-                    <span className="text-xs">💉</span>
+                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-emerald-700 mb-3">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
                   </div>
                   <h4 className="font-bold text-xs text-[#0E2342]">Rabies vaccination</h4>
                   <p className="text-[11px] text-zinc-400 mt-0.5">Dates &amp; type</p>
@@ -218,8 +224,10 @@ export default function HomePage() {
 
                 {/* Card 3: Titer test */}
                 <div className="bg-white rounded-xl border border-zinc-200/80 p-4 text-left shadow-2xs hover:shadow-xs transition-shadow">
-                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342] mb-3">
-                    <span className="text-xs">🧪</span>
+                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-blue-700 mb-3">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 01-6.23-.693L5 14.5" />
+                    </svg>
                   </div>
                   <h4 className="font-bold text-xs text-[#0E2342]">Titer test</h4>
                   <p className="text-[11px] text-zinc-400 mt-0.5">Timing &amp; results</p>
@@ -228,7 +236,9 @@ export default function HomePage() {
                 {/* Card 4: Health certificate */}
                 <div className="bg-white rounded-xl border border-zinc-200/80 p-4 text-left shadow-2xs hover:shadow-xs transition-shadow">
                   <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342] mb-3">
-                    <span className="text-xs">📄</span>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
                   </div>
                   <h4 className="font-bold text-xs text-[#0E2342]">Health certificate</h4>
                   <p className="text-[11px] text-zinc-400 mt-0.5">Vet verification</p>
@@ -236,8 +246,10 @@ export default function HomePage() {
 
                 {/* Card 5: Waiting periods */}
                 <div className="bg-white rounded-xl border border-zinc-200/80 p-4 text-left shadow-2xs hover:shadow-xs transition-shadow">
-                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342] mb-3">
-                    <span className="text-xs">⏱️</span>
+                  <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-amber-700 mb-3">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </div>
                   <h4 className="font-bold text-xs text-[#0E2342]">Waiting periods</h4>
                   <p className="text-[11px] text-zinc-400 mt-0.5">21 / 90 / 120 days</p>
@@ -246,7 +258,9 @@ export default function HomePage() {
                 {/* Card 6: Airline requirements */}
                 <div className="bg-white rounded-xl border border-zinc-200/80 p-4 text-left shadow-2xs hover:shadow-xs transition-shadow">
                   <div className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[#0E2342] mb-3">
-                    <span className="text-xs">✈️</span>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                    </svg>
                   </div>
                   <h4 className="font-bold text-xs text-[#0E2342]">Airline requirements</h4>
                   <p className="text-[11px] text-zinc-400 mt-0.5">Carrier specific</p>

@@ -24,11 +24,42 @@ export default function ChecklistView({ trip }: ChecklistViewProps) {
 
   const getScopeBadge = (scope: string) => {
     switch (scope) {
-      case 'LEAVING': return '🛫 Leaving (Export)';
-      case 'TRANSIT': return '🔀 Transit';
-      case 'ARRIVING': return '🛬 Arriving (Import)';
-      case 'LOGISTICS': return '📦 Airline Logistics';
+      case 'LEAVING': return 'Export (Origin)';
+      case 'TRANSIT': return 'Transit & Layover';
+      case 'ARRIVING': return 'Import (Destination)';
+      case 'LOGISTICS': return 'Airline & Logistics';
       default: return scope;
+    }
+  };
+
+  const getScopeIcon = (scope: string) => {
+    switch (scope) {
+      case 'LEAVING':
+        return (
+          <svg className="w-3.5 h-3.5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        );
+      case 'TRANSIT':
+        return (
+          <svg className="w-3.5 h-3.5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          </svg>
+        );
+      case 'ARRIVING':
+        return (
+          <svg className="w-3.5 h-3.5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        );
+      case 'LOGISTICS':
+        return (
+          <svg className="w-3.5 h-3.5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        );
+      default:
+        return null;
     }
   };
 
@@ -43,10 +74,10 @@ export default function ChecklistView({ trip }: ChecklistViewProps) {
     <div className="space-y-6 animate-fade-in">
       {/* Header & Scope Filter Pills */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 pb-5 mb-5">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 block">
-              Multi-Jurisdictional Statute Registry
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
+              Audited Border Regulations
             </span>
             <h2 className="font-display text-xl sm:text-2xl font-black text-zinc-900 mt-1">
               Regulatory Compliance Checklist
@@ -58,19 +89,26 @@ export default function ChecklistView({ trip }: ChecklistViewProps) {
         </div>
 
         {/* Filter Pills */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-zinc-100 pb-4">
+        <div className="flex flex-wrap items-center gap-2">
           {(['ALL', 'LEAVING', 'TRANSIT', 'ARRIVING', 'LOGISTICS'] as const).map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => setFilterScope(s)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer inline-flex items-center gap-1.5 ${
                 filterScope === s
                   ? 'bg-zinc-900 text-white shadow-xs'
                   : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900'
               }`}
             >
-              {s === 'ALL' ? `All Rules (${items.length})` : getScopeBadge(s)}
+              {s === 'ALL' ? (
+                <span>All Rules ({items.length})</span>
+              ) : (
+                <>
+                  {getScopeIcon(s)}
+                  <span>{getScopeBadge(s)}</span>
+                </>
+              )}
             </button>
           ))}
         </div>
@@ -86,8 +124,9 @@ export default function ChecklistView({ trip }: ChecklistViewProps) {
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-700">
-                    {getScopeBadge(item.scope)}
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-md bg-zinc-100 text-zinc-700 inline-flex items-center gap-1.5">
+                    {getScopeIcon(item.scope)}
+                    <span>{getScopeBadge(item.scope)}</span>
                   </span>
                   <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${getStatusBadgeStyle(item.status)}`}>
                     {item.statusBadge || item.status}

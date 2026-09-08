@@ -254,7 +254,9 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
             onClick={() => setActiveTab('placard')}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-300 text-xs font-semibold text-zinc-700 shadow-2xs transition-colors cursor-pointer"
           >
-            <span>🏷️</span>
+            <svg className="w-3.5 h-3.5 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
             <span>Print Crate Placard</span>
           </button>
           <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
@@ -343,7 +345,7 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
                     : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
                 }`}
               >
-                <span>🐱</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-200/80 text-zinc-700">XS</span>
                 <span>Cat / Toy (under 6 kg)</span>
               </button>
               <button
@@ -355,7 +357,7 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
                     : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
                 }`}
               >
-                <span>🐶</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-200/80 text-zinc-700">M</span>
                 <span>Medium Dog (Beagle, Corgi)</span>
               </button>
               <button
@@ -367,7 +369,7 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
                     : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
                 }`}
               >
-                <span>🦮</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-200/80 text-zinc-700">L</span>
                 <span>Large Dog (Labrador, Golden)</span>
               </button>
               <button
@@ -379,7 +381,7 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
                     : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
                 }`}
               >
-                <span>🐕‍🦺</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-200/80 text-zinc-700">XL</span>
                 <span>Giant Dog (German Shepherd)</span>
               </button>
             </div>
@@ -785,7 +787,9 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
                 <div className="p-4 rounded-xl bg-emerald-50/40 border border-emerald-200/80 space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-emerald-900 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
-                      <span>📦</span>
+                      <svg className="w-3.5 h-3.5 text-emerald-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
                       <span>Commercial Crate Size Match:</span>
                     </span>
                     <span className="text-[10px] font-medium text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded border border-emerald-200">
@@ -808,7 +812,9 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
                     </div>
                   ) : (
                     <div className="text-[11px] text-amber-800 font-semibold pt-1 flex items-center gap-1">
-                      <span>⚠️</span>
+                      <svg className="w-3.5 h-3.5 text-amber-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
                       <span>Giant breeds generally require a reinforced wooden CR-82 crate built to custom dimensions.</span>
                     </div>
                   )}
@@ -949,9 +955,12 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
 
             {/* Special Route Legal Warning */}
             <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-amber-950 space-y-1.5">
-              <strong className="block font-bold text-amber-900">
-                ⚠️ Critical Statutory Warning for United Kingdom Border Routes:
-              </strong>
+              <div className="flex items-center gap-1.5 font-bold text-amber-900">
+                <svg className="w-4 h-4 text-amber-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>Critical Statutory Warning for United Kingdom Border Routes:</span>
+              </div>
               <p className="text-amber-900 leading-relaxed">
                 Under UK Animal Health &amp; Border Law (DEFRA), <strong>pets are not permitted to enter Great Britain in the passenger cabin</strong> on commercial scheduled aircraft (except recognized assistance dogs). Pets entering the UK must fly as <em>manifested cargo</em> via an approved pet handling facility (e.g. Heathrow Animal Reception Centre - HARC). Flights <em>departing</em> the UK to mainland European airports may permit in-cabin travel depending on the European operating carrier.
               </p>
@@ -1027,7 +1036,9 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
             {/* Brachycephalic / Snub-Nosed Advisory Card */}
             <div className="p-4 sm:p-5 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-amber-950 space-y-2">
               <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
-                <span>⚠️</span>
+                <svg className="w-4 h-4 text-amber-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
                 <span>Brachycephalic (Snub-Nosed) Breed Flight Precautions</span>
               </div>
               <p className="leading-relaxed text-amber-900">
@@ -1068,7 +1079,9 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
                 onClick={handlePrintPlacard}
                 className="shrink-0 px-4 py-2.5 bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-bold rounded-xl shadow-xs transition-all active:scale-98 cursor-pointer flex items-center gap-2 self-start sm:self-auto"
               >
-                <span>🖨️</span>
+                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
                 <span>Print Placard (A4 / Letter)</span>
               </button>
             </div>

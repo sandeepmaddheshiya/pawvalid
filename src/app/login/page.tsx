@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -58,13 +59,10 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* Header Logo */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <Link href="/" className="inline-flex items-center gap-2 mb-4">
-          <span className="text-3xl">🐾</span>
-          <span className="font-display font-black text-2xl tracking-tight text-zinc-900">
-            Petvia
-          </span>
-        </Link>
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center flex flex-col items-center">
+        <div className="mb-4">
+          <Logo />
+        </div>
         <h1 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight">
           {isSignUp ? 'Create your Petvia account' : 'Welcome back'}
         </h1>
@@ -203,10 +201,20 @@ export default function LoginPage() {
           </form>
 
           {/* Social Proof & Security Guarantee */}
-          <div className="pt-4 border-t border-zinc-100 flex items-center justify-center gap-4 text-[11px] text-zinc-400">
-            <span className="flex items-center gap-1">🔒 256-bit Encrypted</span>
-            <span>•</span>
-            <span className="flex items-center gap-1">✈️ IATA Compliant</span>
+          <div className="pt-4 border-t border-zinc-100 flex items-center justify-center gap-4 text-[11px] text-zinc-500 font-medium">
+            <span className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+              <span>256-bit Encrypted</span>
+            </span>
+            <span className="text-zinc-300">•</span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+              </svg>
+              <span>IATA Compliant</span>
+            </span>
           </div>
 
           <div className="text-center pt-1">

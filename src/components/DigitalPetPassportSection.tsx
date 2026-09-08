@@ -173,14 +173,20 @@ export default function DigitalPetPassportSection() {
                 <div className="space-y-3.5">
                   {/* Photo & Name */}
                   <div className="flex items-center gap-3.5 bg-zinc-50 p-3.5 rounded-2xl border border-zinc-200/70">
-                    <div className="w-14 h-14 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-2xl shrink-0 shadow-2xs">
-                      🐕
+                    <div className="w-14 h-14 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center shrink-0 shadow-2xs">
+                      <svg className="w-7 h-7 text-amber-700" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="7" cy="8.5" r="2" />
+                        <circle cx="17" cy="8.5" r="2" />
+                        <circle cx="10" cy="5" r="1.8" />
+                        <circle cx="14" cy="5" r="1.8" />
+                        <path d="M12 10.5c-2.4 0-4.5 1.8-4.5 4.2 0 1.9 1.4 3.3 4.5 3.3s4.5-1.4 4.5-3.3c0-2.4-2.1-4.2-4.5-4.2z" />
+                      </svg>
                     </div>
                     <div>
                       <div className="text-base font-bold text-zinc-900 tracking-tight">Bailey</div>
                       <div className="text-xs text-zinc-500">Golden Retriever • 3 yrs • 28.5 kg</div>
-                      <div className="text-[11px] text-emerald-700 font-medium mt-0.5 flex items-center gap-1">
-                        <span>🇬🇧</span>
+                      <div className="text-[11px] text-emerald-700 font-medium mt-0.5 flex items-center gap-1.5">
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-blue-50 text-blue-800 border border-blue-200">UK</span>
                         <span>Resident of United Kingdom · ISO 11784</span>
                       </div>
                     </div>

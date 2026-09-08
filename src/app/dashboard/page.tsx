@@ -293,8 +293,10 @@ function DashboardContent() {
 
         <main className="flex-1 min-w-0 p-4 sm:p-8 lg:p-12 max-w-5xl mx-auto w-full flex flex-col justify-center">
           <div className="bg-white rounded-3xl p-8 sm:p-12 border border-zinc-200/90 shadow-sm text-center space-y-6 animate-fade-in">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 text-3xl flex items-center justify-center mx-auto shadow-2xs">
-              🐾
+            <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto shadow-2xs">
+              <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-.778.099-1.533.284-2.253" />
+              </svg>
             </div>
 
             <div className="max-w-xl mx-auto space-y-2">
@@ -322,39 +324,58 @@ function DashboardContent() {
                 type="button"
                 disabled={loadingDemo}
                 onClick={handleLoadDemoTrip}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-zinc-300 hover:bg-zinc-50 text-zinc-700 font-semibold text-xs transition-all cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-zinc-300 hover:bg-zinc-50 text-zinc-700 font-semibold text-xs transition-all cursor-pointer disabled:opacity-50"
               >
-                {loadingDemo ? 'Loading Sample...' : '📋 Explore Sample Journey (Milo · US → Germany)'}
+                <svg className="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                {loadingDemo ? 'Loading Sample...' : 'Explore Sample Journey (Milo · US → Germany)'}
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left pt-6 border-t border-zinc-100">
-              <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/70 space-y-1">
-                <div className="text-xl">⏱️</div>
+              <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/70 space-y-2">
+                <div className="w-8 h-8 rounded-lg bg-white border border-zinc-200/80 flex items-center justify-center text-zinc-700 shadow-2xs">
+                  <svg className="w-4 h-4 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
                 <h4 className="font-bold text-xs text-zinc-900">Live Deadlines</h4>
                 <p className="text-[11px] text-zinc-500 leading-relaxed">
                   21-day rabies latency &amp; 120h tapeworm administration windows.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/70 space-y-1">
-                <div className="text-xl">⚖️</div>
+              <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/70 space-y-2">
+                <div className="w-8 h-8 rounded-lg bg-white border border-zinc-200/80 flex items-center justify-center text-zinc-700 shadow-2xs">
+                  <svg className="w-4 h-4 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                  </svg>
+                </div>
                 <h4 className="font-bold text-xs text-zinc-900">Statute Checklists</h4>
                 <p className="text-[11px] text-zinc-500 leading-relaxed">
                   Verified EU 2026/131, USDA APHIS &amp; DEFRA requirements.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/70 space-y-1">
-                <div className="text-xl">📁</div>
+              <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/70 space-y-2">
+                <div className="w-8 h-8 rounded-lg bg-white border border-zinc-200/80 flex items-center justify-center text-zinc-700 shadow-2xs">
+                  <svg className="w-4 h-4 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                  </svg>
+                </div>
                 <h4 className="font-bold text-xs text-zinc-900">Document Vault</h4>
                 <p className="text-[11px] text-zinc-500 leading-relaxed">
                   Upload certificates for OCR and veterinary validation.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/70 space-y-1">
-                <div className="text-xl">✈️</div>
+              <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/70 space-y-2">
+                <div className="w-8 h-8 rounded-lg bg-white border border-zinc-200/80 flex items-center justify-center text-zinc-700 shadow-2xs">
+                  <svg className="w-4 h-4 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                </div>
                 <h4 className="font-bold text-xs text-zinc-900">Crate Sizing</h4>
                 <p className="text-[11px] text-zinc-500 leading-relaxed">
                   IATA CR-82 compliant carrier calculator for cargo and cabin.
@@ -372,7 +393,11 @@ function DashboardContent() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
         <div className="bg-white rounded-3xl p-8 border border-zinc-200 text-center max-w-md shadow-sm space-y-4">
-          <div className="text-3xl">🔒</div>
+          <div className="w-12 h-12 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center mx-auto text-zinc-700">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
           <h2 className="font-display font-black text-xl text-zinc-900">Sign In Required</h2>
           <p className="text-xs text-zinc-500 leading-relaxed">
             Please log in to access your pet travel command center.

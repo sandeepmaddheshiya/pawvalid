@@ -373,7 +373,9 @@ export default function SearchableSelect({
                     : 'bg-emerald-50/50 text-emerald-700 hover:bg-emerald-50'
                 }`}
               >
-                <span className="text-emerald-600 text-sm">✨</span>
+                <svg className="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
                 <span className="truncate">
                   Use custom entry: &ldquo;
                   <span className="underline font-bold">

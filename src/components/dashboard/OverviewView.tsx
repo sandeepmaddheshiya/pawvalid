@@ -75,8 +75,14 @@ export default function OverviewView({
           <div className="space-y-3.5">
             {/* Identity line */}
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-[#0E2342] text-white flex items-center justify-center text-xl shadow-xs">
-                {trip?.species === 'CAT' ? '🐱' : '🐶'}
+              <div className="w-11 h-11 rounded-2xl bg-[#0E2342] text-white flex items-center justify-center shadow-xs">
+                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="7" cy="8.5" r="2" />
+                  <circle cx="17" cy="8.5" r="2" />
+                  <circle cx="10" cy="5" r="1.8" />
+                  <circle cx="14" cy="5" r="1.8" />
+                  <path d="M12 10.5c-2.4 0-4.5 1.8-4.5 4.2 0 1.9 1.4 3.3 4.5 3.3s4.5-1.4 4.5-3.3c0-2.4-2.1-4.2-4.5-4.2z" />
+                </svg>
               </div>
               <div>
                 <div className="flex items-center gap-2.5 flex-wrap">
@@ -103,19 +109,33 @@ export default function OverviewView({
                 <span>{trip?.origin}</span>
               </div>
 
-              <span className="text-zinc-400 font-medium text-xs px-1">───✈───</span>
+              <div className="flex items-center gap-1 text-zinc-300">
+                <span className="w-3 h-px bg-zinc-300" />
+                <svg className="w-3.5 h-3.5 text-zinc-400 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+                <span className="w-3 h-px bg-zinc-300" />
+              </div>
 
               {route?.transitCountries && route.transitCountries.length > 0 && (
                 <>
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 font-semibold text-[11px]">
                     <span>Layover: {route.transitCountries.join(', ')}</span>
                   </div>
-                  <span className="text-zinc-400 font-medium text-xs px-1">───✈───</span>
+                  <div className="flex items-center gap-1 text-zinc-300">
+                    <span className="w-3 h-px bg-zinc-300" />
+                    <svg className="w-3.5 h-3.5 text-zinc-400 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                    <span className="w-3 h-px bg-zinc-300" />
+                  </div>
                 </>
               )}
 
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F4FBF7] border border-[#C6EED8] text-[#0E2342] font-semibold">
-                <span>🏁</span>
+                <svg className="w-3.5 h-3.5 text-[#0FA958]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                </svg>
                 <span>{trip?.destination}</span>
               </div>
             </div>
@@ -198,7 +218,11 @@ export default function OverviewView({
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <span className="text-lg">📱</span>
+                <div className="w-6 h-6 rounded-lg bg-emerald-50 text-[#0FA958] flex items-center justify-center">
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#0FA958]">
                   Digital Travel Pass
                 </span>
@@ -210,7 +234,7 @@ export default function OverviewView({
                     : 'text-amber-800 bg-amber-100 border border-amber-200'
                 }`}
               >
-                {isPaid ? '✓ Live Verification Pass' : '🔒 £19 Complete Plan'}
+                {isPaid ? 'Live Verification Pass' : 'Complete Plan (£19)'}
               </span>
             </div>
 
@@ -249,8 +273,10 @@ export default function OverviewView({
                   />
                 </div>
                 {!isPaid && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[1px]">
-                    <span className="text-sm">🔒</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/75 backdrop-blur-[1px]">
+                    <svg className="w-4 h-4 text-amber-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
                     <span className="text-[9px] font-bold text-amber-800 mt-0.5">£19 Plan</span>
                   </div>
                 )}
@@ -287,7 +313,11 @@ export default function OverviewView({
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <span className="text-lg">📁</span>
+                <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                  </svg>
+                </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#0FA958]">
                   Document Vault
                 </span>
@@ -366,8 +396,10 @@ export default function OverviewView({
             <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
               Required Vet Actions
             </span>
-            <span className="w-7 h-7 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xs font-bold">
-              ⏳
+            <span className="w-7 h-7 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </span>
           </div>
           <span className="font-serif text-3xl font-extrabold text-[#0E2342] block">
@@ -386,8 +418,10 @@ export default function OverviewView({
             <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
               Verified Records
             </span>
-            <span className="w-7 h-7 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xs font-bold">
-              📁
+            <span className="w-7 h-7 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
             </span>
           </div>
           <span className="font-serif text-3xl font-extrabold text-[#0E2342] block">

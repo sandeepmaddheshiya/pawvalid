@@ -14,7 +14,10 @@ export default function Timeline({ items }: TimelineProps) {
   return (
     <div className="card p-6">
       <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4 flex items-center gap-2">
-        📅 Action Timeline
+        <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>Action Timeline</span>
         {nextDeadline && (
           <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400">
             — Next: {formatDaysUntil(nextDeadline.daysUntil)}
