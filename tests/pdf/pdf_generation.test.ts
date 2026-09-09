@@ -88,4 +88,41 @@ describe('Server-Side PDF Binary Generation', () => {
     const header = pdfBuffer.subarray(0, 5).toString('ascii');
     expect(header).toBe('%PDF-');
   }, 30000);
+
+  it('should dynamically adapt tapeworm and titer requirements by destination', async () => {
+    // 1. UK -> Germany (EU destination: tapeworm exempt, titer exempt)
+    const euHtml = await generatePassportHtml({
+      passId: 'PV-2026-UKDE-9842',
+      pet: { name: 'Bailey', species: 'DOG' },
+      origin: 'United Kingdom',
+      destination: 'Germany',
+      userEmail: 'traveler@petvia.com',
+      verificationUrl: 'https://petvia.com/verify/PV-2026-UKDE-9842',
+    });
+    expect(euHtml).toContain('Regulation (EU) 2026/131');
+    expect(euHtml).toContain('Exempt for direct entry into Germany');
+    expect(euHtml).toContain('Exempt for this certified origin-destination route');
+
+    // 2. USA -> UK (UK destination: tapeworm mandatory, GB scheme)
+    const ukHtml = await generatePassportHtml({
+      passId: 'PV-2026-USUK-1111',
+      pet: { name: 'Cooper', species: 'DOG' },
+      origin: 'United States',
+      destination: 'United Kingdom',
+      userEmail: 'traveler@petvia.com',
+      verificationUrl: 'https://petvia.com/verify/PV-2026-USUK-1111',
+    });
+    expect(ukHtml).toContain('GB Pet Travel Scheme');
+    expect(ukHtml).toContain('Praziquantel • Mandatory 24h to 120h pre-arrival administration');
+
+    // 3. Border Verification Pass for Australia (Titer required)
+    const auPassHtml = await generateVerificationPassHtml({
+      passId: 'PV-2026-UKAU-2222',
+      petName: 'Luna',
+      destination: 'Australia',
+      verificationUrl: 'https://petvia.com/verify/PV-2026-UKAU-2222',
+    });
+    expect(auPassHtml).toContain('FAVN/RNATT required for this route');
+    expect(auPassHtml).toContain('Action Required');
+  });
 });
