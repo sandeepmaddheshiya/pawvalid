@@ -403,7 +403,7 @@ export default function ScannerResultView({
           className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-600 hover:text-zinc-900 bg-white border border-zinc-300 rounded-lg px-3.5 py-2 shadow-2xs hover:bg-zinc-50 transition-colors cursor-pointer self-start"
         >
           <ArrowLeftIcon className="w-3.5 h-3.5 text-zinc-500" />
-          <span>New Assessment / Document Scan</span>
+          <span>New Assessment</span>
         </button>
 
         <div className="flex flex-wrap items-center gap-2.5">
@@ -411,11 +411,11 @@ export default function ScannerResultView({
             type="button"
             disabled={isDownloadingDossier}
             onClick={handleDownloadDossier}
-            className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-zinc-800 hover:text-zinc-950 bg-white hover:bg-zinc-50 border border-zinc-300 rounded-lg px-3.5 py-2 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap disabled:opacity-60"
-            title="Download free preview pet travel dossier (Unofficial Preview)"
+            className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-zinc-700 bg-white hover:bg-zinc-50 border border-zinc-200 rounded-lg px-3.5 py-2 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap disabled:opacity-60"
+            title="Download free preview pet travel dossier"
           >
-            <FileTextIcon className="w-3.5 h-3.5 text-zinc-600" />
-            <span>{isDownloadingDossier ? 'Generating Preview...' : 'Download Preview Dossier (PDF)'}</span>
+            <FileTextIcon className="w-3.5 h-3.5 text-zinc-500" />
+            <span>{isDownloadingDossier ? 'Generating...' : 'Download Preview Dossier'}</span>
           </button>
 
           <button
@@ -433,7 +433,7 @@ export default function ScannerResultView({
             className="inline-flex items-center justify-center gap-2 text-xs font-semibold text-white bg-[#0E2342] hover:bg-[#16345E] rounded-lg px-4 py-2 shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
           >
             <ShieldCheckIcon className="w-3.5 h-3.5 text-[#0FA958]" />
-            <span>Official Certification Options</span>
+            <span>Complete Travel Plan</span>
             <span className="px-1.5 py-0.5 rounded-md bg-white/15 text-[10px] font-bold text-white/90">£19</span>
           </button>
         </div>
@@ -709,7 +709,7 @@ export default function ScannerResultView({
           {/* ─── EXECUTIVE AUDIT SUMMARY (TABLE GRID STRUCTURE) ───────── */}
           <div className="bg-white rounded-lg border border-zinc-200 p-5 shadow-2xs">
             <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-3">
-              Official Regulatory Audit Summary
+              Regulatory Compliance Audit Summary
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 divide-y md:divide-y-0 md:divide-x divide-zinc-200">
               <div className="pt-2 md:pt-0 md:px-3 first:pl-0">
@@ -764,7 +764,7 @@ export default function ScannerResultView({
               Statutory Basis &amp; Compliance Schedule
             </span>
             <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#0E2342] mt-0.5">
-              Official Requirements Matrix
+              Statutory Requirements Matrix
             </h3>
             <p className="text-xs text-zinc-500 mt-0.5">
               Evaluated against origin export statutes, layover transshipment regulations, and destination entry legislation.
@@ -839,7 +839,7 @@ export default function ScannerResultView({
                         <>
                           <span>·</span>
                           <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-700 font-semibold hover:underline inline-flex items-center gap-0.5">
-                            <span>Official Legal Directive</span>
+                            <span>Statutory Legal Directive</span>
                             <ExternalLinkIcon className="w-2.5 h-2.5" />
                           </a>
                         </>
@@ -983,7 +983,7 @@ export default function ScannerResultView({
               disabled={isDownloadingDossier}
               onClick={handleDownloadDossier}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-900 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-lg shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap disabled:opacity-60"
-              title="Download free preview pet travel dossier (Unofficial Preview)"
+              title="Download free preview pet travel dossier"
             >
               <FileTextIcon className="w-4 h-4 text-zinc-300" />
               <span>{isDownloadingDossier ? 'Generating Preview...' : 'Download Preview Dossier (PDF)'}</span>
@@ -994,7 +994,7 @@ export default function ScannerResultView({
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-lg border border-white/20 transition-all active:scale-95 cursor-pointer whitespace-nowrap"
             >
               <ShieldCheckIcon className="w-3.5 h-3.5 text-white" />
-              <span>Official Options (£19)</span>
+              <span>Complete Travel Plan (£19)</span>
             </button>
           </div>
         </div>

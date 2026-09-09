@@ -117,7 +117,7 @@ export default function DigitalPetPassportSection() {
                   </div>
                   <div>
                     <div className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">
-                      OFFICIAL DIGITAL PET PASSPORT
+                      DIGITAL PET TRAVEL RECORD
                     </div>
                     <div className="text-xs font-mono font-bold text-zinc-900">
                       DOC ID: PV-GB-984201

@@ -24,7 +24,7 @@ describe('Server-Side PDF Binary Generation', () => {
     expect(html).toContain('ECHINOCOCCUS MULTILOCULARIS (TAPEWORM)');
     expect(html).toContain('Praziquantel');
     expect(html).toContain('Attending Veterinarian Attestation');
-    expect(html).toContain('AFFIX OFFICIAL');
+    expect(html).toContain('AFFIX VETERINARY');
   });
 
   it('should generate valid Digital Pet Passport HTML template with embedded QR code', async () => {

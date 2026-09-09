@@ -352,7 +352,7 @@ export function generateVetSheetHtml(data: {
 <body>
   <div class="header">
     <div>
-      <div class="brand-badge">Official Clinical Directives • International Transit</div>
+      <div class="brand-badge">Veterinary Clinical Directives • International Transit</div>
       <div class="brand-title">Petvia<span>.</span></div>
     </div>
     <div class="header-right">
@@ -429,10 +429,10 @@ export function generateVetSheetHtml(data: {
     <div class="instruction-card">
       <div class="instruction-header" style="color: #0E2342;">
         <span class="step-num">4</span>
-        <span>OFFICIAL ENDORSEMENT &amp; WET-INK BLUE SIGNATURE RULE</span>
+        <span>VETERINARY ENDORSEMENT &amp; WET-INK BLUE SIGNATURE RULE</span>
       </div>
       <p class="instruction-body">
-        Sign all government export certificates in <strong>blue wet ink</strong> to distinguish the original document from photocopies. Apply the official clinic stamp containing the practice address and your national veterinary surgeon license / MRCVS / USDA accreditation registration number.
+        Sign all government export certificates in <strong>blue wet ink</strong> to distinguish the original document from photocopies. Apply the veterinary clinic stamp containing the practice address and your national veterinary surgeon license / MRCVS / USDA accreditation registration number.
       </p>
     </div>
   </div>
@@ -449,7 +449,7 @@ export function generateVetSheetHtml(data: {
       </div>
       <div>
         <div class="stamp-box">
-          AFFIX OFFICIAL<br>PRACTICE / CLINIC STAMP<br>HERE
+          AFFIX VETERINARY<br>PRACTICE / CLINIC STAMP<br>HERE
         </div>
       </div>
     </div>

@@ -182,7 +182,7 @@ export default function AssessmentResult({
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
-              <span>Download Official PDF Dossier</span>
+              <span>Download Certified PDF Dossier</span>
             </button>
 
             <button
@@ -211,10 +211,10 @@ export default function AssessmentResult({
             </button>
 
             <h3 className="font-display font-bold text-xl text-zinc-900 dark:text-white mb-2">
-              Get Official PDF Report
+              Get Certified Travel Report
             </h3>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-5 leading-relaxed">
-              Receive a dated, reproducible action plan with verified source URLs and official document checklist.
+              Receive a dated, reproducible action plan with verified statutory rules and required document checklist.
             </p>
 
             <form onSubmit={handleCheckout} className="space-y-4">

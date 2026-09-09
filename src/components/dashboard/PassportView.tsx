@@ -115,7 +115,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                 Digital Travel Verification Pass is in preview mode
               </div>
               <p className="text-xs text-zinc-600 mt-0.5 max-w-xl leading-relaxed">
-                Activate the <strong className="text-zinc-900">Complete Travel Plan (£19)</strong> to generate your official scannable pass, unlock permanent document vault storage, and download certified compliance dossiers.
+                Activate the <strong className="text-zinc-900">Complete Travel Plan (£19)</strong> to generate your scannable verification pass, unlock permanent document vault storage, and download certified compliance dossiers.
               </p>
             </div>
           </div>
@@ -166,7 +166,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                 <svg className="w-3.5 h-3.5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
-                <span>{isPaid ? 'Download Official PDF' : 'Download PDF (£19)'}</span>
+                <span>{isPaid ? 'Download Certified PDF' : 'Download PDF (£19)'}</span>
               </>
             )}
           </button>

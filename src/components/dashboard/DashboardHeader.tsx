@@ -161,7 +161,7 @@ export default function DashboardHeader({
                 ? 'bg-[#0FA958] hover:bg-[#0D8E4A] ring-1 ring-[#0FA958]/30'
                 : 'bg-zinc-800 hover:bg-zinc-900'
             }`}
-            title={isPaid ? 'Download Official Certified Travel Dossier (PDF)' : 'Download Free Preview Dossier (PDF)'}
+            title={isPaid ? 'Download Certified Pet Travel Dossier (PDF)' : 'Download Free Preview Dossier (PDF)'}
           >
             {isDownloadingDossier ? (
               <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">

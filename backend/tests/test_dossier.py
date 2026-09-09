@@ -104,7 +104,7 @@ def test_generate_dossier_pdf_structure():
     paid_text = "".join([p.extract_text() for p in reader_paid.pages])
     assert "PETVIA VERIFIED TRAVEL" in paid_text
     assert "COMPLIANCE DOSSIER" in paid_text
-    assert "OFFICIALLY CERTIFIED" in paid_text
+    assert "VERIFIED TRAVEL COMPLIANCE" in paid_text
     assert "Attending Veterinarian" in paid_text
     assert "Practice Endorsement" in paid_text
     assert "INDEPENDENT" in paid_text

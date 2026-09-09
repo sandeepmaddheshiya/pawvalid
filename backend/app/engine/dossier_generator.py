@@ -156,7 +156,7 @@ class DossierCanvas(canvas.Canvas):
             self.drawCentredString(0, 2, "NOT VALID FOR AIRLINE BOARDING")
             self.setFont("Helvetica", 10)
             self.setFillColor(colors.Color(0.40, 0.40, 0.40, alpha=0.12))
-            self.drawCentredString(0, -24, "PREVIEW SCAN • UPGRADE TO COMPLETE TRAVEL PLAN TO UNLOCK OFFICIAL PASS")
+            self.drawCentredString(0, -24, "PREVIEW SCAN • UPGRADE TO COMPLETE TRAVEL PLAN TO UNLOCK VERIFIED PASS")
             self.restoreState()
 
             # Top Amber/Red Warning Ribbon (Every page)
@@ -166,7 +166,7 @@ class DossierCanvas(canvas.Canvas):
             self.rect(54, 762, 504, 16, fill=1, stroke=1)
             self.setFont("Helvetica-Bold", 6.8)
             self.setFillColor(colors.HexColor("#991B1B"))
-            self.drawCentredString(306, 767, "[NOTICE] PREVIEW REPORT - UNOFFICIAL RECORD • UPGRADE TO COMPLETE TRAVEL PLAN FOR OFFICIAL QR VERIFICATION")
+            self.drawCentredString(306, 767, "[NOTICE] PREVIEW REPORT - PRELIMINARY RECORD • UPGRADE TO COMPLETE TRAVEL PLAN FOR VERIFIED QR AUDIT")
 
             # Running Header (pages 2+)
             if self._pageNumber > 1:
@@ -482,7 +482,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         status_bg = EMERALD_BG if overall_status == "READY_TO_FLY" else (AMBER_BG if overall_status == "ACTION_REQUIRED" else RED_BG)
         status_fg = PRIMARY if overall_status == "READY_TO_FLY" else (AMBER if overall_status == "ACTION_REQUIRED" else RED)
         status_p = Paragraph(
-            f"<b>AUDIT STATUS: OFFICIALLY CERTIFIED — {status_headline}</b><br/>"
+            f"<b>AUDIT STATUS: VERIFIED TRAVEL COMPLIANCE — {status_headline}</b><br/>"
             f"<font size='8' color='#064E3B'>Independent pet travel readiness dossier cross-referenced against Regulation (EU) 2026/131, USDA APHIS standards, and IATA Live Animals Regulations. All required milestones, latency windows, and primary document audits have been cryptographically sealed.</font>",
             ParagraphStyle("CalloutPaid", fontName="Helvetica", fontSize=8.5, leading=12, textColor=status_fg)
         )
@@ -493,7 +493,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
             "<b>AUDIT STATUS: PRELIMINARY SCAN (UNOFFICIAL PREVIEW COPY)</b><br/>"
             "<font size='8' color='#78350F'>This preview provides an advisory calculation of travel milestones. "
             "It is <b>NOT valid for airline boarding or border inspection</b>, lacks an official digital verification QR token, and is not authorized for veterinary endorsement. "
-            "Upgrade to the <b>Complete Travel Plan (£19)</b> to download your official certified dossier.</font>",
+            "Upgrade to the <b>Complete Travel Plan (£19)</b> to download your verified compliance dossier.</font>",
             ParagraphStyle("CalloutPreview", fontName="Helvetica", fontSize=8.5, leading=12, textColor=AMBER)
         )
 
@@ -826,8 +826,8 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         )
         clinic_stamp = Paragraph(
             "<div align='center'>"
-            "<br/><br/><b>OFFICIAL PRACTICE / CLINIC STAMP</b><br/><br/>"
-            "<font size='7' color='#71717A'>Affix official embossed or inked veterinary surgery stamp here</font><br/><br/><br/>"
+            "<br/><br/><b>VETERINARY PRACTICE / CLINIC STAMP</b><br/><br/>"
+            "<font size='7' color='#71717A'>Affix embossed or inked veterinary surgery stamp here</font><br/><br/><br/>"
             "</div>",
             body_muted
         )
