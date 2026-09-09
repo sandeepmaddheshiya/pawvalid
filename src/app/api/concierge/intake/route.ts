@@ -8,7 +8,7 @@ import { sendSpecialistIntakeNotification } from '@/lib/email/reminders';
  * Registers £59 Concierge tier purchase & specialist intake:
  * 1. Captures traveler's WhatsApp phone number, urgency, and specific travel notes.
  * 2. Updates SavedTrip tier to 'CONCIERGE' and conciergeStatus to 'IN_REVIEW'.
- * 3. Triggers automated notification to PawValid's specialist team via email (Resend) & Slack webhook.
+ * 3. Triggers automated notification to PawValid's specialist team via email (Brevo) & Slack webhook.
  */
 export async function POST(req: NextRequest) {
   try {

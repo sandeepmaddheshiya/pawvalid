@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   formatWhatsAppLink,
   sendSpecialistIntakeNotification,
@@ -10,6 +10,16 @@ import {
 } from '@/lib/email/reminders';
 
 describe('Email Reminders & Concierge Service', () => {
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+    process.env = { ...originalEnv };
+    delete process.env.BREVO_API_KEY;
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
+  });
   const mockTrip = {
     id: 'test-trip-uuid-123',
     userEmail: 'traveler@example.com',
@@ -47,28 +57,28 @@ describe('Email Reminders & Concierge Service', () => {
 
     expect(result.success).toBe(true);
     expect(result.mocked).toBe(true);
-    expect(result.messageId).toContain('mock-specialist-');
+    expect(result.messageId).toContain('mock-brevo-');
   });
 
   it('should handle Day -30 reminder dispatch', async () => {
     const result = await sendDay30Reminder(mockTrip);
     expect(result.success).toBe(true);
     expect(result.mocked).toBe(true);
-    expect(result.messageId).toContain('mock-traveler-');
+    expect(result.messageId).toContain('mock-brevo-');
   });
 
   it('should handle Day -5 tapeworm reminder dispatch', async () => {
     const result = await sendDay5Reminder(mockTrip);
     expect(result.success).toBe(true);
     expect(result.mocked).toBe(true);
-    expect(result.messageId).toContain('mock-traveler-');
+    expect(result.messageId).toContain('mock-brevo-');
   });
 
   it('should handle Day -2 government endorsement reminder dispatch', async () => {
     const result = await sendDay2Reminder(mockTrip);
     expect(result.success).toBe(true);
     expect(result.mocked).toBe(true);
-    expect(result.messageId).toContain('mock-traveler-');
+    expect(result.messageId).toContain('mock-brevo-');
   });
 
   it('should dispatch via sendTripReminder for all valid reminder types', async () => {

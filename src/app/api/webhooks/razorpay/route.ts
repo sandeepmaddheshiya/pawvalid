@@ -7,7 +7,7 @@
  *    - Upgrades trip tier to CERTIFIED_PASS or CONCIERGE.
  *    - If CONCIERGE: records WhatsApp phone number, sets conciergeStatus to IN_REVIEW,
  *      and dispatches specialist alert to review team.
- *    - Sends purchase receipt & dossier link to traveler via Resend.
+ *    - Sends purchase receipt & dossier link to traveler via Brevo.
  * 2. For legacy Assessments (assessmentId):
  *    - Marks assessment as paid and triggers report email.
  */
@@ -16,7 +16,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { db } from '@/lib/db';
 import { sendSpecialistIntakeNotification } from '@/lib/email/reminders';
-import { sendTransactionalEmail, getBrevoConfig } from '@/lib/email/brevo';
+import { sendTransactionalEmail } from '@/lib/email/brevo';
 
 export async function POST(request: NextRequest) {
   try {
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Send purchase receipt & dossier link to traveler via Brevo (or Resend fallback)
+        // Send purchase receipt & dossier link to traveler via Brevo
         if (email) {
           try {
             const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
@@ -117,29 +117,11 @@ export async function POST(request: NextRequest) {
                 </div>
             `;
 
-            const brevoConfig = getBrevoConfig();
-            if (brevoConfig.isConfigured) {
-              await sendTransactionalEmail({
-                to: email,
-                subject,
-                htmlContent,
-              });
-            } else if (process.env.RESEND_API_KEY) {
-              const { Resend } = await import('resend');
-              const resend = new Resend(process.env.RESEND_API_KEY);
-              await resend.emails.send({
-                from: process.env.RESEND_FROM_EMAIL || 'noreply@pawvalid.online',
-                to: email,
-                subject,
-                html: htmlContent,
-              });
-            } else {
-              await sendTransactionalEmail({
-                to: email,
-                subject,
-                htmlContent,
-              });
-            }
+            await sendTransactionalEmail({
+              to: email,
+              subject,
+              htmlContent,
+            });
           } catch (emailError) {
             console.error('[Razorpay Webhook] Email send failed:', emailError);
           }
@@ -172,29 +154,11 @@ export async function POST(request: NextRequest) {
                 <p>View your full report at: ${process.env.NEXT_PUBLIC_APP_URL}/en/checker/${assessmentId}</p>
             `;
 
-            const brevoConfig = getBrevoConfig();
-            if (brevoConfig.isConfigured) {
-              await sendTransactionalEmail({
-                to: email,
-                subject,
-                htmlContent,
-              });
-            } else if (process.env.RESEND_API_KEY) {
-              const { Resend } = await import('resend');
-              const resend = new Resend(process.env.RESEND_API_KEY);
-              await resend.emails.send({
-                from: process.env.RESEND_FROM_EMAIL || 'noreply@pawvalid.online',
-                to: email,
-                subject,
-                html: htmlContent,
-              });
-            } else {
-              await sendTransactionalEmail({
-                to: email,
-                subject,
-                htmlContent,
-              });
-            }
+            await sendTransactionalEmail({
+              to: email,
+              subject,
+              htmlContent,
+            });
           } catch (emailError) {
             console.error('[Razorpay Webhook] Email send failed:', emailError);
           }
