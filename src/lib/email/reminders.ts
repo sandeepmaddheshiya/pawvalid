@@ -115,16 +115,18 @@ function wrapHtmlEmail(title: string, preheader: string, contentHtml: string): s
   <span style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${preheader}</span>
   <div class="container">
     <div class="header">
-      <h1>PawValid Compliance</h1>
-      <p>Official International Travel Verification</p>
+      <h1>PawValid</h1>
+      <p>Smart Pet Travel Compliance &amp; Readiness</p>
     </div>
     <div class="body">
       ${contentHtml}
     </div>
     <div class="footer">
-      <p><strong>Institutional Travel Protection & Compliance</strong></p>
-      <p>PawValid Global Travel Systems &bull; 27 Old Gloucester Street, London WC1N 3AX</p>
-      <p>Official regulations sourced from DEFRA, USDA APHIS, EU TRACES & IATA LAR.</p>
+      <p><strong>PawValid &bull; Global Pet Travel Assistant</strong></p>
+      <p>Rules cross-referenced against DEFRA, USDA APHIS, EU TRACES &amp; IATA standards.</p>
+      <p style="font-size: 11px; color: #94a3b8; margin-top: 8px;">
+        Disclaimer: PawValid is an independent travel preparation tool. We help pet owners organize requirements and check compliance, but official government export endorsements must be issued by an accredited veterinarian or competent state authority.
+      </p>
     </div>
   </div>
 </body>

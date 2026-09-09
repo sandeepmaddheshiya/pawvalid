@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
                     <p style="margin: 4px 0;"><strong>Transaction ID:</strong> ${paymentId}</p>
                   </div>
 
-                  <p>You can access your command center and download your official PDF travel dossier at any time:</p>
+                  <p>You can access your command center and download your digital travel dossier and preparation checklist at any time:</p>
                   <p style="text-align: center; margin: 24px 0;">
                     <a href="${appUrl}/dashboard?tripId=${tripId}" style="background-color: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
                       Open Trip Command Center &rarr;
