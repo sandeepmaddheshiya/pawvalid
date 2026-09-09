@@ -34,8 +34,8 @@ export interface BrevoSendResult {
 
 export function getBrevoConfig() {
   const apiKey = process.env.BREVO_API_KEY?.trim();
-  const defaultSenderEmail = process.env.BREVO_SENDER_EMAIL?.trim() || 'hdmoviesxyz@gmail.com';
-  const defaultSenderName = process.env.BREVO_SENDER_NAME?.trim() || 'PawValid Compliance';
+  const defaultSenderEmail = process.env.BREVO_SENDER_EMAIL?.trim() || 'noreply@pawvalid.online';
+  const defaultSenderName = process.env.BREVO_SENDER_NAME?.trim() || 'PawValid.online';
 
   return {
     apiKey,

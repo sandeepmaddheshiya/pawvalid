@@ -49,8 +49,8 @@ describe('Brevo Transactional Email Engine', () => {
 
       const config = getBrevoConfig();
       expect(config.isConfigured).toBe(true);
-      expect(config.defaultSenderEmail).toBe('hdmoviesxyz@gmail.com');
-      expect(config.defaultSenderName).toBe('PawValid Compliance');
+      expect(config.defaultSenderEmail).toBe('noreply@pawvalid.online');
+      expect(config.defaultSenderName).toBe('PawValid.online');
     });
   });
 
@@ -75,8 +75,8 @@ describe('Brevo Transactional Email Engine', () => {
   describe('API Delivery & Payload Serialization', () => {
     beforeEach(() => {
       process.env.BREVO_API_KEY = 'xkeysib-active-key-test';
-      process.env.BREVO_SENDER_EMAIL = 'hdmoviesxyz@gmail.com';
-      process.env.BREVO_SENDER_NAME = 'PawValid Compliance';
+      process.env.BREVO_SENDER_EMAIL = 'noreply@pawvalid.online';
+      process.env.BREVO_SENDER_NAME = 'PawValid.online';
     });
 
     it('serializes single recipient, custom replyTo, and HTML content', async () => {
@@ -107,8 +107,8 @@ describe('Brevo Transactional Email Engine', () => {
 
       const body = JSON.parse(requestInit?.body as string);
       expect(body.sender).toEqual({
-        name: 'PawValid Compliance',
-        email: 'hdmoviesxyz@gmail.com',
+        name: 'PawValid.online',
+        email: 'noreply@pawvalid.online',
       });
       expect(body.to).toEqual([{ email: 'owner@pawvalid.online' }]);
       expect(body.subject).toBe('Travel Docket Certified');
