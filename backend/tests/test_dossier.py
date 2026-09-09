@@ -109,8 +109,9 @@ def test_generate_dossier_pdf_structure():
     assert "PETVIA VERIFIED TRAVEL" in paid_text
     assert "COMPLIANCE DOSSIER" in paid_text
     assert "VERIFIED TRAVEL COMPLIANCE" in paid_text
-    assert "Attending Veterinarian" in paid_text
-    assert "Practice Endorsement" in paid_text
+    assert "7. Veterinary Clinic Directives" in paid_text
+    assert "Pre-Flight Action Checklist" in paid_text
+    assert "STATUTORY GOVERNMENT EXPORT CERTIFICATE" in paid_text
     assert "INDEPENDENT" in paid_text
     assert "6. Digital Travel Verification Record" in paid_text
     assert "Live Verification URL:" in paid_text

@@ -825,40 +825,72 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         ]))
         story.append(Spacer(1, 14))
 
-        # ─── 7. ATTENDING VET CLINICAL EXAMINATION & PRACTICE ENDORSEMENT ──
-        vet_attestation = Paragraph(
-            "<b>ATTENDING VETERINARIAN CLINICAL EXAMINATION &amp; PRACTICE ENDORSEMENT</b><br/>"
-            "<font size='7.5' color='#52525B'>I, the undersigned licensed veterinary practitioner, hereby attest that the companion animal identified above has been examined and fulfills all statutory microchip, rabies vaccination latency, and clinical fitness prerequisites specified in this travel readiness docket.</font><br/><br/>"
-            "<b>Accredited Vet Signature:</b> ________________________________<br/><br/>"
-            "<b>Print Full Name:</b> ___________________________________________<br/><br/>"
-            "<b>RCVS / USDA / National License #:</b> ___________________________<br/><br/>"
-            "<b>Date of Clinical Exam:</b> _____________________________________",
-            body_style
-        )
-        clinic_stamp = Paragraph(
-            "<div align='center'>"
-            "<br/><br/><b>VETERINARY PRACTICE / CLINIC STAMP</b><br/><br/>"
-            "<font size='7' color='#71717A'>Affix embossed or inked veterinary surgery stamp here</font><br/><br/><br/>"
-            "</div>",
-            body_muted
-        )
-
-        sign_table = Table([
-            [vet_attestation, clinic_stamp]
-        ], colWidths=[314, 190])
-        sign_table.setStyle(TableStyle([
+        # ─── 7. VETERINARY CLINIC DIRECTIVES & PRE-FLIGHT ACTION CHECKLIST ──
+        checklist_rows = [
+            [
+                Paragraph(
+                    "<b>FOR ATTENDING VETERINARY SURGERY &amp; CLINICAL PRACTITIONER:</b><br/>"
+                    "<font size='7.5' color='#52525B'>Please complete the following statutory clinical steps on your practice records and the destination country's official export health certificate:</font>",
+                    body_style
+                )
+            ],
+            [
+                Paragraph(
+                    "<b>[ &nbsp; ] 1. ISO 11784/11785 Microchip Verification:</b><br/>"
+                    "<font size='7.5' color='#52525B'>Scan and confirm the animal's 15-digit microchip with a 134.2 kHz scanner prior to any clinical procedure or vaccination.</font>",
+                    body_style
+                )
+            ],
+            [
+                Paragraph(
+                    "<b>[ &nbsp; ] 2. Rabies Vaccination &amp; Latency Validation:</b><br/>"
+                    "<font size='7.5' color='#52525B'>Verify that primary or booster vaccination details (manufacturer, batch, validity window) are recorded and mandatory 21-day latency is cleared.</font>",
+                    body_style
+                )
+            ],
+            [
+                Paragraph(
+                    "<b>[ &nbsp; ] 3. Pre-Flight Clinical Fitness Examination:</b><br/>"
+                    "<font size='7.5' color='#52525B'>Conduct physical examination confirming companion animal is clinically healthy, free of infectious disease signs, and fit for air transport.</font>",
+                    body_style
+                )
+            ],
+            [
+                Paragraph(
+                    "<b>[ &nbsp; ] 4. Tapeworm Treatment (Praziquantel) — If Applicable:</b><br/>"
+                    "<font size='7.5' color='#52525B'>Administer licensed treatment within statutory 24h–120h window prior to destination arrival (e.g. UK, Ireland, Norway, Finland, Malta).</font>",
+                    body_style
+                )
+            ],
+            [
+                Paragraph(
+                    "<b>[ &nbsp; ] 5. Official Government Certificate Execution:</b><br/>"
+                    "<font size='7.5' color='#52525B'>Complete, sign, and affix official clinic stamp to the <b>STATUTORY GOVERNMENT EXPORT CERTIFICATE</b> (e.g. EU AHC / USDA Form 7001 / DEFRA EHC).</font>",
+                    body_style
+                )
+            ],
+            [
+                Paragraph(
+                    "<font size='7' color='#0E2342'><b>IMPORTANT PRACTICE NOTICE:</b> Formal veterinary attestations, physical signatures, and official practice stamps must be executed directly on the applicable government export certificate or official Pet Passport, not on this travel preparation dossier.</font>",
+                    body_muted
+                )
+            ],
+        ]
+        checklist_table = Table(checklist_rows, colWidths=[504])
+        checklist_table.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
-            ("GRID", (0, 0), (-1, -1), 0.5, BORDER),
-            ("BOX", (1, 0), (1, 0), 1, MUTED),
-            ("VALIGN", (0, 0), (-1, -1), "TOP"),
-            ("TOPPADDING", (0, 0), (-1, -1), 8),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
-            ("LEFTPADDING", (0, 0), (-1, -1), 8),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#F1F5F9")),
+            ("BACKGROUND", (0, -1), (-1, -1), colors.HexColor("#F8FAFC")),
+            ("BOX", (0, 0), (-1, -1), 1, BORDER),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E2E8F0")),
+            ("TOPPADDING", (0, 0), (-1, -1), 4),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ("LEFTPADDING", (0, 0), (-1, -1), 10),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 10),
         ]))
         story.append(KeepTogether([
-            Paragraph("7. Attending Veterinarian Clinical Examination &amp; Practice Endorsement", section_h2),
-            sign_table
+            Paragraph("7. Veterinary Clinic Directives &amp; Pre-Flight Action Checklist", section_h2),
+            checklist_table
         ]))
         story.append(Spacer(1, 14))
 
