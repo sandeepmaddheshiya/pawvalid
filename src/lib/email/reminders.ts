@@ -1,9 +1,11 @@
 /**
  * Pre-flight Email Reminders & Specialist Intake Dispatch Service
  * 
- * Uses Resend for transactional email delivery and Slack Webhooks for ops notifications.
- * Automatically falls back to mock/logging mode when RESEND_API_KEY is not configured.
+ * Uses Brevo as primary transactional email engine (with Resend fallback) and Slack Webhooks for ops notifications.
+ * Automatically falls back to mock/logging mode when no transactional provider is configured.
  */
+
+import { getBrevoConfig, sendTransactionalEmail } from './brevo';
 
 export interface SavedTripEmailContext {
   id: string;
@@ -251,40 +253,58 @@ export async function sendSpecialistIntakeNotification(
   const slackText = `🚨 *New £59 Concierge Review Intake*\n• *Pet:* ${trip.petName} (${trip.species})\n• *Route:* ${trip.origin} ➔ ${trip.destination}\n• *Date:* ${trip.departureDate || 'TBD'}\n• *WhatsApp:* <${waLink}|+${cleanDigits}>\n• *Email:* ${trip.userEmail}\n• *Urgency:* ${urgency}\n• *Notes:* ${notes || 'None'}\n• *Dossier:* <${dashboardLink}|View in Dashboard>`;
   const slackNotified = await sendSlackOpsNotification(slackText);
 
-  // 2. Send email via Resend
-  const resend = await getResendClient();
-  if (!resend) {
-    console.info(`[Email Service Mock] Specialist Notification dispatches for ${trip.petName} to ${SPECIALIST_TEAM_EMAIL}`);
-    return {
-      success: true,
-      mocked: true,
-      messageId: `mock-specialist-${Date.now()}`,
-      slackNotified,
-    };
-  }
-
-  try {
-    const res = await resend.emails.send({
-      from: FROM_EMAIL,
+  // 2. Send email via Brevo (Primary) or Resend (Fallback)
+  const brevoConfig = getBrevoConfig();
+  if (brevoConfig.isConfigured) {
+    const brevoRes = await sendTransactionalEmail({
       to: SPECIALIST_TEAM_EMAIL,
-      replyTo: trip.userEmail,
+      replyTo: trip.userEmail ? { email: trip.userEmail } : undefined,
       subject,
-      html: fullHtml,
+      htmlContent: fullHtml,
     });
 
     return {
-      success: true,
-      messageId: res.data?.id,
-      slackNotified,
-    };
-  } catch (err: any) {
-    console.error('[Resend Error] Specialist intake failed:', err);
-    return {
-      success: false,
-      error: err.message || 'Failed to send specialist email',
+      success: brevoRes.success,
+      messageId: brevoRes.messageId,
+      mocked: brevoRes.mocked,
+      error: brevoRes.error,
       slackNotified,
     };
   }
+
+  const resend = await getResendClient();
+  if (resend) {
+    try {
+      const res = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: SPECIALIST_TEAM_EMAIL,
+        replyTo: trip.userEmail,
+        subject,
+        html: fullHtml,
+      });
+
+      return {
+        success: true,
+        messageId: res.data?.id,
+        slackNotified,
+      };
+    } catch (err: any) {
+      console.error('[Resend Error] Specialist intake failed:', err);
+      return {
+        success: false,
+        error: err.message || 'Failed to send specialist email',
+        slackNotified,
+      };
+    }
+  }
+
+  console.info(`[Email Service Mock] Specialist Notification dispatches for ${trip.petName} to ${SPECIALIST_TEAM_EMAIL}`);
+  return {
+    success: true,
+    mocked: true,
+    messageId: `mock-specialist-${Date.now()}`,
+    slackNotified,
+  };
 }
 
 /**
@@ -434,36 +454,55 @@ async function deliverTravelerEmail(
   htmlContent: string
 ): Promise<EmailSendResult> {
   const fullHtml = wrapHtmlEmail(subject, preheader, htmlContent);
-  const resend = await getResendClient();
 
-  if (!resend) {
-    console.info(`[Email Service Mock] Delivered reminder "${subject}" to ${trip.userEmail}`);
-    return {
-      success: true,
-      mocked: true,
-      messageId: `mock-traveler-${Date.now()}`,
-    };
-  }
-
-  try {
-    const res = await resend.emails.send({
-      from: FROM_EMAIL,
+  // 1. Send via Brevo (Primary Transactional Engine)
+  const brevoConfig = getBrevoConfig();
+  if (brevoConfig.isConfigured) {
+    const brevoRes = await sendTransactionalEmail({
       to: trip.userEmail,
       subject,
-      html: fullHtml,
+      htmlContent: fullHtml,
     });
 
     return {
-      success: true,
-      messageId: res.data?.id,
-    };
-  } catch (err: any) {
-    console.error(`[Resend Error] Reminder failed for ${trip.userEmail}:`, err);
-    return {
-      success: false,
-      error: err.message || 'Failed to send reminder email',
+      success: brevoRes.success,
+      messageId: brevoRes.messageId,
+      mocked: brevoRes.mocked,
+      error: brevoRes.error,
     };
   }
+
+  // 2. Fallback to Resend
+  const resend = await getResendClient();
+  if (resend) {
+    try {
+      const res = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: trip.userEmail,
+        subject,
+        html: fullHtml,
+      });
+
+      return {
+        success: true,
+        messageId: res.data?.id,
+      };
+    } catch (err: any) {
+      console.error(`[Resend Error] Reminder failed for ${trip.userEmail}:`, err);
+      return {
+        success: false,
+        error: err.message || 'Failed to send reminder email',
+      };
+    }
+  }
+
+  // 3. Fallback to Mock
+  console.info(`[Email Service Mock] Delivered reminder "${subject}" to ${trip.userEmail}`);
+  return {
+    success: true,
+    mocked: true,
+    messageId: `mock-traveler-${Date.now()}`,
+  };
 }
 
 /**

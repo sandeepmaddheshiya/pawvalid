@@ -17,6 +17,7 @@ import crypto from 'crypto';
 import { db } from '@/lib/db';
 import { sendSpecialistIntakeNotification } from '@/lib/email/reminders';
 import { syncTravelerToEmailOctopus } from '@/lib/email/emailoctopus';
+import { sendTransactionalEmail, getBrevoConfig } from '@/lib/email/brevo';
 
 export async function POST(request: NextRequest) {
   try {
@@ -91,18 +92,12 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Send purchase receipt & dossier link to traveler
-        if (email && process.env.RESEND_API_KEY) {
+        // Send purchase receipt & dossier link to traveler via Brevo (or Resend fallback)
+        if (email) {
           try {
-            const { Resend } = await import('resend');
-            const resend = new Resend(process.env.RESEND_API_KEY);
             const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-
-            await resend.emails.send({
-              from: process.env.RESEND_FROM_EMAIL || 'noreply@pawvalid.online',
-              to: email,
-              subject: `Payment Confirmed: PawValid ${targetTier === 'CONCIERGE' ? 'Priority Concierge' : 'Certified Trip Pass'} (${trip.petName})`,
-              html: `
+            const subject = `Payment Confirmed: PawValid ${targetTier === 'CONCIERGE' ? 'Priority Concierge' : 'Certified Trip Pass'} (${trip.petName})`;
+            const htmlContent = `
                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1e293b;">
                   <h1 style="color: #0f172a;">Your PawValid Plan is Active!</h1>
                   <p>Thank you for your purchase. Your travel compliance plan for <strong>${trip.petName}</strong> is now fully unlocked.</p>
@@ -121,8 +116,31 @@ export async function POST(request: NextRequest) {
                     </a>
                   </p>
                 </div>
-              `,
-            });
+            `;
+
+            const brevoConfig = getBrevoConfig();
+            if (brevoConfig.isConfigured) {
+              await sendTransactionalEmail({
+                to: email,
+                subject,
+                htmlContent,
+              });
+            } else if (process.env.RESEND_API_KEY) {
+              const { Resend } = await import('resend');
+              const resend = new Resend(process.env.RESEND_API_KEY);
+              await resend.emails.send({
+                from: process.env.RESEND_FROM_EMAIL || 'noreply@pawvalid.online',
+                to: email,
+                subject,
+                html: htmlContent,
+              });
+            } else {
+              await sendTransactionalEmail({
+                to: email,
+                subject,
+                htmlContent,
+              });
+            }
           } catch (emailError) {
             console.error('[Razorpay Webhook] Email send failed:', emailError);
           }
@@ -149,26 +167,43 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        if (email && process.env.RESEND_API_KEY) {
+        if (email) {
           try {
-            const { Resend } = await import('resend');
-            const resend = new Resend(process.env.RESEND_API_KEY);
             const assessment = await db.assessment.findUnique({
               where: { razorpayOrderId: orderId },
             });
-
-            await resend.emails.send({
-              from: process.env.RESEND_FROM_EMAIL || 'noreply@pawvalid.online',
-              to: email,
-              subject: 'Your PawValid Pet Travel Compliance Report',
-              html: `
+            const subject = 'Your PawValid Pet Travel Compliance Report';
+            const htmlContent = `
                 <h1>Your PawValid Assessment Report</h1>
                 <p>Thank you for your purchase! Your detailed compliance report is ready.</p>
                 <p><strong>Assessment ID:</strong> ${assessmentId}</p>
                 <p><strong>Overall Verdict:</strong> ${assessment?.overallVerdict ?? 'N/A'}</p>
                 <p>View your full report at: ${process.env.NEXT_PUBLIC_APP_URL}/en/checker/${assessmentId}</p>
-              `,
-            });
+            `;
+
+            const brevoConfig = getBrevoConfig();
+            if (brevoConfig.isConfigured) {
+              await sendTransactionalEmail({
+                to: email,
+                subject,
+                htmlContent,
+              });
+            } else if (process.env.RESEND_API_KEY) {
+              const { Resend } = await import('resend');
+              const resend = new Resend(process.env.RESEND_API_KEY);
+              await resend.emails.send({
+                from: process.env.RESEND_FROM_EMAIL || 'noreply@pawvalid.online',
+                to: email,
+                subject,
+                html: htmlContent,
+              });
+            } else {
+              await sendTransactionalEmail({
+                to: email,
+                subject,
+                htmlContent,
+              });
+            }
           } catch (emailError) {
             console.error('[Razorpay Webhook] Email send failed:', emailError);
           }
