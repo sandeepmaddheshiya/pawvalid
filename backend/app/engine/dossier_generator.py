@@ -410,12 +410,22 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         or dossier_data.get("tripId")
         or f"PV-2026-{abs(hash(str(pet_name) + str(microchip))) % 1000000:06d}"
     )
-    verify_url = (
+    raw_verify_url = (
         dossier_data.get("verificationUrl")
         or f"https://petvia.com/verify/{pass_id}"
     )
+    # Strictly sanitize: never print localhost, 127.0.0.1, or insecure http in PDFs
+    if "localhost" in raw_verify_url or "127.0.0.1" in raw_verify_url:
+        verify_url = re.sub(r"^https?://(localhost|127\.0\.0\.1)(:\d+)?", "https://petvia.com", raw_verify_url)
+    elif raw_verify_url.startswith("/"):
+        verify_url = f"https://petvia.com{raw_verify_url}"
+    elif raw_verify_url.startswith("http://"):
+        verify_url = raw_verify_url.replace("http://", "https://", 1)
+    else:
+        verify_url = raw_verify_url
+
     raw_hash = hashlib.sha256(f"{pass_id}:{pet_name}:{microchip}:{origin}:{destination}".encode()).hexdigest()[:24].upper()
-    seal_code = f"SHA256:{raw_hash[0:4]}-{raw_hash[4:8]}-{raw_hash[8:12]}-{raw_hash[12:16]}-{raw_hash[16:20]}-{raw_hash[20:24]}"
+    seal_code = f"SHA-256: {raw_hash[0:4]}-{raw_hash[4:8]}-{raw_hash[8:12]}-{raw_hash[12:16]}-{raw_hash[16:20]}-{raw_hash[20:24]}"
 
     stats = dossier_data.get("stats") or trip.get("stats") or {}
     overall_status = stats.get("overallStatus") or trip.get("overallStatus") or "READY_TO_FLY"
@@ -492,7 +502,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         status_p = Paragraph(
             "<b>AUDIT STATUS: PRELIMINARY SCAN (UNOFFICIAL PREVIEW COPY)</b><br/>"
             "<font size='8' color='#78350F'>This preview provides an advisory calculation of travel milestones. "
-            "It is <b>NOT valid for airline boarding or border inspection</b>, lacks an official digital verification QR token, and is not authorized for veterinary endorsement. "
+            "It is <b>NOT valid for airline boarding or border inspection</b>, lacks an active digital travel verification record, and is not authorized for veterinary endorsement. "
             "Upgrade to the <b>Complete Travel Plan (£19)</b> to download your verified compliance dossier.</font>",
             ParagraphStyle("CalloutPreview", fontName="Helvetica", fontSize=8.5, leading=12, textColor=AMBER)
         )
@@ -780,7 +790,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         ]))
         story.append(Spacer(1, 14))
 
-    # ─── 6. BORDER VERIFICATION TOKEN (PAID QR VS FREE LOCKED) ──────
+    # ─── 6. DIGITAL TRAVEL VERIFICATION RECORD (PAID QR VS FREE LOCKED) ───
     if is_paid:
         qr = QrCodeWidget(verify_url)
         qr.barWidth = 80
@@ -791,11 +801,12 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
 
         qr_info = Paragraph(
             f"<b>PETVIA DIGITAL TRAVEL VERIFICATION RECORD</b><br/>"
-            f"<b>Live Inspection URL:</b> <font color='#064E3B'>{verify_url}</font><br/>"
-            f"<b>Cryptographic Audit Seal:</b> <font face='Courier' size='7.5'>{seal_code}</font><br/>"
-            f"<b>Statutory Standard:</b> Regulation (EU) 2026/131 Verified • IATA LAR Docket<br/>"
-            f"<b>Audit Security Status:</b> <font color='#059669'><b>[OK] ACTIVE &amp; CRYPTOGRAPHICALLY SEALED</b></font><br/>"
-            f"<font size='7' color='#52525B'>Airline check-in desks, handling agents, and veterinary inspectors can scan this QR token to inspect live verified health records, primary vaccination latency timestamps, and microchip sequence archived in the Petvia digital vault.</font>",
+            f"<b>Live Verification URL:</b> <font color='#064E3B'>{verify_url}</font><br/>"
+            f"<b>Record Integrity Seal:</b> <font face='Courier' size='7.5'>{seal_code}</font><br/>"
+            f"<b>Regulatory References:</b> Regulation (EU) 2026/131 • IATA Live Animals Regulations<br/>"
+            f"<b>Record Status:</b> <font color='#059669'><b>✓ ACTIVE • HASH VERIFIED</b></font><br/>"
+            f"<font size='7' color='#52525B'>Scan the QR code to view the latest Petvia travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status.<br/>"
+            f"<b>Important:</b> This digital record is provided for travel preparation and reference. It does not replace government-issued certificates, veterinary documentation, airline requirements, or border-entry decisions.</font>",
             body_style
         )
         token_table = Table([[qr_drawing, qr_info]], colWidths=[90, 414])
@@ -809,7 +820,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
             ("RIGHTPADDING", (0, 0), (-1, -1), 10),
         ]))
         story.append(KeepTogether([
-            Paragraph("6. Digital Travel Verification Token &amp; Ledger Audit (Cryptographically Sealed)", section_h2),
+            Paragraph("6. Digital Travel Verification Record", section_h2),
             token_table
         ]))
         story.append(Spacer(1, 14))
@@ -875,14 +886,14 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         ]))
 
     else:
-        # ─── 6. LOCKED TOKEN FOR PREVIEW COPY ─────────────────────────────
+        # ─── 6. LOCKED RECORD FOR PREVIEW COPY ─────────────────────────────
         locked_token_text = Paragraph(
-            "<b>[LOCKED] DIGITAL TRAVEL VERIFICATION TOKEN &amp; QR LEDGER</b><br/>"
-            "<font size='8' color='#78350F'>Airlines, ground handling staff, and veterinary inspectors can review cryptographically anchored primary records linked to the official Petvia digital ledger. <b>This free preview assessment does NOT contain an active digital verification token.</b><br/><br/>"
+            "<b>[LOCKED] DIGITAL TRAVEL VERIFICATION RECORD</b><br/>"
+            "<font size='8' color='#78350F'>Scan the QR code to view the latest Petvia travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status. <b>This free preview assessment does NOT contain an active digital verification record.</b><br/><br/>"
             "<b>TO UNLOCK DIGITAL TRAVEL VERIFICATION &amp; VETERINARY CLINIC DIRECTIVES:</b><br/>"
             "• Activate the <b>Complete Travel Plan (£19)</b> in your Petvia Dashboard.<br/>"
-            "• Unlocks: Official unwatermarked compliance dossier, live scannable verification token, accredited vet clinic directive sheet, and secure document vault backup.<br/>"
-            "• Visit: <b>petvia.com/dashboard</b></font>",
+            "• Unlocks: Certified compliance dossier, live scannable verification record, attending vet clinic endorsement docket, and secure document vault backup.<br/>"
+            "• Visit: <b>https://petvia.com/dashboard</b></font>",
             ParagraphStyle("LockedP", fontName="Helvetica", fontSize=8.5, leading=12, textColor=AMBER)
         )
         locked_table = Table([[locked_token_text]], colWidths=[504])
@@ -895,7 +906,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
             ("RIGHTPADDING", (0, 0), (-1, -1), 12),
         ]))
         story.append(KeepTogether([
-            Paragraph("6. Digital Travel Verification Token (Locked)", section_h2),
+            Paragraph("6. Digital Travel Verification Record (Locked)", section_h2),
             locked_table
         ]))
         story.append(Spacer(1, 14))
@@ -906,7 +917,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
             "This travel readiness preview has been compiled by Petvia for preliminary route planning and timeline estimation only. "
             "It evaluates statutory rules under <b>Regulation (EU) 2026/131</b> and IATA LAR based on preliminary unverified user inputs. "
             "<b>Petvia is an independent service and is NOT affiliated with any airline or government authority. This document is NOT an airline boarding pass or government export health certificate.</b> "
-            "To obtain an unwatermarked compliance dossier with cryptographic QR verification and attending vet clinic directives, upgrade to the Petvia Complete Travel Plan (£19)."
+            "To obtain a certified compliance dossier with an active digital verification record and attending vet clinic directives, upgrade to the Petvia Complete Travel Plan (£19)."
         )
         story.append(KeepTogether([
             Paragraph("7. Independent Service Notice &amp; Regulatory Disclaimer", section_h2),

@@ -512,8 +512,14 @@ export async function generatePassportHtml(data: {
     year: 'numeric',
   });
 
+  // Ensure verification URL strictly uses canonical HTTPS petvia.com domain in PDF
+  const rawUrl = data.verificationUrl || `https://petvia.com/verify/${passId}`;
+  const verifyUrl = (rawUrl.includes('localhost') || rawUrl.includes('127.0.0.1') || rawUrl.startsWith('http://'))
+    ? `https://petvia.com/verify/${passId}`
+    : rawUrl;
+
   // Generate scannable QR Code data URI
-  const qrDataUrl = await QRCode.toDataURL(data.verificationUrl, {
+  const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
     margin: 1,
     width: 170,
     color: {
@@ -765,7 +771,7 @@ export async function generatePassportHtml(data: {
         <div class="qr-label">PET TRAVEL COMPLIANCE &amp; VERIFICATION QR</div>
         <div class="qr-desc">Scan to inspect verified travel records &amp; microchip history</div>
         <img src="${qrDataUrl}" alt="Live Verification QR" />
-        <div style="font-size: 9.5px; font-weight: 800; color: #0FA958;">✓ CRYPTOGRAPHICALLY SECURED LEDGER</div>
+        <div style="font-size: 9.5px; font-weight: 800; color: #0FA958;">✓ ACTIVE • HASH VERIFIED</div>
         <div class="hash-box">
           SHA-256 HASH:<br>${hash}
         </div>
@@ -773,10 +779,10 @@ export async function generatePassportHtml(data: {
 
       <div class="authority-card">
         <div style="font-size: 9.5px; font-weight: 800; color: #0E2342; text-transform: uppercase; margin-bottom: 4px;">
-          Independent Verification Notice &amp; Disclaimer
+          Digital Travel Verification Notice &amp; Disclaimer
         </div>
         <p style="font-size: 8.5px; color: #475569; margin: 0; line-height: 1.4;">
-          This digital travel verification record is cryptographically anchored to original certified veterinary records archived in the Petvia Encrypted Vault. <strong>Petvia is an independent compliance service and is not affiliated with any airline, airport authority, or government agency. This record does not constitute an airline boarding pass or statutory government export certificate.</strong> Check-in desks and inspectors may scan this QR code to view verified vaccination latency, microchip telemetry, and primary clinic records.
+          Scan the QR code to view the latest Petvia travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status. <strong>Important: This digital record is provided for travel preparation and reference. It does not replace government-issued certificates, veterinary documentation, airline requirements, or border-entry decisions.</strong>
         </p>
       </div>
     </div>
@@ -830,7 +836,13 @@ export async function generateVerificationPassHtml(data: {
     year: 'numeric',
   });
 
-  const qrDataUrl = await QRCode.toDataURL(data.verificationUrl, {
+  // Ensure verification URL strictly uses canonical HTTPS petvia.com domain in PDF
+  const rawUrl = data.verificationUrl || `https://petvia.com/verify/${passId}`;
+  const verifyUrl = (rawUrl.includes('localhost') || rawUrl.includes('127.0.0.1') || rawUrl.startsWith('http://'))
+    ? `https://petvia.com/verify/${passId}`
+    : rawUrl;
+
+  const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
     margin: 1,
     width: 170,
     color: {
@@ -1098,19 +1110,19 @@ export async function generateVerificationPassHtml(data: {
 
     <div class="col-right">
       <div class="qr-box">
-        <div style="font-size: 10px; font-weight: 800; color: #0E2342;">SCANNABLE TRAVEL VERIFICATION TOKEN</div>
+        <div style="font-size: 10px; font-weight: 800; color: #0E2342;">DIGITAL TRAVEL VERIFICATION RECORD</div>
         <div style="font-size: 8.5px; color: #64748B; margin: 2px 0 8px 0;">Live digital audit &amp; microchip verification</div>
         <img src="${qrDataUrl}" alt="Verification QR" />
-        <div style="font-size: 9.5px; font-weight: 800; color: #0FA958;">DIGITALLY VERIFIED AUDIT RECORD</div>
+        <div style="font-size: 9.5px; font-weight: 800; color: #0FA958;">✓ ACTIVE • HASH VERIFIED</div>
         <div style="font-family: monospace; font-size: 7.5px; color: #475569; background: #EEF2F6; padding: 6px; border-radius: 4px; word-break: break-all; margin-top: 6px;">
           SHA-256: ${hash}
         </div>
       </div>
 
       <div class="card" style="margin-top: 10px;">
-        <div class="card-title">Notice for Airlines, Vets &amp; Border Officials</div>
+        <div class="card-title">Digital Travel Verification Notice &amp; Disclaimer</div>
         <p style="font-size: 8.5px; color: #475569; margin: 0; line-height: 1.4;">
-          This independent verification record confirms that companion animal microchip <strong>${microchip}</strong> has been audited against statutory animal transit criteria. <strong>Petvia is an independent compliance service and does not issue airline boarding passes or government certificates.</strong> Official certified source documents are anchored in the Petvia Encrypted Document Vault.
+          Scan the QR code to view the latest Petvia travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status. <strong>Important: This digital record is provided for travel preparation and reference. It does not replace government-issued certificates, veterinary documentation, airline requirements, or border-entry decisions.</strong>
         </p>
       </div>
     </div>

@@ -98,7 +98,11 @@ def test_generate_dossier_pdf_structure():
     assert "IATA Live Animals Regulations" in full_text
 
     # Also verify paid certified structure
-    sample_data_paid = {**sample_data, "is_paid": True}
+    sample_data_paid = {
+        **sample_data,
+        "is_paid": True,
+        "verificationUrl": "http://localhost:3001/verify/PV-2026-TEST"
+    }
     pdf_buffer_paid = generate_dossier_pdf(sample_data_paid)
     reader_paid = PdfReader(pdf_buffer_paid)
     paid_text = "".join([p.extract_text() for p in reader_paid.pages])
@@ -108,6 +112,16 @@ def test_generate_dossier_pdf_structure():
     assert "Attending Veterinarian" in paid_text
     assert "Practice Endorsement" in paid_text
     assert "INDEPENDENT" in paid_text
+    assert "6. Digital Travel Verification Record" in paid_text
+    assert "Live Verification URL:" in paid_text
+    assert "Record Integrity Seal:" in paid_text
+    assert "Regulation (EU) 2026/131" in paid_text
+    assert "IATA Live Animals Regulations" in paid_text
+    assert "ACTIVE" in paid_text
+    assert "HASH VERIFIED" in paid_text
+    assert "This digital record is provided for travel preparation and reference" in paid_text
+    assert "localhost" not in paid_text
+    assert "https://petvia.com/verify/PV-2026-TEST" in paid_text
 
 
 def test_export_dossier_pdf_endpoint():

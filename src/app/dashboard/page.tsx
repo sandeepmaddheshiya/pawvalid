@@ -209,7 +209,10 @@ function DashboardContent() {
         currentTrip.route?.departureDate || currentTrip.departureDate || null;
 
       const isPaidTrip = currentTrip.tier === 'CERTIFIED_PASS' || currentTrip.tier === 'CONCIERGE';
-      const hostOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://petvia.com';
+      const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+      const hostOrigin = (typeof window !== 'undefined' && !isLocal)
+        ? window.location.origin.replace(/^http:/, 'https:')
+        : 'https://petvia.com';
       const passId = currentTrip.id || 'PV-2026';
       const verificationUrl = `${hostOrigin}/verify/${passId}`;
 
