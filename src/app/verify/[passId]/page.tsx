@@ -69,7 +69,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Petvia-Border-Clearance-${passId}.pdf`;
+      a.download = `Petvia-Compliance-Dossier-${passId}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -139,7 +139,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
             <Logo />
             <div className="h-5 w-px bg-zinc-200 hidden sm:block" />
             <span className="text-[11px] font-semibold text-zinc-500 hidden sm:inline-block">
-              Official Border Verification Dossier
+              Pet Travel Compliance Verification Dossier
             </span>
           </div>
 
@@ -232,10 +232,10 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                       <span>IATA LAR CR-82 &amp; EU REG 576/2013</span>
                     </div>
                     <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                      Digital Animal Transit Clearance
+                      Digital Animal Travel Verification Dossier
                     </h1>
                     <p className="text-xs text-zinc-300 mt-1 max-w-xl leading-relaxed">
-                      Official travel readiness credential cross-referencing microchip telemetry, vaccination latency, and veterinary endorsement against destination statutory entry rules.
+                      Independent travel readiness record cross-referencing microchip telemetry, vaccination latency, and veterinary endorsement against destination statutory entry rules.
                     </p>
                   </div>
 
@@ -275,8 +275,8 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                       </div>
                       <div className="text-xs text-zinc-300">
                         {isPaid
-                          ? 'Zero statutory blockers detected. Qualified for commercial airline check-in & border presentation.'
-                          : 'Unlock full digital pass to activate live border verification and priority airline desk audit.'}
+                          ? 'Zero statutory blockers detected. Verified compliant with route prerequisites. Present original veterinary health certificates at carrier check-in.'
+                          : 'Unlock full digital pass to activate live verification and attending vet directives.'}
                       </div>
                     </div>
                   </div>
@@ -536,16 +536,16 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                   </div>
                 </div>
 
-                {/* Customs & Airline Officer Statutory Notice */}
+                {/* Independent Service Notice & Regulatory Disclaimer */}
                 <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200/80 text-xs text-zinc-600 space-y-1.5">
                   <div className="flex items-center gap-1.5 font-bold text-[#0E2342]">
                     <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    <span>Statutory Notice for Customs Officers &amp; Airline Acceptance Desks:</span>
+                    <span>Independent Service Notice &amp; Regulatory Disclaimer:</span>
                   </div>
                   <p className="text-[11px] text-zinc-600 leading-relaxed">
-                    This Petvia Digital Verification Pass is cryptographically linked to original government-endorsed certificates, accredited clinical records, and laboratory serology reports stored in the Petvia Encrypted Document Vault. All prerequisites meet or exceed the requirements of Regulation (EU) No 576/2013, DEFRA Animal Health orders, and IATA Live Animals Regulations (LAR).
+                    This Petvia Digital Verification Record has been compiled by Petvia as an independent travel compliance audit service and is cryptographically linked to original certified veterinary certificates, accredited clinical records, and laboratory serology reports stored in the Petvia Encrypted Document Vault. <strong>Petvia is an independent verification platform and is not affiliated with, endorsed by, or representing any airline, airport authority, or government agency. This document does not constitute an airline boarding pass or statutory government export health certificate.</strong>
                   </p>
                 </div>
               </div>
@@ -624,10 +624,10 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
 
                 <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200/70 space-y-1">
                   <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">
-                    Accredited Issuing Authority
+                    Verification Service
                   </span>
                   <span className="text-xs font-semibold text-[#0E2342] block">
-                    Petvia Border Protocol Registry
+                    Petvia Independent Compliance Registry
                   </span>
                   <span className="text-[10px] text-zinc-500 block">
                     Tamper-Evident Ledger Integrity Validated
@@ -645,10 +645,10 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                   </div>
                   <div>
                     <span className="text-[10px] font-bold text-emerald-950 uppercase tracking-wider block">
-                      OFFICIAL ANIMAL CLEARANCE
+                      VERIFIED TRAVEL COMPLIANCE
                     </span>
                     <span className="text-[11px] font-medium text-emerald-800 block">
-                      Airline &amp; Customs Gate Authenticated
+                      Independent Audit &amp; Record Registry
                     </span>
                   </div>
                 </div>

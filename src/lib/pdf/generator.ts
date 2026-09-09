@@ -455,9 +455,13 @@ export function generateVetSheetHtml(data: {
     </div>
   </div>
 
+  <div style="margin-top: 10px; padding: 7px 10px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; font-size: 8px; color: #64748B; line-height: 1.35;">
+    <strong>Independent Travel Compliance Advisory:</strong> This clinical guidance directive is prepared by Petvia as an independent preparation aid for veterinary surgeries. It does not replace statutory health certificate forms issued by government agricultural/veterinary departments (e.g. DEFRA, USDA-APHIS, CFIA) or individual airline transport conditions.
+  </div>
+
   <div class="footer">
-    <span>Petvia Global Compliance Infrastructure • Certified Clinic Instruction Dispatch</span>
-    <span>Veterinary Document Version 2.4 • Page 1 of 1</span>
+    <span>Petvia Independent Travel Compliance Service • Veterinary Clinic Guidance</span>
+    <span>Document Ref: VET-DIR-2026 • Page 1 of 1</span>
   </div>
 </body>
 </html>`;
@@ -701,11 +705,11 @@ export async function generatePassportHtml(data: {
 <body>
   <div class="header">
     <div>
-      <div class="sub-tag">Certified Sovereign Animal Transit Folio</div>
+      <div class="sub-tag">Independent Pet Travel Compliance Folio</div>
       <div class="logo-badge">Petvia<span>.</span></div>
     </div>
     <div class="title-box">
-      <div class="doc-title">Digital Pet Passport</div>
+      <div class="doc-title">Digital Pet Travel Record</div>
       <div class="doc-sub">Pass ID: ${passId} • Issued: ${currentDate}</div>
     </div>
   </div>
@@ -735,7 +739,7 @@ export async function generatePassportHtml(data: {
       </div>
 
       <div class="card">
-        <div class="card-header">Section II: Statutory Route &amp; Travel Authority</div>
+        <div class="card-header">Section II: Travel Route &amp; Regulatory Framework</div>
         <table class="data-table">
           <tr><td class="label">Point of Departure</td><td class="val">${origin}</td></tr>
           <tr><td class="label">Final Destination</td><td class="val">${destination}</td></tr>
@@ -758,8 +762,8 @@ export async function generatePassportHtml(data: {
 
     <div class="col-right">
       <div class="qr-card">
-        <div class="qr-label">OFFICIAL AIRLINE &amp; BORDER INSPECTION QR</div>
-        <div class="qr-desc">Scan for cryptographic live clearance validation</div>
+        <div class="qr-label">PET TRAVEL COMPLIANCE &amp; VERIFICATION QR</div>
+        <div class="qr-desc">Scan to inspect verified travel records &amp; microchip history</div>
         <img src="${qrDataUrl}" alt="Live Verification QR" />
         <div style="font-size: 9.5px; font-weight: 800; color: #0FA958;">✓ CRYPTOGRAPHICALLY SECURED LEDGER</div>
         <div class="hash-box">
@@ -769,17 +773,17 @@ export async function generatePassportHtml(data: {
 
       <div class="authority-card">
         <div style="font-size: 9.5px; font-weight: 800; color: #0E2342; text-transform: uppercase; margin-bottom: 4px;">
-          Accredited Border Authority Notice
+          Independent Verification Notice &amp; Disclaimer
         </div>
-        <p style="font-size: 9px; color: #475569; margin: 0; line-height: 1.4;">
-          This digital passport credential is cryptographically anchored to original certified veterinary certificates archived in the Petvia Encrypted Document Vault. Airline check-in desks and Border Inspection Post (BIP) officers may verify this animal's statutory entry clearance by scanning the optical code above.
+        <p style="font-size: 8.5px; color: #475569; margin: 0; line-height: 1.4;">
+          This digital travel verification record is cryptographically anchored to original certified veterinary records archived in the Petvia Encrypted Vault. <strong>Petvia is an independent compliance service and is not affiliated with any airline, airport authority, or government agency. This record does not constitute an airline boarding pass or statutory government export certificate.</strong> Check-in desks and inspectors may scan this QR code to view verified vaccination latency, microchip telemetry, and primary clinic records.
         </p>
       </div>
     </div>
   </div>
 
   <div class="footer-note">
-    <span>Petvia Global Compliance Infrastructure • ISO 11784/11785 &amp; IATA Live Animals Compliant</span>
+    <span>Petvia Independent Travel Compliance Service • ISO 11784/11785 &amp; IATA LAR Compliant</span>
     <span>Dossier Reference: ${passId} • Page 1 of 1</span>
   </div>
 </body>
@@ -1019,18 +1023,18 @@ export async function generateVerificationPassHtml(data: {
 <body>
   <div class="header">
     <div>
-      <div class="brand-badge">Official Border Verification Credential</div>
+      <div class="brand-badge">Pet Travel Compliance Verification Record</div>
       <div class="brand-title">Petvia<span>.</span></div>
     </div>
     <div class="header-right">
-      <div class="doc-title">Digital Transit Clearance</div>
+      <div class="doc-title">Digital Travel Verification Docket</div>
       <div class="doc-meta">Pass Reference: ${passId} • Issued: ${currentDate}</div>
     </div>
   </div>
 
   <div class="hero-card">
     <div>
-      <div class="status-badge">✓ TRAVEL READINESS VERIFIED • COMPLIANT STATUS</div>
+      <div class="status-badge">✓ TRAVEL READINESS AUDITED • COMPLIANT STATUS</div>
       <div class="hero-title">${petName}</div>
       <p class="hero-sub">${species} • ${breed} • ${age} Yrs • ${weight} kg • Microchip: ${microchip}</p>
     </div>
@@ -1053,7 +1057,7 @@ export async function generateVerificationPassHtml(data: {
       </div>
 
       <div class="card">
-        <div class="card-title">Border Control Regulatory Audit Matrix</div>
+        <div class="card-title">Pet Travel Regulatory Audit Matrix</div>
         <div class="checklist-item">
           <div>
             <div class="check-title">1. ISO 11784/11785 Microchip Standard</div>
@@ -1094,26 +1098,26 @@ export async function generateVerificationPassHtml(data: {
 
     <div class="col-right">
       <div class="qr-box">
-        <div style="font-size: 10px; font-weight: 800; color: #0E2342;">SCANNABLE BORDER PASS TOKEN</div>
-        <div style="font-size: 8.5px; color: #64748B; margin: 2px 0 8px 0;">Border inspection post direct verification</div>
-        <img src="${qrDataUrl}" alt="Border Pass QR" />
-        <div style="font-size: 9.5px; font-weight: 800; color: #0FA958;">GATE SCANNER AUTHENTICATED</div>
+        <div style="font-size: 10px; font-weight: 800; color: #0E2342;">SCANNABLE TRAVEL VERIFICATION TOKEN</div>
+        <div style="font-size: 8.5px; color: #64748B; margin: 2px 0 8px 0;">Live digital audit &amp; microchip verification</div>
+        <img src="${qrDataUrl}" alt="Verification QR" />
+        <div style="font-size: 9.5px; font-weight: 800; color: #0FA958;">DIGITALLY VERIFIED AUDIT RECORD</div>
         <div style="font-family: monospace; font-size: 7.5px; color: #475569; background: #EEF2F6; padding: 6px; border-radius: 4px; word-break: break-all; margin-top: 6px;">
           SHA-256: ${hash}
         </div>
       </div>
 
       <div class="card" style="margin-top: 10px;">
-        <div class="card-title">Notice for Customs &amp; Airlines</div>
-        <p style="font-size: 9px; color: #475569; margin: 0; line-height: 1.4;">
-          This verification pass confirms that animal microchip <strong>${microchip}</strong> has been audited against statutory animal transit criteria. Official certified source documents are anchored in the Petvia Encrypted Document Vault.
+        <div class="card-title">Notice for Airlines, Vets &amp; Border Officials</div>
+        <p style="font-size: 8.5px; color: #475569; margin: 0; line-height: 1.4;">
+          This independent verification record confirms that companion animal microchip <strong>${microchip}</strong> has been audited against statutory animal transit criteria. <strong>Petvia is an independent compliance service and does not issue airline boarding passes or government certificates.</strong> Official certified source documents are anchored in the Petvia Encrypted Document Vault.
         </p>
       </div>
     </div>
   </div>
 
   <div class="footer">
-    <span>Petvia Global Compliance Infrastructure v2.0</span>
+    <span>Petvia Independent Pet Travel Compliance Infrastructure v2.0</span>
     <span>Dossier ${passId} • Page 1 of 1</span>
   </div>
 </body>

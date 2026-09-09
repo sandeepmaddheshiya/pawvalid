@@ -102,11 +102,12 @@ def test_generate_dossier_pdf_structure():
     pdf_buffer_paid = generate_dossier_pdf(sample_data_paid)
     reader_paid = PdfReader(pdf_buffer_paid)
     paid_text = "".join([p.extract_text() for p in reader_paid.pages])
-    assert "PETVIA OFFICIAL CERTIFIED TRAVEL" in paid_text
-    assert "DOSSIER" in paid_text
+    assert "PETVIA VERIFIED TRAVEL" in paid_text
+    assert "COMPLIANCE DOSSIER" in paid_text
     assert "OFFICIALLY CERTIFIED" in paid_text
     assert "Attending Veterinarian" in paid_text
-    assert "Border Inspection Post" in paid_text
+    assert "Practice Endorsement" in paid_text
+    assert "INDEPENDENT" in paid_text
 
 
 def test_export_dossier_pdf_endpoint():

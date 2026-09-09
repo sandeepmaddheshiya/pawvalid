@@ -195,16 +195,16 @@ class DossierCanvas(canvas.Canvas):
             self.rect(54, 762, 504, 16, fill=1, stroke=1)
             self.setFont("Helvetica-Bold", 7.2)
             self.setFillColor(colors.HexColor("#065F46"))
-            self.drawCentredString(306, 767, "[OK] OFFICIAL CERTIFIED ANIMAL TRANSIT CLEARANCE DOSSIER • STATUTORY COMPLIANCE DOCKET")
+            self.drawCentredString(306, 767, "[OK] VERIFIED PET TRAVEL COMPLIANCE & READINESS DOSSIER • INDEPENDENT AUDIT RECORD")
 
             # Running Header (pages 2+)
             if self._pageNumber > 1:
                 self.setFont("Helvetica-Bold", 8)
                 self.setFillColor(PRIMARY)
-                self.drawString(54, 746, "PETVIA • OFFICIAL CERTIFIED TRAVEL DOSSIER")
+                self.drawString(54, 746, "PETVIA • VERIFIED PET TRAVEL COMPLIANCE DOSSIER")
                 self.setFont("Helvetica", 8)
                 self.setFillColor(MUTED)
-                self.drawRightString(612 - 54, 746, "STATUTORY COMPLIANCE & VERIFICATION DOCKET")
+                self.drawRightString(612 - 54, 746, "INDEPENDENT TRAVEL AUDIT & PREPARATION DOCKET")
                 self.setStrokeColor(BORDER)
                 self.setLineWidth(0.5)
                 self.line(54, 740, 612 - 54, 740)
@@ -438,14 +438,14 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         header_data = [
             [
                 Paragraph(
-                    "<b>PETVIA OFFICIAL CERTIFIED TRAVEL DOSSIER</b><br/>"
-                    "<font size='8' color='#064E3B'>Statutory compliance docket &amp; official verification record for international pet transit.</font>",
+                    "<b>PETVIA VERIFIED TRAVEL COMPLIANCE DOSSIER</b><br/>"
+                    "<font size='8' color='#064E3B'>Independent compliance audit &amp; readiness preparation docket for international pet travel.</font>",
                     title_style
                 ),
                 Paragraph(
                     f"<b>CERTIFIED DOCKET:</b> {dossier_id}<br/>"
                     f"<b>DATE OF ISSUE:</b> {generation_date}<br/>"
-                    f"<b>STATUS:</b> <font color='#059669'><b>[OK] CERTIFIED RECORD</b></font><br/>"
+                    f"<b>STATUS:</b> <font color='#059669'><b>[OK] VERIFIED AUDIT RECORD</b></font><br/>"
                     f"<b>STANDARD:</b> REG (EU) 2026/131 &amp; IATA LAR",
                     subtitle_style
                 )
@@ -483,7 +483,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         status_fg = PRIMARY if overall_status == "READY_TO_FLY" else (AMBER if overall_status == "ACTION_REQUIRED" else RED)
         status_p = Paragraph(
             f"<b>AUDIT STATUS: OFFICIALLY CERTIFIED — {status_headline}</b><br/>"
-            f"<font size='8' color='#064E3B'>Statutory animal transit dossier cross-referenced against Regulation (EU) 2026/131, USDA APHIS standards, and IATA Live Animals Regulations. All required milestones, latency windows, and primary document audits have been cryptographically sealed.</font>",
+            f"<font size='8' color='#064E3B'>Independent pet travel readiness dossier cross-referenced against Regulation (EU) 2026/131, USDA APHIS standards, and IATA Live Animals Regulations. All required milestones, latency windows, and primary document audits have been cryptographically sealed.</font>",
             ParagraphStyle("CalloutPaid", fontName="Helvetica", fontSize=8.5, leading=12, textColor=status_fg)
         )
     else:
@@ -492,7 +492,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         status_p = Paragraph(
             "<b>AUDIT STATUS: PRELIMINARY SCAN (UNOFFICIAL PREVIEW COPY)</b><br/>"
             "<font size='8' color='#78350F'>This preview provides an advisory calculation of travel milestones. "
-            "It is <b>NOT valid for airline boarding or border inspection</b>, lacks an official customs QR token, and is not authorized for veterinary endorsement. "
+            "It is <b>NOT valid for airline boarding or border inspection</b>, lacks an official digital verification QR token, and is not authorized for veterinary endorsement. "
             "Upgrade to the <b>Complete Travel Plan (£19)</b> to download your official certified dossier.</font>",
             ParagraphStyle("CalloutPreview", fontName="Helvetica", fontSize=8.5, leading=12, textColor=AMBER)
         )
@@ -553,13 +553,13 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
     story.append(Spacer(1, 12))
 
     # ─── 3. THE HERO TIMELINE & EARLIEST ESTIMATED TRAVEL DATE ───────
-    story.append(Paragraph("2. Deterministic Timeline & Departure Clearance", section_h2))
+    story.append(Paragraph("2. Deterministic Timeline & Route Milestones", section_h2))
 
     timeline_banner = [
         [
             Paragraph(
                 f"<b>EARLIEST ESTIMATED TRAVEL DATE: {earliest_date}</b><br/>"
-                f"<font size='7.5' color='#52525B'>Calculated using statutory waiting periods, mandatory rabies booster windows, and destination border clearance intervals.</font>",
+                f"<font size='7.5' color='#52525B'>Calculated using statutory waiting periods, mandatory rabies booster windows, and destination regulatory compliance intervals.</font>",
                 badge_style
             )
         ]
@@ -790,12 +790,12 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         qr_drawing.add(qr)
 
         qr_info = Paragraph(
-            f"<b>OFFICIAL CUSTOMS &amp; AIRLINE VERIFICATION GATEWAY</b><br/>"
+            f"<b>PETVIA DIGITAL TRAVEL VERIFICATION RECORD</b><br/>"
             f"<b>Live Inspection URL:</b> <font color='#064E3B'>{verify_url}</font><br/>"
             f"<b>Cryptographic Audit Seal:</b> <font face='Courier' size='7.5'>{seal_code}</font><br/>"
             f"<b>Statutory Standard:</b> Regulation (EU) 2026/131 Verified • IATA LAR Docket<br/>"
             f"<b>Audit Security Status:</b> <font color='#059669'><b>[OK] ACTIVE &amp; CRYPTOGRAPHICALLY SEALED</b></font><br/>"
-            f"<font size='7' color='#52525B'>Airline check-in agents and Border Inspection Post (BIP) officers scan this QR token to inspect live verified health records, primary vaccination latency timestamps, and microchip sequence.</font>",
+            f"<font size='7' color='#52525B'>Airline check-in desks, handling agents, and veterinary inspectors can scan this QR token to inspect live verified health records, primary vaccination latency timestamps, and microchip sequence archived in the Petvia digital vault.</font>",
             body_style
         )
         token_table = Table([[qr_drawing, qr_info]], colWidths=[90, 414])
@@ -809,15 +809,15 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
             ("RIGHTPADDING", (0, 0), (-1, -1), 10),
         ]))
         story.append(KeepTogether([
-            Paragraph("6. Airline &amp; Customs Live Verification Token (Cryptographically Sealed)", section_h2),
+            Paragraph("6. Digital Travel Verification Token &amp; Ledger Audit (Cryptographically Sealed)", section_h2),
             token_table
         ]))
         story.append(Spacer(1, 14))
 
-        # ─── 7. ATTENDING VET & CUSTOMS CLEARANCE SIGN-OFF ───────────────
+        # ─── 7. ATTENDING VET CLINICAL EXAMINATION & PRACTICE ENDORSEMENT ──
         vet_attestation = Paragraph(
-            "<b>OFFICIAL ATTENDING VETERINARIAN ENDORSEMENT</b><br/>"
-            "<font size='7.5' color='#52525B'>I hereby attest that the companion animal identified above has been examined and fulfills all statutory microchip, rabies vaccination latency, and clinical fitness prerequisites specified in this travel docket.</font><br/><br/>"
+            "<b>ATTENDING VETERINARIAN CLINICAL EXAMINATION &amp; PRACTICE ENDORSEMENT</b><br/>"
+            "<font size='7.5' color='#52525B'>I, the undersigned licensed veterinary practitioner, hereby attest that the companion animal identified above has been examined and fulfills all statutory microchip, rabies vaccination latency, and clinical fitness prerequisites specified in this travel readiness docket.</font><br/><br/>"
             "<b>Accredited Vet Signature:</b> ________________________________<br/><br/>"
             "<b>Print Full Name:</b> ___________________________________________<br/><br/>"
             "<b>RCVS / USDA / National License #:</b> ___________________________<br/><br/>"
@@ -831,46 +831,39 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
             "</div>",
             body_muted
         )
-        bip_clearance = Paragraph(
-            "<b>BORDER INSPECTION POST (BIP) / CARRIER ACCEPTANCE CLEARANCE</b><br/>"
-            "<b>Inspection Officer / Agent ID:</b> ________________________  "
-            "<b>Date &amp; Port:</b> ________________________  "
-            "<b>Determination:</b> [  ] <b>CLEARED FOR BOARDING / TRANSIT</b>   [  ] <b>REFERRED TO MOVEMENT CONTROL</b>",
-            body_style
-        )
 
         sign_table = Table([
-            [vet_attestation, clinic_stamp],
-            [bip_clearance, ""]
+            [vet_attestation, clinic_stamp]
         ], colWidths=[314, 190])
         sign_table.setStyle(TableStyle([
-            ("SPAN", (0, 1), (1, 1)),
             ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
             ("GRID", (0, 0), (-1, -1), 0.5, BORDER),
             ("BOX", (1, 0), (1, 0), 1, MUTED),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
-            ("TOPPADDING", (0, 0), (-1, -1), 6),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+            ("TOPPADDING", (0, 0), (-1, -1), 8),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
             ("LEFTPADDING", (0, 0), (-1, -1), 8),
             ("RIGHTPADDING", (0, 0), (-1, -1), 8),
         ]))
         story.append(KeepTogether([
-            Paragraph("7. Attending Veterinarian &amp; Port of Entry Sign-Off", section_h2),
+            Paragraph("7. Attending Veterinarian Clinical Examination &amp; Practice Endorsement", section_h2),
             sign_table
         ]))
         story.append(Spacer(1, 14))
 
-        # ─── 8. OFFICIAL COMPLIANCE NOTICE ─────────────────────────────
+        # ─── 8. INDEPENDENT SERVICE & REGULATORY DISCLAIMER ─────────────
         notice_text = (
-            "<b>SUPPORTING COMPLIANCE NOTICE FOR AIRLINE CHECK-IN AGENTS AND BORDER VETERINARY INSPECTORS:</b><br/>"
-            "This dossier has been compiled by Petvia as an <b>authenticated compliance and readiness docket</b> evaluating prerequisite compliance "
-            "with <b>Regulation (EU) 2026/131</b>, USDA APHIS protocols, and IATA Live Animals Regulations (LAR). Microchip transponder sequences, "
-            "vaccination latency windows, and route prerequisites have been audited against uploaded primary records. "
-            "This dossier serves as an indexed supporting verification record and must be presented in conjunction with original "
-            "government-endorsed veterinary health certificates, carrier boarding clearance, and border physical inspection."
+            "<b>IMPORTANT INDEPENDENT COMPLIANCE &amp; REGULATORY NOTICE:</b><br/>"
+            "This travel readiness dossier has been compiled by Petvia as an <b>independent compliance auditing and travel preparation service</b> evaluating prerequisite compliance "
+            "with <b>Regulation (EU) 2026/131</b>, USDA APHIS protocols, DEFRA standards, and IATA Live Animals Regulations (LAR). Microchip transponder sequences, "
+            "vaccination latency windows, and route prerequisites have been audited against uploaded primary veterinary records.<br/>"
+            "<b>REGULATORY DISCLAIMER:</b> Petvia is an independent verification platform and is <b>NOT affiliated with, endorsed by, or representing any airline, airport authority, "
+            "border inspection post, or government department</b> (such as USDA, DEFRA, CFIA, or EU customs). "
+            "This dossier does <b>NOT constitute an airline boarding pass, carrier transit permit, or statutory government export health certificate</b>. "
+            "Travelers must obtain and present original government-issued health certificates and comply with carrier pet transport booking requirements."
         )
         story.append(KeepTogether([
-            Paragraph("8. Official Statutory Notice &amp; Airline Desk Instructions", section_h2),
+            Paragraph("8. Independent Service Notice &amp; Regulatory Disclaimer", section_h2),
             Table([[Paragraph(notice_text, body_muted)]], colWidths=[504], style=[
                 ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
                 ("BOX", (0, 0), (-1, -1), 1, BORDER),
@@ -884,11 +877,11 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
     else:
         # ─── 6. LOCKED TOKEN FOR PREVIEW COPY ─────────────────────────────
         locked_token_text = Paragraph(
-            "<b>[LOCKED] OFFICIAL BORDER INSPECTION QR TOKEN &amp; DIGITAL SEAL</b><br/>"
-            "<font size='8' color='#78350F'>Airlines, ground handling staff, and customs border veterinary officers require an active cryptographic QR token linked to the official Petvia digital ledger. <b>This free preview assessment does NOT contain an active border verification token.</b><br/><br/>"
-            "<b>TO UNLOCK OFFICIAL BORDER VERIFICATION &amp; VETERINARY CLINIC DIRECTIVES:</b><br/>"
+            "<b>[LOCKED] DIGITAL TRAVEL VERIFICATION TOKEN &amp; QR LEDGER</b><br/>"
+            "<font size='8' color='#78350F'>Airlines, ground handling staff, and veterinary inspectors can review cryptographically anchored primary records linked to the official Petvia digital ledger. <b>This free preview assessment does NOT contain an active digital verification token.</b><br/><br/>"
+            "<b>TO UNLOCK DIGITAL TRAVEL VERIFICATION &amp; VETERINARY CLINIC DIRECTIVES:</b><br/>"
             "• Activate the <b>Complete Travel Plan (£19)</b> in your Petvia Dashboard.<br/>"
-            "• Unlocks: Official unwatermarked clearance dossier, live scannable QR verification pass, accredited vet clinic directive sheet, and secure document vault backup.<br/>"
+            "• Unlocks: Official unwatermarked compliance dossier, live scannable verification token, accredited vet clinic directive sheet, and secure document vault backup.<br/>"
             "• Visit: <b>petvia.com/dashboard</b></font>",
             ParagraphStyle("LockedP", fontName="Helvetica", fontSize=8.5, leading=12, textColor=AMBER)
         )
@@ -902,21 +895,21 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
             ("RIGHTPADDING", (0, 0), (-1, -1), 12),
         ]))
         story.append(KeepTogether([
-            Paragraph("6. Border &amp; Airline Inspection Verification Token (Locked)", section_h2),
+            Paragraph("6. Digital Travel Verification Token (Locked)", section_h2),
             locked_table
         ]))
         story.append(Spacer(1, 14))
 
         # ─── 7. PREVIEW ADVISORY DISCLAIMER ────────────────────────────
         preview_notice_text = (
-            "<b>UNOFFICIAL PREVIEW ADVISORY NOTICE — NOT VALID FOR AIRLINE BOARDING:</b><br/>"
+            "<b>INDEPENDENT PREVIEW ADVISORY NOTICE — NOT A BOARDING PASS:</b><br/>"
             "This travel readiness preview has been compiled by Petvia for preliminary route planning and timeline estimation only. "
             "It evaluates statutory rules under <b>Regulation (EU) 2026/131</b> and IATA LAR based on preliminary unverified user inputs. "
-            "<b>This preview document is NOT accepted by airlines or border customs authorities.</b> "
-            "To obtain an official clearance dossier with certified cryptographic QR verification and attending vet directives, upgrade to the Petvia Complete Travel Plan (£19)."
+            "<b>Petvia is an independent service and is NOT affiliated with any airline or government authority. This document is NOT an airline boarding pass or government export health certificate.</b> "
+            "To obtain an unwatermarked compliance dossier with cryptographic QR verification and attending vet clinic directives, upgrade to the Petvia Complete Travel Plan (£19)."
         )
         story.append(KeepTogether([
-            Paragraph("7. Preview Advisory Notice &amp; Boarding Disclaimer", section_h2),
+            Paragraph("7. Independent Service Notice &amp; Regulatory Disclaimer", section_h2),
             Table([[Paragraph(preview_notice_text, body_muted)]], colWidths=[504], style=[
                 ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BG),
                 ("BOX", (0, 0), (-1, -1), 1, BORDER),

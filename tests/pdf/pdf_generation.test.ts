@@ -66,7 +66,7 @@ describe('Server-Side PDF Binary Generation', () => {
     expect(html).toContain('Milo');
     expect(html).toContain('PV-2026-TEST-1234');
     expect(html).toContain('data:image/png;base64,');
-    expect(html).toContain('Border Control Regulatory Audit Matrix');
+    expect(html).toContain('Pet Travel Regulatory Audit Matrix');
   });
 
   it('should compile an HTML template into a valid PDF binary buffer via headless Chrome', async () => {
