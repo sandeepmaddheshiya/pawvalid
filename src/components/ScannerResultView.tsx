@@ -258,6 +258,8 @@ export default function ScannerResultView({
         if (!patchRes.ok) throw new Error('Failed to update trip');
         const data = await patchRes.json();
         if (data.trip) {
+          localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.trip));
+          localStorage.setItem('pawvalid_user_email', saveEmail.trim().toLowerCase());
           localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
           localStorage.setItem('petvia_user_email', saveEmail.trim().toLowerCase());
           router.push(`/dashboard?tripId=${data.trip.id}`);
@@ -279,6 +281,8 @@ export default function ScannerResultView({
       if (!res.ok) throw new Error('Failed to save trip');
       const data = await res.json();
       if (data.trip) {
+        localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.trip));
+        localStorage.setItem('pawvalid_user_email', saveEmail.trim().toLowerCase());
         localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
         localStorage.setItem('petvia_user_email', saveEmail.trim().toLowerCase());
         router.push(`/dashboard?tripId=${data.trip.id}`);
@@ -348,7 +352,7 @@ export default function ScannerResultView({
       const a = document.createElement('a');
       a.href = url;
       const safePetName = activePetName ? activePetName.replace(/[^a-zA-Z0-9]/g, '_') : 'Pet';
-      a.download = `Petvia_Preview_Dossier_${safePetName}.pdf`;
+      a.download = `PawValid_Preview_Dossier_${safePetName}.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -453,7 +457,7 @@ export default function ScannerResultView({
 
             <div className="space-y-1">
               <span className="text-[10px] font-bold text-[#0FA958] uppercase tracking-wider">
-                Petvia Travel Vault
+                PawValid Travel Vault
               </span>
               <h3 className="font-serif font-bold text-2xl text-[#0E2342]">
                 Save Compliance Assessment

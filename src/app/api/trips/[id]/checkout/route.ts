@@ -127,7 +127,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     const order = await razorpay.orders.create({
       amount,
       currency: targetCurrency,
-      receipt: `petvia_${trip.id.slice(-8)}_${Date.now().toString().slice(-4)}`,
+      receipt: `pawvalid_${trip.id.slice(-8)}_${Date.now().toString().slice(-4)}`,
       notes: {
         tripId: trip.id,
         tier: targetTier,

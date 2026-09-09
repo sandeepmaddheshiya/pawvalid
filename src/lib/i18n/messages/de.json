@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Petvia",
+    "name": "PawValid",
     "tagline": "Sicher reisen mit Ihrem Haustier",
     "description": "Compliance-Prüfung für Haustierreisen — streckenspezifische, behördlich verifizierte Reisebereitschaftsprüfungen"
   },
@@ -17,7 +17,7 @@
     "ctaSecondary": "Routen durchsuchen"
   },
   "features": {
-    "title": "So funktioniert Petvia",
+    "title": "So funktioniert PawValid",
     "subtitle": "Drei Schritte zu einer sorgenfreien Abreise",
     "step1": {
       "title": "Reisedetails eingeben",
@@ -95,8 +95,8 @@
     "overdue": "Überprüfung überfällig"
   },
   "footer": {
-    "disclaimer": "Petvia bietet ausschließlich informative Konformitätsprüfungen. Dies ersetzt keine amtliche tierärztliche Bescheinigung.",
-    "copyright": "© {year} Petvia. Alle Rechte vorbehalten.",
+    "disclaimer": "PawValid bietet ausschließlich informative Konformitätsprüfungen. Dies ersetzt keine amtliche tierärztliche Bescheinigung.",
+    "copyright": "© {year} PawValid. Alle Rechte vorbehalten.",
     "privacy": "Datenschutzerklärung",
     "terms": "Nutzungsbedingungen"
   },

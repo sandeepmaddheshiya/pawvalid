@@ -87,8 +87,9 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
   // Load saved custom measurements from localStorage if available
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storageKey = `petvia_crate_${trip?.id || 'active'}`;
-      const saved = localStorage.getItem(storageKey);
+      const storageKey = `pawvalid_crate_${trip?.id || 'active'}`;
+      const legacyKey = `petvia_crate_${trip?.id || 'active'}`;
+      const saved = localStorage.getItem(storageKey) || localStorage.getItem(legacyKey);
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -112,7 +113,8 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
   // Persist state changes
   const saveState = (overrides: Record<string, any> = {}) => {
     if (typeof window !== 'undefined') {
-      const storageKey = `petvia_crate_${trip?.id || 'active'}`;
+      const storageKey = `pawvalid_crate_${trip?.id || 'active'}`;
+      const legacyKey = `petvia_crate_${trip?.id || 'active'}`;
       const data = {
         lengthA,
         heightB,
@@ -123,9 +125,11 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
         contactPhone,
         emergencyPhone,
         feedingInstructions,
+        activePreset,
         ...overrides,
       };
       localStorage.setItem(storageKey, JSON.stringify(data));
+      localStorage.setItem(legacyKey, JSON.stringify(data));
       if (onTripUpdated) {
         onTripUpdated({ ...trip, crateMeasurements: data });
       }
@@ -1193,7 +1197,7 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
               </div>
 
               <div className="flex items-center justify-between text-[11px] text-zinc-400 pt-2">
-                <span>Petvia Digital Travel Compliance Framework · Reference: PV-2026-IATA-CR82</span>
+                <span>PawValid Digital Travel Compliance Framework · Reference: PV-2026-IATA-CR82</span>
                 <span className="font-mono">Do not stack cargo on top of this container</span>
               </div>
             </div>

@@ -19,12 +19,12 @@ export async function POST(request: NextRequest) {
     }
 
     let html = '';
-    let filename = 'Petvia-Document.pdf';
+    let filename = 'PawValid-Document.pdf';
 
     if (type === 'vet-sheet') {
       html = generateVetSheetHtml(data || {});
       const petName = (data?.petName || 'Patient').replace(/[^a-zA-Z0-9_-]/g, '_');
-      filename = `Petvia-Vet-Clinic-Sheet-${petName}.pdf`;
+      filename = `PawValid-Vet-Clinic-Sheet-${petName}.pdf`;
     } else if (type === 'passport') {
       html = await generatePassportHtml({
         passId: data?.passId || 'PV-2026-UKDE-9842',
@@ -32,16 +32,16 @@ export async function POST(request: NextRequest) {
         origin: data?.origin || 'United Kingdom',
         destination: data?.destination || 'Germany',
         transits: data?.transits || [],
-        userEmail: data?.userEmail || 'traveler@petvia.com',
-        verificationUrl: data?.verificationUrl || 'https://petvia.com/verify/PV-2026-UKDE-9842',
+        userEmail: data?.userEmail || 'traveler@pawvalid.online',
+        verificationUrl: data?.verificationUrl || 'https://pawvalid.online/verify/PV-2026-UKDE-9842',
         sha256Hash: data?.sha256Hash,
       });
       const petName = (data?.pet?.name || 'Bailey').replace(/[^a-zA-Z0-9_-]/g, '_');
-      filename = `Petvia-Digital-Passport-${petName}.pdf`;
+      filename = `PawValid-Digital-Passport-${petName}.pdf`;
     } else if (type === 'verify') {
-      html = await generateVerificationPassHtml(data || { verificationUrl: 'https://petvia.com' });
+      html = await generateVerificationPassHtml(data || { verificationUrl: 'https://pawvalid.online' });
       const passId = (data?.passId || 'PV-2026-UKDE-9842').replace(/[^a-zA-Z0-9_-]/g, '_');
-      filename = `Petvia-Verification-Pass-${passId}.pdf`;
+      filename = `PawValid-Verification-Pass-${passId}.pdf`;
     } else {
       return NextResponse.json(
         { error: `Unsupported document type: ${type}` },

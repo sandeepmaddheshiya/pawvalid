@@ -15,7 +15,7 @@ from app.engine.synthesizer import build_synthesis
 from app.engine.dossier_generator import generate_dossier_pdf
 
 app = FastAPI(
-    title="Petvia Document Compliance & Timeline Engine",
+    title="PawValid Document Compliance & Timeline Engine",
     description="Multimodal Document Intelligence, Dependency Graph & Border Readiness Engine",
     version="2.0.0"
 )
@@ -33,7 +33,7 @@ app.add_middleware(
 def health():
     return {
         "status": "healthy",
-        "service": "petvia-python-backend",
+        "service": "pawvalid-python-backend",
         "version": "2.0.0",
         "model": OPENROUTER_MODEL
     }
@@ -200,7 +200,7 @@ async def export_dossier_pdf(dossier_data: Dict[str, Any]):
             or "Pet"
         )
         safe_name = "".join(c for c in pet_name if c.isalnum() or c in (' ', '_', '-')).strip() or "Pet"
-        prefix = "Petvia_Certified_Travel_Dossier" if is_paid else "Petvia_Preview_Dossier"
+        prefix = "PawValid_Certified_Travel_Dossier" if is_paid else "PawValid_Preview_Dossier"
         filename = f"{prefix}_{safe_name}.pdf"
 
         return StreamingResponse(

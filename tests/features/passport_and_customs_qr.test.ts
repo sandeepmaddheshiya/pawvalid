@@ -8,12 +8,12 @@ import { POST as createTrip } from '@/app/api/trips/route';
 import { db } from '@/lib/db';
 
 describe('Digital Pet Passport & Pet Visa Customs QR Features', () => {
-  const testEmail = `passport_tester_${Date.now()}@petvia.com`;
+  const testEmail = `passport_tester_${Date.now()}@pawvalid.online`;
   let passportTripId = '';
 
   it('generates valid vector QR code SVG string for Customs Pass URL', async () => {
     const passId = 'PV-2026-UKDE-9842';
-    const customsUrl = `https://petvia.com/verify/${passId}`;
+    const customsUrl = `https://pawvalid.online/verify/${passId}`;
 
     const svg = await QRCode.toString(customsUrl, {
       type: 'svg',

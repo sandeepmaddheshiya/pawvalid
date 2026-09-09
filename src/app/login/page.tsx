@@ -39,12 +39,15 @@ export default function LoginPage() {
         throw new Error(data.error || 'Authentication failed. Please try again.');
       }
 
+      localStorage.setItem('pawvalid_user_email', email.trim().toLowerCase());
       localStorage.setItem('petvia_user_email', email.trim().toLowerCase());
 
       if (data.activeTrip) {
+        localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.activeTrip));
         localStorage.setItem('petvia_active_trip', JSON.stringify(data.activeTrip));
         router.push(`/dashboard?tripId=${data.activeTrip.id}`);
       } else {
+        localStorage.removeItem('pawvalid_active_trip');
         localStorage.removeItem('petvia_active_trip');
         router.push('/dashboard');
       }
@@ -64,7 +67,7 @@ export default function LoginPage() {
           <Logo />
         </div>
         <h1 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight">
-          {isSignUp ? 'Create your Petvia account' : 'Welcome back'}
+          {isSignUp ? 'Create your PawValid account' : 'Welcome back'}
         </h1>
         <p className="mt-1 text-xs sm:text-sm text-zinc-500">
           {isSignUp

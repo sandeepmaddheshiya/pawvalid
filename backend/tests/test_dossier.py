@@ -89,7 +89,7 @@ def test_generate_dossier_pdf_structure():
     assert len(reader.pages) >= 1
     
     full_text = "".join([p.extract_text() for p in reader.pages])
-    assert "PETVIA TRAVEL READINESS" in full_text
+    assert "PAWVALID TRAVEL READINESS" in full_text
     assert "ASSESSMENT" in full_text
     assert "UNOFFICIAL PREVIEW" in full_text
     assert "985141000987654" in full_text
@@ -106,7 +106,7 @@ def test_generate_dossier_pdf_structure():
     pdf_buffer_paid = generate_dossier_pdf(sample_data_paid)
     reader_paid = PdfReader(pdf_buffer_paid)
     paid_text = "".join([p.extract_text() for p in reader_paid.pages])
-    assert "PETVIA VERIFIED TRAVEL" in paid_text
+    assert "PAWVALID VERIFIED TRAVEL" in paid_text
     assert "COMPLIANCE DOSSIER" in paid_text
     assert "VERIFIED TRAVEL COMPLIANCE" in paid_text
     assert "7. Veterinary Clinic Directives" in paid_text
@@ -122,7 +122,7 @@ def test_generate_dossier_pdf_structure():
     assert "HASH VERIFIED" in paid_text
     assert "This digital record is provided for travel preparation and reference" in paid_text
     assert "localhost" not in paid_text
-    assert "https://petvia.com/verify/PV-2026-TEST" in paid_text
+    assert "https://pawvalid.online/verify/PV-2026-TEST" in paid_text
 
 
 def test_export_dossier_pdf_endpoint():
@@ -139,7 +139,7 @@ def test_export_dossier_pdf_endpoint():
     response = client.post("/api/v1/dossier/pdf", json=payload)
     assert response.status_code == 200
     assert response.headers["content-type"] == "application/pdf"
-    assert "Petvia_Preview_Dossier_Bella.pdf" in response.headers.get("content-disposition", "")
+    assert "PawValid_Preview_Dossier_Bella.pdf" in response.headers.get("content-disposition", "")
     assert response.content.startswith(b"%PDF-")
 
     # Paid Certified Request
@@ -149,7 +149,7 @@ def test_export_dossier_pdf_endpoint():
     }
     res_paid = client.post("/api/v1/dossier/pdf", json=payload_paid)
     assert res_paid.status_code == 200
-    assert "Petvia_Certified_Travel_Dossier_Bella.pdf" in res_paid.headers.get("content-disposition", "")
+    assert "PawValid_Certified_Travel_Dossier_Bella.pdf" in res_paid.headers.get("content-disposition", "")
 
 
 def test_dossier_pdf_with_trip_payload_and_layovers():

@@ -24,7 +24,7 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
     const departure = trip?.route?.departureDate || earliestDate;
     const title = encodeURIComponent(`${petName}'s Flight Departure to ${destination}`);
     const details = encodeURIComponent(
-      `Petvia Travel Compliance Dossier Verified.\nEarliest Estimated Flight Date: ${earliestDate}\nRoute: ${origin} to ${destination}`
+      `PawValid Travel Compliance Dossier Verified.\nEarliest Estimated Flight Date: ${earliestDate}\nRoute: ${origin} to ${destination}`
     );
     const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}`;
     window.open(googleCalUrl, '_blank');

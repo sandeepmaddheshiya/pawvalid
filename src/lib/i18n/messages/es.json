@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Petvia",
+    "name": "PawValid",
     "tagline": "Viaje seguro con su mascota",
     "description": "Verificador de cumplimiento para viajes con mascotas: evaluaciones de preparación basadas en normativas oficiales por ruta"
   },
@@ -17,7 +17,7 @@
     "ctaSecondary": "Explorar rutas"
   },
   "features": {
-    "title": "Cómo funciona Petvia",
+    "title": "Cómo funciona PawValid",
     "subtitle": "Tres pasos para una salida sin imprevistos",
     "step1": {
       "title": "Ingrese los detalles de su viaje",
@@ -95,8 +95,8 @@
     "overdue": "Actualización pendiente"
   },
   "footer": {
-    "disclaimer": "Petvia proporciona únicamente evaluaciones informativas de cumplimiento. No sustituye una certificación veterinaria oficial.",
-    "copyright": "© {year} Petvia. Todos los derechos reservados.",
+    "disclaimer": "PawValid proporciona únicamente evaluaciones informativas de cumplimiento. No sustituye una certificación veterinaria oficial.",
+    "copyright": "© {year} PawValid. Todos los derechos reservados.",
     "privacy": "Política de privacidad",
     "terms": "Términos de servicio"
   },

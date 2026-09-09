@@ -841,12 +841,12 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
 
       // Auto-persist to database so the user is navigated to a permanent route that survives reloads
       try {
-        const storedEmail = typeof window !== 'undefined' ? localStorage.getItem('petvia_user_email') : null;
+        const storedEmail = typeof window !== 'undefined' ? (localStorage.getItem('pawvalid_user_email') || localStorage.getItem('petvia_user_email')) : null;
         const res = await fetch('/api/trips', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userEmail: storedEmail || `guest_${Date.now()}@petvia.com`,
+            userEmail: storedEmail || `guest_${Date.now()}@pawvalid.online`,
             petName: data.petProfile?.name || petName || 'My Pet',
             scanResult: data,
             tier: 'FREE',
@@ -1099,7 +1099,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                   <svg className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>Petvia screens airside transit declarations, transshipment licenses (e.g. Singapore AVS), DEFRA cargo mandates &amp; EU BIP animal lounges for each stop.</span>
+                  <span>PawValid screens airside transit declarations, transshipment licenses (e.g. Singapore AVS), DEFRA cargo mandates &amp; EU BIP animal lounges for each stop.</span>
                 </p>
               </div>
             )}

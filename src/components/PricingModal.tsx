@@ -27,7 +27,7 @@ export default function PricingModal({
   // Auto-fill stored user email if available
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedEmail = localStorage.getItem('petvia_user_email');
+      const storedEmail = localStorage.getItem('pawvalid_user_email') || localStorage.getItem('petvia_user_email');
       if (storedEmail) setCheckoutEmail(storedEmail);
     }
   }, [isOpen]);
@@ -69,7 +69,7 @@ export default function PricingModal({
         key: orderData.keyId,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'Petvia Pet Travel Compliance',
+        name: 'PawValid Pet Travel Compliance',
         description:
           tier === 'CONCIERGE'
             ? 'Priority Expert Review (£59)'
@@ -107,7 +107,7 @@ export default function PricingModal({
     setStatusMessage(`Processing simulation for ${tierTitle}...`);
 
     try {
-      const savedRaw = typeof window !== 'undefined' ? localStorage.getItem('petvia_active_trip') : null;
+      const savedRaw = typeof window !== 'undefined' ? (localStorage.getItem('pawvalid_active_trip') || localStorage.getItem('petvia_active_trip')) : null;
       let activeTripId: string | null = null;
       if (savedRaw) {
         try {
@@ -154,6 +154,8 @@ export default function PricingModal({
       }
 
       if (tripToLoad) {
+        localStorage.setItem('pawvalid_active_trip', JSON.stringify(tripToLoad));
+        localStorage.setItem('pawvalid_user_email', emailToUse);
         localStorage.setItem('petvia_active_trip', JSON.stringify(tripToLoad));
         localStorage.setItem('petvia_user_email', emailToUse);
         setStatusMessage(`✓ Dev Mode Activated: ${tierTitle}. Loading dashboard...`);
@@ -199,7 +201,7 @@ export default function PricingModal({
     setStatusMessage('Initiating secure checkout...');
 
     try {
-      const savedRaw = typeof window !== 'undefined' ? localStorage.getItem('petvia_active_trip') : null;
+      const savedRaw = typeof window !== 'undefined' ? (localStorage.getItem('pawvalid_active_trip') || localStorage.getItem('petvia_active_trip')) : null;
       let activeTripId: string | null = null;
       if (savedRaw) {
         try {
@@ -224,6 +226,8 @@ export default function PricingModal({
         const saveData = await saveRes.json();
         if (saveData.trip) {
           activeTripId = saveData.trip.id;
+          localStorage.setItem('pawvalid_active_trip', JSON.stringify(saveData.trip));
+          localStorage.setItem('pawvalid_user_email', checkoutEmail.trim().toLowerCase());
           localStorage.setItem('petvia_active_trip', JSON.stringify(saveData.trip));
           localStorage.setItem('petvia_user_email', checkoutEmail.trim().toLowerCase());
         }
@@ -245,6 +249,7 @@ export default function PricingModal({
         const data = await res.json();
 
         if (data.isMock && data.trip) {
+          localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.trip));
           localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
           setStatusMessage('✓ Order confirmed! Redirecting to your travel dashboard...');
           setTimeout(() => {
@@ -592,7 +597,7 @@ export default function PricingModal({
 
         {/* ─── DISCREET DEVELOPER HELPER FOOTER ───────────────────────── */}
         <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400">
-          <span>Independent Pet Travel Preparation Service • Petvia</span>
+          <span>Independent Pet Travel Preparation Service • PawValid</span>
           <div className="flex items-center gap-2">
             <span className="text-[10px] uppercase font-bold text-zinc-400">Dev Testing:</span>
             <button

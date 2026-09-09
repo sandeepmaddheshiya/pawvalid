@@ -169,7 +169,7 @@ export default function TimelineMilestones() {
             Know when your pet can <span className="text-emerald-600">realistically travel</span>.
           </h3>
           <p className="text-sm text-zinc-600 mt-2 leading-relaxed">
-            <strong className="text-zinc-900 font-semibold">73% of pet travel delays and denied boardings</strong> stem from miscalculated waiting periods. Petvia calculates your earliest legal departure date down to the exact day.
+            <strong className="text-zinc-900 font-semibold">73% of pet travel delays and denied boardings</strong> stem from miscalculated waiting periods. PawValid calculates your earliest legal departure date down to the exact day.
           </p>
         </div>
 
@@ -302,7 +302,7 @@ export default function TimelineMilestones() {
               <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>Regulatory Law &amp; Petvia Check</span>
+              <span>Regulatory Law &amp; PawValid Check</span>
             </div>
             <p className="text-xs text-zinc-600 leading-relaxed">
               {activeStep.criticalRule}

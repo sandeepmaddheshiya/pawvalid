@@ -15,11 +15,12 @@ describe('Server-Side PDF Binary Generation', () => {
       destination: 'Germany',
       origin: 'United Kingdom',
       microchip: '985141002847192',
-      userEmail: 'traveler@example.com',
+      userEmail: 'traveler@pawvalid.online',
     });
 
     expect(html).toContain('Bella');
     expect(html).toContain('985141002847192');
+    expect(html).toContain('PawValid');
     expect(html).toContain('MANDATORY MICROCHIP SCANNING SEQUENCE');
     expect(html).toContain('ECHINOCOCCUS MULTILOCULARIS (TAPEWORM)');
     expect(html).toContain('Praziquantel');
@@ -40,12 +41,13 @@ describe('Server-Side PDF Binary Generation', () => {
       },
       origin: 'United Kingdom',
       destination: 'Germany',
-      userEmail: 'traveler@petvia.com',
-      verificationUrl: 'https://petvia.com/verify/PV-2026-UKDE-9842',
+      userEmail: 'traveler@pawvalid.online',
+      verificationUrl: 'https://pawvalid.online/verify/PV-2026-UKDE-9842',
     });
 
     expect(html).toContain('Bailey');
     expect(html).toContain('PV-2026-UKDE-9842');
+    expect(html).toContain('PawValid');
     expect(html).toContain('data:image/png;base64,');
     expect(html).toContain('Section I: Transponder &amp; Animal Identification');
     expect(html).toContain('Section III: Certified Veterinary Medical Ledger');
@@ -60,11 +62,12 @@ describe('Server-Side PDF Binary Generation', () => {
       microchip: '985141002847192',
       origin: 'United Kingdom (London LHR)',
       destination: 'Germany (Frankfurt FRA)',
-      verificationUrl: 'https://petvia.com/verify/PV-2026-TEST-1234',
+      verificationUrl: 'https://pawvalid.online/verify/PV-2026-TEST-1234',
     });
 
     expect(html).toContain('Milo');
     expect(html).toContain('PV-2026-TEST-1234');
+    expect(html).toContain('PawValid');
     expect(html).toContain('data:image/png;base64,');
     expect(html).toContain('Pet Travel Regulatory Audit Matrix');
   });
@@ -74,7 +77,7 @@ describe('Server-Side PDF Binary Generation', () => {
       <html>
         <head><title>Test PDF</title></head>
         <body>
-          <h1>Petvia Compliance Document Test</h1>
+          <h1>PawValid Compliance Document Test</h1>
           <p>Verified statutory record.</p>
         </body>
       </html>`;
@@ -96,9 +99,10 @@ describe('Server-Side PDF Binary Generation', () => {
       pet: { name: 'Bailey', species: 'DOG' },
       origin: 'United Kingdom',
       destination: 'Germany',
-      userEmail: 'traveler@petvia.com',
-      verificationUrl: 'https://petvia.com/verify/PV-2026-UKDE-9842',
+      userEmail: 'traveler@pawvalid.online',
+      verificationUrl: 'https://pawvalid.online/verify/PV-2026-UKDE-9842',
     });
+    expect(euHtml).toContain('PawValid');
     expect(euHtml).toContain('Regulation (EU) 2026/131');
     expect(euHtml).toContain('Exempt for direct entry into Germany');
     expect(euHtml).toContain('Exempt for this certified origin-destination route');
@@ -109,9 +113,10 @@ describe('Server-Side PDF Binary Generation', () => {
       pet: { name: 'Cooper', species: 'DOG' },
       origin: 'United States',
       destination: 'United Kingdom',
-      userEmail: 'traveler@petvia.com',
-      verificationUrl: 'https://petvia.com/verify/PV-2026-USUK-1111',
+      userEmail: 'traveler@pawvalid.online',
+      verificationUrl: 'https://pawvalid.online/verify/PV-2026-USUK-1111',
     });
+    expect(ukHtml).toContain('PawValid');
     expect(ukHtml).toContain('GB Pet Travel Scheme');
     expect(ukHtml).toContain('Praziquantel • Mandatory 24h to 120h pre-arrival administration');
 
@@ -120,8 +125,9 @@ describe('Server-Side PDF Binary Generation', () => {
       passId: 'PV-2026-UKAU-2222',
       petName: 'Luna',
       destination: 'Australia',
-      verificationUrl: 'https://petvia.com/verify/PV-2026-UKAU-2222',
+      verificationUrl: 'https://pawvalid.online/verify/PV-2026-UKAU-2222',
     });
+    expect(auPassHtml).toContain('PawValid');
     expect(auPassHtml).toContain('FAVN/RNATT required for this route');
     expect(auPassHtml).toContain('Action Required');
   });

@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     const origin = tripData?.origin || tripData?.route?.origin || (isDemoPass ? 'United Kingdom' : 'Origin Country');
     const destination = tripData?.destination || tripData?.route?.destination || (isDemoPass ? 'Germany' : 'Destination Country');
     const transits = tripData?.route?.transitCountries || tripData?.transitCountries || [];
-    const userEmail = tripData?.userEmail || 'traveler@petvia.com';
+    const userEmail = tripData?.userEmail || 'traveler@pawvalid.online';
 
     const microchipNumber = petProfile.microchipNumber || tripData?.microchipNumber || (isDemoPass ? '985141002847192' : 'Not Recorded');
     const microchipDate = petProfile.microchipDate || tripData?.microchipDate || (isDemoPass ? '2023-04-12' : 'Verified');
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     const passId = `PV-2026-${tripData?.id?.slice(0, 8)?.toUpperCase() || 'UKDE-9842'}`;
     const baseUrl = (request.nextUrl.origin && !request.nextUrl.origin.includes('localhost'))
       ? request.nextUrl.origin.replace(/^http:/, 'https:')
-      : 'https://petvia.com';
+      : 'https://pawvalid.online';
     const verificationUrl = `${baseUrl}/verify/${passId}`;
 
     const html = await generatePassportHtml({
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
 
     const pdfBuffer = await generatePdfFromHtml(html);
 
-    const safeFilename = `Petvia-Digital-Passport-${petName.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
+    const safeFilename = `PawValid-Digital-Passport-${petName.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
 
     return new NextResponse(pdfBuffer as unknown as BodyInit, {
       status: 200,

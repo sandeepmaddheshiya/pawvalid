@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Petvia",
+    "name": "PawValid",
     "tagline": "Know before you go",
     "description": "Pet travel compliance checker — route-specific, source-backed readiness assessments"
   },
@@ -17,7 +17,7 @@
     "ctaSecondary": "Browse Routes"
   },
   "features": {
-    "title": "How Petvia Works",
+    "title": "How PawValid Works",
     "subtitle": "Three steps to a confident departure",
     "step1": {
       "title": "Enter Your Trip Details",
@@ -95,8 +95,8 @@
     "overdue": "Verification overdue"
   },
   "footer": {
-    "disclaimer": "Petvia provides informational compliance assessments only. This is not official certification. Always verify with relevant authorities.",
-    "copyright": "© {year} Petvia. All rights reserved.",
+    "disclaimer": "PawValid provides informational compliance assessments only. This is not official certification. Always verify with relevant authorities.",
+    "copyright": "© {year} PawValid. All rights reserved.",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service"
   },

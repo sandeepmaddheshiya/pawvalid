@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const passId = searchParams.get('passId') || 'PV-2026-UKDE-9842';
-    const baseUrl = request.nextUrl.origin || 'https://petvia.com';
+    const baseUrl = request.nextUrl.origin || 'https://pawvalid.online';
     const verificationUrl = `${baseUrl}/verify/${passId}`;
 
     const html = await generateVerificationPassHtml({
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
     const pdfBuffer = await generatePdfFromHtml(html);
 
-    const safeFilename = `Petvia-Verification-Pass-${passId.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
+    const safeFilename = `PawValid-Verification-Pass-${passId.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
 
     return new NextResponse(pdfBuffer as unknown as BodyInit, {
       status: 200,

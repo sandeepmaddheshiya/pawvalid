@@ -11,15 +11,15 @@ interface FaqItem {
 const LEFT_FAQS: FaqItem[] = [
   {
     id: 'l1',
-    question: 'Does PawRoute provide official government approval?',
+    question: 'Does PawValid provide official government approval?',
     answer:
-      'No. Petvia is an independent regulatory compliance software platform. We cross-reference and verify your documents against official government biosecurity statutes (EU 2026/131, USDA APHIS, DEFRA UK, and MAFF Japan) so you and your accredited veterinarian can secure official government endorsement without mistakes or delays.',
+      'No. PawValid is an independent regulatory compliance software platform. We cross-reference and verify your documents against official government biosecurity statutes (EU 2026/131, USDA APHIS, DEFRA UK, and MAFF Japan) so you and your accredited veterinarian can secure official government endorsement without mistakes or delays.',
   },
   {
     id: 'l2',
     question: 'Can you check transit countries?',
     answer:
-      'Yes. Many international transit hubs (such as London Heathrow, Frankfurt, or Singapore Changi) enforce stringent transit quarantine permits, microchip checks, or carrier rules even if your pet remains airside. Petvia audits your entire travel chain.',
+      'Yes. Many international transit hubs (such as London Heathrow, Frankfurt, or Singapore Changi) enforce stringent transit quarantine permits, microchip checks, or carrier rules even if your pet remains airside. PawValid audits your entire travel chain.',
   },
   {
     id: 'l3',
@@ -40,7 +40,7 @@ const RIGHT_FAQS: FaqItem[] = [
     id: 'r2',
     question: 'Can you tell me when my pet can travel?',
     answer:
-      'Yes. Petvia calculates your exact earliest legal travel date by mathematically computing mandatory 21-day primary vaccination lags, 90-day EU titer windows, or 180-day rabies latency periods.',
+      'Yes. PawValid calculates your exact earliest legal travel date by mathematically computing mandatory 21-day primary vaccination lags, 90-day EU titer windows, or 180-day rabies latency periods.',
   },
   {
     id: 'r3',

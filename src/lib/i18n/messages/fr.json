@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Petvia",
+    "name": "PawValid",
     "tagline": "Voyagez l'esprit tranquille avec votre animal",
     "description": "Vérificateur de conformité pour le voyage des animaux de compagnie — évaluations d'aptitude au départ basées sur les réglementations officielles"
   },
@@ -17,7 +17,7 @@
     "ctaSecondary": "Consulter les itinéraires"
   },
   "features": {
-    "title": "Comment fonctionne Petvia",
+    "title": "Comment fonctionne PawValid",
     "subtitle": "Trois étapes simples vers un embarquement serein",
     "step1": {
       "title": "Renseignez votre itinéraire",
@@ -95,8 +95,8 @@
     "overdue": "Actualisation en attente"
   },
   "footer": {
-    "disclaimer": "Petvia fournit des évaluations de conformité à titre informatif uniquement. Cela ne remplace pas une consultation vétérinaire officielle.",
-    "copyright": "© {year} Petvia. Tous droits réservés.",
+    "disclaimer": "PawValid fournit des évaluations de conformité à titre informatif uniquement. Cela ne remplace pas une consultation vétérinaire officielle.",
+    "copyright": "© {year} PawValid. Tous droits réservés.",
     "privacy": "Politique de confidentialité",
     "terms": "Conditions d'utilisation"
   },

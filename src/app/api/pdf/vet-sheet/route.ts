@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     const origin = tripData?.origin || 'United Kingdom';
     const microchip =
       qMicrochip || petProfile.microchipNumber || '985141002847192';
-    const userEmail = tripData?.userEmail || 'traveler@petvia.com';
+    const userEmail = tripData?.userEmail || 'traveler@pawvalid.online';
 
     const html = generateVetSheetHtml({
       petName,
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
 
     const pdfBuffer = await generatePdfFromHtml(html);
 
-    const safeFilename = `Petvia-Vet-Clinic-Sheet-${petName.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
+    const safeFilename = `PawValid-Vet-Clinic-Sheet-${petName.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
 
     return new NextResponse(pdfBuffer as unknown as BodyInit, {
       status: 200,

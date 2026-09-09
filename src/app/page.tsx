@@ -9,7 +9,7 @@ import DigitalPetPassportSection from '@/components/DigitalPetPassportSection';
 import CustomsQrSection from '@/components/CustomsQrSection';
 
 export const metadata: Metadata = {
-  title: 'Petvia — Is Your Pet Ready to Travel? | Pet Travel Document Checker',
+  title: 'PawValid — Is Your Pet Ready to Travel? | Pet Travel Document Checker',
   description:
     "Upload your pet's documents and we'll check them against route-specific requirements, identify what's missing, flag potential issues, and give you a clear travel timeline.",
 };

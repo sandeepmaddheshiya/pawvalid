@@ -36,8 +36,8 @@ export interface EmailSendResult {
 }
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'Petvia Compliance <noreply@petvia.com>';
-const SPECIALIST_TEAM_EMAIL = process.env.SPECIALIST_TEAM_EMAIL || 'specialists@petvia.com';
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'PawValid Compliance <noreply@pawvalid.online>';
+const SPECIALIST_TEAM_EMAIL = process.env.SPECIALIST_TEAM_EMAIL || 'specialists@pawvalid.online';
 
 /**
  * Strips non-numeric characters for WhatsApp deep links
@@ -94,7 +94,7 @@ export async function sendSlackOpsNotification(text: string, blocks?: any[]): Pr
 }
 
 /**
- * Shared HTML wrapper template matching Petvia's premium institutional design tokens
+ * Shared HTML wrapper template matching PawValid's premium institutional design tokens
  */
 function wrapHtmlEmail(title: string, preheader: string, contentHtml: string): string {
   return `<!DOCTYPE html>
@@ -131,7 +131,7 @@ function wrapHtmlEmail(title: string, preheader: string, contentHtml: string): s
   <span style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${preheader}</span>
   <div class="container">
     <div class="header">
-      <h1>Petvia Compliance</h1>
+      <h1>PawValid Compliance</h1>
       <p>Official International Travel Verification</p>
     </div>
     <div class="body">
@@ -139,7 +139,7 @@ function wrapHtmlEmail(title: string, preheader: string, contentHtml: string): s
     </div>
     <div class="footer">
       <p><strong>Institutional Travel Protection & Compliance</strong></p>
-      <p>Petvia Global Travel Systems &bull; 27 Old Gloucester Street, London WC1N 3AX</p>
+      <p>PawValid Global Travel Systems &bull; 27 Old Gloucester Street, London WC1N 3AX</p>
       <p>Official regulations sourced from DEFRA, USDA APHIS, EU TRACES & IATA LAR.</p>
     </div>
   </div>
@@ -149,7 +149,7 @@ function wrapHtmlEmail(title: string, preheader: string, contentHtml: string): s
 
 /**
  * 1. Specialist Notification for Expert Review (£59 Tier Intake)
- * Dispatches full docket and WhatsApp direct link to Petvia's veterinary review team.
+ * Dispatches full docket and WhatsApp direct link to PawValid's veterinary review team.
  */
 export async function sendSpecialistIntakeNotification(
   payload: SpecialistIntakePayload

@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
 
     const pdfBuffer = await response.arrayBuffer();
     const defaultFilename = isPaid
-      ? 'Petvia_Certified_Travel_Dossier.pdf'
-      : 'Petvia_Preview_Dossier.pdf';
+      ? 'PawValid_Certified_Travel_Dossier.pdf'
+      : 'PawValid_Preview_Dossier.pdf';
     const contentDisposition =
       response.headers.get('content-disposition') ||
       `attachment; filename="${defaultFilename}"`;

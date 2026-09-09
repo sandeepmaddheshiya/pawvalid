@@ -39,6 +39,7 @@ export default function LanguageSwitcher({ variant = 'header' }: LanguageSwitche
     // Save in storage & cookie
     if (typeof window !== 'undefined') {
       try {
+        localStorage.setItem('pawvalid_locale', newLocale);
         localStorage.setItem('petvia_locale', newLocale);
         document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=31536000;SameSite=Lax`;
       } catch {

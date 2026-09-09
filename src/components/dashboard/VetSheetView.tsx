@@ -15,7 +15,7 @@ export default function VetSheetView({ trip }: VetSheetViewProps) {
   const microchip = trip?.petProfile?.microchipNumber || 'Verified 15-digit Microchip';
 
   const vetInstructionsText = `
-PETVIA VETERINARY COMPLIANCE CLINIC CHEAT-SHEET
+PAWVALID VETERINARY COMPLIANCE CLINIC CHEAT-SHEET
 For Patient: ${petName} | Destination: ${destination}
 Microchip: ${microchip} (ISO 11784/11785)
 Regulatory Standard: Regulation (EU) 2026/131 & International Animal Movement Protocol
@@ -60,7 +60,7 @@ CRITICAL MANDATES FOR ATTENDING VETERINARIAN:
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Petvia-Vet-Clinic-Sheet-${petName.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
+      a.download = `PawValid-Vet-Clinic-Sheet-${petName.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

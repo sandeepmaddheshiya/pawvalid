@@ -34,7 +34,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
   const verificationUrl =
     typeof window !== 'undefined'
       ? `${window.location.origin}/verify/${passId}`
-      : `https://petvia.com/verify/${passId}`;
+      : `https://pawvalid.online/verify/${passId}`;
 
   const origin = trip?.origin || trip?.route?.origin || 'United Kingdom';
   const destination = trip?.destination || trip?.route?.destination || 'Germany';
@@ -84,7 +84,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Petvia-Digital-Passport-${pet.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
+      a.download = `PawValid-Digital-Passport-${pet.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

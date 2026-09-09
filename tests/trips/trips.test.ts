@@ -4,7 +4,7 @@ import { GET as getSingleTrip, PATCH } from '@/app/api/trips/[id]/route';
 import { NextRequest } from 'next/server';
 
 describe('Trips API Endpoints', () => {
-  const testEmail = `test_${Date.now()}@petvia.com`;
+  const testEmail = `test_${Date.now()}@pawvalid.online`;
   let createdTripId = '';
 
   it('should create a saved trip record with full compliance snapshots', async () => {

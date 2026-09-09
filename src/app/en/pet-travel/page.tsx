@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pet Travel Route Directory — Sourced Statutory Guides | Petvia',
+  title: 'Pet Travel Route Directory — Sourced Statutory Guides | PawValid',
   description: 'Browse route-specific pet travel requirements, quarantine rules, and government health certificate protocols verified against official border authorities.',
 };
 

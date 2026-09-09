@@ -15,7 +15,7 @@ export default function Header() {
 
   useEffect(() => {
     try {
-      const cached = localStorage.getItem('petvia_active_trip');
+      const cached = localStorage.getItem('pawvalid_active_trip') || localStorage.getItem('petvia_active_trip');
       if (cached) {
         const parsed = JSON.parse(cached);
         if (parsed?.userEmail) {
@@ -34,6 +34,8 @@ export default function Header() {
 
   const handleSignOut = () => {
     try {
+      localStorage.removeItem('pawvalid_active_trip');
+      localStorage.removeItem('pawvalid_user_email');
       localStorage.removeItem('petvia_active_trip');
       localStorage.removeItem('petvia_user_email');
     } catch {
@@ -256,7 +258,7 @@ export default function Header() {
                               <span>Traveling pet: <strong className="font-semibold text-zinc-800">{activeUser.petName}</strong></span>
                             </p>
                           ) : (
-                            <p className="text-[11px] text-zinc-400 mt-0.5">Petvia Traveler</p>
+                            <p className="text-[11px] text-zinc-400 mt-0.5">PawValid Traveler</p>
                           )}
                         </div>
                       </div>

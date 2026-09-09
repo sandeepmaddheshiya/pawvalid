@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
     const order = await razorpay.orders.create({
       amount,
       currency,
-      receipt: `petvia_${assessmentId}`,
+      receipt: `pawvalid_${assessmentId}`,
       notes: {
         assessmentId,
         email,

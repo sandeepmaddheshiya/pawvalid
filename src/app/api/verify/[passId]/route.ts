@@ -88,7 +88,7 @@ export async function GET(
       cryptographicSeal: {
         algorithm: 'SHA-256',
         hash: digitalSignature,
-        authority: 'Petvia Independent Travel Compliance Registry v2.0',
+        authority: 'PawValid Independent Travel Compliance Registry v2.0',
       },
       pet: {
         name: petName,
@@ -158,7 +158,7 @@ export async function GET(
         { name: 'Government Veterinary Health Certificate', passed: true, code: 'VET-ENDORSE-EU' },
       ],
       noticeForCustoms:
-        'This Petvia Digital Travel Verification Record has been compiled by Petvia as an independent travel compliance audit service. The animal microchip and health records have been cross-referenced with uploaded veterinary certificates stored in the Petvia encrypted vault. Petvia is an independent service and is not affiliated with any airline or government authority.',
+        'This PawValid Digital Travel Verification Record has been compiled by PawValid as an independent travel compliance audit service. The animal microchip and health records have been cross-referenced with uploaded veterinary certificates stored in the PawValid encrypted vault. PawValid is an independent service and is not affiliated with any airline or government authority.',
     };
 
     return NextResponse.json({

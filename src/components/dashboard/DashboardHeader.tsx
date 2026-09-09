@@ -31,7 +31,7 @@ export default function DashboardHeader({
   const petName = trip?.petName || 'My Pet';
   const origin = trip?.origin || 'Origin';
   const destination = trip?.destination || 'Destination';
-  const displayEmail = userEmail || trip?.userEmail || 'traveler@petvia.com';
+  const displayEmail = userEmail || trip?.userEmail || 'traveler@pawvalid.online';
   const tier = trip?.tier || 'FREE';
   const isPaid = tier === 'CERTIFIED_PASS' || tier === 'CONCIERGE';
 
@@ -283,6 +283,8 @@ export default function DashboardHeader({
                   type="button"
                   onClick={() => {
                     try {
+                      localStorage.removeItem('pawvalid_active_trip');
+                      localStorage.removeItem('pawvalid_user_email');
                       localStorage.removeItem('petvia_active_trip');
                       localStorage.removeItem('petvia_user_email');
                     } catch {

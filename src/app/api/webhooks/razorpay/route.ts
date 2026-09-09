@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        // If Concierge tier, notify Petvia specialist team
+        // If Concierge tier, notify PawValid specialist team
         if (targetTier === 'CONCIERGE') {
           try {
             await sendSpecialistIntakeNotification({
@@ -98,12 +98,12 @@ export async function POST(request: NextRequest) {
             const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
             await resend.emails.send({
-              from: process.env.RESEND_FROM_EMAIL || 'noreply@petvia.com',
+              from: process.env.RESEND_FROM_EMAIL || 'noreply@pawvalid.online',
               to: email,
-              subject: `Payment Confirmed: Petvia ${targetTier === 'CONCIERGE' ? 'Priority Concierge' : 'Certified Trip Pass'} (${trip.petName})`,
+              subject: `Payment Confirmed: PawValid ${targetTier === 'CONCIERGE' ? 'Priority Concierge' : 'Certified Trip Pass'} (${trip.petName})`,
               html: `
                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1e293b;">
-                  <h1 style="color: #0f172a;">Your Petvia Plan is Active!</h1>
+                  <h1 style="color: #0f172a;">Your PawValid Plan is Active!</h1>
                   <p>Thank you for your purchase. Your travel compliance plan for <strong>${trip.petName}</strong> is now fully unlocked.</p>
                   
                   <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0;">
@@ -149,11 +149,11 @@ export async function POST(request: NextRequest) {
             });
 
             await resend.emails.send({
-              from: process.env.RESEND_FROM_EMAIL || 'noreply@petvia.com',
+              from: process.env.RESEND_FROM_EMAIL || 'noreply@pawvalid.online',
               to: email,
-              subject: 'Your Petvia Pet Travel Compliance Report',
+              subject: 'Your PawValid Pet Travel Compliance Report',
               html: `
-                <h1>Your Petvia Assessment Report</h1>
+                <h1>Your PawValid Assessment Report</h1>
                 <p>Thank you for your purchase! Your detailed compliance report is ready.</p>
                 <p><strong>Assessment ID:</strong> ${assessmentId}</p>
                 <p><strong>Overall Verdict:</strong> ${assessment?.overallVerdict ?? 'N/A'}</p>

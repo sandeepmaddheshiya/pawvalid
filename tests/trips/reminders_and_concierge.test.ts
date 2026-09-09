@@ -5,7 +5,7 @@ import { GET as getReminders, POST as triggerReminders } from '@/app/api/trips/[
 import { NextRequest } from 'next/server';
 
 describe('Concierge Intake & Pre-Flight Reminders Endpoints', () => {
-  const testEmail = `concierge_${Date.now()}@petvia.com`;
+  const testEmail = `concierge_${Date.now()}@pawvalid.online`;
   let tripId = '';
 
   it('should seed a trip for testing concierge and reminder operations', async () => {

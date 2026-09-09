@@ -35,8 +35,8 @@ function DashboardContent() {
       try {
         setLoading(true);
 
-        const cachedEmail = localStorage.getItem('petvia_user_email');
-        const cachedTrip = localStorage.getItem('petvia_active_trip');
+        const cachedEmail = localStorage.getItem('pawvalid_user_email') || localStorage.getItem('petvia_user_email');
+        const cachedTrip = localStorage.getItem('pawvalid_active_trip') || localStorage.getItem('petvia_active_trip');
         let initialTrip = cachedTrip ? JSON.parse(cachedTrip) : null;
 
         const userEmail = cachedEmail || initialTrip?.userEmail || null;
@@ -57,9 +57,11 @@ function DashboardContent() {
             const data = await res.json();
             if (data.trip) {
               initialTrip = data.trip;
+              localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.trip));
               localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
               if (data.trip.userEmail) {
                 setCurrentUserEmail(data.trip.userEmail);
+                localStorage.setItem('pawvalid_user_email', data.trip.userEmail);
                 localStorage.setItem('petvia_user_email', data.trip.userEmail);
               }
             }
@@ -80,10 +82,12 @@ function DashboardContent() {
                 ? trips.find((t: any) => t.id === tripIdParam) || trips[0]
                 : (initialTrip && trips.some((t: any) => t.id === initialTrip.id) ? initialTrip : trips[0]);
               setCurrentTrip(matched);
+              localStorage.setItem('pawvalid_active_trip', JSON.stringify(matched));
               localStorage.setItem('petvia_active_trip', JSON.stringify(matched));
             } else {
               // Brand new user with no trips created yet
               setCurrentTrip(null);
+              localStorage.removeItem('pawvalid_active_trip');
               localStorage.removeItem('petvia_active_trip');
               if (tripIdParam) {
                 router.replace('/dashboard');
@@ -120,6 +124,7 @@ function DashboardContent() {
     const selected = allTrips.find((t) => t.id === tripId);
     if (selected) {
       setCurrentTrip(selected);
+      localStorage.setItem('pawvalid_active_trip', JSON.stringify(selected));
       localStorage.setItem('petvia_active_trip', JSON.stringify(selected));
       router.push(`/dashboard?tripId=${tripId}&tab=${activeTab}`);
     }
@@ -134,10 +139,12 @@ function DashboardContent() {
         setAllTrips(remaining);
         if (remaining.length > 0) {
           setCurrentTrip(remaining[0]);
+          localStorage.setItem('pawvalid_active_trip', JSON.stringify(remaining[0]));
           localStorage.setItem('petvia_active_trip', JSON.stringify(remaining[0]));
           router.push(`/dashboard?tripId=${remaining[0].id}`);
         } else {
           setCurrentTrip(null);
+          localStorage.removeItem('pawvalid_active_trip');
           localStorage.removeItem('petvia_active_trip');
           router.push('/dashboard');
         }
@@ -151,7 +158,7 @@ function DashboardContent() {
   const handleLoadDemoTrip = async () => {
     try {
       setLoadingDemo(true);
-      const email = currentUserEmail || localStorage.getItem('petvia_user_email') || 'traveler@example.com';
+      const email = currentUserEmail || localStorage.getItem('pawvalid_user_email') || localStorage.getItem('petvia_user_email') || 'traveler@pawvalid.online';
       const res = await fetch('/api/auth/demo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -161,6 +168,7 @@ function DashboardContent() {
       if (data.trip) {
         setCurrentTrip(data.trip);
         setAllTrips([data.trip]);
+        localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.trip));
         localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
         router.push(`/dashboard?tripId=${data.trip.id}`);
       }
@@ -212,7 +220,7 @@ function DashboardContent() {
       const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
       const hostOrigin = (typeof window !== 'undefined' && !isLocal)
         ? window.location.origin.replace(/^http:/, 'https:')
-        : 'https://petvia.com';
+        : 'https://pawvalid.online';
       const passId = currentTrip.id || 'PV-2026';
       const verificationUrl = `${hostOrigin}/verify/${passId}`;
 
@@ -268,7 +276,7 @@ function DashboardContent() {
       const a = document.createElement('a');
       a.href = url;
       const petName = currentTrip.petName ? currentTrip.petName.replace(/[^a-zA-Z0-9]/g, '_') : 'Pet';
-      const filePrefix = isPaidTrip ? 'Petvia_Certified_Travel_Dossier' : 'Petvia_Preview_Dossier';
+      const filePrefix = isPaidTrip ? 'PawValid_Certified_Travel_Dossier' : 'PawValid_Preview_Dossier';
       a.download = `${filePrefix}_${petName}.pdf`;
       document.body.appendChild(a);
       a.click();
@@ -491,6 +499,7 @@ function DashboardContent() {
                 trip={currentTrip}
                 onTripUpdated={(updated) => {
                   setCurrentTrip(updated);
+                  localStorage.setItem('pawvalid_active_trip', JSON.stringify(updated));
                   localStorage.setItem('petvia_active_trip', JSON.stringify(updated));
                 }}
               />
@@ -505,6 +514,7 @@ function DashboardContent() {
                 trip={currentTrip}
                 onTripUpdated={(updated) => {
                   setCurrentTrip(updated);
+                  localStorage.setItem('pawvalid_active_trip', JSON.stringify(updated));
                   localStorage.setItem('petvia_active_trip', JSON.stringify(updated));
                 }}
                 onDownloadDossier={handleDownloadDossier}
@@ -525,6 +535,7 @@ function DashboardContent() {
                 trip={currentTrip}
                 onTripUpdated={(updated) => {
                   setCurrentTrip(updated);
+                  localStorage.setItem('pawvalid_active_trip', JSON.stringify(updated));
                   localStorage.setItem('petvia_active_trip', JSON.stringify(updated));
                 }}
               />

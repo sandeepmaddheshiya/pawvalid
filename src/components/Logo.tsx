@@ -36,7 +36,7 @@ export default function Logo({ size = 'default' }: { size?: 'small' | 'default' 
             isSmall ? 'text-base' : 'text-lg'
           } font-black text-[#0E2342] tracking-tight`}
         >
-          Petvia
+          PawValid
         </span>
         <span
           className="text-[9px] font-medium text-zinc-500 tracking-normal"

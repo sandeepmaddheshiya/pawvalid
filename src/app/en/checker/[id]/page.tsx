@@ -20,12 +20,12 @@ export async function generateMetadata({ params }: ReportPageProps): Promise<Met
   const savedTrip = await db.savedTrip.findUnique({ where: { id } });
   if (savedTrip) {
     return {
-      title: `${savedTrip.petName} (${savedTrip.origin} → ${savedTrip.destination}) — Compliance Report | Petvia`,
+      title: `${savedTrip.petName} (${savedTrip.origin} → ${savedTrip.destination}) — Compliance Report | PawValid`,
       description: `Official pet travel compliance dossier for ${savedTrip.petName}. Earliest departure: ${savedTrip.earliestFlightDate || 'Verified'}.`,
     };
   }
   return {
-    title: 'Pet Travel Compliance Assessment Report | Petvia',
+    title: 'Pet Travel Compliance Assessment Report | PawValid',
     description: 'Frozen, reproducible pet travel compliance assessment report.',
     robots: {
       index: false,

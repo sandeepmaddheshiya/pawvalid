@@ -24,7 +24,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
   const handleOpenWhatsApp = () => {
     const targetNumber = cleanDigits.length >= 7 ? cleanDigits : '447700900077';
     const text = encodeURIComponent(
-      `Hello! I am requesting pet travel specialist review support for my pet ${trip?.petName || 'my pet'} (Petvia Docket #${trip?.id?.slice(-6) || 'TRIP'}). We are traveling from ${trip?.origin} to ${trip?.destination}.`
+      `Hello! I am requesting pet travel specialist review support for my pet ${trip?.petName || 'my pet'} (PawValid Docket #${trip?.id?.slice(-6) || 'TRIP'}). We are traveling from ${trip?.origin} to ${trip?.destination}.`
     );
     window.open(`https://wa.me/${targetNumber}?text=${text}`, '_blank');
   };

@@ -266,7 +266,7 @@ export default function OverviewView({
                     value={
                       typeof window !== 'undefined'
                         ? `${window.location.origin}/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`
-                        : `https://petvia.com/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`
+                        : `https://pawvalid.online/verify/PV-2026-${trip?.id?.slice(0, 8) || 'UKDE-9842'}`
                     }
                     size={92}
                     darkColor="#0E2342"

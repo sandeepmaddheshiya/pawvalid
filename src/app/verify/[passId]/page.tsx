@@ -19,7 +19,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
   const [copiedHash, setCopiedHash] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [currentVerificationUrl, setCurrentVerificationUrl] = useState<string>(
-    `https://petvia.com/verify/${passId}`
+    `https://pawvalid.online/verify/${passId}`
   );
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Petvia-Compliance-Dossier-${passId}.pdf`;
+      a.download = `PawValid-Compliance-Dossier-${passId}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -578,7 +578,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                     <span>Independent Service Notice &amp; Regulatory Disclaimer:</span>
                   </div>
                   <p className="text-[11px] text-zinc-600 leading-relaxed">
-                    This Petvia Digital Verification Record has been compiled by Petvia as an independent travel compliance audit service and is cryptographically linked to original certified veterinary certificates, accredited clinical records, and laboratory serology reports stored in the Petvia Encrypted Document Vault. <strong>Petvia is an independent verification platform and is not affiliated with, endorsed by, or representing any airline, airport authority, or government agency. This document does not constitute an airline boarding pass or statutory government export health certificate.</strong>
+                    This PawValid Digital Verification Record has been compiled by PawValid as an independent travel compliance audit service and is cryptographically linked to original certified veterinary certificates, accredited clinical records, and laboratory serology reports stored in the PawValid Encrypted Document Vault. <strong>PawValid is an independent verification platform and is not affiliated with, endorsed by, or representing any airline, airport authority, or government agency. This document does not constitute an airline boarding pass or statutory government export health certificate.</strong>
                   </p>
                 </div>
               </div>
@@ -586,14 +586,14 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
               {/* Dossier Footer */}
               <div className="bg-[#FAFBFB] border-t border-zinc-200/80 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-500">
                 <div>
-                  Authenticated by <strong className="text-[#0E2342]">Petvia Global Compliance Infrastructure v2.0</strong>
+                  Authenticated by <strong className="text-[#0E2342]">PawValid Global Compliance Infrastructure v2.0</strong>
                 </div>
                 <div className="flex items-center gap-4">
                   <Link href="/dashboard" className="text-[#0E2342] font-semibold hover:underline">
                     Command Center
                   </Link>
                   <span>·</span>
-                  <a href="mailto:specialists@petvia.com" className="text-[#0E2342] font-semibold hover:underline">
+                  <a href="mailto:specialists@pawvalid.online" className="text-[#0E2342] font-semibold hover:underline">
                     Specialist Support
                   </a>
                 </div>
@@ -660,7 +660,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                     Verification Service
                   </span>
                   <span className="text-xs font-semibold text-[#0E2342] block">
-                    Petvia Independent Compliance Registry
+                    PawValid Independent Compliance Registry
                   </span>
                   <span className="text-[10px] text-zinc-500 block">
                     Tamper-Evident Ledger Integrity Validated
@@ -718,8 +718,8 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
             {/* Support Note */}
             <div className="p-4 rounded-2xl bg-white border border-zinc-200/80 text-[11px] text-zinc-500 text-center">
               Questions regarding this digital clearance? Contact{' '}
-              <a href="mailto:support@petvia.com" className="font-semibold text-[#0E2342] hover:underline">
-                support@petvia.com
+              <a href="mailto:support@pawvalid.online" className="font-semibold text-[#0E2342] hover:underline">
+                support@pawvalid.online
               </a>{' '}
               with reference <span className="font-mono font-bold text-zinc-800">{passId}</span>.
             </div>

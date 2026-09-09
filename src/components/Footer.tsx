@@ -40,7 +40,7 @@ export default function Footer() {
               </div>
               <div className="flex flex-col leading-tight">
                 <span className="font-display text-lg font-bold text-white tracking-tight">
-                  Petvia
+                  PawValid
                 </span>
                 <span className="text-[9px] text-zinc-400 font-medium">
                   Pet Travel Compliance
@@ -176,7 +176,7 @@ export default function Footer() {
         {/* Separate Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
           <p className="text-center sm:text-left">
-            © 2026 Petvia. All rights reserved.
+            © 2026 PawValid. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-xs">
             <Link href="/en/privacy" className="hover:text-white transition-colors">

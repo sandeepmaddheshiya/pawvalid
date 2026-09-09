@@ -25,7 +25,7 @@ describe('Daily Pre-Flight Reminders Cron Worker', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userEmail: `cron_${petName.toLowerCase()}@petvia.com`,
+          userEmail: `cron_${petName.toLowerCase()}@pawvalid.online`,
           petName,
           scanResult: {
             route: { origin: 'United Kingdom', destination: 'Norway', departureDate },

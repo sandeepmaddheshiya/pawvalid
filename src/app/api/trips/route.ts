@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const cleanEmail =
       userEmail && typeof userEmail === 'string' && userEmail.trim()
         ? userEmail.toLowerCase().trim()
-        : `guest_${Date.now()}_${Math.random().toString(36).substring(2, 7)}@guest.petvia.com`;
+        : `guest_${Date.now()}_${Math.random().toString(36).substring(2, 7)}@guest.pawvalid.online`;
     const cleanPetName =
       petName?.trim() ||
       scanResult.petProfile?.name?.trim() ||

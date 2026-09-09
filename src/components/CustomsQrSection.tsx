@@ -7,7 +7,7 @@ import QrCode from '@/components/QrCode';
 export default function CustomsQrSection() {
   const verificationUrl = typeof window !== 'undefined'
     ? `${window.location.origin}/verify/PV-2026-UKDE-9842`
-    : 'https://petvia.com/verify/PV-2026-UKDE-9842';
+    : 'https://pawvalid.online/verify/PV-2026-UKDE-9842';
 
   return (
     <section id="customs-qr" className="py-16 sm:py-20 bg-[#F8FAFB] border-b border-zinc-200/80 overflow-hidden">

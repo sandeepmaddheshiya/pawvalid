@@ -1,5 +1,5 @@
 """
-Petvia Official Travel Dossier Generator
+PawValid Official Travel Dossier Generator
 Compiles verified pet travel compliance evaluations, statutory citations,
 and milestone timelines into an airline-ready vector PDF dossier.
 """
@@ -172,7 +172,7 @@ class DossierCanvas(canvas.Canvas):
             if self._pageNumber > 1:
                 self.setFont("Helvetica", 8)
                 self.setFillColor(MUTED)
-                self.drawString(54, 746, "PETVIA • TRAVEL READINESS SCAN (PREVIEW COPY)")
+                self.drawString(54, 746, "PAWVALID • TRAVEL READINESS SCAN (PREVIEW COPY)")
                 self.drawRightString(612 - 54, 746, "UNOFFICIAL PRELIMINARY AUDIT")
                 self.setStrokeColor(BORDER)
                 self.setLineWidth(0.5)
@@ -184,7 +184,7 @@ class DossierCanvas(canvas.Canvas):
             self.line(54, 45, 612 - 54, 45)
             self.setFont("Helvetica", 7.5)
             self.setFillColor(MUTED)
-            self.drawString(54, 32, "Petvia Travel Readiness Preview • Unofficial Copy • Reg (EU) 2026/131 Advisory Scan")
+            self.drawString(54, 32, "PawValid Travel Readiness Preview • Unofficial Copy • Reg (EU) 2026/131 Advisory Scan")
             self.drawRightString(612 - 54, 32, f"Page {self._pageNumber} of {page_count}")
 
         else:
@@ -201,7 +201,7 @@ class DossierCanvas(canvas.Canvas):
             if self._pageNumber > 1:
                 self.setFont("Helvetica-Bold", 8)
                 self.setFillColor(PRIMARY)
-                self.drawString(54, 746, "PETVIA • VERIFIED PET TRAVEL COMPLIANCE DOSSIER")
+                self.drawString(54, 746, "PAWVALID • VERIFIED PET TRAVEL COMPLIANCE DOSSIER")
                 self.setFont("Helvetica", 8)
                 self.setFillColor(MUTED)
                 self.drawRightString(612 - 54, 746, "INDEPENDENT TRAVEL AUDIT & PREPARATION DOCKET")
@@ -215,7 +215,7 @@ class DossierCanvas(canvas.Canvas):
             self.line(54, 45, 612 - 54, 45)
             self.setFont("Helvetica", 7.5)
             self.setFillColor(MUTED)
-            self.drawString(54, 32, "Verified via Petvia Verification Engine • Statutory Travel Docket • Reg (EU) 2026/131 • IATA LAR")
+            self.drawString(54, 32, "Verified via PawValid Verification Engine • Statutory Travel Docket • Reg (EU) 2026/131 • IATA LAR")
             self.drawRightString(612 - 54, 32, f"Page {self._pageNumber} of {page_count}")
 
         self.restoreState()
@@ -412,13 +412,13 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
     )
     raw_verify_url = (
         dossier_data.get("verificationUrl")
-        or f"https://petvia.com/verify/{pass_id}"
+        or f"https://pawvalid.online/verify/{pass_id}"
     )
     # Strictly sanitize: never print localhost, 127.0.0.1, or insecure http in PDFs
     if "localhost" in raw_verify_url or "127.0.0.1" in raw_verify_url:
-        verify_url = re.sub(r"^https?://(localhost|127\.0\.0\.1)(:\d+)?", "https://petvia.com", raw_verify_url)
+        verify_url = re.sub(r"^https?://(localhost|127\.0\.0\.1)(:\d+)?", "https://pawvalid.online", raw_verify_url)
     elif raw_verify_url.startswith("/"):
-        verify_url = f"https://petvia.com{raw_verify_url}"
+        verify_url = f"https://pawvalid.online{raw_verify_url}"
     elif raw_verify_url.startswith("http://"):
         verify_url = raw_verify_url.replace("http://", "https://", 1)
     else:
@@ -448,7 +448,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         header_data = [
             [
                 Paragraph(
-                    "<b>PETVIA VERIFIED TRAVEL COMPLIANCE DOSSIER</b><br/>"
+                    "<b>PAWVALID VERIFIED TRAVEL COMPLIANCE DOSSIER</b><br/>"
                     "<font size='8' color='#064E3B'>Independent compliance audit &amp; readiness preparation docket for international pet travel.</font>",
                     title_style
                 ),
@@ -465,7 +465,7 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         header_data = [
             [
                 Paragraph(
-                    "<b>PETVIA TRAVEL READINESS ASSESSMENT</b><br/>"
+                    "<b>PAWVALID TRAVEL READINESS ASSESSMENT</b><br/>"
                     "<font size='8' color='#B45309'>Preliminary automated scan of uploaded pet travel records. Uncertified preview copy.</font>",
                     title_style
                 ),
@@ -800,12 +800,12 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         qr_drawing.add(qr)
 
         qr_info = Paragraph(
-            f"<b>PETVIA DIGITAL TRAVEL VERIFICATION RECORD</b><br/>"
+            f"<b>PAWVALID DIGITAL TRAVEL VERIFICATION RECORD</b><br/>"
             f"<b>Live Verification URL:</b> <font color='#064E3B'>{verify_url}</font><br/>"
             f"<b>Record Integrity Seal:</b> <font face='Courier' size='7.5'>{seal_code}</font><br/>"
             f"<b>Regulatory References:</b> Regulation (EU) 2026/131 • IATA Live Animals Regulations<br/>"
             f"<b>Record Status:</b> <font color='#059669'><b>✓ ACTIVE • HASH VERIFIED</b></font><br/>"
-            f"<font size='7' color='#52525B'>Scan the QR code to view the latest Petvia travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status.<br/>"
+            f"<font size='7' color='#52525B'>Scan the QR code to view the latest PawValid travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status.<br/>"
             f"<b>Important:</b> This digital record is provided for travel preparation and reference. It does not replace government-issued certificates, veterinary documentation, airline requirements, or border-entry decisions.</font>",
             body_style
         )
@@ -897,10 +897,10 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         # ─── 8. INDEPENDENT SERVICE & REGULATORY DISCLAIMER ─────────────
         notice_text = (
             "<b>IMPORTANT INDEPENDENT COMPLIANCE &amp; REGULATORY NOTICE:</b><br/>"
-            "This travel readiness dossier has been compiled by Petvia as an <b>independent compliance auditing and travel preparation service</b> evaluating prerequisite compliance "
+            "This travel readiness dossier has been compiled by PawValid as an <b>independent compliance auditing and travel preparation service</b> evaluating prerequisite compliance "
             "with <b>Regulation (EU) 2026/131</b>, USDA APHIS protocols, DEFRA standards, and IATA Live Animals Regulations (LAR). Microchip transponder sequences, "
             "vaccination latency windows, and route prerequisites have been audited against uploaded primary veterinary records.<br/>"
-            "<b>REGULATORY DISCLAIMER:</b> Petvia is an independent verification platform and is <b>NOT affiliated with, endorsed by, or representing any airline, airport authority, "
+            "<b>REGULATORY DISCLAIMER:</b> PawValid is an independent verification platform and is <b>NOT affiliated with, endorsed by, or representing any airline, airport authority, "
             "border inspection post, or government department</b> (such as USDA, DEFRA, CFIA, or EU customs). "
             "This dossier does <b>NOT constitute an airline boarding pass, carrier transit permit, or statutory government export health certificate</b>. "
             "Travelers must obtain and present original government-issued health certificates and comply with carrier pet transport booking requirements."
@@ -921,11 +921,11 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         # ─── 6. LOCKED RECORD FOR PREVIEW COPY ─────────────────────────────
         locked_token_text = Paragraph(
             "<b>[LOCKED] DIGITAL TRAVEL VERIFICATION RECORD</b><br/>"
-            "<font size='8' color='#78350F'>Scan the QR code to view the latest Petvia travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status. <b>This free preview assessment does NOT contain an active digital verification record.</b><br/><br/>"
+            "<font size='8' color='#78350F'>Scan the QR code to view the latest PawValid travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status. <b>This free preview assessment does NOT contain an active digital verification record.</b><br/><br/>"
             "<b>TO UNLOCK DIGITAL TRAVEL VERIFICATION &amp; VETERINARY CLINIC DIRECTIVES:</b><br/>"
-            "• Activate the <b>Complete Travel Plan (£19)</b> in your Petvia Dashboard.<br/>"
+            "• Activate the <b>Complete Travel Plan (£19)</b> in your PawValid Dashboard.<br/>"
             "• Unlocks: Certified compliance dossier, live scannable verification record, attending vet clinic endorsement docket, and secure document vault backup.<br/>"
-            "• Visit: <b>https://petvia.com/dashboard</b></font>",
+            "• Visit: <b>https://pawvalid.online/dashboard</b></font>",
             ParagraphStyle("LockedP", fontName="Helvetica", fontSize=8.5, leading=12, textColor=AMBER)
         )
         locked_table = Table([[locked_token_text]], colWidths=[504])
@@ -946,10 +946,10 @@ def generate_dossier_pdf(dossier_data: Dict[str, Any]) -> io.BytesIO:
         # ─── 7. PREVIEW ADVISORY DISCLAIMER ────────────────────────────
         preview_notice_text = (
             "<b>INDEPENDENT PREVIEW ADVISORY NOTICE — NOT A BOARDING PASS:</b><br/>"
-            "This travel readiness preview has been compiled by Petvia for preliminary route planning and timeline estimation only. "
+            "This travel readiness preview has been compiled by PawValid for preliminary route planning and timeline estimation only. "
             "It evaluates statutory rules under <b>Regulation (EU) 2026/131</b> and IATA LAR based on preliminary unverified user inputs. "
-            "<b>Petvia is an independent service and is NOT affiliated with any airline or government authority. This document is NOT an airline boarding pass or government export health certificate.</b> "
-            "To obtain a certified compliance dossier with an active digital verification record and attending vet clinic directives, upgrade to the Petvia Complete Travel Plan (£19)."
+            "<b>PawValid is an independent service and is NOT affiliated with any airline or government authority. This document is NOT an airline boarding pass or government export health certificate.</b> "
+            "To obtain a certified compliance dossier with an active digital verification record and attending vet clinic directives, upgrade to the PawValid Complete Travel Plan (£19)."
         )
         story.append(KeepTogether([
             Paragraph("7. Independent Service Notice &amp; Regulatory Disclaimer", section_h2),

@@ -688,12 +688,12 @@ export async function generateMetadata({ params }: RoutePageProps): Promise<Meta
   const display = ROUTE_DATA[route];
 
   if (!display) {
-    return { title: 'Route Not Found | Petvia' };
+    return { title: 'Route Not Found | PawValid' };
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://petvia.com';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pawvalid.online';
   const pageUrl = `${appUrl}/en/pet-travel/${route}`;
-  const title = `Pet Travel: ${display.from} to ${display.to} — 2026 Requirements & Checklist | Petvia`;
+  const title = `Pet Travel: ${display.from} to ${display.to} — 2026 Requirements & Checklist | PawValid`;
 
   return {
     title,
@@ -705,7 +705,7 @@ export async function generateMetadata({ params }: RoutePageProps): Promise<Meta
       title,
       description: display.description,
       url: pageUrl,
-      siteName: 'Petvia Pet Travel Compliance',
+      siteName: 'PawValid Pet Travel Compliance',
       locale: 'en_US',
       type: 'article',
     },

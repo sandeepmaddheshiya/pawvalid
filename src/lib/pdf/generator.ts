@@ -44,7 +44,7 @@ function getChromeExecutable(): string {
  * Generate a PDF Buffer from an HTML string using headless Chrome.
  */
 export async function generatePdfFromHtml(html: string): Promise<Buffer> {
-  const tmpId = `petvia_pdf_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+  const tmpId = `pawvalid_pdf_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
   const tmpDir = os.tmpdir();
   const htmlPath = path.join(tmpDir, `${tmpId}.html`);
   const pdfPath = path.join(tmpDir, `${tmpId}.pdf`);
@@ -106,7 +106,7 @@ export function generateVetSheetHtml(data: {
   const destination = data.destination || 'Destination Country';
   const origin = data.origin || 'United Kingdom';
   const microchip = data.microchip || '985141002847192';
-  const userEmail = data.userEmail || 'traveler@petvia.com';
+  const userEmail = data.userEmail || 'traveler@pawvalid.online';
 
   const isEuDestination = /germany|france|italy|spain|austria|netherlands|belgium|poland|portugal|greece|sweden|denmark|finland|ireland|czech|croatia|hungary|romania|bulgaria|slovakia|slovenia|lithuania|latvia|estonia|cyprus|malta|luxembourg/i.test(destination);
   const isUkDestination = /united kingdom|great britain|uk|england|scotland|wales/i.test(destination);
@@ -131,7 +131,7 @@ export function generateVetSheetHtml(data: {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Petvia Official Veterinary Compliance Directives - ${petName}</title>
+  <title>PawValid Official Veterinary Compliance Directives - ${petName}</title>
   <style>
     @page {
       size: A4 portrait;
@@ -368,7 +368,7 @@ export function generateVetSheetHtml(data: {
   <div class="header">
     <div>
       <div class="brand-badge">Veterinary Clinical Directives • International Transit</div>
-      <div class="brand-title">Petvia<span>.</span></div>
+      <div class="brand-title">PawValid<span>.</span></div>
     </div>
     <div class="header-right">
       <div class="doc-type">Veterinary Protocol Directives</div>
@@ -471,11 +471,11 @@ export function generateVetSheetHtml(data: {
   </div>
 
   <div style="margin-top: 10px; padding: 7px 10px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; font-size: 8px; color: #64748B; line-height: 1.35;">
-    <strong>Independent Travel Compliance Advisory:</strong> This clinical guidance directive is prepared by Petvia as an independent preparation aid for veterinary surgeries. It does not replace statutory health certificate forms issued by government agricultural/veterinary departments (e.g. DEFRA, USDA-APHIS, CFIA) or individual airline transport conditions.
+    <strong>Independent Travel Compliance Advisory:</strong> This clinical guidance directive is prepared by PawValid as an independent preparation aid for veterinary surgeries. It does not replace statutory health certificate forms issued by government agricultural/veterinary departments (e.g. DEFRA, USDA-APHIS, CFIA) or individual airline transport conditions.
   </div>
 
   <div class="footer">
-    <span>Petvia Independent Travel Compliance Service • Veterinary Clinic Guidance</span>
+    <span>PawValid Independent Travel Compliance Service • Veterinary Clinic Guidance</span>
     <span>Document Ref: VET-DIR-2026 • Page 1 of 1</span>
   </div>
 </body>
@@ -522,7 +522,7 @@ export async function generatePassportHtml(data: {
   const rabiesType = data.pet?.rabiesVaccineType || 'BOOSTER';
   const origin = data.origin || 'United Kingdom';
   const destination = data.destination || 'Germany';
-  const userEmail = data.userEmail || 'traveler@petvia.com';
+  const userEmail = data.userEmail || 'traveler@pawvalid.online';
   const hash =
     data.sha256Hash ||
     'a7384a55787af5de3fed376b69e3be4bfd8357d6e1873e046a782bcf281a815e';
@@ -558,10 +558,10 @@ export async function generatePassportHtml(data: {
         ? 'Pending Blood Serology (FAVN/RNATT required for this route)'
         : 'Exempt for this certified origin-destination route');
 
-  // Ensure verification URL strictly uses canonical HTTPS petvia.com domain in PDF
-  const rawUrl = data.verificationUrl || `https://petvia.com/verify/${passId}`;
+  // Ensure verification URL strictly uses canonical HTTPS pawvalid.online domain in PDF
+  const rawUrl = data.verificationUrl || `https://pawvalid.online/verify/${passId}`;
   const verifyUrl = (rawUrl.includes('localhost') || rawUrl.includes('127.0.0.1') || rawUrl.startsWith('http://'))
-    ? `https://petvia.com/verify/${passId}`
+    ? `https://pawvalid.online/verify/${passId}`
     : rawUrl;
 
   // Generate scannable QR Code data URI
@@ -578,7 +578,7 @@ export async function generatePassportHtml(data: {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Petvia Digital Pet Passport - ${petName} (${passId})</title>
+  <title>PawValid Digital Pet Passport - ${petName} (${passId})</title>
   <style>
     @page {
       size: A4 portrait;
@@ -758,7 +758,7 @@ export async function generatePassportHtml(data: {
   <div class="header">
     <div>
       <div class="sub-tag">Independent Pet Travel Compliance Folio</div>
-      <div class="logo-badge">Petvia<span>.</span></div>
+      <div class="logo-badge">PawValid<span>.</span></div>
     </div>
     <div class="title-box">
       <div class="doc-title">Digital Pet Travel Record</div>
@@ -828,14 +828,14 @@ export async function generatePassportHtml(data: {
           Digital Travel Verification Notice &amp; Disclaimer
         </div>
         <p style="font-size: 8.5px; color: #475569; margin: 0; line-height: 1.4;">
-          Scan the QR code to view the latest Petvia travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status. <strong>Important: This digital record is provided for travel preparation and reference. It does not replace government-issued certificates, veterinary documentation, airline requirements, or border-entry decisions.</strong>
+          Scan the QR code to view the latest PawValid travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status. <strong>Important: This digital record is provided for travel preparation and reference. It does not replace government-issued certificates, veterinary documentation, airline requirements, or border-entry decisions.</strong>
         </p>
       </div>
     </div>
   </div>
 
   <div class="footer-note">
-    <span>Petvia Independent Travel Compliance Service • ISO 11784/11785 &amp; IATA LAR Compliant</span>
+    <span>PawValid Independent Travel Compliance Service • ISO 11784/11785 &amp; IATA LAR Compliant</span>
     <span>Dossier Reference: ${passId} • Page 1 of 1</span>
   </div>
 </body>
@@ -914,10 +914,10 @@ export async function generateVerificationPassHtml(data: {
     year: 'numeric',
   });
 
-  // Ensure verification URL strictly uses canonical HTTPS petvia.com domain in PDF
-  const rawUrl = data.verificationUrl || `https://petvia.com/verify/${passId}`;
+  // Ensure verification URL strictly uses canonical HTTPS pawvalid.online domain in PDF
+  const rawUrl = data.verificationUrl || `https://pawvalid.online/verify/${passId}`;
   const verifyUrl = (rawUrl.includes('localhost') || rawUrl.includes('127.0.0.1') || rawUrl.startsWith('http://'))
-    ? `https://petvia.com/verify/${passId}`
+    ? `https://pawvalid.online/verify/${passId}`
     : rawUrl;
 
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
@@ -933,7 +933,7 @@ export async function generateVerificationPassHtml(data: {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Petvia Digital Travel Verification Pass - ${passId}</title>
+  <title>PawValid Digital Travel Verification Pass - ${passId}</title>
   <style>
     @page {
       size: A4 portrait;
@@ -1114,7 +1114,7 @@ export async function generateVerificationPassHtml(data: {
   <div class="header">
     <div>
       <div class="brand-badge">Pet Travel Compliance Verification Record</div>
-      <div class="brand-title">Petvia<span>.</span></div>
+      <div class="brand-title">PawValid<span>.</span></div>
     </div>
     <div class="header-right">
       <div class="doc-title">Digital Travel Verification Docket</div>
@@ -1200,14 +1200,14 @@ export async function generateVerificationPassHtml(data: {
       <div class="card" style="margin-top: 10px;">
         <div class="card-title">Digital Travel Verification Notice &amp; Disclaimer</div>
         <p style="font-size: 8.5px; color: #475569; margin: 0; line-height: 1.4;">
-          Scan the QR code to view the latest Petvia travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status. <strong>Important: This digital record is provided for travel preparation and reference. It does not replace government-issued certificates, veterinary documentation, airline requirements, or border-entry decisions.</strong>
+          Scan the QR code to view the latest PawValid travel-readiness record, including documented vaccination dates, microchip information, route requirements, and document verification status. <strong>Important: This digital record is provided for travel preparation and reference. It does not replace government-issued certificates, veterinary documentation, airline requirements, or border-entry decisions.</strong>
         </p>
       </div>
     </div>
   </div>
 
   <div class="footer">
-    <span>Petvia Independent Pet Travel Compliance Infrastructure v2.0</span>
+    <span>PawValid Independent Pet Travel Compliance Infrastructure v2.0</span>
     <span>Dossier ${passId} • Page 1 of 1</span>
   </div>
 </body>
