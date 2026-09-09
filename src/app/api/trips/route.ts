@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { syncTravelerToEmailOctopus } from '@/lib/email/emailoctopus';
 
 export async function POST(request: NextRequest) {
   try {
@@ -87,14 +86,6 @@ export async function POST(request: NextRequest) {
         readinessReport: scanResult.readinessReport || {},
         uploadedDocuments: scanResult.readinessReport?.documentAudit || [],
       },
-    });
-
-    // Synchronize traveler to EmailOctopus list in background
-    syncTravelerToEmailOctopus(savedTrip, {
-      tag: tier === 'FREE' ? 'lead' : tier?.toLowerCase(),
-      isPaid: tier === 'CERTIFIED_PASS' || tier === 'CONCIERGE',
-    }).catch((syncErr) => {
-      console.warn('[EmailOctopus] Non-blocking trip sync warning:', syncErr);
     });
 
     return NextResponse.json({

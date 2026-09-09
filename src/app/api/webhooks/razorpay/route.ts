@@ -16,7 +16,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { db } from '@/lib/db';
 import { sendSpecialistIntakeNotification } from '@/lib/email/reminders';
-import { syncTravelerToEmailOctopus } from '@/lib/email/emailoctopus';
 import { sendTransactionalEmail, getBrevoConfig } from '@/lib/email/brevo';
 
 export async function POST(request: NextRequest) {
@@ -145,14 +144,6 @@ export async function POST(request: NextRequest) {
             console.error('[Razorpay Webhook] Email send failed:', emailError);
           }
         }
-
-        // Synchronize customer tier upgrade to EmailOctopus
-        syncTravelerToEmailOctopus(updatedTrip, {
-          isPaid: true,
-          tag: targetTier === 'CONCIERGE' ? 'concierge' : 'certified_pass',
-        }).catch((syncErr) => {
-          console.warn('[EmailOctopus] Webhook customer sync warning:', syncErr);
-        });
 
         return NextResponse.json({ status: 'ok', upgradedTier: targetTier, tripId });
       }

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { sendSpecialistIntakeNotification } from '@/lib/email/reminders';
-import { syncTravelerToEmailOctopus } from '@/lib/email/emailoctopus';
 
 
 
@@ -103,14 +102,6 @@ export async function POST(req: NextRequest, { params }: Params) {
           urgency: urgency as any,
         });
       }
-
-      // Sync customer upgrade to EmailOctopus
-      syncTravelerToEmailOctopus(updatedTrip, {
-        isPaid: true,
-        tag: targetTier === 'CONCIERGE' ? 'concierge' : 'certified_pass',
-      }).catch((syncErr) => {
-        console.warn('[EmailOctopus] Non-blocking checkout sync warning:', syncErr);
-      });
 
       return NextResponse.json({
         success: true,

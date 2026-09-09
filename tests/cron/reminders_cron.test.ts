@@ -13,6 +13,8 @@ describe('Daily Pre-Flight Reminders Cron Worker', () => {
 
   beforeAll(async () => {
     process.env.CRON_SECRET = CRON_SECRET;
+    delete process.env.BREVO_API_KEY;
+    delete process.env.RESEND_API_KEY;
 
     const today = new Date();
     const date30 = format(addDays(today, 30), 'yyyy-MM-dd');
