@@ -530,7 +530,7 @@ export default function VaultView({
                       {getDocClassification(selectedDoc).label}
                     </h2>
                     <p className="text-[11px] text-zinc-500 font-mono">
-                      Compliance Standard: European Regulation (EU) 2024/1131 / DEFRA Statutory Instrument
+                      Compliance Standard: Regulation (EU) 2026/131 / DEFRA Pet Travel Scheme / IATA LAR
                     </p>
                   </div>
 

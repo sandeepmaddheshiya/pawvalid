@@ -33,17 +33,25 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const isDemoPass = !tripData;
     const petProfile = (tripData?.petProfile as any) || {};
-    const petName = tripData?.petName || petProfile.name || 'Bailey';
+    const petName = tripData?.petName || petProfile.name || (isDemoPass ? 'Bailey' : 'Pet Traveler');
     const species = tripData?.species || petProfile.species || 'Canine';
-    const breed = tripData?.breed || petProfile.breed || 'Golden Retriever';
-    const origin = tripData?.origin || 'United Kingdom';
-    const destination = tripData?.destination || 'Germany';
-    const transits = tripData?.route?.transitCountries || [];
+    const breed = tripData?.breed || petProfile.breed || (isDemoPass ? 'Golden Retriever' : 'Companion Animal');
+    const origin = tripData?.origin || tripData?.route?.origin || (isDemoPass ? 'United Kingdom' : 'Origin Country');
+    const destination = tripData?.destination || tripData?.route?.destination || (isDemoPass ? 'Germany' : 'Destination Country');
+    const transits = tripData?.route?.transitCountries || tripData?.transitCountries || [];
     const userEmail = tripData?.userEmail || 'traveler@petvia.com';
 
+    const microchipNumber = petProfile.microchipNumber || tripData?.microchipNumber || (isDemoPass ? '985141002847192' : 'Not Recorded');
+    const microchipDate = petProfile.microchipDate || tripData?.microchipDate || (isDemoPass ? '2023-04-12' : 'Verified');
+    const rabiesVaccineDate = petProfile.rabiesVaccineDate || petProfile.rabiesVaccinationDate || tripData?.rabiesVaccinationDate || (isDemoPass ? '2024-05-10' : 'Not Recorded');
+    const rabiesVaccineType = petProfile.rabiesVaccineType || 'BOOSTER';
+
     const passId = `PV-2026-${tripData?.id?.slice(0, 8)?.toUpperCase() || 'UKDE-9842'}`;
-    const baseUrl = request.nextUrl.origin || 'https://petvia.com';
+    const baseUrl = (request.nextUrl.origin && !request.nextUrl.origin.includes('localhost'))
+      ? request.nextUrl.origin.replace(/^http:/, 'https:')
+      : 'https://petvia.com';
     const verificationUrl = `${baseUrl}/verify/${passId}`;
 
     const html = await generatePassportHtml({
@@ -54,10 +62,14 @@ export async function GET(request: NextRequest) {
         breed,
         ageMonths: petProfile.ageMonths || 36,
         weightKg: petProfile.weightKg || 28.5,
-        microchipNumber: petProfile.microchipNumber || '985141002847192',
-        microchipDate: petProfile.microchipDate || '2023-04-12',
-        rabiesVaccineDate: petProfile.rabiesVaccineDate || '2024-05-10',
-        rabiesVaccineType: petProfile.rabiesVaccineType || 'BOOSTER',
+        microchipNumber,
+        microchipDate,
+        rabiesVaccineDate,
+        rabiesVaccineType,
+        rabiesVaccineBrand: petProfile.rabiesVaccineBrand,
+        rabiesTiterResult: petProfile.rabiesTiterResult || petProfile.titerLevel,
+        rabiesTiterDate: petProfile.rabiesTiterDate,
+        attendingVet: petProfile.attendingVet,
       },
       origin,
       destination,

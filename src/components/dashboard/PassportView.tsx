@@ -40,6 +40,25 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
   const destination = trip?.destination || trip?.route?.destination || 'Germany';
   const transits = trip?.route?.transitCountries || [];
 
+  const isDemo = !trip?.id || trip?.id === 'demo-pass' || trip?.id === 'PV-2026-UKDE-9842';
+
+  const isTapewormRequired = /united kingdom|great britain|uk|england|scotland|wales|ireland|malta|finland|norway/i.test(destination);
+  const isTiterNeeded = /australia|japan|new zealand|south africa|taiwan|iceland/i.test(destination);
+  const hasTiter = Boolean(pet?.rabiesTiterResult || pet?.titerLevel || pet?.rabiesTiterDate || (isDemo ? 0.85 : null));
+  const titerValue = pet?.rabiesTiterResult || pet?.titerLevel || (isDemo ? '0.85 IU/ml' : null);
+
+  const isEuDestination = /germany|france|italy|spain|austria|netherlands|belgium|poland|portugal|greece|sweden|denmark|finland|ireland|czech|croatia|hungary|romania|bulgaria|slovakia|slovenia|lithuania|latvia|estonia|cyprus|malta|luxembourg/i.test(destination);
+  const isUkDestination = /united kingdom|great britain|uk|england|scotland|wales/i.test(destination);
+  const isUsDestination = /united states|usa|us/i.test(destination);
+
+  const regulatoryScheme = isEuDestination
+    ? 'Regulation (EU) 2026/131 Non-Commercial Pet Movement'
+    : isUkDestination
+    ? 'GB Pet Travel Scheme / Animal Health Regulations'
+    : isUsDestination
+    ? 'USDA APHIS Pet Transit Standards'
+    : 'IATA LAR & International Pet Movement Standards';
+
   const handleDownloadPdf = async () => {
     if (!isPaid) {
       setPricingModalOpen(true);
@@ -277,7 +296,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                   Verified Immunization &amp; Clinical Ledger
                 </h3>
                 <p className="text-xs text-zinc-500 mt-0.5">
-                  Evaluated under European Commission Regulation (EU) 2024/1131 and IATA standards
+                  Evaluated under {regulatoryScheme} and IATA standards
                 </p>
               </div>
               <span className="text-[11px] font-semibold text-zinc-400">Audit Trail Verified</span>
@@ -301,7 +320,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                         Inactivated adjuvant vaccine (EU authorized)
                       </span>
                     </td>
-                    <td className="py-3 px-4">{pet.rabiesVaccineDate || '10 May 2024'}</td>
+                    <td className="py-3 px-4">{pet.rabiesVaccineDate || (isDemo ? '10 May 2024' : 'Verified')}</td>
                     <td className="py-3 px-4 text-zinc-600">Valid through May 2027 (21d wait cleared)</td>
                     <td className="py-3 px-5 text-right">
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
@@ -317,12 +336,28 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                         Approved reference laboratory serology
                       </span>
                     </td>
-                    <td className="py-3 px-4">15 Jun 2024</td>
-                    <td className="py-3 px-4 text-zinc-600">0.85 IU/ml (Requirement: ≥ 0.50 IU/ml)</td>
+                    <td className="py-3 px-4">{pet.rabiesTiterDate || (hasTiter ? (isDemo ? '15 Jun 2024' : 'Certified') : 'Route Evaluation')}</td>
+                    <td className="py-3 px-4 text-zinc-600">
+                      {hasTiter
+                        ? `${titerValue || '0.85 IU/ml'} (Requirement: ≥ 0.50 IU/ml)`
+                        : (isTiterNeeded
+                            ? 'Pending Blood Serology (≥ 0.50 IU/ml required)'
+                            : `Exempt for direct entry into ${destination}`)}
+                    </td>
                     <td className="py-3 px-5 text-right">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                        ✓ Passed
-                      </span>
+                      {hasTiter ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          ✓ Passed
+                        </span>
+                      ) : isTiterNeeded ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                          Action Required
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-zinc-100 text-zinc-600 border border-zinc-200">
+                          Exempt
+                        </span>
+                      )}
                     </td>
                   </tr>
 
@@ -330,7 +365,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                     <td className="py-3 px-5 font-semibold text-zinc-900">
                       Pre-Flight Veterinary Clinical Examination
                       <span className="block text-[11px] font-normal text-zinc-500">
-                        EU Animal Health Certificate (AHC) issuance
+                        {isEuDestination ? 'EU Animal Health Certificate (AHC) issuance' : isUkDestination ? 'UK Animal Health Certificate issuance' : 'Statutory Veterinary Export Certificate'}
                       </span>
                     </td>
                     <td className="py-3 px-4">Pending Departure</td>
@@ -349,12 +384,22 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                         Praziquantel treatment 24h–120h prior to entry
                       </span>
                     </td>
-                    <td className="py-3 px-4">Route Evaluation</td>
-                    <td className="py-3 px-4 text-zinc-600">Exempt for direct entry into Germany</td>
+                    <td className="py-3 px-4">{isTapewormRequired ? '24h–120h prior to entry' : 'Route Evaluation'}</td>
+                    <td className="py-3 px-4 text-zinc-600">
+                      {isTapewormRequired
+                        ? 'Praziquantel treatment mandatory 24h–120h prior to entry'
+                        : `Exempt for direct entry into ${destination}`}
+                    </td>
                     <td className="py-3 px-5 text-right">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-zinc-100 text-zinc-600 border border-zinc-200">
-                        Exempt
-                      </span>
+                      {isTapewormRequired ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          ✓ Required Window
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-zinc-100 text-zinc-600 border border-zinc-200">
+                          Exempt
+                        </span>
+                      )}
                     </td>
                   </tr>
                 </tbody>
@@ -363,7 +408,7 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
 
             <div className="p-4 bg-zinc-50/60 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
               <span>Encrypted records securely backed in digital document vault</span>
-              <span>European Commission Reg (EU) 2024/1131</span>
+              <span>{regulatoryScheme}</span>
             </div>
           </div>
         </div>

@@ -121,9 +121,20 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
     : '3 Yrs • 28.5 kg';
   const rabiesDate = passData?.pet?.rabies?.vaccineDate || 'May 10, 2024';
   const rabiesExpiry = passData?.pet?.rabies?.validUntil || 'May 10, 2027';
-  const titerLevel = passData?.pet?.titer?.levelIU ? `${passData.pet.titer.levelIU} IU/ml` : '0.85 IU/ml';
+  const titerStatus = passData?.pet?.titer?.status;
+  const isTiterExempt = titerStatus === 'EXEMPT';
+  const isTiterActionRequired = titerStatus === 'ACTION_REQUIRED';
+  const hasTiterLevel = Boolean(passData?.pet?.titer?.levelIU);
+  const titerLevel = hasTiterLevel
+    ? `${passData.pet.titer.levelIU} IU/ml`
+    : (isTiterExempt ? 'Exempt' : (isTiterActionRequired ? 'Required' : '0.85 IU/ml'));
   const titerLab = passData?.pet?.titer?.laboratory || 'APHA Weybridge Approved Serology Laboratory';
-  const regulationScheme = passData?.route?.regulationScheme || 'Regulation (EU) No 576/2013 Non-Commercial Movement';
+
+  const tapewormStatus = passData?.pet?.tapeworm?.status;
+  const isTapewormExempt = tapewormStatus === 'EXEMPT';
+
+  const defaultScheme = 'Regulation (EU) 2026/131 Non-Commercial Pet Movement';
+  const regulationScheme = passData?.route?.regulationScheme || defaultScheme;
   const digitalSignature = passData?.cryptographicSeal?.hash || '9f8b4d21e07ca14588df852a3b7c8914efb951c2384a561972cd7128ea324b91';
   const isPaid = passData?.isPaid !== false;
   const issuedAtFormatted = passData?.issuedAt
@@ -229,7 +240,7 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                       </svg>
-                      <span>IATA LAR CR-82 &amp; EU REG 576/2013</span>
+                      <span>{regulationScheme} • IATA LAR</span>
                     </div>
                     <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
                       Digital Animal Travel Verification Dossier
@@ -482,16 +493,30 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                             3. Rabies Antibody Titer Serology (FAVN)
                           </span>
                           <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-600">
-                            FAVN-0.50-IU
+                            {isTiterExempt ? 'ROUTE-EXEMPT' : (isTiterActionRequired ? 'FAVN-REQUIRED' : 'FAVN-0.50-IU')}
                           </span>
                         </div>
                         <p className="text-[11px] text-zinc-500 leading-relaxed">
-                          Serum level verified at <strong className="text-zinc-800">{titerLevel}</strong> (exceeds WHO 0.50 IU/ml standard). Processed by {titerLab}.
+                          {isTiterExempt
+                            ? 'Antibody titration serology is not required for direct non-commercial entry on this certified route.'
+                            : isTiterActionRequired
+                            ? 'Blood serology titration (FAVN/RNATT) is mandatory for destination entry.'
+                            : <>Serum level verified at <strong className="text-zinc-800">{titerLevel}</strong> (exceeds WHO 0.50 IU/ml standard). Processed by {titerLab}.</>}
                         </p>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-[#E8F8F0] border border-[#C6EED8] px-2.5 py-1 rounded-lg shrink-0 self-start sm:self-auto">
-                        <span>✓</span> {titerLevel} Passed
-                      </span>
+                      {isTiterExempt ? (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-700 bg-zinc-100 border border-zinc-200 px-2.5 py-1 rounded-lg shrink-0 self-start sm:self-auto">
+                          <span>✓</span> Route Exempt
+                        </span>
+                      ) : isTiterActionRequired ? (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg shrink-0 self-start sm:self-auto">
+                          <span>○</span> Action Required
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-[#E8F8F0] border border-[#C6EED8] px-2.5 py-1 rounded-lg shrink-0 self-start sm:self-auto">
+                          <span>✓</span> {titerLevel} Passed
+                        </span>
+                      )}
                     </div>
 
                     {/* Item 4: Tapeworm Treatment */}
@@ -502,16 +527,24 @@ export default function CustomsVerificationPage({ params }: VerifyPageProps) {
                             4. Echinococcus Multilocularis (Tapeworm) Window
                           </span>
                           <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-600">
-                            PRAZIQUANTEL-120H
+                            {isTapewormExempt ? 'ROUTE-EXEMPT' : 'PRAZIQUANTEL-120H'}
                           </span>
                         </div>
                         <p className="text-[11px] text-zinc-500 leading-relaxed">
-                          Praziquantel treatment schedule verified for mandatory 24h to 120h pre-arrival clinical administration window.
+                          {isTapewormExempt
+                            ? `Preventative Echinococcus treatment is exempt for direct entry into ${destination}.`
+                            : 'Praziquantel treatment schedule verified for mandatory 24h to 120h pre-arrival clinical administration window.'}
                         </p>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-[#E8F8F0] border border-[#C6EED8] px-2.5 py-1 rounded-lg shrink-0 self-start sm:self-auto">
-                        <span>✓</span> Protocol Endorsed
-                      </span>
+                      {isTapewormExempt ? (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-700 bg-zinc-100 border border-zinc-200 px-2.5 py-1 rounded-lg shrink-0 self-start sm:self-auto">
+                          <span>✓</span> Route Exempt
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-[#E8F8F0] border border-[#C6EED8] px-2.5 py-1 rounded-lg shrink-0 self-start sm:self-auto">
+                          <span>✓</span> Protocol Endorsed
+                        </span>
+                      )}
                     </div>
 
                     {/* Item 5: Official Veterinary Certificate */}

@@ -98,6 +98,7 @@ export function generateVetSheetHtml(data: {
   microchip: string;
   userEmail?: string;
   departureDate?: string;
+  statutoryScheme?: string;
 }): string {
   const petName = data.petName || 'Patient';
   const species = data.species || 'Canine';
@@ -106,6 +107,20 @@ export function generateVetSheetHtml(data: {
   const origin = data.origin || 'United Kingdom';
   const microchip = data.microchip || '985141002847192';
   const userEmail = data.userEmail || 'traveler@petvia.com';
+
+  const isEuDestination = /germany|france|italy|spain|austria|netherlands|belgium|poland|portugal|greece|sweden|denmark|finland|ireland|czech|croatia|hungary|romania|bulgaria|slovakia|slovenia|lithuania|latvia|estonia|cyprus|malta|luxembourg/i.test(destination);
+  const isUkDestination = /united kingdom|great britain|uk|england|scotland|wales/i.test(destination);
+  const isUsDestination = /united states|usa|us/i.test(destination);
+
+  const defaultScheme = isEuDestination
+    ? 'Regulation (EU) 2026/131 Non-Commercial Pet Movement'
+    : isUkDestination
+    ? 'GB Pet Travel Scheme / Animal Health Regulations'
+    : isUsDestination
+    ? 'USDA APHIS Pet Transit Standards'
+    : 'IATA LAR & International Pet Movement Standards';
+  const statutoryScheme = data.statutoryScheme || defaultScheme;
+
   const currentDate = new Date().toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
@@ -387,7 +402,7 @@ export function generateVetSheetHtml(data: {
       <table class="data-table">
         <tr><td class="lbl">Point of Origin:</td><td class="val">${origin}</td></tr>
         <tr><td class="lbl">Destination State:</td><td class="val">${destination}</td></tr>
-        <tr><td class="lbl">Regulatory Standard:</td><td class="val">Regulation (EU) No 576/2013 / IATA LAR</td></tr>
+        <tr><td class="lbl">Regulatory Standard:</td><td class="val">${statutoryScheme}</td></tr>
         <tr><td class="lbl">Inspection Authority:</td><td class="val">Accredited Veterinary Surgeon (MRCVS / USDA)</td></tr>
       </table>
     </div>
@@ -482,6 +497,10 @@ export async function generatePassportHtml(data: {
     microchipDate?: string;
     rabiesVaccineDate?: string;
     rabiesVaccineType?: string;
+    rabiesVaccineBrand?: string;
+    rabiesTiterResult?: string;
+    rabiesTiterDate?: string;
+    attendingVet?: string;
   };
   origin: string;
   destination: string;
@@ -489,6 +508,7 @@ export async function generatePassportHtml(data: {
   userEmail: string;
   verificationUrl: string;
   sha256Hash?: string;
+  statutoryScheme?: string;
 }): Promise<string> {
   const passId = data.passId || 'PV-2026-UKDE-9842';
   const petName = data.pet?.name || 'Milo';
@@ -511,6 +531,32 @@ export async function generatePassportHtml(data: {
     month: 'long',
     year: 'numeric',
   });
+
+  const isEuDestination = /germany|france|italy|spain|austria|netherlands|belgium|poland|portugal|greece|sweden|denmark|finland|ireland|czech|croatia|hungary|romania|bulgaria|slovakia|slovenia|lithuania|latvia|estonia|cyprus|malta|luxembourg/i.test(destination);
+  const isUkDestination = /united kingdom|great britain|uk|england|scotland|wales/i.test(destination);
+  const isUsDestination = /united states|usa|us/i.test(destination);
+
+  const defaultScheme = isEuDestination
+    ? 'Regulation (EU) 2026/131 Non-Commercial Pet Movement'
+    : isUkDestination
+    ? 'GB Pet Travel Scheme / Animal Health Regulations'
+    : isUsDestination
+    ? 'USDA APHIS Pet Transit Standards'
+    : 'IATA LAR & International Pet Movement Standards';
+  const statutoryScheme = data.statutoryScheme || defaultScheme;
+
+  const isTapewormRequired = /united kingdom|great britain|uk|england|scotland|wales|ireland|malta|finland|norway/i.test(destination);
+  const tapewormDisplay = isTapewormRequired
+    ? 'Praziquantel • Mandatory 24h to 120h pre-arrival administration'
+    : `Exempt for direct entry into ${destination}`;
+
+  const hasTiter = Boolean(data.pet?.rabiesTiterResult || data.pet?.rabiesTiterDate);
+  const isTiterNeeded = /australia|japan|new zealand|south africa|taiwan|iceland/i.test(destination);
+  const titerDisplay = hasTiter
+    ? `${data.pet?.rabiesTiterResult || '0.85 IU/ml'} (WHO Benchmark ≥0.50 IU/ml Passed)`
+    : (isTiterNeeded
+        ? 'Pending Blood Serology (FAVN/RNATT required for this route)'
+        : 'Exempt for this certified origin-destination route');
 
   // Ensure verification URL strictly uses canonical HTTPS petvia.com domain in PDF
   const rawUrl = data.verificationUrl || `https://petvia.com/verify/${passId}`;
@@ -722,7 +768,7 @@ export async function generatePassportHtml(data: {
 
   <div class="hero-card">
     <div class="hero-info">
-      <div class="status-pill">✓ COMPLIANCE VERIFIED • IATA LAR CR-82 &amp; EU REG 576/2013</div>
+      <div class="status-pill">✓ COMPLIANCE VERIFIED • ${statutoryScheme}</div>
       <h2>${petName}</h2>
       <p>${species} • ${breed} • ${ageYears} Yrs • ${weight} kg • Non-Commercial Traveling Companion</p>
     </div>
@@ -740,7 +786,7 @@ export async function generatePassportHtml(data: {
           <tr><td class="label">15-Digit ISO Microchip</td><td class="val" style="font-family: monospace; font-size: 11.5px; color: #0E2342;">${microchip}</td></tr>
           <tr><td class="label">Transponder Standard</td><td class="val">ISO 11784 / 11785 (134.2 kHz FDX-B)</td></tr>
           <tr><td class="label">Implantation Date</td><td class="val">${microchipDate} (Precedes all vaccines)</td></tr>
-          <tr><td class="label">Attending Veterinarian</td><td class="val">Dr. Sarah Thornton, MRCVS (#71924)</td></tr>
+          <tr><td class="label">Attending Veterinarian</td><td class="val">${data.pet?.attendingVet || 'Accredited Veterinary Surgeon (Pending Clinical Exam)'}</td></tr>
         </table>
       </div>
 
@@ -749,7 +795,7 @@ export async function generatePassportHtml(data: {
         <table class="data-table">
           <tr><td class="label">Point of Departure</td><td class="val">${origin}</td></tr>
           <tr><td class="label">Final Destination</td><td class="val">${destination}</td></tr>
-          <tr><td class="label">Governing Scheme</td><td class="val">Regulation (EU) No 576/2013 Non-Commercial Movement</td></tr>
+          <tr><td class="label">Governing Scheme</td><td class="val">${statutoryScheme}</td></tr>
           <tr><td class="label">Accompanying Traveler</td><td class="val">${userEmail}</td></tr>
         </table>
       </div>
@@ -757,10 +803,10 @@ export async function generatePassportHtml(data: {
       <div class="card">
         <div class="card-header">Section III: Certified Veterinary Medical Ledger</div>
         <table class="data-table">
-          <tr><td class="label">Rabies Immunization</td><td class="val">Nobivac Rabies (Lot #B84291) • Admin: ${rabiesDate} (${rabiesType})</td></tr>
+          <tr><td class="label">Rabies Immunization</td><td class="val">${data.pet?.rabiesVaccineBrand || 'Authorized Inactivated Rabies Vaccine'} • Admin: ${rabiesDate} (${rabiesType})</td></tr>
           <tr><td class="label">Rabies Latency Status</td><td class="val" style="color: #0FA958;">✓ 21d+ Post-Vaccination Latency Satisfied</td></tr>
-          <tr><td class="label">Rabies Neutralizing Titer</td><td class="val">0.85 IU/ml (Passed &gt;0.50 IU/ml WHO Standard)</td></tr>
-          <tr><td class="label">Echinococcus multilocularis</td><td class="val">Praziquantel • Administered 24h to 120h prior to entry</td></tr>
+          <tr><td class="label">Rabies Neutralizing Titer</td><td class="val">${titerDisplay}</td></tr>
+          <tr><td class="label">Echinococcus multilocularis</td><td class="val">${tapewormDisplay}</td></tr>
           <tr><td class="label">Veterinary Certificate</td><td class="val">Accredited Health Certificate Endorsed &amp; Linked</td></tr>
         </table>
       </div>
@@ -811,6 +857,8 @@ export async function generateVerificationPassHtml(data: {
   origin?: string;
   destination?: string;
   statutoryScheme?: string;
+  rabiesTiterResult?: string;
+  isTapewormRequired?: boolean;
   verificationUrl: string;
   sha256Hash?: string;
 }): Promise<string> {
@@ -824,9 +872,39 @@ export async function generateVerificationPassHtml(data: {
   const microchipDate = data.microchipDate || '2023-04-12';
   const origin = data.origin || 'United Kingdom (London LHR)';
   const destination = data.destination || 'Germany (Frankfurt FRA)';
-  const statutoryScheme =
-    data.statutoryScheme ||
-    'Regulation (EU) No 576/2013 Non-Commercial Pet Movement';
+
+  const isEuDestination = /germany|france|italy|spain|austria|netherlands|belgium|poland|portugal|greece|sweden|denmark|finland|ireland|czech|croatia|hungary|romania|bulgaria|slovakia|slovenia|lithuania|latvia|estonia|cyprus|malta|luxembourg/i.test(destination);
+  const isUkDestination = /united kingdom|great britain|uk|england|scotland|wales/i.test(destination);
+  const isUsDestination = /united states|usa|us/i.test(destination);
+
+  const defaultScheme = isEuDestination
+    ? 'Regulation (EU) 2026/131 Non-Commercial Pet Movement'
+    : isUkDestination
+    ? 'GB Pet Travel Scheme / Animal Health Regulations'
+    : isUsDestination
+    ? 'USDA APHIS Pet Transit Standards'
+    : 'IATA LAR & International Pet Movement Standards';
+  const statutoryScheme = data.statutoryScheme || defaultScheme;
+
+  const isTapeworm = data.isTapewormRequired !== undefined
+    ? data.isTapewormRequired
+    : /united kingdom|great britain|uk|england|scotland|wales|ireland|malta|finland|norway/i.test(destination);
+  const tapewormDesc = isTapeworm
+    ? 'Praziquantel treatment verified for 24h-120h arrival window.'
+    : `Exempt for direct entry into ${destination}.`;
+  const tapewormBadge = isTapeworm ? '✓ Protocol Endorsed' : '✓ Route Exempt';
+
+  const hasTiter = Boolean(data.rabiesTiterResult);
+  const isTiterNeeded = /australia|japan|new zealand|south africa|taiwan|iceland/i.test(destination);
+  const titerDesc = hasTiter
+    ? `Serum level ${data.rabiesTiterResult} exceeds WHO 0.50 IU/ml benchmark.`
+    : (isTiterNeeded
+        ? 'Pending Blood Serology (FAVN/RNATT required for this route).'
+        : 'Antibody titration serology not required for this origin-destination route.');
+  const titerBadge = hasTiter
+    ? `✓ ${data.rabiesTiterResult} Passed`
+    : (isTiterNeeded ? '○ Action Required' : '✓ Route Exempt');
+
   const hash =
     data.sha256Hash ||
     'a7384a55787af5de3fed376b69e3be4bfd8357d6e1873e046a782bcf281a815e';
@@ -1087,16 +1165,16 @@ export async function generateVerificationPassHtml(data: {
         <div class="checklist-item">
           <div>
             <div class="check-title">3. Rabies Antibody Titer Serology (FAVN)</div>
-            <div class="check-desc">Serum level 0.85 IU/ml exceeds WHO 0.50 IU/ml benchmark.</div>
+            <div class="check-desc">${titerDesc}</div>
           </div>
-          <span class="check-pill">✓ 0.85 IU/ml Passed</span>
+          <span class="check-pill">${titerBadge}</span>
         </div>
         <div class="checklist-item">
           <div>
             <div class="check-title">4. Tapeworm Treatment (Echinococcus)</div>
-            <div class="check-desc">Praziquantel treatment verified for 24h-120h arrival window.</div>
+            <div class="check-desc">${tapewormDesc}</div>
           </div>
-          <span class="check-pill">✓ Protocol Endorsed</span>
+          <span class="check-pill">${tapewormBadge}</span>
         </div>
         <div class="checklist-item" style="border-bottom: none;">
           <div>

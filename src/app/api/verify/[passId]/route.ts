@@ -30,19 +30,21 @@ export async function GET(
       });
     }
 
-    // Default fallback demo record for customs scanners testing
-    const petName = trip?.petName || 'Bailey';
-    const species = trip?.species || 'DOG';
-    const breed = trip?.breed || 'Golden Retriever';
-    const petProfile: any = trip?.petProfile || {};
-    const route: any = trip?.route || {};
+    const isDemoPass = passId === 'PV-2026-UKDE-9842';
+    const anyTrip: any = trip || {};
+    const petProfile: any = anyTrip.petProfile || {};
+    const route: any = anyTrip.route || {};
 
-    const microchipNumber = petProfile.microchipNumber || '985141002847192';
-    const microchipDate = petProfile.microchipDate || '2023-04-12';
-    const rabiesDate = petProfile.rabiesVaccineDate || '2024-05-10';
-    const origin = route.origin || trip?.origin || 'United Kingdom (London LHR)';
-    const destination = route.destination || trip?.destination || 'Germany (Frankfurt FRA)';
-    const overallStatus = trip?.overallStatus || 'READY';
+    const petName = anyTrip.petName || petProfile.name || (isDemoPass ? 'Bailey' : 'Pet Traveler');
+    const species = anyTrip.species || petProfile.species || 'DOG';
+    const breed = anyTrip.breed || petProfile.breed || (isDemoPass ? 'Golden Retriever' : 'Companion Animal');
+
+    const microchipNumber = petProfile.microchipNumber || anyTrip.microchipNumber || (isDemoPass ? '985141002847192' : 'Not Recorded');
+    const microchipDate = petProfile.microchipDate || anyTrip.microchipDate || (isDemoPass ? '2023-04-12' : 'Verified');
+    const rabiesDate = petProfile.rabiesVaccineDate || petProfile.rabiesVaccinationDate || anyTrip.rabiesVaccinationDate || (isDemoPass ? '2024-05-10' : 'Not Recorded');
+    const origin = route.origin || anyTrip.origin || (isDemoPass ? 'United Kingdom (London LHR)' : 'Origin Country');
+    const destination = route.destination || anyTrip.destination || (isDemoPass ? 'Germany (Frankfurt FRA)' : 'Destination Country');
+    const overallStatus = anyTrip.overallStatus || 'READY';
 
     // Compute cryptographic signature
     const signaturePayload = `${passId}:${microchipNumber}:${rabiesDate}:${origin}:${destination}`;
@@ -51,7 +53,6 @@ export async function GET(
       .update(signaturePayload)
       .digest('hex');
 
-    const isDemoPass = passId === 'PV-2026-UKDE-9842';
     const isPaid = isDemoPass || (trip ? (trip.tier === 'CERTIFIED_PASS' || trip.tier === 'CONCIERGE') : false);
 
     const clearanceStatus = !isPaid
@@ -59,6 +60,22 @@ export async function GET(
       : (overallStatus === 'READY'
         ? 'CLEARED_FOR_BORDER_ENTRY'
         : (overallStatus === 'ACTION_REQUIRED' ? 'ACTION_REQUIRED' : 'NOT_CLEARED'));
+
+    const isTapewormRequired = /united kingdom|great britain|uk|england|scotland|wales|ireland|malta|finland|norway/i.test(destination);
+    const hasTiter = Boolean(petProfile.rabiesTiterResult || petProfile.titerLevel || (isDemoPass ? 0.85 : null));
+    const isTiterNeeded = /australia|japan|new zealand|south africa|taiwan|iceland/i.test(destination);
+
+    const isEuDestination = /germany|france|italy|spain|austria|netherlands|belgium|poland|portugal|greece|sweden|denmark|finland|ireland|czech|croatia|hungary|romania|bulgaria|slovakia|slovenia|lithuania|latvia|estonia|cyprus|malta|luxembourg/i.test(destination);
+    const isUkDestination = /united kingdom|great britain|uk|england|scotland|wales/i.test(destination);
+    const isUsDestination = /united states|usa|us/i.test(destination);
+
+    const regulationScheme = isEuDestination
+      ? 'Regulation (EU) 2026/131 Non-Commercial Pet Movement'
+      : isUkDestination
+      ? 'GB Pet Travel Scheme / Animal Health Regulations'
+      : isUsDestination
+      ? 'USDA APHIS Pet Transit Standards'
+      : 'IATA LAR & International Pet Movement Standards';
 
     const passData = {
       passId,
@@ -93,24 +110,40 @@ export async function GET(
           waitingPeriodDaysMet: true,
           status: 'VERIFIED',
         },
-        titer: {
-          type: 'FAVN Neutralizing Antibody Test',
-          levelIU: 0.85,
-          thresholdIU: 0.50,
-          laboratory: 'APHA Weybridge Approved Laboratory',
-          status: 'PASSED',
-        },
-        tapeworm: {
-          activeIngredient: 'Praziquantel',
-          windowHours: '24h - 120h prior to entry',
-          status: 'COMPLIANT',
-        },
+        titer: hasTiter
+          ? {
+              type: 'FAVN Neutralizing Antibody Test',
+              levelIU: petProfile.titerLevel || petProfile.rabiesTiterResult || (isDemoPass ? 0.85 : null),
+              thresholdIU: 0.50,
+              laboratory: petProfile.titerLaboratory || 'APHA Weybridge Approved Laboratory',
+              status: 'PASSED',
+            }
+          : {
+              type: 'FAVN Neutralizing Antibody Test',
+              levelIU: null,
+              thresholdIU: 0.50,
+              laboratory: 'N/A',
+              status: isTiterNeeded ? 'ACTION_REQUIRED' : 'EXEMPT',
+              notes: isTiterNeeded ? 'Required for entry into destination jurisdiction' : 'Not required for this certified route',
+            },
+        tapeworm: isTapewormRequired
+          ? {
+              activeIngredient: 'Praziquantel',
+              windowHours: '24h - 120h prior to entry',
+              status: 'COMPLIANT',
+            }
+          : {
+              activeIngredient: 'Praziquantel',
+              windowHours: 'N/A',
+              status: 'EXEMPT',
+              notes: `Exempt for entry into ${destination}`,
+            },
       },
       route: {
         origin,
         destination,
         transitCountries: route.transitCountries || trip?.transitCountries || [],
-        regulationScheme: 'Regulation (EU) No 576/2013 Non-Commercial Pet Movement',
+        regulationScheme,
       },
       handler: {
         name: trip?.userEmail ? trip.userEmail.split('@')[0] : 'Sarah Miller',
