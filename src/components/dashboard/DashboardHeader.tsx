@@ -76,62 +76,80 @@ export default function DashboardHeader({
             </button>
 
             {isSwitcherOpen && (
-              <div className="absolute left-0 mt-2 w-72 max-w-[calc(100vw-1.5rem)] bg-white rounded-2xl shadow-xl border border-zinc-200 p-2 z-50 animate-fade-in">
-                <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider px-3 py-1.5">
-                  Saved Trips ({allTrips.length})
-                </div>
-                <div className="space-y-1 max-h-60 overflow-y-auto">
-                  {allTrips.map((t) => {
-                    const isCurrent = t.id === trip?.id;
-                    return (
-                      <button
-                        key={t.id}
-                        type="button"
-                        onClick={() => {
-                          onSelectTrip(t.id);
-                          setIsSwitcherOpen(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-colors cursor-pointer ${
-                          isCurrent
-                            ? 'bg-emerald-50 text-emerald-950 font-bold border border-emerald-200'
-                            : 'hover:bg-zinc-50 text-zinc-700'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5 truncate">
-                          <svg className="w-3.5 h-3.5 text-zinc-400 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 11c-2.4 0-4 1.8-4 3.5 0 2.2 2 3.5 4 3.5s4-1.3 4-3.5C16 12.8 14.4 11 12 11z" />
-                            <ellipse cx="6.5" cy="11.5" rx="1.8" ry="2.2" />
-                            <ellipse cx="9.2" cy="7" rx="1.8" ry="2.2" />
-                            <ellipse cx="14.8" cy="7" rx="1.8" ry="2.2" />
-                            <ellipse cx="17.5" cy="11.5" rx="1.8" ry="2.2" />
-                          </svg>
-                          <div className="truncate">
-                            <strong className="block text-zinc-900 truncate">{t.petName}</strong>
-                            <span className="text-[11px] text-zinc-500">{t.origin} → {t.destination}</span>
-                          </div>
-                        </div>
-                        {isCurrent && <span className="text-emerald-600 font-bold text-xs">Active</span>}
-                      </button>
-                    );
-                  })}
-                </div>
+              <>
+                {/* Mobile Backdrop */}
+                <div
+                  className="fixed inset-0 z-40 bg-black/25 backdrop-blur-xs sm:hidden"
+                  onClick={() => setIsSwitcherOpen(false)}
+                />
 
-                <div className="border-t border-zinc-100 mt-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsSwitcherOpen(false);
-                      onNewTrip();
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-emerald-700 hover:bg-emerald-50 flex items-center gap-2 cursor-pointer transition-colors"
-                  >
-                    <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    <span>Add Another Pet / New Trip</span>
-                  </button>
+                <div className="fixed inset-x-3 top-[54px] z-50 sm:absolute sm:inset-x-auto sm:left-0 sm:top-full sm:mt-2 sm:w-80 bg-white rounded-2xl shadow-xl border border-zinc-200 p-2 animate-fade-in max-w-[calc(100vw-1.5rem)]">
+                  <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider px-3 py-1.5 flex items-center justify-between">
+                    <span>Saved Trips ({allTrips.length})</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsSwitcherOpen(false)}
+                      className="sm:hidden text-zinc-400 hover:text-zinc-600 p-1 -mr-1"
+                      aria-label="Close"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="space-y-1 max-h-60 overflow-y-auto">
+                    {allTrips.map((t) => {
+                      const isCurrent = t.id === trip?.id;
+                      return (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => {
+                            onSelectTrip(t.id);
+                            setIsSwitcherOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2.5 sm:py-2 rounded-xl text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                            isCurrent
+                              ? 'bg-emerald-50 text-emerald-950 font-bold border border-emerald-200'
+                              : 'hover:bg-zinc-50 text-zinc-700'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+                            <svg className="w-3.5 h-3.5 text-zinc-400 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M12 11c-2.4 0-4 1.8-4 3.5 0 2.2 2 3.5 4 3.5s4-1.3 4-3.5C16 12.8 14.4 11 12 11z" />
+                              <ellipse cx="6.5" cy="11.5" rx="1.8" ry="2.2" />
+                              <ellipse cx="9.2" cy="7" rx="1.8" ry="2.2" />
+                              <ellipse cx="14.8" cy="7" rx="1.8" ry="2.2" />
+                              <ellipse cx="17.5" cy="11.5" rx="1.8" ry="2.2" />
+                            </svg>
+                            <div className="min-w-0 flex-1">
+                              <strong className="block text-zinc-900 truncate">{t.petName}</strong>
+                              <span className="text-[11px] text-zinc-500 block truncate">{t.origin} → {t.destination}</span>
+                            </div>
+                          </div>
+                          {isCurrent && <span className="text-emerald-600 font-bold text-xs shrink-0">Active</span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="border-t border-zinc-100 mt-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSwitcherOpen(false);
+                        onNewTrip();
+                      }}
+                      className="w-full text-left px-3 py-2.5 sm:py-2 rounded-xl text-xs font-semibold text-emerald-700 hover:bg-emerald-50 flex items-center gap-2 cursor-pointer transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      </svg>
+                      <span>Add Another Pet / New Trip</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
         ) : (
@@ -223,23 +241,30 @@ export default function DashboardHeader({
           </button>
 
           {isProfileOpen && (
-            <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-1.5rem)] bg-white rounded-2xl shadow-xl border border-zinc-200/90 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-100 text-xs">
-              {/* Identity Header */}
-              <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100 mb-1">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#0E2342] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
-                    {displayEmail.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-zinc-900 truncate leading-tight">
-                      {displayEmail}
-                    </p>
-                    <span className="inline-block mt-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200/80">
-                      {tier === 'CONCIERGE' ? '★ Priority Review' : tier === 'CERTIFIED_PASS' ? '✓ Travel Plan Active' : 'Readiness Member'}
-                    </span>
+            <>
+              {/* Mobile Backdrop */}
+              <div
+                className="fixed inset-0 z-40 bg-black/25 backdrop-blur-xs sm:hidden"
+                onClick={() => setIsProfileOpen(false)}
+              />
+
+              <div className="fixed inset-x-3 top-[54px] z-50 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-72 bg-white rounded-2xl shadow-xl border border-zinc-200/90 p-1.5 animate-in fade-in zoom-in-95 duration-100 text-xs max-w-[calc(100vw-1.5rem)]">
+                {/* Identity Header */}
+                <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100 mb-1">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-[#0E2342] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                      {displayEmail.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold text-zinc-900 truncate leading-tight">
+                        {displayEmail}
+                      </p>
+                      <span className="inline-block mt-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200/80 truncate max-w-full">
+                        {tier === 'CONCIERGE' ? '★ Priority Review' : tier === 'CERTIFIED_PASS' ? '✓ Travel Plan Active' : 'Readiness Member'}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
               {/* Menu items */}
               <div className="py-0.5 space-y-0.5">
@@ -309,7 +334,8 @@ export default function DashboardHeader({
                 </button>
               </div>
             </div>
-          )}
+          </>
+        )}
         </div>
       </div>
     </header>
