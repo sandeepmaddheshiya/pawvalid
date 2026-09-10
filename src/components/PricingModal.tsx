@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 interface PricingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currency?: 'GBP' | 'USD' | 'INR';
+  currency?: string;
   scanResult?: any;
   initialTier?: string;
 }
@@ -13,11 +13,10 @@ interface PricingModalProps {
 export default function PricingModal({
   isOpen,
   onClose,
-  currency = 'GBP',
   scanResult,
   initialTier,
 }: PricingModalProps) {
-  const [selectedCurrency, setSelectedCurrency] = useState<'GBP' | 'USD' | 'INR'>(currency);
+  const selectedCurrency = 'GBP';
   const [checkoutEmail, setCheckoutEmail] = useState('');
   const [checkoutPhone, setCheckoutPhone] = useState('');
   const [selectedTier, setSelectedTier] = useState<string | null>(initialTier || 'Complete Travel Plan');
@@ -43,11 +42,7 @@ export default function PricingModal({
 
   if (!isOpen) return null;
 
-  const prices = {
-    GBP: { free: '£0', pass: '£19', concierge: '£59' },
-    USD: { free: '$0', pass: '$24', concierge: '$79' },
-    INR: { free: '₹0', pass: '₹1,499', concierge: '₹4,999' },
-  }[selectedCurrency];
+  const prices = { free: '£0', pass: '£19', concierge: '£59' };
 
   const petName = scanResult?.petProfile?.name || 'Your Pet';
   const species = scanResult?.petProfile?.species === 'CAT' ? 'Cat' : 'Dog';
@@ -315,25 +310,7 @@ export default function PricingModal({
             )}
           </p>
 
-          {/* Currency Switcher */}
-          <div className="pt-2 flex justify-center">
-            <div className="inline-flex p-1 rounded-xl bg-zinc-100 border border-zinc-200 text-xs font-semibold">
-              {(['GBP', 'USD', 'INR'] as const).map((curr) => (
-                <button
-                  key={curr}
-                  type="button"
-                  onClick={() => setSelectedCurrency(curr)}
-                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
-                    selectedCurrency === curr
-                      ? 'bg-[#0E2342] text-white shadow-xs'
-                      : 'text-zinc-600 hover:text-zinc-900'
-                  }`}
-                >
-                  {curr === 'GBP' ? '£ GBP' : curr === 'USD' ? '$ USD' : '₹ INR'}
-                </button>
-              ))}
-            </div>
-          </div>
+
         </div>
 
         {/* ─── 2-OPTION COMPARISON CARDS (Clear & Trustworthy) ─────────── */}
