@@ -33,13 +33,13 @@ export default function Logo({ size = 'default' }: { size?: 'small' | 'default' 
       <div className="flex flex-col leading-tight">
         <span
           className={`font-display ${
-            isSmall ? 'text-base' : 'text-lg'
+            isSmall ? 'text-sm sm:text-base' : 'text-lg'
           } font-black text-[#0E2342] tracking-tight`}
         >
           PawValid
         </span>
         <span
-          className="text-[9px] font-medium text-zinc-500 tracking-normal"
+          className="text-[8px] sm:text-[9px] font-medium text-zinc-500 tracking-normal hidden min-[380px]:inline-block"
         >
           Pet Travel Compliance
         </span>

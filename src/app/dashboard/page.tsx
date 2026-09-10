@@ -452,7 +452,7 @@ function DashboardContent() {
   const docsCount = (currentTrip.uploadedDocuments as any[])?.length || 0;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col max-w-full overflow-x-hidden">
       {/* Top Global Header */}
       <DashboardHeader
         trip={currentTrip}
@@ -465,7 +465,7 @@ function DashboardContent() {
         onDeleteTrip={handleDeleteTrip}
       />
 
-      <div className="flex-1 flex w-full">
+      <div className="flex-1 flex w-full max-w-full overflow-x-hidden">
         {/* Desktop Sidebar */}
         <DashboardSidebar
           activeTab={activeTab}
@@ -476,7 +476,7 @@ function DashboardContent() {
         />
 
         {/* Main Content Viewport */}
-        <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 pb-20 lg:pb-12 overflow-y-auto">
+        <main className="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 pb-20 lg:pb-12 overflow-y-auto max-w-full">
           <div className="max-w-6xl mx-auto space-y-6">
             {activeTab === 'overview' && (
               <OverviewView

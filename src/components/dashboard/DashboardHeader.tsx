@@ -36,23 +36,23 @@ export default function DashboardHeader({
   const isPaid = tier === 'CERTIFIED_PASS' || tier === 'CONCIERGE';
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/80 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/80 px-3 sm:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 max-w-full overflow-x-clip">
       {/* Left: Brand & Trip Switcher */}
-      <div className="flex items-center gap-4 sm:gap-6">
-        <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-2 sm:gap-6 min-w-0 shrink">
+        <div className="flex items-center gap-2">
           <Logo size="small" />
-          <span className="hidden sm:inline-block px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-600 border border-zinc-200/80 text-[10px] font-bold uppercase tracking-wider">
+          <span className="hidden md:inline-block px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-600 border border-zinc-200/80 text-[10px] font-bold uppercase tracking-wider">
             Portal
           </span>
         </div>
 
         {/* Pet & Trip Switcher Dropdown */}
         {trip ? (
-          <div className="relative">
+          <div className="relative min-w-0 shrink">
             <button
               type="button"
               onClick={() => setIsSwitcherOpen(!isSwitcherOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/90 text-xs font-semibold text-zinc-900 transition-all cursor-pointer shadow-2xs"
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/90 text-xs font-semibold text-zinc-900 transition-all cursor-pointer shadow-2xs min-w-0"
             >
               <svg className="w-3.5 h-3.5 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 11c-2.4 0-4 1.8-4 3.5 0 2.2 2 3.5 4 3.5s4-1.3 4-3.5C16 12.8 14.4 11 12 11z" />
@@ -61,11 +61,11 @@ export default function DashboardHeader({
                 <ellipse cx="14.8" cy="7" rx="1.8" ry="2.2" />
                 <ellipse cx="17.5" cy="11.5" rx="1.8" ry="2.2" />
               </svg>
-              <span className="font-bold text-zinc-900">{petName}</span>
+              <span className="font-bold text-zinc-900 max-w-[65px] min-[400px]:max-w-[100px] sm:max-w-none truncate">{petName}</span>
               <span className="hidden md:inline text-zinc-300 font-normal">|</span>
-              <span className="hidden md:inline text-zinc-600 font-medium">{origin} → {destination}</span>
+              <span className="hidden md:inline text-zinc-600 font-medium truncate">{origin} → {destination}</span>
               <svg
-                className={`w-3 h-3 text-zinc-400 transition-transform ${isSwitcherOpen ? 'rotate-180' : ''}`}
+                className={`w-3 h-3 text-zinc-400 transition-transform shrink-0 ${isSwitcherOpen ? 'rotate-180' : ''}`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -76,7 +76,7 @@ export default function DashboardHeader({
             </button>
 
             {isSwitcherOpen && (
-              <div className="absolute left-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-zinc-200 p-2 z-50 animate-fade-in">
+              <div className="absolute left-0 mt-2 w-72 max-w-[calc(100vw-1.5rem)] bg-white rounded-2xl shadow-xl border border-zinc-200 p-2 z-50 animate-fade-in">
                 <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider px-3 py-1.5">
                   Saved Trips ({allTrips.length})
                 </div>
@@ -149,14 +149,14 @@ export default function DashboardHeader({
       </div>
 
       {/* Right: Actions & User Info */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
         {/* Instant Dossier Download Button (only if trip exists) */}
         {trip && (
           <button
             type="button"
             disabled={isDownloadingDossier}
             onClick={onDownloadDossier}
-            className={`inline-flex items-center gap-2 text-white font-semibold text-xs px-3.5 sm:px-4 py-2 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer disabled:opacity-60 whitespace-nowrap ${
+            className={`inline-flex items-center gap-1.5 text-white font-semibold text-xs px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer disabled:opacity-60 whitespace-nowrap shrink-0 ${
               isPaid
                 ? 'bg-[#0FA958] hover:bg-[#0D8E4A] ring-1 ring-[#0FA958]/30'
                 : 'bg-zinc-800 hover:bg-zinc-900'
@@ -164,45 +164,53 @@ export default function DashboardHeader({
             title={isPaid ? 'Download Certified Pet Travel Dossier (PDF)' : 'Download Free Preview Dossier (PDF)'}
           >
             {isDownloadingDossier ? (
-              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
             ) : isPaid ? (
-              <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5 text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
               </svg>
             ) : (
-              <svg className="w-3.5 h-3.5 text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5 text-zinc-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
               </svg>
             )}
-            <span className="hidden sm:inline">
+            <span className="hidden lg:inline">
               {isDownloadingDossier
                 ? (isPaid ? 'Generating Certified PDF...' : 'Generating Preview PDF...')
                 : (isPaid ? 'Download Certified Dossier (PDF)' : 'Download Preview Dossier (PDF)')}
             </span>
-            <span className="sm:hidden">{isPaid ? 'Certified Dossier' : 'Preview Dossier'}</span>
+            <span className="hidden md:inline lg:hidden">
+              {isPaid ? 'Certified Dossier' : 'Preview Dossier'}
+            </span>
+            <span className="hidden sm:inline md:hidden">
+              {isPaid ? 'Certified' : 'Preview'}
+            </span>
+            <span className="sm:hidden text-[11px] font-bold">
+              {isDownloadingDossier ? 'PDF...' : 'PDF'}
+            </span>
           </button>
         )}
 
         {/* Profile Avatar / Menu */}
-        <div className="relative">
+        <div className="relative shrink-0">
           <button
             type="button"
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-zinc-200/90 hover:border-zinc-300 bg-white hover:bg-zinc-50/80 transition-all cursor-pointer shadow-2xs group"
+            className="flex items-center gap-1 sm:gap-2 p-1 sm:pl-1 sm:pr-2.5 sm:py-1 rounded-full border border-zinc-200/90 hover:border-zinc-300 bg-white hover:bg-zinc-50/80 transition-all cursor-pointer shadow-2xs group"
             aria-expanded={isProfileOpen}
             aria-haspopup="true"
           >
-            <div className="w-7 h-7 rounded-full bg-[#0E2342] text-white font-semibold text-xs flex items-center justify-center tracking-tight shadow-xs">
+            <div className="w-7 h-7 rounded-full bg-[#0E2342] text-white font-semibold text-xs flex items-center justify-center tracking-tight shadow-xs shrink-0">
               {displayEmail.charAt(0).toUpperCase()}
             </div>
-            <span className="text-xs font-medium text-zinc-700 group-hover:text-zinc-900 max-w-[120px] truncate hidden sm:inline">
+            <span className="text-xs font-medium text-zinc-700 group-hover:text-zinc-900 max-w-[120px] truncate hidden md:inline">
               {displayEmail.split('@')[0]}
             </span>
             <svg
-              className={`w-3 h-3 text-zinc-400 group-hover:text-zinc-600 transition-transform duration-200 ${
+              className={`w-3 h-3 text-zinc-400 group-hover:text-zinc-600 transition-transform duration-200 hidden sm:inline ${
                 isProfileOpen ? 'rotate-180' : ''
               }`}
               fill="none"
@@ -215,7 +223,7 @@ export default function DashboardHeader({
           </button>
 
           {isProfileOpen && (
-            <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-zinc-200/90 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-100 text-xs">
+            <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-1.5rem)] bg-white rounded-2xl shadow-xl border border-zinc-200/90 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-100 text-xs">
               {/* Identity Header */}
               <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-100 mb-1">
                 <div className="flex items-center gap-2.5">
