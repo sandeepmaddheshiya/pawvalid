@@ -1,13 +1,8 @@
 import type { MetadataRoute } from 'next';
 import { db } from '@/lib/db';
-
-const STATIC_ROUTES = [
-  'usa-to-germany',
-  'usa-to-uk',
-  'usa-to-australia',
-  'usa-to-canada',
-  'usa-to-japan',
-];
+import { AIRLINES } from '@/lib/data/airlines';
+import { GUIDES } from '@/lib/data/guides';
+import { CORRIDORS } from '@/lib/data/corridors';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pawvalid.online';
@@ -29,6 +24,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/en/pet-travel`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/airlines`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/guides`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.9,
@@ -59,29 +66,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 2. Dynamic Statutory Corridor Pages
-  let routeSlugs = STATIC_ROUTES;
+  // 2. Programmatic Corridors (All 15 Routes + DB)
+  let routeSlugs = Object.keys(CORRIDORS);
   try {
     const dbRoutes = await db.route.findMany({
       where: { status: 'SUPPORTED' },
       select: { slug: true },
     });
     if (dbRoutes && dbRoutes.length > 0) {
-      const set = new Set([...STATIC_ROUTES, ...dbRoutes.map((r) => r.slug)]);
+      const set = new Set([...routeSlugs, ...dbRoutes.map((r) => r.slug)]);
       routeSlugs = Array.from(set);
     }
   } catch {
-    // Fall back to STATIC_ROUTES if DB is unavailable during static generation
+    // Fall back to CORRIDORS if DB is unavailable during static build
   }
 
-  const corridorPages: MetadataRoute.Sitemap = routeSlugs.flatMap((slug) => [
-    {
-      url: `${baseUrl}/en/pet-travel/${slug}`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.85,
-    },
-  ]);
+  const corridorPages: MetadataRoute.Sitemap = routeSlugs.map((slug) => ({
+    url: `${baseUrl}/en/pet-travel/${slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.85,
+  }));
 
-  return [...corePages, ...corridorPages];
+  // 3. Programmatic Airline Guides (10 International Airlines)
+  const airlinePages: MetadataRoute.Sitemap = AIRLINES.map((airline) => ({
+    url: `${baseUrl}/en/airlines/${airline.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.85,
+  }));
+
+  // 4. Regulatory Knowledge Guides (4 In-Depth Guides)
+  const guidePages: MetadataRoute.Sitemap = GUIDES.map((guide) => ({
+    url: `${baseUrl}/en/guides/${guide.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.85,
+  }));
+
+  return [...corePages, ...corridorPages, ...airlinePages, ...guidePages];
 }

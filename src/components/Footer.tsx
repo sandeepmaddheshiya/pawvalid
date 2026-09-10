@@ -94,23 +94,23 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs text-zinc-400">
               <li>
-                <Link href="/en/pet-travel" className="hover:text-white transition-colors">
-                  Pet Travel Guides
+                <Link href="/en/guides" className="hover:text-white transition-colors">
+                  Regulatory Guides &amp; Manuals
                 </Link>
               </li>
               <li>
                 <Link href="/en/pet-travel" className="hover:text-white transition-colors">
-                  Country Requirements
+                  Country Requirements (15 Corridors)
+                </Link>
+              </li>
+              <li>
+                <Link href="/en/airlines" className="hover:text-white transition-colors">
+                  Airline Pet Policies (10 Carriers)
                 </Link>
               </li>
               <li>
                 <Link href="/en/checker" className="hover:text-white transition-colors">
-                  Airline Policies
-                </Link>
-              </li>
-              <li>
-                <Link href="/en/checker" className="hover:text-white transition-colors">
-                  Help Center
+                  IATA Crate Calculator
                 </Link>
               </li>
             </ul>

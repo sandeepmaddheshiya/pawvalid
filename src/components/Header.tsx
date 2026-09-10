@@ -105,6 +105,18 @@ export default function Header() {
               Destinations
             </Link>
             <Link
+              href="/en/airlines"
+              className="hover:text-zinc-900 transition-colors"
+            >
+              Airlines
+            </Link>
+            <Link
+              href="/en/guides"
+              className="hover:text-zinc-900 transition-colors"
+            >
+              Guides
+            </Link>
+            <Link
               href="#pricing"
               className="hover:text-zinc-900 transition-colors"
             >
@@ -175,13 +187,19 @@ export default function Header() {
                     href="/en/pet-travel"
                     className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                   >
-                    Country Requirements
+                    Country Corridors (15 Routes)
                   </Link>
                   <Link
-                    href="/en/checker"
+                    href="/en/airlines"
                     className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                   >
-                    Airline Policies Guide
+                    Airline Pet Policies (10 Carriers)
+                  </Link>
+                  <Link
+                    href="/en/guides"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                  >
+                    Regulatory Guides &amp; Manuals
                   </Link>
                 </div>
               )}

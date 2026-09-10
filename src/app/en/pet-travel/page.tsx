@@ -1,98 +1,30 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { CORRIDORS } from '@/lib/data/corridors';
+import { getBreadcrumbSchema } from '@/lib/seo/schema';
 
 export const metadata: Metadata = {
-  title: 'Pet Travel Route Directory — Sourced Statutory Guides | PawValid',
-  description: 'Browse route-specific pet travel requirements, quarantine rules, and government health certificate protocols verified against official border authorities.',
+  title: 'Pet Travel Route Directory — Sourced Statutory Guides (2026) | PawValid',
+  description: 'Browse 15 international pet travel route requirements, quarantine rules, and government health certificate protocols verified against official border authorities.',
+  alternates: {
+    canonical: 'https://pawvalid.online/en/pet-travel',
+  },
 };
 
-interface RouteCard {
-  slug: string;
-  from: string;
-  to: string;
-  fromFlag: string;
-  toFlag: string;
-  originCode: string;
-  destCode: string;
-  region: string;
-  titer: string;
-  quarantine: string;
-  leadTime: string;
-  authority: string;
-}
-
-const ROUTES: RouteCard[] = [
-  {
-    slug: 'usa-to-germany',
-    from: 'United States',
-    to: 'Germany',
-    fromFlag: '🇺🇸',
-    toFlag: '🇩🇪',
-    originCode: 'US',
-    destCode: 'DE',
-    region: 'North America → European Union',
-    titer: 'Exempt',
-    quarantine: '0 Days',
-    leadTime: '21 Days',
-    authority: 'German BMEL & EU Reg 576/2013',
-  },
-  {
-    slug: 'usa-to-uk',
-    from: 'United States',
-    to: 'United Kingdom',
-    fromFlag: '🇺🇸',
-    toFlag: '🇬🇧',
-    originCode: 'US',
-    destCode: 'GB',
-    region: 'North America → Great Britain',
-    titer: 'Exempt',
-    quarantine: '0 Days',
-    leadTime: '21 Days + Tapeworm',
-    authority: 'UK APHA & DEFRA',
-  },
-  {
-    slug: 'usa-to-australia',
-    from: 'United States',
-    to: 'Australia',
-    fromFlag: '🇺🇸',
-    toFlag: '🇦🇺',
-    originCode: 'US',
-    destCode: 'AU',
-    region: 'North America → Oceania',
-    titer: 'Mandatory (180d wait)',
-    quarantine: '10–30 Days PEQ',
-    leadTime: '7 Months',
-    authority: 'Australian DAFF',
-  },
-  {
-    slug: 'usa-to-canada',
-    from: 'United States',
-    to: 'Canada',
-    fromFlag: '🇺🇸',
-    toFlag: '🇨🇦',
-    originCode: 'US',
-    destCode: 'CA',
-    region: 'North America Cross-Border',
-    titer: 'Exempt',
-    quarantine: '0 Days',
-    leadTime: 'Current Vaccine',
-    authority: 'Canadian CFIA',
-  },
-  {
-    slug: 'usa-to-japan',
-    from: 'United States',
-    to: 'Japan',
-    fromFlag: '🇺🇸',
-    toFlag: '🇯🇵',
-    originCode: 'US',
-    destCode: 'JP',
-    region: 'North America → East Asia',
-    titer: 'Mandatory FAVN (180d)',
-    quarantine: '0–12h (if compliant)',
-    leadTime: '7–8 Months',
-    authority: 'Japan MAFF AQS',
-  },
-];
+const ROUTES = Object.values(CORRIDORS).map((c) => ({
+  slug: c.slug,
+  from: c.from,
+  to: c.to,
+  fromFlag: c.fromFlag,
+  toFlag: c.toFlag,
+  originCode: c.originCode,
+  destCode: c.destCode,
+  region: c.region,
+  titer: c.titerRequired,
+  quarantine: c.quarantineDays,
+  leadTime: c.leadTime,
+  authority: c.authority,
+}));
 
 export default function PetTravelIndexPage() {
   return (

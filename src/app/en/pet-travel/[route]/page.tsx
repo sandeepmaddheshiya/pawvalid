@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import { getCurrentRequirementVersions } from '@/lib/requirements/queries';
 import FreshnessIndicator from '@/components/FreshnessIndicator';
 import { getFaqSchema, getBreadcrumbSchema, getHowToSchema } from '@/lib/seo/schema';
+import { CORRIDORS } from '@/lib/data/corridors';
 
 interface StatutoryRule {
   id: string;
@@ -51,6 +52,7 @@ interface RouteIntelligence {
 }
 
 export const ROUTE_DATA: Record<string, RouteIntelligence> = {
+  ...CORRIDORS,
   'usa-to-germany': {
     from: 'United States',
     to: 'Germany',
@@ -755,7 +757,9 @@ export async function generateStaticParams() {
       where: { status: 'SUPPORTED' },
       select: { slug: true },
     });
-    return routes.map((r) => ({ route: r.slug }));
+    const dbSlugs = routes.map((r) => r.slug);
+    const combined = Array.from(new Set([...Object.keys(ROUTE_DATA), ...dbSlugs]));
+    return combined.map((slug) => ({ route: slug }));
   } catch {
     return Object.keys(ROUTE_DATA).map((slug) => ({ route: slug }));
   }
