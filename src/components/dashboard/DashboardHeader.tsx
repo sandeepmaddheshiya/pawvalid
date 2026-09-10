@@ -36,9 +36,9 @@ export default function DashboardHeader({
   const isPaid = tier === 'CERTIFIED_PASS' || tier === 'CONCIERGE';
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/80 px-2.5 sm:px-8 py-2 sm:py-3.5 flex items-center justify-between gap-1.5 sm:gap-4 max-w-full overflow-x-clip">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/80 px-2.5 sm:px-8 py-2 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4 max-w-full overflow-x-clip">
       {/* Left: Brand & Trip Switcher */}
-      <div className="flex items-center gap-1.5 sm:gap-4 min-w-0 flex-1 mr-2">
+      <div className="flex items-center gap-1.5 sm:gap-4 min-w-0 flex-1">
         <div className="flex items-center gap-1.5 shrink-0">
           <Logo size="small" />
           <span className="hidden md:inline-block px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-600 border border-zinc-200/80 text-[10px] font-bold uppercase tracking-wider">
@@ -48,20 +48,20 @@ export default function DashboardHeader({
 
         {/* Pet & Trip Switcher Dropdown */}
         {trip ? (
-          <div className="relative min-w-0 shrink">
+          <div className="relative min-w-0 max-w-[115px] min-[360px]:max-w-[155px] min-[420px]:max-w-[200px] sm:max-w-none shrink">
             <button
               type="button"
               onClick={() => setIsSwitcherOpen(!isSwitcherOpen)}
-              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/90 text-xs font-semibold text-zinc-900 transition-all cursor-pointer shadow-2xs max-w-[120px] sm:max-w-none min-w-0"
+              className="w-full flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/90 text-xs font-semibold text-zinc-900 transition-all cursor-pointer shadow-2xs min-w-0"
             >
-              <svg className="w-3.5 h-3.5 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-zinc-500 shrink-0 hidden min-[360px]:block" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 11c-2.4 0-4 1.8-4 3.5 0 2.2 2 3.5 4 3.5s4-1.3 4-3.5C16 12.8 14.4 11 12 11z" />
                 <ellipse cx="6.5" cy="11.5" rx="1.8" ry="2.2" />
                 <ellipse cx="9.2" cy="7" rx="1.8" ry="2.2" />
                 <ellipse cx="14.8" cy="7" rx="1.8" ry="2.2" />
                 <ellipse cx="17.5" cy="11.5" rx="1.8" ry="2.2" />
               </svg>
-              <span className="font-bold text-zinc-900 truncate">{petName}</span>
+              <span className="font-bold text-zinc-900 min-w-0 truncate text-left">{petName}</span>
               <span className="hidden md:inline text-zinc-300 font-normal">|</span>
               <span className="hidden md:inline text-zinc-600 font-medium truncate">{origin} → {destination}</span>
               <svg
@@ -156,7 +156,7 @@ export default function DashboardHeader({
             type="button"
             disabled={isDownloadingDossier}
             onClick={onDownloadDossier}
-            className={`inline-flex items-center gap-1.5 text-white font-semibold text-xs px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer disabled:opacity-60 whitespace-nowrap shrink-0 ${
+            className={`inline-flex items-center justify-center gap-1 text-white font-semibold text-xs px-2 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer disabled:opacity-60 whitespace-nowrap shrink-0 ${
               isPaid
                 ? 'bg-[#0FA958] hover:bg-[#0D8E4A] ring-1 ring-[#0FA958]/30'
                 : 'bg-zinc-800 hover:bg-zinc-900'
@@ -188,7 +188,7 @@ export default function DashboardHeader({
             <span className="hidden sm:inline md:hidden">
               {isPaid ? 'Certified' : 'Preview'}
             </span>
-            <span className="sm:hidden text-[11px] font-bold">
+            <span className="sm:hidden text-[10px] font-bold">
               {isDownloadingDossier ? 'PDF...' : 'PDF'}
             </span>
           </button>
@@ -199,11 +199,11 @@ export default function DashboardHeader({
           <button
             type="button"
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="flex items-center gap-1 sm:gap-2 p-1 sm:pl-1 sm:pr-2.5 sm:py-1 rounded-full border border-zinc-200/90 hover:border-zinc-300 bg-white hover:bg-zinc-50/80 transition-all cursor-pointer shadow-2xs group"
+            className="flex items-center gap-1 sm:gap-2 p-0.5 sm:pl-1 sm:pr-2.5 sm:py-1 rounded-full border border-zinc-200/90 hover:border-zinc-300 bg-white hover:bg-zinc-50/80 transition-all cursor-pointer shadow-2xs group"
             aria-expanded={isProfileOpen}
             aria-haspopup="true"
           >
-            <div className="w-7 h-7 rounded-full bg-[#0E2342] text-white font-semibold text-xs flex items-center justify-center tracking-tight shadow-xs shrink-0">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#0E2342] text-white font-semibold text-[11px] sm:text-xs flex items-center justify-center tracking-tight shadow-xs shrink-0">
               {displayEmail.charAt(0).toUpperCase()}
             </div>
             <span className="text-xs font-medium text-zinc-700 group-hover:text-zinc-900 max-w-[120px] truncate hidden md:inline">

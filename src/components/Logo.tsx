@@ -4,15 +4,15 @@ export default function Logo({ size = 'default' }: { size?: 'small' | 'default' 
   const isSmall = size === 'small';
 
   return (
-    <Link href="/" className="inline-flex items-center gap-2.5 group select-none">
+    <Link href="/" className="inline-flex items-center gap-1.5 sm:gap-2.5 group select-none shrink-0">
       {/* Brand Paw Badge */}
       <div
         className={`${
-          isSmall ? 'w-8 h-8' : 'w-9 h-9'
+          isSmall ? 'w-6 h-6 sm:w-8 sm:h-8' : 'w-9 h-9'
         } rounded-xl bg-transparent flex items-center justify-center text-[#0E2342] group-hover:scale-105 transition-transform shrink-0`}
       >
         <svg
-          className={isSmall ? 'w-6 h-6' : 'w-7 h-7'}
+          className={isSmall ? 'w-5 h-5 sm:w-6 sm:h-6' : 'w-7 h-7'}
           viewBox="0 0 24 24"
           fill="currentColor"
         >
