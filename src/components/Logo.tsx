@@ -30,7 +30,7 @@ export default function Logo({ size = 'default' }: { size?: 'small' | 'default' 
       </div>
 
       {/* Brand text */}
-      <div className="flex flex-col leading-tight">
+      <div className="flex flex-col leading-tight shrink-0">
         <span
           className={`font-display ${
             isSmall ? 'text-sm sm:text-base' : 'text-lg'
@@ -39,7 +39,9 @@ export default function Logo({ size = 'default' }: { size?: 'small' | 'default' 
           PawValid
         </span>
         <span
-          className="text-[8px] sm:text-[9px] font-medium text-zinc-500 tracking-normal hidden min-[380px]:inline-block"
+          className={`text-[8px] sm:text-[9px] font-medium text-zinc-500 tracking-normal ${
+            isSmall ? 'hidden sm:inline-block' : 'hidden min-[380px]:inline-block'
+          }`}
         >
           Pet Travel Compliance
         </span>
