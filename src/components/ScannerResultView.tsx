@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ScanResult, ComplianceItem } from '@/lib/types/scanner';
 
@@ -707,11 +707,15 @@ export default function ScannerResultView({
                     {isSavingTrip ? (
                       <>
                         <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>{getAuthedUserEmail() === saveEmail.trim().toLowerCase() ? 'Saving Trip...' : 'Saving & Sending Verification Link...'}</span>
+                        <span>
+                          {getAuthedUserEmail() && getAuthedUserEmail() === saveEmail.trim().toLowerCase()
+                            ? 'Saving Trip...'
+                            : 'Saving & Sending Verification Link...'}
+                        </span>
                       </>
                     ) : (
                       <span>
-                        {getAuthedUserEmail() === saveEmail.trim().toLowerCase()
+                        {getAuthedUserEmail() && getAuthedUserEmail() === saveEmail.trim().toLowerCase()
                           ? 'Confirm & Save to Dashboard →'
                           : 'Verify Email & Save to Dashboard →'}
                       </span>
