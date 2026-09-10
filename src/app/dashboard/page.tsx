@@ -39,32 +39,30 @@ function DashboardContent() {
         const cachedTrip = localStorage.getItem('pawvalid_active_trip') || localStorage.getItem('petvia_active_trip');
         let initialTrip = cachedTrip ? JSON.parse(cachedTrip) : null;
 
-        const userEmail = cachedEmail || initialTrip?.userEmail || null;
-
-        if (!userEmail && !tripIdParam) {
-          router.replace('/login');
+        // Security gate: Require authenticated email session to access dashboard
+        if (!cachedEmail) {
+          if (tripIdParam) {
+            router.replace(`/login?tripId=${tripIdParam}`);
+          } else {
+            router.replace('/login');
+          }
           return;
         }
 
-        if (userEmail) {
-          setCurrentUserEmail(userEmail);
-        }
+        const userEmail = cachedEmail.trim().toLowerCase();
+        setCurrentUserEmail(userEmail);
 
         // 1. Fetch specific trip if tripId is in URL
         if (tripIdParam) {
           const res = await fetch(`/api/trips/${tripIdParam}`);
           if (res.ok) {
             const data = await res.json();
-            if (data.trip) {
+            // Enforce ownership: only load trip if it belongs to this authenticated user
+            if (data.trip && (!data.trip.userEmail || data.trip.userEmail.toLowerCase() === userEmail)) {
               initialTrip = data.trip;
               setCurrentTrip(data.trip);
               localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.trip));
               localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
-              if (data.trip.userEmail) {
-                setCurrentUserEmail(data.trip.userEmail);
-                localStorage.setItem('pawvalid_user_email', data.trip.userEmail);
-                localStorage.setItem('petvia_user_email', data.trip.userEmail);
-              }
             }
           }
         }

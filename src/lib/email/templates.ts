@@ -237,6 +237,84 @@ pawvalid.online
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 2B. TRIP EMAIL VERIFICATION & OWNERSHIP CONFIRMATION
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface TripVerificationOptions {
+  userEmail: string;
+  magicUrl: string;
+  petName?: string;
+  origin?: string;
+  destination?: string;
+}
+
+export async function sendTripVerificationEmail(
+  options: TripVerificationOptions
+): Promise<BrevoSendResult> {
+  const { userEmail, magicUrl, petName = 'your pet', origin, destination } = options;
+  const routeText = origin && destination ? ` (${origin} → ${destination})` : '';
+
+  const htmlContent = `
+    <h1 class="h1">Verify Email to Access ${petName}'s Travel Plan</h1>
+    <p class="lead">
+      We received a request to save and manage international travel compliance for <strong>${petName}</strong>${routeText} under <strong>${userEmail}</strong>.
+    </p>
+
+    <div class="card">
+      <p style="margin: 0 0 10px 0; font-size: 14px; color: #0f172a; font-weight: 600;">
+        🔒 Email Ownership Verification Required
+      </p>
+      <p style="margin: 0; font-size: 13px; color: #475569; line-height: 1.6;">
+        To protect your pet's veterinary health records and prevent unauthorized access, please confirm that you own this email address.
+      </p>
+    </div>
+
+    <div style="text-align: center; margin: 28px 0;">
+      <a href="${magicUrl}" class="btn">
+        Verify Email &amp; Open Dashboard &rarr;
+      </a>
+    </div>
+
+    <p style="margin: 0; font-size: 13px; color: #64748b;">
+      This secure 1-click verification link is valid for <strong>60 minutes</strong>. Once clicked, you will be instantly logged in to your Pet Travel Command Center.
+    </p>
+
+    <p style="margin-top: 20px; font-size: 12px; color: #94a3b8; word-break: break-all;">
+      Button not working? Copy and paste this URL into your browser:<br>
+      <a href="${magicUrl}" style="color: #10b981;">${magicUrl}</a>
+    </p>
+  `;
+
+  const textContent = `
+Verify Email to Access ${petName}'s Travel Plan
+
+We received a request to save and manage international travel compliance for ${petName}${routeText} under ${userEmail}.
+
+To protect your pet's veterinary health records, verify email ownership by clicking:
+${magicUrl}
+
+This link is valid for 60 minutes and grants instant access to your travel command center.
+
+PawValid Security Team
+pawvalid.online
+  `.trim();
+
+  const fullHtml = wrapPawValidEmail({
+    title: `Verify Email: ${petName}'s Travel Plan`,
+    preheader: `Confirm email ownership to access ${petName}'s pet travel compliance dashboard.`,
+    contentHtml: htmlContent,
+  });
+
+  return sendTransactionalEmail({
+    to: userEmail,
+    subject: `🐾 Verify Your Email to Access ${petName}'s Travel Plan`,
+    htmlContent: fullHtml,
+    textContent,
+    replyTo: { email: SUPPORT_EMAIL, name: 'PawValid Support' },
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 3. FREE ASSESSMENT & SAVED TRIP SUMMARY EMAIL
 // ─────────────────────────────────────────────────────────────────────────────
 

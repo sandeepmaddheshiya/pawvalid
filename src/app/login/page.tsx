@@ -56,10 +56,17 @@ function LoginForm() {
         localStorage.setItem('pawvalid_user_email', data.userEmail);
         localStorage.setItem('petvia_user_email', data.userEmail);
 
-        if (data.activeTrip) {
-          localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.activeTrip));
-          localStorage.setItem('petvia_active_trip', JSON.stringify(data.activeTrip));
-          router.push(`/dashboard?tripId=${data.activeTrip.id}`);
+        const tripIdParam = searchParams.get('tripId');
+        const matchedTrip = tripIdParam
+          ? (data.trips || []).find((t: any) => t.id === tripIdParam) || data.activeTrip
+          : data.activeTrip;
+
+        if (matchedTrip) {
+          localStorage.setItem('pawvalid_active_trip', JSON.stringify(matchedTrip));
+          localStorage.setItem('petvia_active_trip', JSON.stringify(matchedTrip));
+          router.push(`/dashboard?tripId=${matchedTrip.id}`);
+        } else if (tripIdParam) {
+          router.push(`/dashboard?tripId=${tripIdParam}`);
         } else {
           localStorage.removeItem('pawvalid_active_trip');
           localStorage.removeItem('petvia_active_trip');

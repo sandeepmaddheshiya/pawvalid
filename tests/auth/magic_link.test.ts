@@ -71,4 +71,65 @@ describe('Magic Link Authentication Token Engine', () => {
     expect(verifyMagicToken('invalid-token').valid).toBe(false);
     expect(verifyMagicToken('a.b').valid).toBe(false);
   });
+
+  describe('API Verification Endpoints', () => {
+    it('POST /api/auth/send-verification rejects missing or invalid email', async () => {
+      const { POST } = await import('@/app/api/auth/send-verification/route');
+      const req = new Request('http://localhost:3000/api/auth/send-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: '' }),
+      });
+      const res = await POST(req as any);
+      const data = await res.json();
+      expect(res.status).toBe(400);
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('valid email address');
+    });
+
+    it('POST /api/auth/send-verification generates valid magicUrl containing tripId and verifiable token', async () => {
+      const { POST } = await import('@/app/api/auth/send-verification/route');
+      const req = new Request('http://localhost:3000/api/auth/send-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: 'Bella.Owner@Example.com',
+          tripId: 'trip_xyz_123',
+          petName: 'Bella',
+          origin: 'United Kingdom',
+          destination: 'Germany',
+        }),
+      });
+      const res = await POST(req as any);
+      const data = await res.json();
+      expect(res.status).toBe(200);
+      expect(data.success).toBe(true);
+      expect(data.devMagicUrl).toBeDefined();
+
+      const parsedUrl = new URL(data.devMagicUrl);
+      expect(parsedUrl.pathname).toBe('/login');
+      expect(parsedUrl.searchParams.get('email')).toBe('bella.owner@example.com');
+      expect(parsedUrl.searchParams.get('tripId')).toBe('trip_xyz_123');
+
+      const token = parsedUrl.searchParams.get('token');
+      expect(token).toBeTruthy();
+      const verifyResult = verifyMagicToken(token!, 'bella.owner@example.com');
+      expect(verifyResult.valid).toBe(true);
+      expect(verifyResult.email).toBe('bella.owner@example.com');
+    });
+
+    it('POST /api/auth/forgot-password preserves tripId in generated link', async () => {
+      const { POST } = await import('@/app/api/auth/forgot-password/route');
+      const req = new Request('http://localhost:3000/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: 'traveler@pawvalid.online',
+          tripId: 'trip_concierge_999',
+        }),
+      });
+      const res = await POST(req as any);
+      expect(res.status).toBe(200);
+    });
+  });
 });
