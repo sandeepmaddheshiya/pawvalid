@@ -533,75 +533,79 @@ export default function PricingModal({
         {/* ─── INTEGRATED CHECKOUT BAR ───────────────────────────────── */}
         <form
           onSubmit={handleCompleteOrder}
-          className="mt-6 pt-5 border-t border-zinc-200 bg-[#FAFBFB] rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-end justify-between gap-4"
+          className="mt-6 pt-5 border-t border-zinc-200 bg-[#FAFBFB] rounded-2xl p-4 sm:p-5 space-y-3.5"
         >
-          <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
-            <div className="flex flex-col justify-end">
-              <label className="block text-[11px] font-semibold text-zinc-600 mb-1.5 h-6 flex items-end">
-                Your Email (to receive dossier &amp; pass)
-              </label>
-              <input
-                type="email"
-                required
-                value={checkoutEmail}
-                onChange={(e) => setCheckoutEmail(e.target.value)}
-                placeholder="name@example.com"
-                className="w-full h-11 px-3.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-[#0FA958]"
-              />
-            </div>
-
-            {isConciergeSelected ? (
-              <div className="flex flex-col justify-end">
-                <label className="block text-[11px] font-semibold text-zinc-600 mb-1.5 h-6 flex items-end">
-                  WhatsApp Number (specialist intake)
+          {/* Top Row: Email/Phone Inputs & Submit Button */}
+          <div className="flex flex-col md:flex-row items-stretch md:items-end justify-between gap-3">
+            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+              <div>
+                <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+                  Your Email <span className="text-zinc-400 font-normal">(to receive dossier &amp; pass)</span>
                 </label>
                 <input
-                  type="tel"
+                  type="email"
                   required
-                  value={checkoutPhone}
-                  onChange={(e) => setCheckoutPhone(e.target.value)}
-                  placeholder="+44 7123 456789"
-                  className="w-full h-11 px-3.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-amber-400 font-mono"
+                  value={checkoutEmail}
+                  onChange={(e) => setCheckoutEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full h-11 px-3.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-[#0FA958]"
                 />
               </div>
-            ) : (
-              <div className="h-11 flex items-center gap-1.5 text-xs text-zinc-500">
-                <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                <span>256-bit SSL encrypted • Instant plan activation</span>
-              </div>
-            )}
+
+              {isConciergeSelected ? (
+                <div>
+                  <label className="block text-[11px] font-semibold text-zinc-700 mb-1">
+                    WhatsApp Number <span className="text-zinc-400 font-normal">(specialist intake)</span>
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={checkoutPhone}
+                    onChange={(e) => setCheckoutPhone(e.target.value)}
+                    placeholder="+44 7123 456789"
+                    className="w-full h-11 px-3.5 rounded-xl border border-zinc-300 bg-white text-xs text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-amber-400 font-mono"
+                  />
+                </div>
+              ) : (
+                <div className="hidden sm:flex h-11 items-center gap-1.5 text-xs text-zinc-500">
+                  <svg className="w-3.5 h-3.5 text-zinc-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  <span>256-bit SSL encrypted • Instant activation</span>
+                </div>
+              )}
+            </div>
+
+            <div className="shrink-0">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full md:w-auto h-11 px-6 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 whitespace-nowrap flex items-center justify-center"
+              >
+                {isSubmitting
+                  ? 'Processing...'
+                  : `Proceed with ${isConciergeSelected ? 'Priority Expert Review' : 'Complete Travel Plan'} (${
+                      isConciergeSelected ? prices.concierge : prices.pass
+                    }) →`}
+              </button>
+            </div>
           </div>
 
-          <div className="shrink-0 w-full md:w-auto">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full md:w-auto h-11 px-6 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 whitespace-nowrap flex items-center justify-center"
-            >
-              {isSubmitting
-                ? 'Processing...'
-                : `Proceed with ${isConciergeSelected ? 'Priority Expert Review' : 'Complete Travel Plan'} (${
-                    isConciergeSelected ? prices.concierge : prices.pass
-                  }) →`}
-            </button>
-          </div>
-
-          <div className="w-full flex flex-col sm:flex-row items-center justify-between text-[11px] text-zinc-500 pt-3 border-t border-zinc-200/70 mt-1 gap-2">
+          {/* Bottom Row: 14-Day Guarantee & Legal Disclaimer */}
+          <div className="w-full flex flex-col sm:flex-row items-center justify-between text-[11px] text-zinc-500 pt-3 border-t border-zinc-200/70 gap-2">
             <span className="flex items-center gap-1.5 text-emerald-700 font-medium">
-              <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
               <span>14-Day Money-Back Guarantee &amp; Instant Access</span>
             </span>
             <span className="text-zinc-500 text-center sm:text-right">
               By proceeding, you agree to our{' '}
-              <a href="/en/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-900">
+              <a href="/en/terms" target="_blank" rel="noopener noreferrer" className="text-zinc-700 underline hover:text-zinc-900">
                 Terms of Service
               </a>{' '}
               and{' '}
-              <a href="/en/refund-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-900">
+              <a href="/en/refund-policy" target="_blank" rel="noopener noreferrer" className="text-zinc-700 underline hover:text-zinc-900">
                 Refund Policy
               </a>.
             </span>
