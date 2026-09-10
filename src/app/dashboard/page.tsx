@@ -57,6 +57,7 @@ function DashboardContent() {
             const data = await res.json();
             if (data.trip) {
               initialTrip = data.trip;
+              setCurrentTrip(data.trip);
               localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.trip));
               localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
               if (data.trip.userEmail) {
@@ -75,23 +76,24 @@ function DashboardContent() {
           if (listRes.ok) {
             const listData = await listRes.json();
             const trips = listData.trips || [];
-            setAllTrips(trips);
+            setAllTrips(trips.length > 0 ? trips : (initialTrip ? [initialTrip] : []));
 
             if (trips.length > 0) {
               const matched = tripIdParam
-                ? trips.find((t: any) => t.id === tripIdParam) || trips[0]
+                ? trips.find((t: any) => t.id === tripIdParam) || initialTrip || trips[0]
                 : (initialTrip && trips.some((t: any) => t.id === initialTrip.id) ? initialTrip : trips[0]);
               setCurrentTrip(matched);
               localStorage.setItem('pawvalid_active_trip', JSON.stringify(matched));
               localStorage.setItem('petvia_active_trip', JSON.stringify(matched));
+            } else if (initialTrip) {
+              setCurrentTrip(initialTrip);
+              localStorage.setItem('pawvalid_active_trip', JSON.stringify(initialTrip));
+              localStorage.setItem('petvia_active_trip', JSON.stringify(initialTrip));
             } else {
               // Brand new user with no trips created yet
               setCurrentTrip(null);
               localStorage.removeItem('pawvalid_active_trip');
               localStorage.removeItem('petvia_active_trip');
-              if (tripIdParam) {
-                router.replace('/dashboard');
-              }
             }
           }
         } else if (initialTrip) {

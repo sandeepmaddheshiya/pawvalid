@@ -235,19 +235,22 @@ export default function ScannerResultView({
 
   const handleSaveTrip = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!saveEmail) return;
+    const effectiveEmail = (saveEmail.trim() || `traveler_${Date.now().toString(36)}@pawvalid.online`).toLowerCase();
+    const effectivePetName = savePetName.trim() || activePetName || 'My Pet';
 
     try {
       setIsSavingTrip(true);
-      const payloadResult = getActiveScanResult();
+      const payloadResult = getActiveScanResult({ name: effectivePetName });
+
+      let savedData: any = null;
 
       if (tripId) {
         const patchRes = await fetch(`/api/trips/${tripId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userEmail: saveEmail.trim().toLowerCase(),
-            petName: savePetName.trim() || activePetName || 'My Pet',
+            userEmail: effectiveEmail,
+            petName: effectivePetName,
             stats: payloadResult.stats,
             complianceChecklist: payloadResult.complianceChecklist,
             timelineMilestones: payloadResult.timelineMilestones,
@@ -255,37 +258,54 @@ export default function ScannerResultView({
           }),
         });
 
-        if (!patchRes.ok) throw new Error('Failed to update trip');
-        const data = await patchRes.json();
-        if (data.trip) {
-          localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.trip));
-          localStorage.setItem('pawvalid_user_email', saveEmail.trim().toLowerCase());
-          localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
-          localStorage.setItem('petvia_user_email', saveEmail.trim().toLowerCase());
-          router.push(`/dashboard?tripId=${data.trip.id}`);
-          return;
+        if (patchRes.ok) {
+          const data = await patchRes.json();
+          if (data.trip) savedData = data.trip;
         }
       }
 
-      const res = await fetch('/api/trips', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userEmail: saveEmail.trim().toLowerCase(),
-          petName: activePetName || 'My Pet',
-          scanResult: payloadResult,
-          tier: 'FREE',
-        }),
-      });
+      if (!savedData) {
+        const res = await fetch('/api/trips', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userEmail: effectiveEmail,
+            petName: effectivePetName,
+            scanResult: payloadResult,
+            tier: 'FREE',
+          }),
+        });
 
-      if (!res.ok) throw new Error('Failed to save trip');
-      const data = await res.json();
-      if (data.trip) {
-        localStorage.setItem('pawvalid_active_trip', JSON.stringify(data.trip));
-        localStorage.setItem('pawvalid_user_email', saveEmail.trim().toLowerCase());
-        localStorage.setItem('petvia_active_trip', JSON.stringify(data.trip));
-        localStorage.setItem('petvia_user_email', saveEmail.trim().toLowerCase());
-        router.push(`/dashboard?tripId=${data.trip.id}`);
+        if (!res.ok) throw new Error('Failed to save trip');
+        const data = await res.json();
+        if (data.trip) savedData = data.trip;
+      }
+
+      if (savedData) {
+        // Direct session access: register user session without requiring email ownership validation
+        try {
+          await fetch('/api/auth/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: effectiveEmail,
+              name: effectivePetName,
+              isSignUp: false,
+            }),
+          });
+        } catch {
+          // Non-blocking session fallback
+        }
+
+        // Set all authentication & trip pointers immediately
+        localStorage.setItem('pawvalid_active_trip', JSON.stringify(savedData));
+        localStorage.setItem('pawvalid_user_email', effectiveEmail);
+        localStorage.setItem('petvia_active_trip', JSON.stringify(savedData));
+        localStorage.setItem('petvia_user_email', effectiveEmail);
+
+        setIsSaveModalOpen(false);
+        // Directly navigate to dashboard giving immediate full access
+        router.push(`/dashboard?tripId=${savedData.id}`);
       }
     } catch (err) {
       console.error('Error saving trip:', err);
@@ -486,12 +506,15 @@ export default function ScannerResultView({
                 <label className="block font-semibold text-zinc-700 mb-1">Owner Email Address</label>
                 <input
                   type="email"
-                  required
                   value={saveEmail}
                   onChange={(e) => setSaveEmail(e.target.value)}
-                  placeholder="name@example.com"
+                  placeholder="name@example.com (or leave blank for guest access)"
                   className="w-full border border-zinc-300 rounded-lg px-3.5 py-2.5 text-xs focus:outline-hidden focus:ring-2 focus:ring-[#0E2342] font-medium"
                 />
+                <p className="text-[11px] text-zinc-500 mt-1.5 flex items-center gap-1.5">
+                  <span className="text-emerald-600 font-bold">✓</span>
+                  <span>Direct dashboard access · No email verification or password required.</span>
+                </p>
               </div>
 
               <button
@@ -499,7 +522,7 @@ export default function ScannerResultView({
                 disabled={isSavingTrip}
                 className="w-full py-3 rounded-lg bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm shadow-sm transition-all cursor-pointer disabled:opacity-50"
               >
-                {isSavingTrip ? 'Saving Record...' : 'Confirm & Save to Dashboard →'}
+                {isSavingTrip ? 'Saving Record & Opening Dashboard...' : 'Confirm & Save to Dashboard →'}
               </button>
             </form>
           </div>
