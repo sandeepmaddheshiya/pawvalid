@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { sendTripSummaryEmail } from '@/lib/email/templates';
 
 export async function POST(request: NextRequest) {
   try {
@@ -87,6 +88,31 @@ export async function POST(request: NextRequest) {
         uploadedDocuments: scanResult.readinessReport?.documentAudit || [],
       },
     });
+
+    // Dispatch trip summary email via Brevo for registered users
+    if (!cleanEmail.includes('@guest.pawvalid.online')) {
+      sendTripSummaryEmail({
+        id: savedTrip.id,
+        userEmail: cleanEmail,
+        petName: cleanPetName,
+        species,
+        breed,
+        origin: cleanOrigin,
+        destination: cleanDestination,
+        departureDate,
+        overallStatus: savedTrip.overallStatus,
+        earliestFlightDate: savedTrip.earliestFlightDate,
+        actionItemCount: Array.isArray(savedTrip.timelineMilestones)
+          ? savedTrip.timelineMilestones.length
+          : undefined,
+      })
+        .then((res) => {
+          if (!res.success) {
+            console.warn('[Trip Summary Email] Non-fatal delivery failure:', res.error);
+          }
+        })
+        .catch((err) => console.error('[Trip Summary Email] Async error:', err));
+    }
 
     return NextResponse.json({
       success: true,

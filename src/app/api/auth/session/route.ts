@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { sendWelcomeEmail } from '@/lib/email/templates';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,6 +15,17 @@ export async function POST(req: NextRequest) {
     }
 
     const cleanEmail = email.toLowerCase().trim();
+
+    // Send welcome email if first-time sign up
+    if (isSignUp) {
+      sendWelcomeEmail(cleanEmail, name?.trim())
+        .then((res) => {
+          if (!res.success) {
+            console.warn('[Welcome Email] Non-fatal delivery failure:', res.error);
+          }
+        })
+        .catch((err) => console.error('[Welcome Email] Async error:', err));
+    }
 
     // Fetch only REAL trips created by or saved for this user
     const userTrips = await db.savedTrip.findMany({

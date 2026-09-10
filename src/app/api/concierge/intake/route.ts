@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { sendSpecialistIntakeNotification } from '@/lib/email/reminders';
+import { sendConciergeConfirmationEmail } from '@/lib/email/templates';
 
 /**
  * POST /api/concierge/intake
@@ -9,6 +10,7 @@ import { sendSpecialistIntakeNotification } from '@/lib/email/reminders';
  * 1. Captures traveler's WhatsApp phone number, urgency, and specific travel notes.
  * 2. Updates SavedTrip tier to 'CONCIERGE' and conciergeStatus to 'IN_REVIEW'.
  * 3. Triggers automated notification to PawValid's specialist team via email (Brevo) & Slack webhook.
+ * 4. Dispatches confirmation email to traveler outlining WhatsApp liaison timeline.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -54,13 +56,24 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Send specialist intake email & slack notification
+    // Send specialist intake email & slack notification to internal review team
     const emailResult = await sendSpecialistIntakeNotification({
       trip: updatedTrip,
       customerWhatsApp: cleanNumber,
       notes: notes?.trim(),
       urgency: cleanUrgency,
     });
+
+    // Send traveler confirmation email via Brevo
+    if (updatedTrip.userEmail && !updatedTrip.userEmail.includes('@guest.pawvalid.online')) {
+      sendConciergeConfirmationEmail(updatedTrip, cleanNumber)
+        .then((res) => {
+          if (!res.success) {
+            console.warn('[Concierge Confirmation Email] Non-fatal delivery failure:', res.error);
+          }
+        })
+        .catch((err) => console.error('[Concierge Confirmation Email] Async error:', err));
+    }
 
     return NextResponse.json({
       success: true,

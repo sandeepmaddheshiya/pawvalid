@@ -7,9 +7,10 @@
  *    - Upgrades trip tier to CERTIFIED_PASS or CONCIERGE.
  *    - If CONCIERGE: records WhatsApp phone number, sets conciergeStatus to IN_REVIEW,
  *      and dispatches specialist alert to review team.
- *    - Sends purchase receipt & dossier link to traveler via Brevo.
+ *    - Sends purchase receipt & dossier link to traveler via Brevo (sendPurchaseReceiptEmail).
+ *    - If CONCIERGE: dispatches traveler concierge confirmation (sendConciergeConfirmationEmail).
  * 2. For legacy Assessments (assessmentId):
- *    - Marks assessment as paid and triggers report email.
+ *    - Marks assessment as paid and triggers compliant report email.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -17,6 +18,11 @@ import crypto from 'crypto';
 import { db } from '@/lib/db';
 import { sendSpecialistIntakeNotification } from '@/lib/email/reminders';
 import { sendTransactionalEmail } from '@/lib/email/brevo';
+import {
+  sendPurchaseReceiptEmail,
+  sendConciergeConfirmationEmail,
+  wrapPawValidEmail,
+} from '@/lib/email/templates';
 
 export async function POST(request: NextRequest) {
   try {
@@ -63,6 +69,9 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
         }
 
+        // Check idempotency: if already upgraded to CONCIERGE and webhook repeated, avoid duplicate alerts
+        const alreadyUpgraded = trip.tier === targetTier;
+
         const updatedTrip = await db.savedTrip.update({
           where: { id: tripId },
           data: {
@@ -77,8 +86,8 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        // If Concierge tier, notify PawValid specialist team
-        if (targetTier === 'CONCIERGE') {
+        // If Concierge tier, notify PawValid specialist team (if not already notified)
+        if (targetTier === 'CONCIERGE' && !alreadyUpgraded) {
           try {
             await sendSpecialistIntakeNotification({
               trip: updatedTrip,
@@ -92,36 +101,24 @@ export async function POST(request: NextRequest) {
         }
 
         // Send purchase receipt & dossier link to traveler via Brevo
-        if (email) {
+        if (email && !alreadyUpgraded) {
           try {
-            const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-            const subject = `Payment Confirmed: PawValid ${targetTier === 'CONCIERGE' ? 'Priority Concierge' : 'Certified Trip Pass'} (${trip.petName})`;
-            const htmlContent = `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1e293b;">
-                  <h1 style="color: #0f172a;">Your PawValid Plan is Active!</h1>
-                  <p>Thank you for your purchase. Your travel compliance plan for <strong>${trip.petName}</strong> is now fully unlocked.</p>
-                  
-                  <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0;">
-                    <p style="margin: 4px 0;"><strong>Pet Name:</strong> ${trip.petName}</p>
-                    <p style="margin: 4px 0;"><strong>Route:</strong> ${trip.origin} &rarr; ${trip.destination}</p>
-                    <p style="margin: 4px 0;"><strong>Plan Tier:</strong> ${targetTier === 'CONCIERGE' ? '★ Priority Concierge (£59)' : '✓ Certified Trip Pass (£19)'}</p>
-                    <p style="margin: 4px 0;"><strong>Transaction ID:</strong> ${paymentId}</p>
-                  </div>
-
-                  <p>You can access your command center and download your digital travel dossier and preparation checklist at any time:</p>
-                  <p style="text-align: center; margin: 24px 0;">
-                    <a href="${appUrl}/dashboard?tripId=${tripId}" style="background-color: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-                      Open Trip Command Center &rarr;
-                    </a>
-                  </p>
-                </div>
-            `;
-
-            await sendTransactionalEmail({
-              to: email,
-              subject,
-              htmlContent,
+            await sendPurchaseReceiptEmail({
+              trip: updatedTrip,
+              paymentId,
+              amount: payment.amount,
+              currency: payment.currency || 'GBP',
+              targetTier,
+              recipientEmail: email,
             });
+
+            // If Concierge tier, also send traveler WhatsApp confirmation email
+            if (targetTier === 'CONCIERGE' && (notes.whatsappNumber || updatedTrip.whatsappNumber)) {
+              await sendConciergeConfirmationEmail(
+                updatedTrip,
+                notes.whatsappNumber || updatedTrip.whatsappNumber || ''
+              );
+            }
           } catch (emailError) {
             console.error('[Razorpay Webhook] Email send failed:', emailError);
           }
@@ -145,19 +142,48 @@ export async function POST(request: NextRequest) {
             const assessment = await db.assessment.findUnique({
               where: { razorpayOrderId: orderId },
             });
-            const subject = 'Your PawValid Pet Travel Compliance Report';
-            const htmlContent = `
-                <h1>Your PawValid Assessment Report</h1>
-                <p>Thank you for your purchase! Your detailed compliance report is ready.</p>
-                <p><strong>Assessment ID:</strong> ${assessmentId}</p>
-                <p><strong>Overall Verdict:</strong> ${assessment?.overallVerdict ?? 'N/A'}</p>
-                <p>View your full report at: ${process.env.NEXT_PUBLIC_APP_URL}/en/checker/${assessmentId}</p>
-            `;
+            const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pawvalid.online';
+            const subject = 'Your PawValid Travel Compliance Report is Ready';
+
+            const reportHtml = wrapPawValidEmail({
+              title: subject,
+              preheader: 'Your comprehensive pet travel compliance audit is ready for review.',
+              contentHtml: `
+                <h1 class="h1">Compliance Report Ready</h1>
+                <p class="lead">
+                  Thank you for your purchase. Your travel compliance assessment for dossier <strong>#${assessmentId.slice(-6)}</strong> has been verified.
+                </p>
+
+                <div class="card">
+                  <table width="100%" cellpadding="4" cellspacing="0" style="font-size: 14px;">
+                    <tr>
+                      <td style="color: #64748b; width: 40%;">Assessment ID:</td>
+                      <td style="font-weight: 700; color: #0f172a;">${assessmentId}</td>
+                    </tr>
+                    <tr>
+                      <td style="color: #64748b;">Overall Status:</td>
+                      <td style="font-weight: 700; color: #10b981;">${assessment?.overallVerdict ?? 'VERIFIED'}</td>
+                    </tr>
+                    <tr>
+                      <td style="color: #64748b;">Payment Reference:</td>
+                      <td style="font-weight: 600; color: #0f172a;">${paymentId}</td>
+                    </tr>
+                  </table>
+                </div>
+
+                <div style="text-align: center; margin: 32px 0;">
+                  <a href="${appUrl}/en/checker/${assessmentId}" class="btn">
+                    View Full Compliance Report &rarr;
+                  </a>
+                </div>
+              `,
+            });
 
             await sendTransactionalEmail({
               to: email,
               subject,
-              htmlContent,
+              htmlContent: reportHtml,
+              textContent: `Your PawValid Compliance Report is ready.\nAssessment ID: ${assessmentId}\nStatus: ${assessment?.overallVerdict ?? 'VERIFIED'}\nView report: ${appUrl}/en/checker/${assessmentId}`,
             });
           } catch (emailError) {
             console.error('[Razorpay Webhook] Email send failed:', emailError);
