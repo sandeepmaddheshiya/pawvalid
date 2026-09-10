@@ -142,6 +142,11 @@ export default function Footer() {
                   Terms
                 </Link>
               </li>
+              <li>
+                <Link href="/en/refund-policy" className="hover:text-white transition-colors">
+                  Refund Policy
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -178,13 +183,17 @@ export default function Footer() {
           <p className="text-center sm:text-left">
             © 2026 PawValid. All rights reserved.
           </p>
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs">
             <Link href="/en/privacy" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>
             <span className="text-zinc-600">•</span>
             <Link href="/en/terms" className="hover:text-white transition-colors">
               Terms of Service
+            </Link>
+            <span className="text-zinc-600">•</span>
+            <Link href="/en/refund-policy" className="hover:text-white transition-colors">
+              Refund Policy
             </Link>
             <span className="text-zinc-600">•</span>
             <Link href="/en/privacy" className="hover:text-white transition-colors">

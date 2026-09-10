@@ -80,8 +80,11 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-lg font-bold text-[#0F172A] mb-3">5. Fees and Refund Policy</h2>
+            <p className="mb-2">
+              Paid tiers (£19 Complete Travel Plan and £59 Priority Expert Review) grant immediate digital access to specialized dockets and veterinary specialist labor. All transactions are billed in British Sterling Pounds (£ GBP).
+            </p>
             <p>
-              Paid tiers (£19 Certified Pass and £59 Concierge) grant immediate digital access to specialized dockets and veterinary specialist labor. If you encounter technical inaccuracies in a statutory checklist prior to travel, please contact our support team at <a href="mailto:support@pawvalid.online" className="text-emerald-600 underline">support@pawvalid.online</a> within 14 days of purchase for a review or refund.
+              We provide a 14-day satisfaction and data accuracy guarantee. For complete terms regarding refund eligibility, non-refundable scenarios, duplicate transaction reversals, and payout timelines, please read our dedicated <Link href="/en/refund-policy" className="text-emerald-600 underline font-semibold">Refund &amp; Cancellation Policy</Link>.
             </p>
           </section>
 
