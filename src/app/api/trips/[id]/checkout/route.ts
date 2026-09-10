@@ -78,6 +78,18 @@ export async function POST(req: NextRequest, { params }: Params) {
       const mockOrderId = `order_demo_${trip.id.slice(-6)}_${Date.now()}`;
       const mockPaymentId = `pay_demo_${Date.now()}`;
 
+      if (customerEmail) {
+        try {
+          await db.user.upsert({
+            where: { email: customerEmail.toLowerCase().trim() },
+            update: {},
+            create: { email: customerEmail.toLowerCase().trim() },
+          });
+        } catch (uErr) {
+          console.warn('[Checkout] User auto-creation notice:', uErr);
+        }
+      }
+
       const updatedTrip = await db.savedTrip.update({
         where: { id },
         data: {

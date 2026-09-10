@@ -77,12 +77,35 @@ export default function PricingModal({
         theme: {
           color: '#0E2342',
         },
-        handler: function () {
-          setStatusMessage('Payment verified! Loading your travel dossier...');
+        handler: async function (response: any) {
+          setStatusMessage('Payment verified! Finalizing account and unlocking dossier...');
+          try {
+            const verifyRes = await fetch(`/api/trips/${tripId}/verify-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response?.razorpay_order_id,
+                razorpay_payment_id: response?.razorpay_payment_id,
+                razorpay_signature: response?.razorpay_signature,
+                email: checkoutEmail.trim().toLowerCase(),
+                whatsappNumber: checkoutPhone.trim(),
+                tier,
+              }),
+            });
+            const verifyData = await verifyRes.json();
+            if (verifyData.trip) {
+              localStorage.setItem('pawvalid_active_trip', JSON.stringify(verifyData.trip));
+              localStorage.setItem('petvia_active_trip', JSON.stringify(verifyData.trip));
+            }
+          } catch (verifyErr) {
+            console.warn('Payment verify call note:', verifyErr);
+          }
+          localStorage.setItem('pawvalid_user_email', checkoutEmail.trim().toLowerCase());
+          localStorage.setItem('petvia_user_email', checkoutEmail.trim().toLowerCase());
           setTimeout(() => {
             onClose();
-            window.location.href = `/dashboard?tripId=${tripId}&section=${tier === 'CONCIERGE' ? 'concierge' : 'overview'}`;
-          }, 1000);
+            window.location.href = `/dashboard?tripId=${tripId}&tab=${tier === 'CONCIERGE' ? 'concierge' : 'overview'}`;
+          }, 800);
         },
       };
       const rzp = new (window as any).Razorpay(options);

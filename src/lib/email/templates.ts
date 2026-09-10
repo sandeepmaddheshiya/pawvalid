@@ -556,6 +556,10 @@ export async function sendPurchaseReceiptEmail(
       </table>
     </div>
 
+    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 13px; color: #166534;">
+      <strong>✓ Auto Account Created:</strong> An account has been created for <span style="font-family: monospace; font-weight: bold;">${recipientEmail}</span>. Whenever you return to PawValid, simply sign in with your email using a secure 6-digit One-Time Password (OTP).
+    </div>
+
     <p style="margin: 20px 0;">
       You can access your command center, download your digital travel dossier, print kennel crate stickers, and verify departure readiness anytime:
     </p>
@@ -575,6 +579,9 @@ export async function sendPurchaseReceiptEmail(
 Your PawValid Plan is Active!
 
 Thank you for your purchase. Your travel compliance plan for ${trip.petName} is unlocked.
+
+Account Created:
+An account has been automatically created for ${recipientEmail}. When returning, you can log in anytime using your email and an OTP.
 
 Order Summary:
 - Pet: ${trip.petName} (${trip.species})
@@ -604,3 +611,64 @@ pawvalid.online
     replyTo: { email: SUPPORT_EMAIL, name: 'PawValid Billing Support' },
   });
 }
+
+/**
+ * Dispatch an authentic, branded One-Time Password (OTP) login code email.
+ */
+export async function sendOtpEmail(options: {
+  email: string;
+  code: string;
+  petName?: string;
+}): Promise<BrevoSendResult> {
+  const { email, code, petName } = options;
+
+  const htmlContent = `
+    <h1 class="h1">Your PawValid Sign-In Code</h1>
+    <p class="lead">
+      Use the secure one-time verification code below to access your ${
+        petName ? `travel command center for <strong>${petName}</strong>` : 'PawValid account'
+      }.
+    </p>
+
+    <div style="background: #F4FBF7; border: 2px dashed #0FA958; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
+      <span style="font-size: 11px; font-weight: 700; color: #0FA958; text-transform: uppercase; letter-spacing: 1px;">One-Time Passcode (OTP)</span>
+      <div style="font-family: monospace, Courier, monospace; font-size: 36px; font-weight: 800; letter-spacing: 8px; color: #0E2342; margin-top: 10px;">
+        ${code}
+      </div>
+      <p style="margin: 10px 0 0 0; font-size: 12px; color: #64748B;">
+        Valid for <strong>10 minutes</strong>. Do not share this code with anyone.
+      </p>
+    </div>
+
+    <div class="card">
+      <p style="margin: 0; font-size: 13px; color: #475569;">
+        <strong>Didn’t request this code?</strong> If you did not attempt to sign in to PawValid, you can safely ignore this email. Your records remain secure.
+      </p>
+    </div>
+  `;
+
+  const textContent = `
+Your PawValid Sign-In Code: ${code}
+
+Use this one-time code to sign in to your PawValid pet travel account.
+Valid for 10 minutes. Do not share this code.
+
+PawValid Security Team
+pawvalid.online
+  `.trim();
+
+  const fullHtml = wrapPawValidEmail({
+    title: `Your Sign-In Code: ${code}`,
+    preheader: `Your 6-digit PawValid sign-in code is ${code}. Valid for 10 minutes.`,
+    contentHtml: htmlContent,
+  });
+
+  return sendTransactionalEmail({
+    to: email,
+    subject: `${code} is your PawValid sign-in code`,
+    htmlContent: fullHtml,
+    textContent,
+    replyTo: { email: SUPPORT_EMAIL, name: 'PawValid Authentication' },
+  });
+}
+

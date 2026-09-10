@@ -27,6 +27,16 @@ export async function POST(req: NextRequest) {
         .catch((err) => console.error('[Welcome Email] Async error:', err));
     }
 
+    // Auto-create or ensure User record exists in DB
+    const user = await db.user.upsert({
+      where: { email: cleanEmail },
+      update: name?.trim() ? { name: name.trim() } : {},
+      create: {
+        email: cleanEmail,
+        name: name?.trim() || undefined,
+      },
+    });
+
     // Fetch only REAL trips created by or saved for this user
     const userTrips = await db.savedTrip.findMany({
       where: { userEmail: cleanEmail },

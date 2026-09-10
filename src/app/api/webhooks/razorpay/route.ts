@@ -69,6 +69,22 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
         }
 
+        // Auto-create or ensure User account exists in database
+        const cleanCustomerEmail = (email || trip.userEmail || '').toLowerCase().trim();
+        if (cleanCustomerEmail) {
+          try {
+            await db.user.upsert({
+              where: { email: cleanCustomerEmail },
+              update: {},
+              create: {
+                email: cleanCustomerEmail,
+              },
+            });
+          } catch (userErr) {
+            console.warn('[Razorpay Webhook] Auto user creation notice:', userErr);
+          }
+        }
+
         // Check idempotency: if already upgraded to CONCIERGE and webhook repeated, avoid duplicate alerts
         const alreadyUpgraded = trip.tier === targetTier;
 
@@ -76,6 +92,7 @@ export async function POST(request: NextRequest) {
           where: { id: tripId },
           data: {
             tier: targetTier,
+            userEmail: cleanCustomerEmail || trip.userEmail,
             ...(targetTier === 'CONCIERGE'
               ? {
                   whatsappNumber: notes.whatsappNumber || trip.whatsappNumber,
@@ -124,7 +141,7 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        return NextResponse.json({ status: 'ok', upgradedTier: targetTier, tripId });
+        return NextResponse.json({ status: 'ok', upgradedTier: targetTier, tripId, accountCreated: true });
       }
 
       // ─── 2. HANDLE LEGACY ASSESSMENT PAYMENT ───────────────────────────────
