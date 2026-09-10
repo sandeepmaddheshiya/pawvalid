@@ -128,9 +128,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/en/privacy" className="hover:text-white transition-colors">
+                <a href="mailto:support@pawvalid.online" className="hover:text-white transition-colors">
                   Contact
-                </Link>
+                </a>
               </li>
               <li>
                 <Link href="/en/privacy" className="hover:text-white transition-colors">

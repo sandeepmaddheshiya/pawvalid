@@ -7,6 +7,8 @@ import FaqAccordion from '@/components/FaqAccordion';
 import PricingSection from '@/components/PricingSection';
 import DigitalPetPassportSection from '@/components/DigitalPetPassportSection';
 import CustomsQrSection from '@/components/CustomsQrSection';
+import { getFaqSchema } from '@/lib/seo/schema';
+import { HOME_FAQS } from '@/lib/seo/faqs';
 
 export const metadata: Metadata = {
   title: 'PawValid — Is Your Pet Ready to Travel? | Pet Travel Document Checker',
@@ -26,8 +28,19 @@ const POPULAR_COUNTRIES = [
 ];
 
 export default function HomePage() {
+  const faqLd = getFaqSchema(
+    HOME_FAQS.map((faq) => ({
+      q: faq.question,
+      a: faq.answer,
+    }))
+  );
+
   return (
     <div className="bg-[#F8FAFB] text-zinc-900 overflow-hidden font-sans">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
       {/* ─── 1. HERO SECTION ──────────────────────────────────────────────── */}
       <section className="relative pt-10 pb-12 lg:pt-14 lg:pb-16 bg-[#F8FAFB] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

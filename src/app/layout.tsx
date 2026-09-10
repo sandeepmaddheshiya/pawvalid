@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { getOrganizationSchema, getSoftwareApplicationSchema } from '@/lib/seo/schema';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://pawvalid.online'),
@@ -11,14 +12,61 @@ export const metadata: Metadata = {
   },
   description:
     'Know if your pet is actually ready to travel. Route-specific, source-backed compliance assessments for international pet travel.',
-  keywords: ['pet travel', 'pet compliance', 'dog travel international', 'pet import requirements', 'pet travel checklist', 'pawvalid'],
-  authors: [{ name: 'PawValid' }],
+  keywords: [
+    'pet travel',
+    'pet travel compliance',
+    'dog travel international',
+    'cat travel international',
+    'pet import requirements',
+    'pet travel checklist',
+    'rabies titer test',
+    'pet passport',
+    'USDA pet travel certificate',
+    'DEFRA pet travel',
+    'EU pet passport regulations',
+    'IATA live animal crate guidelines',
+    'pawvalid',
+  ],
+  authors: [{ name: 'PawValid Regulatory Team', url: 'https://pawvalid.online' }],
+  creator: 'PawValid',
+  publisher: 'PawValid',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
     type: 'website',
     siteName: 'PawValid',
     title: 'PawValid — Pet Travel Compliance Checker',
     description: 'Route-specific, source-backed readiness assessments for international pet travel.',
     url: 'https://pawvalid.online',
+    locale: 'en_US',
+    images: [
+      {
+        url: '/hero-dog-airport.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'PawValid — International Pet Travel Compliance Checker',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@pawvalid',
+    creator: '@pawvalid',
+    title: 'PawValid — Pet Travel Compliance Checker',
+    description: 'Route-specific, source-backed readiness assessments for international pet travel.',
+    images: ['/hero-dog-airport.jpg'],
+  },
+  alternates: {
+    canonical: 'https://pawvalid.online',
   },
 };
 
@@ -27,8 +75,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const orgSchema = getOrganizationSchema();
+  const appSchema = getSoftwareApplicationSchema();
+
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>

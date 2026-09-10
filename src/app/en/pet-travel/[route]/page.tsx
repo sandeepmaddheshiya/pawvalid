@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { getCurrentRequirementVersions } from '@/lib/requirements/queries';
 import FreshnessIndicator from '@/components/FreshnessIndicator';
+import { getFaqSchema, getBreadcrumbSchema, getHowToSchema } from '@/lib/seo/schema';
 
 interface StatutoryRule {
   id: string;
@@ -698,8 +699,24 @@ export async function generateMetadata({ params }: RoutePageProps): Promise<Meta
   return {
     title,
     description: display.description,
+    keywords: [
+      `pet travel ${display.from} to ${display.to}`,
+      `dog travel ${display.to}`,
+      `cat travel ${display.to}`,
+      `rabies titer ${display.to}`,
+      `pet health certificate ${display.to}`,
+      `pet passport ${display.from} to ${display.to}`,
+      'pawvalid compliance',
+    ],
     alternates: {
       canonical: pageUrl,
+      languages: {
+        en: `${appUrl}/en/pet-travel/${route}`,
+        de: `${appUrl}/de/pet-travel/${route}`,
+        fr: `${appUrl}/fr/pet-travel/${route}`,
+        es: `${appUrl}/es/pet-travel/${route}`,
+        'x-default': `${appUrl}/en/pet-travel/${route}`,
+      },
     },
     openGraph: {
       title,
@@ -708,11 +725,26 @@ export async function generateMetadata({ params }: RoutePageProps): Promise<Meta
       siteName: 'PawValid Pet Travel Compliance',
       locale: 'en_US',
       type: 'article',
+      images: [
+        {
+          url: '/hero-dog-airport.jpg',
+          width: 1200,
+          height: 630,
+          alt: `Pet travel requirements from ${display.from} to ${display.to}`,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@pawvalid',
+      creator: '@pawvalid',
       title,
       description: display.description,
+      images: ['/hero-dog-airport.jpg'],
+    },
+    other: {
+      'geo.region': display.destCode,
+      'geo.placename': display.to,
     },
   };
 }
@@ -886,7 +918,25 @@ export default async function RoutePage({ params }: RoutePageProps) {
     return display.statutoryRequirements;
   })();
 
-  const jsonLd = {
+  const breadcrumbLd = getBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Pet Travel Routes', url: '/en/pet-travel' },
+    { name: `${display.from} to ${display.to}`, url: `/en/pet-travel/${route}` },
+  ]);
+
+  const faqLd = getFaqSchema(display.faqs);
+
+  const howToLd = getHowToSchema({
+    title: `How to Travel with a Pet from ${display.from} to ${display.to}`,
+    description: `Official regulatory step-by-step checklist to transport a dog or cat from ${display.from} to ${display.to} under ${display.legalBasis}.`,
+    steps: display.timelineSteps.map((s) => ({
+      step: s.step,
+      title: s.title,
+      description: `${s.timing}: ${s.description}`,
+    })),
+  });
+
+  const webPageLd = {
     '@context': 'https://schema.org',
     '@type': 'MedicalWebPage',
     name: `Pet Travel Requirements: ${display.from} to ${display.to}`,
@@ -894,6 +944,11 @@ export default async function RoutePage({ params }: RoutePageProps) {
     mainEntity: {
       '@type': 'GovernmentService',
       name: `Veterinary Pet Movement from ${display.from} to ${display.to}`,
+      provider: {
+        '@type': 'GovernmentOrganization',
+        name: display.authority,
+      },
+      serviceType: 'International Animal Movement Compliance',
     },
   };
 
@@ -901,7 +956,19 @@ export default async function RoutePage({ params }: RoutePageProps) {
     <div className="min-h-screen bg-[#FAFAFA] text-zinc-900 font-sans">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToLd) }}
       />
 
       {/* ─── 1. BREADCRUMB & REGULATORY VERIFICATION BAR ────────────────── */}
@@ -942,6 +1009,42 @@ export default async function RoutePage({ params }: RoutePageProps) {
           <p className="text-sm sm:text-base text-zinc-600 max-w-3xl leading-relaxed mb-6">
             {display.description}
           </p>
+
+          {/* AEO Quick Answer / AI Direct Snippet Box */}
+          <div className="bg-gradient-to-br from-emerald-50/70 via-white to-slate-50 border border-emerald-200/90 rounded-2xl p-5 sm:p-6 mb-8 shadow-xs">
+            <div className="flex items-center gap-2 mb-2.5">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold uppercase tracking-wider">
+                <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Direct Answer / Statutory Summary
+              </span>
+              <span className="text-[11px] text-zinc-500 hidden sm:inline">• Verified for 2026 Entry</span>
+            </div>
+            
+            <p className="text-sm sm:text-base text-zinc-800 font-medium leading-relaxed mb-4">
+              <strong>Can I travel with my pet from {display.from} to {display.to}?</strong> Yes. Companion dogs and cats can enter {display.to} from {display.from} under non-commercial regulations established by {display.authority} ({display.legalBasis}). Entry requires an ISO 11784/11785 microchip, rabies vaccination with a {display.leadTime.toLowerCase()} waiting period, {display.titerRequired.toLowerCase()}, and an endorsed {display.certificateType}. Compliant pets are eligible for {display.quarantineDays.toLowerCase()}.
+            </p>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-emerald-200/60 text-xs">
+              <div className="bg-white/80 rounded-lg p-2.5 border border-zinc-200/70">
+                <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider block">Rabies Titer</span>
+                <span className="font-bold text-zinc-900 mt-0.5 block">{display.titerRequired}</span>
+              </div>
+              <div className="bg-white/80 rounded-lg p-2.5 border border-zinc-200/70">
+                <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider block">Lead Time</span>
+                <span className="font-bold text-zinc-900 mt-0.5 block">{display.leadTime}</span>
+              </div>
+              <div className="bg-white/80 rounded-lg p-2.5 border border-zinc-200/70">
+                <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider block">Quarantine</span>
+                <span className="font-bold text-zinc-900 mt-0.5 block">{display.quarantineDays}</span>
+              </div>
+              <div className="bg-white/80 rounded-lg p-2.5 border border-zinc-200/70">
+                <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider block">Certificate</span>
+                <span className="font-bold text-zinc-900 mt-0.5 block truncate" title={display.certificateType}>{display.certificateType}</span>
+              </div>
+            </div>
+          </div>
 
           {/* Quick Authority Badges */}
           <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500 mb-8">
