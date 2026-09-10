@@ -79,7 +79,7 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
         <button
           type="button"
           onClick={handleAddToCalendar}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap w-full sm:w-auto"
         >
           <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -89,7 +89,7 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
       </div>
 
       {/* ─── 2. EXECUTIVE DEPARTURE CLEARANCE CARD ─────────────────── */}
-      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 sm:p-6 shadow-2xs">
+      <div className="bg-white rounded-2xl border border-zinc-200/80 p-4 sm:p-6 shadow-2xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-50 shrink-0" />
@@ -122,7 +122,7 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
       </div>
 
       {/* ─── 3. PRE-FLIGHT NOTIFICATION PREFERENCES ────────────────── */}
-      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 sm:p-6 shadow-2xs space-y-5">
+      <div className="bg-white rounded-2xl border border-zinc-200/80 p-4 sm:p-6 shadow-2xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -309,7 +309,7 @@ export default function TimelineView({ trip, onTripUpdated }: TimelineViewProps)
       </div>
 
       {/* ─── 4. CHRONOLOGICAL MILESTONES LEDGER ────────────────────── */}
-      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 sm:p-7 shadow-2xs space-y-5">
+      <div className="bg-white rounded-2xl border border-zinc-200/80 p-4 sm:p-7 shadow-2xs space-y-5">
         <div>
           <h2 className="text-base font-bold text-zinc-900">
             Journey Milestones &amp; Compliance History

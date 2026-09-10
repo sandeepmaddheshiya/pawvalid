@@ -81,7 +81,7 @@ CRITICAL MANDATES FOR ATTENDING VETERINARIAN:
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white rounded-3xl p-4 sm:p-8 border border-zinc-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 block">
             Clinic Guidance &amp; Error Prevention
@@ -94,11 +94,11 @@ CRITICAL MANDATES FOR ATTENDING VETERINARIAN:
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0 w-full sm:w-auto">
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-900 font-bold text-xs transition-all cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-900 font-bold text-xs transition-all cursor-pointer w-full sm:w-auto"
           >
             {copied ? (
               <>
@@ -120,7 +120,7 @@ CRITICAL MANDATES FOR ATTENDING VETERINARIAN:
             type="button"
             onClick={handleDownloadPdf}
             disabled={isGeneratingPdf}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#0E2342] hover:bg-[#16345E] disabled:opacity-75 text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#0E2342] hover:bg-[#16345E] disabled:opacity-75 text-white font-bold text-xs shadow-xs transition-all cursor-pointer w-full sm:w-auto"
           >
             {isGeneratingPdf ? (
               <>
@@ -143,18 +143,19 @@ CRITICAL MANDATES FOR ATTENDING VETERINARIAN:
             type="button"
             onClick={handlePrint}
             title="Print directly"
-            className="p-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-all cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 p-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-all cursor-pointer w-full sm:w-auto"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.656h10.5z" />
             </svg>
+            <span className="sm:hidden font-bold text-xs text-zinc-700">Print Instructions</span>
           </button>
         </div>
       </div>
 
       {/* Printable Clinic Card */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200 shadow-sm space-y-6">
-        <div className="border-b border-zinc-200 pb-4 flex items-center justify-between">
+      <div className="bg-white rounded-3xl p-4 sm:p-8 border border-zinc-200 shadow-sm space-y-6">
+        <div className="border-b border-zinc-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">
               Official Veterinary Guidance
@@ -163,8 +164,8 @@ CRITICAL MANDATES FOR ATTENDING VETERINARIAN:
               Patient: {petName} ({trip?.species || 'Canine'})
             </h3>
           </div>
-          <div className="text-right text-xs font-mono text-zinc-500">
-            Microchip: <strong className="text-zinc-900">{microchip}</strong>
+          <div className="text-left sm:text-right text-xs font-mono text-zinc-500">
+            Microchip: <strong className="text-zinc-900 break-all">{microchip}</strong>
           </div>
         </div>
 

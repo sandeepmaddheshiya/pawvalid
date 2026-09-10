@@ -73,7 +73,7 @@ export default function ChecklistView({ trip }: ChecklistViewProps) {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header & Scope Filter Pills */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xs">
+      <div className="bg-white rounded-3xl p-4 sm:p-8 border border-zinc-200/80 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 pb-5 mb-5">
           <div>
             <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
@@ -89,13 +89,13 @@ export default function ChecklistView({ trip }: ChecklistViewProps) {
         </div>
 
         {/* Filter Pills */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 flex-nowrap sm:flex-wrap max-w-full">
           {(['ALL', 'LEAVING', 'TRANSIT', 'ARRIVING', 'LOGISTICS'] as const).map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => setFilterScope(s)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer inline-flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer inline-flex items-center gap-1.5 shrink-0 ${
                 filterScope === s
                   ? 'bg-zinc-900 text-white shadow-xs'
                   : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900'
@@ -119,7 +119,7 @@ export default function ChecklistView({ trip }: ChecklistViewProps) {
         {filteredItems.map((item: any, idx: number) => (
           <div
             key={item.ruleId || `rule-${idx}`}
-            className="bg-white rounded-2xl p-5 border border-zinc-200/80 shadow-xs hover:border-zinc-300 transition-all space-y-2.5"
+            className="bg-white rounded-2xl p-3.5 sm:p-5 border border-zinc-200/80 shadow-xs hover:border-zinc-300 transition-all space-y-2.5"
           >
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
               <div className="space-y-0.5">

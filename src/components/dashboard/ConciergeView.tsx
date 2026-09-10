@@ -71,7 +71,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
   return (
     <div className="space-y-6 animate-fade-in text-left">
       {/* Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xs">
+      <div className="bg-white rounded-3xl p-4 sm:p-8 border border-zinc-200/80 shadow-xs">
         <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
           <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20">
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -130,7 +130,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
 
       {/* Active Concierge State */}
       {isConciergeActive ? (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200 shadow-sm space-y-6">
+        <div className="bg-white rounded-3xl p-4 sm:p-8 border border-zinc-200 shadow-sm space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 pb-5">
             <div>
               <div className="flex items-center gap-2">
@@ -224,7 +224,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
         </div>
       ) : (
         /* Intake Form & Feature Showcase */
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200 shadow-sm space-y-6">
+        <div className="bg-white rounded-3xl p-4 sm:p-8 border border-zinc-200 shadow-sm space-y-6">
           <div className="border-b border-zinc-100 pb-5">
             <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block">
               Direct Specialist Onboarding
@@ -264,11 +264,11 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
                 <label className="block text-xs font-bold text-zinc-900">
                   Departure Urgency Level
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                   <button
                     type="button"
                     onClick={() => setUrgency('STANDARD')}
-                    className={`px-2 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center ${
+                    className={`px-1.5 sm:px-2 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold border transition-all cursor-pointer text-center ${
                       urgency === 'STANDARD'
                         ? 'bg-zinc-900 text-white border-zinc-900 shadow-2xs'
                         : 'bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-zinc-300'
@@ -279,7 +279,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
                   <button
                     type="button"
                     onClick={() => setUrgency('HIGH')}
-                    className={`px-2 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center ${
+                    className={`px-1.5 sm:px-2 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold border transition-all cursor-pointer text-center ${
                       urgency === 'HIGH'
                         ? 'bg-amber-500 text-white border-amber-600 shadow-2xs'
                         : 'bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-zinc-300'
@@ -290,7 +290,7 @@ export default function ConciergeView({ trip, onTripUpdated }: ConciergeViewProp
                   <button
                     type="button"
                     onClick={() => setUrgency('IMMEDIATE')}
-                    className={`px-2 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center ${
+                    className={`px-1.5 sm:px-2 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold border transition-all cursor-pointer text-center ${
                       urgency === 'IMMEDIATE'
                         ? 'bg-red-600 text-white border-red-700 shadow-2xs'
                         : 'bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-zinc-300'

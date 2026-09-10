@@ -71,7 +71,7 @@ export default function OverviewView({
       {/* ─── 1. EXECUTIVE TRAVEL ITINERARY HERO ─────────────────────── */}
       <div className="bg-white rounded-3xl border border-zinc-200/90 shadow-xs overflow-hidden">
         {/* Main Itinerary Header */}
-        <div className="p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="p-4 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3.5">
             {/* Identity line */}
             <div className="flex items-center gap-3">
@@ -185,7 +185,7 @@ export default function OverviewView({
         </div>
 
         {/* Integrated Earliest Departure Ribbon */}
-        <div className="bg-[#FAFBFB] border-t border-zinc-100 px-6 sm:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-[#FAFBFB] border-t border-zinc-100 px-4 sm:px-8 py-3 sm:py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#E8F8F0] text-[#0FA958] text-xs font-bold shrink-0">
               ✓
@@ -214,7 +214,7 @@ export default function OverviewView({
       {/* ─── 2. HARMONIZED BOARDING PASS & DOCUMENT VAULT HUB ────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Card A: Digital Travel Verification Pass */}
-        <div className="bg-white rounded-3xl p-6 sm:p-7 border border-zinc-200/90 shadow-xs flex flex-col justify-between relative overflow-hidden">
+        <div className="bg-white rounded-3xl p-4 sm:p-7 border border-zinc-200/90 shadow-xs flex flex-col justify-between relative overflow-hidden">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -309,7 +309,7 @@ export default function OverviewView({
         </div>
 
         {/* Card B: Secure Digital Document Vault */}
-        <div className="bg-white rounded-3xl p-6 sm:p-7 border border-zinc-200/90 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-3xl p-4 sm:p-7 border border-zinc-200/90 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -434,7 +434,7 @@ export default function OverviewView({
       </div>
 
       {/* ─── 4. DEDUPLICATED ACTION ROADMAP ────────────────────────── */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/90 shadow-xs">
+      <div className="bg-white rounded-3xl p-4 sm:p-8 border border-zinc-200/90 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
           <div>
             <h3 className="font-serif text-lg font-bold text-[#0E2342]">Your Pre-Travel Action Roadmap</h3>
@@ -457,7 +457,7 @@ export default function OverviewView({
             return (
               <div
                 key={`step-${idx}`}
-                className="p-4 rounded-2xl bg-[#FAFBFB] border border-zinc-200/70 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-zinc-300 transition-colors"
+                className="p-3 sm:p-4 rounded-2xl bg-[#FAFBFB] border border-zinc-200/70 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-zinc-300 transition-colors"
               >
                 <div className="flex items-start gap-3 flex-1">
                   <span className="w-6 h-6 rounded-full bg-white border border-zinc-200 text-[#0E2342] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">

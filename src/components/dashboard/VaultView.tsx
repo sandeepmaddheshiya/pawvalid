@@ -220,13 +220,13 @@ export default function VaultView({
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0 flex-wrap">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto shrink-0">
           {onDownloadDossier && (
             <button
               type="button"
               disabled={isDownloadingDossier}
               onClick={onDownloadDossier}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-300 text-xs font-semibold text-zinc-700 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-300 text-xs font-semibold text-zinc-700 shadow-2xs transition-colors cursor-pointer disabled:opacity-50 w-full sm:w-auto"
             >
               <svg className={`w-4 h-4 ${isPaid ? 'text-emerald-700' : 'text-zinc-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -238,7 +238,7 @@ export default function VaultView({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer w-full sm:w-auto"
           >
             <span>+ Upload Certificate</span>
           </button>
@@ -246,7 +246,7 @@ export default function VaultView({
       </div>
 
       {/* ─── 2. INCREMENTAL UPLOAD DROPZONE ───────────────────────────── */}
-      <div className="bg-white rounded-2xl p-6 sm:p-7 border-2 border-dashed border-zinc-300 hover:border-emerald-500 transition-colors text-center relative group shadow-2xs">
+      <div className="bg-white rounded-2xl p-4 sm:p-7 border-2 border-dashed border-zinc-300 hover:border-emerald-500 transition-colors text-center relative group shadow-2xs">
         <input
           ref={fileInputRef}
           type="file"
@@ -288,7 +288,7 @@ export default function VaultView({
       </div>
 
       {/* ─── 3. STORED DOCUMENTS GALLERY ───────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-2xs p-5 sm:p-6 space-y-4">
+      <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-2xs p-3.5 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4">
           <div>
             <h3 className="font-bold text-sm text-zinc-900">
@@ -300,11 +300,11 @@ export default function VaultView({
           </div>
 
           {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 flex-wrap text-xs font-semibold">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs font-semibold shrink-0 sm:flex-wrap max-w-full">
             <button
               type="button"
               onClick={() => setFilterType('all')}
-              className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
                 filterType === 'all' ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
               }`}
             >
@@ -313,7 +313,7 @@ export default function VaultView({
             <button
               type="button"
               onClick={() => setFilterType('health')}
-              className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
                 filterType === 'health' ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
               }`}
             >
@@ -322,7 +322,7 @@ export default function VaultView({
             <button
               type="button"
               onClick={() => setFilterType('rabies')}
-              className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
                 filterType === 'rabies' ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
               }`}
             >
@@ -331,7 +331,7 @@ export default function VaultView({
             <button
               type="button"
               onClick={() => setFilterType('microchip')}
-              className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
                 filterType === 'microchip' ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
               }`}
             >
@@ -359,17 +359,17 @@ export default function VaultView({
                 <div
                   key={`vault-doc-${idx}`}
                   onClick={() => setSelectedDoc(doc)}
-                  className="group relative p-4 rounded-xl bg-zinc-50/70 hover:bg-white border border-zinc-200/80 hover:border-emerald-300 hover:shadow-xs transition-all flex flex-col justify-between gap-3 cursor-pointer"
+                  className="group relative p-3 sm:p-4 rounded-xl bg-zinc-50/70 hover:bg-white border border-zinc-200/80 hover:border-emerald-300 hover:shadow-xs transition-all flex flex-col justify-between gap-3 cursor-pointer"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200/90 flex items-center justify-center text-base shrink-0 shadow-2xs group-hover:border-emerald-200 transition-colors">
-                      <svg className="w-5 h-5 text-zinc-600 group-hover:text-emerald-700 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="flex items-start gap-2.5 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white border border-zinc-200/90 flex items-center justify-center text-base shrink-0 shadow-2xs group-hover:border-emerald-200 transition-colors">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-600 group-hover:text-emerald-700 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                       </svg>
                     </div>
 
                     <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center justify-between gap-1.5">
                         <strong className="block text-xs font-bold text-zinc-900 truncate group-hover:text-emerald-950 transition-colors">
                           {doc.filename}
                         </strong>
@@ -387,22 +387,23 @@ export default function VaultView({
                   </div>
 
                   {/* Card Bottom Actions */}
-                  <div className="flex items-center justify-between pt-2 border-t border-zinc-200/50 text-[11px]">
-                    <span className="text-zinc-400 font-medium flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      <span>Verified Record</span>
+                  <div className="flex items-center justify-between pt-2 border-t border-zinc-200/50 text-[11px] gap-1.5">
+                    <span className="text-zinc-400 font-medium flex items-center gap-1 text-[10px] sm:text-[11px] shrink-0 whitespace-nowrap">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                      <span className="hidden min-[360px]:inline">Verified Record</span>
+                      <span className="min-[360px]:hidden">Verified</span>
                     </span>
 
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedDoc(doc);
                         }}
-                        className="px-2.5 py-1 rounded-lg bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-700 font-semibold shadow-2xs transition-colors flex items-center gap-1"
+                        className="px-2 sm:px-2.5 py-1 rounded-lg bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-700 font-semibold shadow-2xs transition-colors flex items-center gap-1 text-[11px] sm:text-xs whitespace-nowrap cursor-pointer"
                       >
-                        <svg className="w-3 h-3 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-3 h-3 text-zinc-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
@@ -413,12 +414,12 @@ export default function VaultView({
                         type="button"
                         disabled={isDownloadingThis}
                         onClick={(e) => handleDownloadSingleDoc(doc, e)}
-                        className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-semibold transition-colors flex items-center gap-1 disabled:opacity-50"
+                        className="px-2 sm:px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-semibold transition-colors flex items-center gap-1 disabled:opacity-50 text-[11px] sm:text-xs whitespace-nowrap cursor-pointer"
                       >
                         {isDownloadingThis ? (
-                          <div className="w-3 h-3 border border-emerald-700 border-t-transparent rounded-full animate-spin" />
+                          <div className="w-3 h-3 border border-emerald-700 border-t-transparent rounded-full animate-spin shrink-0" />
                         ) : (
-                          <svg className="w-3 h-3 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-3 h-3 text-emerald-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                           </svg>
                         )}
