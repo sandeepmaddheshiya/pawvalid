@@ -435,56 +435,59 @@ export default function VaultView({
 
       {/* ─── 4. HIGH-FIDELITY DOCUMENT PREVIEW MODAL ───────────────────── */}
       {selectedDoc && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-hidden flex flex-col shadow-2xl border border-zinc-200 animate-scale-in">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-5 animate-fade-in">
+          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[96vh] sm:max-h-[92vh] overflow-hidden flex flex-col shadow-2xl border border-zinc-200 animate-scale-in">
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-zinc-200 flex items-center justify-between bg-zinc-50/70">
-              <div className="flex items-center gap-3 truncate">
-                <div className="w-9 h-9 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-emerald-700 shrink-0 shadow-2xs font-bold text-xs">
+            <div className="p-3 sm:p-5 border-b border-zinc-200 flex items-center justify-between gap-2 bg-zinc-50/70">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white border border-zinc-200 flex items-center justify-center text-emerald-700 shrink-0 shadow-2xs font-bold text-[11px] sm:text-xs">
                   PDF
                 </div>
-                <div className="truncate">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-bold text-sm text-zinc-900 truncate">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                    <h3 className="font-bold text-xs sm:text-sm text-zinc-900 truncate">
                       {selectedDoc.filename}
                     </h3>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <span className="px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">
                       ✓ Verified Document
                     </span>
                   </div>
-                  <p className="text-[11px] text-zinc-500 truncate">
+                  <p className="text-[10px] sm:text-[11px] text-zinc-500 truncate">
                     {getDocClassification(selectedDoc).label}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => handleDownloadSingleDoc(selectedDoc)}
-                  className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-300 text-xs font-semibold text-zinc-700 transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  className="p-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-300 text-xs font-semibold text-zinc-700 transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  title="Download"
                 >
-                  <svg className="w-3.5 h-3.5 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-3.5 h-3.5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
-                  <span>Download</span>
+                  <span className="hidden sm:inline">Download</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-300 text-xs font-semibold text-zinc-700 transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  className="p-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-300 text-xs font-semibold text-zinc-700 transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  title="Print"
                 >
-                  <svg className="w-3.5 h-3.5 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-3.5 h-3.5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                   </svg>
-                  <span>Print</span>
+                  <span className="hidden sm:inline">Print</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedDoc(null)}
-                  className="w-8 h-8 rounded-full bg-zinc-200 hover:bg-zinc-300 text-zinc-700 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer ml-1"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-200 hover:bg-zinc-300 text-zinc-700 flex items-center justify-center font-bold text-xs sm:text-sm transition-colors cursor-pointer"
+                  aria-label="Close"
                 >
                   ✕
                 </button>
@@ -492,70 +495,71 @@ export default function VaultView({
             </div>
 
             {/* Modal Tab Selector */}
-            <div className="flex items-center gap-1 px-5 pt-3 border-b border-zinc-200 text-xs font-semibold bg-white">
+            <div className="flex items-center gap-1 px-3 sm:px-5 pt-2.5 sm:pt-3 border-b border-zinc-200 text-xs font-semibold bg-white">
               <button
                 type="button"
                 onClick={() => setPreviewTab('certificate')}
-                className={`pb-2.5 px-3 border-b-2 cursor-pointer transition-colors ${
+                className={`pb-2 px-2 sm:px-3 border-b-2 cursor-pointer transition-colors text-[11px] sm:text-xs whitespace-nowrap ${
                   previewTab === 'certificate'
                     ? 'border-[#0FA958] text-zinc-900 font-bold'
                     : 'border-transparent text-zinc-400 hover:text-zinc-700'
                 }`}
               >
-                Official Certificate View
+                Official Certificate
               </button>
               <button
                 type="button"
                 onClick={() => setPreviewTab('evidence')}
-                className={`pb-2.5 px-3 border-b-2 cursor-pointer transition-colors ${
+                className={`pb-2 px-2 sm:px-3 border-b-2 cursor-pointer transition-colors text-[11px] sm:text-xs whitespace-nowrap ${
                   previewTab === 'evidence'
                     ? 'border-[#0FA958] text-zinc-900 font-bold'
                     : 'border-transparent text-zinc-400 hover:text-zinc-700'
                 }`}
               >
-                OCR Data &amp; Audit Trail
+                <span className="sm:hidden">OCR &amp; Audit Trail</span>
+                <span className="hidden sm:inline">OCR Data &amp; Audit Trail</span>
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto p-5 sm:p-6 bg-[#F8FAFC]">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-[#F8FAFC]">
               {previewTab === 'certificate' ? (
-                <div className="bg-white border border-zinc-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6 max-w-2xl mx-auto font-sans text-xs">
+                <div className="bg-white border border-zinc-200 rounded-2xl p-4 sm:p-8 shadow-sm space-y-4 sm:space-y-6 max-w-2xl mx-auto font-sans text-xs">
                   {/* Official Header */}
-                  <div className="border-b border-zinc-200 pb-4 text-center space-y-1">
-                    <span className="text-[10px] font-bold text-zinc-400 tracking-widest uppercase">
+                  <div className="border-b border-zinc-200 pb-3 sm:pb-4 text-center space-y-1">
+                    <span className="text-[9px] sm:text-[10px] font-bold text-zinc-400 tracking-wider uppercase block">
                       Official Veterinary Travel Certification Record
                     </span>
-                    <h2 className="font-serif text-lg font-bold text-zinc-900">
+                    <h2 className="font-serif text-base sm:text-lg font-bold text-zinc-900 leading-snug">
                       {getDocClassification(selectedDoc).label}
                     </h2>
-                    <p className="text-[11px] text-zinc-500 font-mono">
+                    <p className="text-[10px] sm:text-[11px] text-zinc-500 font-mono leading-tight">
                       Compliance Standard: Regulation (EU) 2026/131 / DEFRA Pet Travel Scheme / IATA LAR
                     </p>
                   </div>
 
                   {/* Identification Details Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-zinc-50 p-3.5 rounded-xl border border-zinc-200/80">
-                    <div>
+                  <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 bg-zinc-50 p-3 sm:p-3.5 rounded-xl border border-zinc-200/80">
+                    <div className="min-w-0">
                       <span className="text-[10px] text-zinc-400 uppercase font-semibold block">Pet Name</span>
-                      <strong className="text-zinc-900 text-xs block">{petName}</strong>
+                      <strong className="text-zinc-900 text-xs block truncate">{petName}</strong>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <span className="text-[10px] text-zinc-400 uppercase font-semibold block">Species / Breed</span>
-                      <span className="text-zinc-800 text-xs block">{species} · {breed}</span>
+                      <span className="text-zinc-800 text-xs block truncate">{species} · {breed}</span>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <span className="text-[10px] text-zinc-400 uppercase font-semibold block">ISO Microchip</span>
-                      <span className="font-mono text-xs font-bold text-zinc-900 block">{microchip}</span>
+                      <span className="font-mono text-xs font-bold text-zinc-900 block break-all">{microchip}</span>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <span className="text-[10px] text-zinc-400 uppercase font-semibold block">Route</span>
-                      <span className="text-zinc-800 text-xs block">{origin} → {destination}</span>
+                      <span className="text-zinc-800 text-xs block truncate">{origin} → {destination}</span>
                     </div>
                   </div>
 
                   {/* Summary Narrative */}
-                  <div className="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-200 space-y-1">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-200 space-y-1">
                     <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
                       Audit Verification Summary
                     </span>
@@ -565,7 +569,7 @@ export default function VaultView({
                   </div>
 
                   {/* Statutory Attestation Block */}
-                  <div className="space-y-2 border-t border-zinc-100 pt-4">
+                  <div className="space-y-1.5 sm:space-y-2 border-t border-zinc-100 pt-3 sm:pt-4">
                     <span className="font-bold text-zinc-800 block text-xs">
                       Official Veterinarian Endorsement Attestation
                     </span>
@@ -575,7 +579,7 @@ export default function VaultView({
                   </div>
 
                   {/* Sign-off Stamps & Security Verification */}
-                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-200">
+                  <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2.5 sm:gap-4 pt-3 sm:pt-4 border-t border-zinc-200">
                     <div className="border border-dashed border-zinc-300 rounded-xl p-3 text-center space-y-1 bg-[#FAFBFB]">
                       <span className="text-[10px] font-bold text-zinc-400 uppercase block">Issuing Clinic Seal</span>
                       <div className="font-serif italic text-zinc-600 text-xs pt-1">
@@ -589,13 +593,13 @@ export default function VaultView({
                       <div className="text-emerald-700 font-bold text-xs pt-1">
                         ✓ SHA-256 Validated
                       </div>
-                      <span className="text-[9px] text-zinc-400 block font-mono">PV-HASH-2026-VERIFIED</span>
+                      <span className="text-[9px] text-zinc-400 block font-mono break-all">PV-HASH-2026-VERIFIED</span>
                     </div>
                   </div>
                 </div>
               ) : (
                 /* OCR Data & Audit Trail View */
-                <div className="bg-white border border-zinc-200 rounded-2xl p-5 sm:p-6 shadow-sm space-y-4 max-w-2xl mx-auto text-xs">
+                <div className="bg-white border border-zinc-200 rounded-2xl p-4 sm:p-6 shadow-sm space-y-3 sm:space-y-4 max-w-2xl mx-auto text-xs">
                   <div>
                     <h4 className="font-bold text-sm text-zinc-900">Extracted Document Intelligence</h4>
                     <p className="text-[11px] text-zinc-500 mt-0.5">
@@ -603,10 +607,10 @@ export default function VaultView({
                     </p>
                   </div>
 
-                  <div className="space-y-3 pt-2">
+                  <div className="space-y-2.5 sm:space-y-3 pt-1 sm:pt-2">
                     <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 space-y-1">
                       <span className="text-[10px] uppercase font-bold text-zinc-400 block">File Identity</span>
-                      <div className="font-mono text-xs font-bold text-zinc-900">{selectedDoc.filename}</div>
+                      <div className="font-mono text-xs font-bold text-zinc-900 break-all">{selectedDoc.filename}</div>
                       <div className="text-[11px] text-zinc-500">Format: PDF / Binary Encrypted Record</div>
                     </div>
 
@@ -618,14 +622,14 @@ export default function VaultView({
 
                     <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 space-y-1">
                       <span className="text-[10px] uppercase font-bold text-zinc-400 block">Compliance Audit Result</span>
-                      <p className="text-zinc-700 leading-relaxed font-mono text-[11px]">
+                      <p className="text-zinc-700 leading-relaxed font-mono text-[11px] break-words">
                         {selectedDoc.summary}
                       </p>
                     </div>
 
                     <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 space-y-1">
                       <span className="text-[10px] uppercase font-bold text-zinc-400 block">Verification Ledger Reference</span>
-                      <div className="font-mono text-zinc-800 text-[11px]">
+                      <div className="font-mono text-zinc-800 text-[11px] break-all">
                         PV-TRIP-{trip?.id?.slice(0, 8)?.toUpperCase() || 'UKDE-2026'} / {selectedDoc.filename}
                       </div>
                     </div>
