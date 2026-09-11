@@ -113,6 +113,16 @@ export default function Footer() {
                   IATA Crate Calculator
                 </Link>
               </li>
+              <li>
+                <a
+                  href="https://visareadynow.com"
+                  target="_blank"
+                  rel="noopener"
+                  className="hover:text-white transition-colors"
+                >
+                  Passport &amp; Visa Photos (VisaReadyNow)
+                </a>
+              </li>
             </ul>
           </div>
 

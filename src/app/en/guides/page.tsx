@@ -136,6 +136,34 @@ export default function GuidesIndexPage() {
           </div>
         </div>
       </section>
+
+      {/* ─── 4. TRAVELER ESSENTIALS / PARTNER RESOURCES ────────────────── */}
+      <section className="bg-zinc-100/70 border-t border-zinc-200/80 py-12">
+        <div className="section-container">
+          <div className="bg-white border border-zinc-200/90 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+            <div className="space-y-2 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0284C7] border border-blue-200/80 text-[11px] font-bold uppercase tracking-wider">
+                Traveler Preparation Checklist
+              </div>
+              <h3 className="font-serif text-xl sm:text-2xl font-bold text-zinc-900">
+                Traveling with your pet? Ensure your own documents are ready
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                While PawValid verifies your pet’s microchip, titer tests, and veterinary health certificates, human travelers must also meet international entry rules. If you need compliant biometric passport or visa photos for consular filing, verify and format them instantly with <a href="https://visareadynow.com" target="_blank" rel="noopener" className="font-semibold text-[#0284C7] hover:underline">VisaReadyNow</a>.
+              </p>
+            </div>
+            <a
+              href="https://visareadynow.com"
+              target="_blank"
+              rel="noopener"
+              className="px-5 py-2.5 rounded-xl bg-[#0E2342] hover:bg-[#16345E] text-white text-xs font-semibold shrink-0 transition-colors inline-flex items-center gap-2"
+            >
+              <span>Check Passport &amp; Visa Photos</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
