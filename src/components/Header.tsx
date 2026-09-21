@@ -179,6 +179,18 @@ export default function Header() {
                   >
                     Regulatory Guides &amp; Manuals
                   </Link>
+                  <Link
+                    href="/en/tools"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                  >
+                    Free Calculators (3 Tools)
+                  </Link>
+                  <Link
+                    href="/en/blog"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                  >
+                    Compliance Blog (5 Articles)
+                  </Link>
                   <div className="my-1 border-t border-zinc-100" />
                   <Link
                     href="#pet-passport"

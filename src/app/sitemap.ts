@@ -1,11 +1,15 @@
 import type { MetadataRoute } from 'next';
-import { db } from '@/lib/db';
 import { AIRLINES } from '@/lib/data/airlines';
 import { GUIDES } from '@/lib/data/guides';
 import { CORRIDORS } from '@/lib/data/corridors';
 import { COUNTRIES } from '@/lib/data/countries';
+import { TOOLS } from '@/lib/data/tools';
+import { BLOG_POSTS } from '@/lib/data/blog';
+import { db } from '@/lib/db';
 
-function parseDate(dateStr?: string, fallback = '2026-09-21T00:00:00.000Z'): Date {
+export const dynamic = 'force-static';
+
+function parseDate(dateStr: string | undefined, fallback: string): Date {
   if (!dateStr) return new Date(fallback);
   const parsed = new Date(dateStr);
   return isNaN(parsed.getTime()) ? new Date(fallback) : parsed;
@@ -14,7 +18,7 @@ function parseDate(dateStr?: string, fallback = '2026-09-21T00:00:00.000Z'): Dat
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pawvalid.online';
 
-  // 1. Core Pages with specific revision timestamps
+  // 1. Core High-Intent Pages
   const corePages: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}`,
@@ -49,6 +53,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/en/guides`,
       lastModified: new Date('2026-09-16T00:00:00.000Z'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/tools`,
+      lastModified: new Date('2026-09-21T00:00:00.000Z'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/blog`,
+      lastModified: new Date('2026-09-21T00:00:00.000Z'),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
@@ -165,5 +181,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }));
 
-  return [...corePages, ...countryPages, ...corridorPages, ...airlinePages, ...guidePages];
+  // 6. Free Compliance Calculators (3 Interactive Tools)
+  const toolPages: MetadataRoute.Sitemap = TOOLS.map((tool) => ({
+    url: `${baseUrl}/en/tools/${tool.slug}`,
+    lastModified: parseDate(tool.dateModified, '2026-09-21T00:00:00.000Z'),
+    changeFrequency: 'weekly',
+    priority: 0.85,
+  }));
+
+  // 7. Evidence-Based Blog Posts (5 Articles)
+  const blogPages: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
+    url: `${baseUrl}/en/blog/${post.slug}`,
+    lastModified: parseDate(post.dateModified, '2026-09-21T00:00:00.000Z'),
+    changeFrequency: 'weekly',
+    priority: 0.85,
+  }));
+
+  return [
+    ...corePages,
+    ...countryPages,
+    ...corridorPages,
+    ...airlinePages,
+    ...guidePages,
+    ...toolPages,
+    ...blogPages,
+  ];
 }

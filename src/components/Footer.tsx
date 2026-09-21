@@ -119,8 +119,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/en/checker" className="hover:text-white transition-colors">
-                  IATA Crate Calculator
+                <Link href="/en/tools" className="hover:text-white transition-colors">
+                  Free Calculators (3 Tools)
+                </Link>
+              </li>
+              <li>
+                <Link href="/en/blog" className="hover:text-white transition-colors">
+                  Compliance Blog (5 Articles)
                 </Link>
               </li>
               <li>
