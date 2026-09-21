@@ -1,10 +1,5 @@
 import crypto from 'crypto';
 
-const MAGIC_SECRET =
-  process.env.CRON_SECRET ||
-  process.env.RAZORPAY_WEBHOOK_SECRET ||
-  'pawvalid_magic_auth_salt_969663bb0beb';
-
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 60 minutes
 
 export interface VerifyResult {
@@ -14,17 +9,38 @@ export interface VerifyResult {
 }
 
 /**
+ * Retrieves the cryptographic secret used to sign magic tokens.
+ * Throws an error if no secure secret is configured in the environment.
+ */
+export function getMagicSecret(): string {
+  const secret =
+    process.env.MAGIC_TOKEN_SECRET ||
+    process.env.AUTH_SECRET ||
+    process.env.CRON_SECRET ||
+    process.env.RAZORPAY_WEBHOOK_SECRET;
+
+  if (!secret) {
+    throw new Error(
+      'Authentication secret is not configured. Please ensure CRON_SECRET, AUTH_SECRET, or MAGIC_TOKEN_SECRET environment variable is set.'
+    );
+  }
+
+  return secret;
+}
+
+/**
  * Creates a signed, time-limited magic login token for a given email address.
  * Format: <base64url_email>.<timestamp>.<signature>
  */
 export function createMagicToken(email: string): string {
+  const secret = getMagicSecret();
   const cleanEmail = email.toLowerCase().trim();
   const timestamp = Date.now().toString();
   const encodedEmail = Buffer.from(cleanEmail, 'utf8').toString('base64url');
 
   const payload = `${encodedEmail}.${timestamp}`;
   const signature = crypto
-    .createHmac('sha256', MAGIC_SECRET)
+    .createHmac('sha256', secret)
     .update(payload)
     .digest('base64url');
 
@@ -58,10 +74,20 @@ export function verifyMagicToken(token: string, expectedEmail?: string): VerifyR
     return { valid: false, error: 'Magic link has expired. Please request a new one.' };
   }
 
+  let secret: string;
+  try {
+    secret = getMagicSecret();
+  } catch (err) {
+    return {
+      valid: false,
+      error: (err as Error).message || 'Authentication secret is not configured',
+    };
+  }
+
   // Reconstruct and verify signature
   const payload = `${encodedEmail}.${timestampStr}`;
   const expectedSignature = crypto
-    .createHmac('sha256', MAGIC_SECRET)
+    .createHmac('sha256', secret)
     .update(payload)
     .digest('base64url');
 

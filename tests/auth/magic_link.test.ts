@@ -1,7 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createMagicToken, verifyMagicToken } from '@/lib/auth/magicToken';
 
 describe('Magic Link Authentication Token Engine', () => {
+  beforeEach(() => {
+    process.env.CRON_SECRET = 'test_cron_secret_prod_2026';
+  });
+
   it('generates a 3-part URL-safe token', () => {
     const email = 'traveler@pawvalid.online';
     const token = createMagicToken(email);
@@ -70,6 +74,34 @@ describe('Magic Link Authentication Token Engine', () => {
     expect(verifyMagicToken('').valid).toBe(false);
     expect(verifyMagicToken('invalid-token').valid).toBe(false);
     expect(verifyMagicToken('a.b').valid).toBe(false);
+  });
+
+  it('throws an error when creating a token without any secret configured', () => {
+    const origCron = process.env.CRON_SECRET;
+    const origRazorpay = process.env.RAZORPAY_WEBHOOK_SECRET;
+    const origAuth = process.env.AUTH_SECRET;
+    const origMagic = process.env.MAGIC_TOKEN_SECRET;
+
+    delete process.env.CRON_SECRET;
+    delete process.env.RAZORPAY_WEBHOOK_SECRET;
+    delete process.env.AUTH_SECRET;
+    delete process.env.MAGIC_TOKEN_SECRET;
+
+    try {
+      expect(() => createMagicToken('test@example.com')).toThrow(
+        /Authentication secret is not configured/
+      );
+
+      const now = Date.now().toString();
+      const verifyRes = verifyMagicToken(`bm9uZQ.${now}.signature`);
+      expect(verifyRes.valid).toBe(false);
+      expect(verifyRes.error).toContain('Authentication secret');
+    } finally {
+      if (origCron) process.env.CRON_SECRET = origCron;
+      if (origRazorpay) process.env.RAZORPAY_WEBHOOK_SECRET = origRazorpay;
+      if (origAuth) process.env.AUTH_SECRET = origAuth;
+      if (origMagic) process.env.MAGIC_TOKEN_SECRET = origMagic;
+    }
   });
 
   describe('API Verification Endpoints', () => {
