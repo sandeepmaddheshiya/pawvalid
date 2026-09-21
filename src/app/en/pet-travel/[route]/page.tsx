@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { getCurrentRequirementVersions } from '@/lib/requirements/queries';
 import FreshnessIndicator from '@/components/FreshnessIndicator';
+import BrowseRequirementsChecklist from '@/components/BrowseRequirementsChecklist';
 import { getFaqSchema, getBreadcrumbSchema, getHowToSchema } from '@/lib/seo/schema';
 import { CORRIDORS } from '@/lib/data/corridors';
 
@@ -1191,90 +1192,26 @@ export default async function RoutePage({ params }: RoutePageProps) {
                 <svg className="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                 </svg>
-                <span>Applicable Species: Dogs &amp; Cats</span>
+                <span>Interactive Self-Assessment</span>
               </div>
             </div>
           </div>
 
-          {/* Render Structured Requirements */}
-          <div className="space-y-4">
-            {displayRequirements.map((req, idx) => {
-              const meta = getCategoryMeta(req.category);
-              return (
-                <div
-                  key={req.id || idx}
-                  className="bg-white rounded-2xl border border-zinc-200/90 p-5 sm:p-6 shadow-2xs hover:shadow-xs transition-shadow text-left"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center shrink-0">
-                        {meta.icon}
-                      </div>
-                      <div>
-                        <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">
-                          Requirement #{idx + 1} • {req.categoryLabel || meta.label}
-                        </span>
-                        <h3 className="text-sm sm:text-base font-bold text-zinc-900">
-                          {req.title || req.category.replace(/_/g, ' ')}
-                        </h3>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2.5 py-1 rounded-md text-[11px] font-semibold tracking-wide ${
-                        req.severity === 'BLOCKING'
-                          ? 'bg-red-50 text-red-700 border border-red-200'
-                          : 'bg-amber-50 text-amber-800 border border-amber-200'
-                      }`}>
-                        {req.severity === 'BLOCKING' ? 'Mandatory Prerequisite' : 'Advisory Rule'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Rules List */}
-                  <div className="mb-4 pl-0 sm:pl-10.5 space-y-1.5">
-                    {req.rules.map((r, ri) => (
-                      <div key={ri} className="flex items-start gap-2 text-xs sm:text-sm text-zinc-800 leading-relaxed">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#0E2342] mt-2 shrink-0"></span>
-                        <span>{r}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Protocol Constraint Warning Box with Clean SVG Icon */}
-                  <div className="ml-0 sm:ml-10.5 p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 text-xs text-zinc-700 mb-4 flex items-start gap-2.5">
-                    <svg className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                    </svg>
-                    <p className="leading-relaxed">
-                      <strong className="font-semibold text-zinc-900">Sequence Protocol: </strong>
-                      {req.protocol || meta.protocol}
-                    </p>
-                  </div>
-
-                  {/* Authority Citation & Source */}
-                  <div className="ml-0 sm:ml-10.5 pt-3 border-t border-zinc-100 flex items-center justify-between flex-wrap gap-2 text-xs text-zinc-500">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-zinc-700">Source:</span>
-                      <span>{req.sourceName}</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <FreshnessIndicator lastVerifiedAt={req.lastVerifiedAt} compact />
-                      <a
-                        href={req.sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 font-semibold text-zinc-900 hover:text-emerald-700 transition-colors cursor-pointer"
-                      >
-                        <span>Official Portal</span>
-                        <span className="text-[10px]">↗</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <BrowseRequirementsChecklist
+            routeSlug={route}
+            origin={display.from}
+            destination={display.to}
+            originCode={display.originCode}
+            destCode={display.destCode}
+            authority={display.authority}
+            legalBasis={display.legalBasis}
+            leadTime={display.leadTime}
+            titerRequired={display.titerRequired}
+            quarantineDays={display.quarantineDays}
+            certificateType={display.certificateType}
+            requirements={displayRequirements}
+            restrictedBreeds={display.restrictedBreeds}
+          />
         </div>
       </section>
 
