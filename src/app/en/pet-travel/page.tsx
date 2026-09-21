@@ -2,13 +2,12 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { CORRIDORS } from '@/lib/data/corridors';
 import { getBreadcrumbSchema } from '@/lib/seo/schema';
+import { getHreflangAlternates } from '@/lib/seo/hreflang';
 
 export const metadata: Metadata = {
   title: 'Pet Travel Route Directory — Sourced Statutory Guides (2026) | PawValid',
-  description: 'Browse 15 international pet travel route requirements, quarantine rules, and government health certificate protocols verified against official border authorities.',
-  alternates: {
-    canonical: 'https://pawvalid.online/en/pet-travel',
-  },
+  description: 'Browse 19 international pet travel route requirements, quarantine rules, and government health certificate protocols verified against official border authorities.',
+  alternates: getHreflangAlternates('/pet-travel'),
 };
 
 const ROUTES = Object.values(CORRIDORS).map((c) => ({

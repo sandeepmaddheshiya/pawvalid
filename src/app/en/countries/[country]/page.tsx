@@ -10,6 +10,7 @@ import {
   getMedicalWebPageSchema,
   BASE_URL,
 } from '@/lib/seo/schema';
+import { getHreflangAlternates } from '@/lib/seo/hreflang';
 
 interface CountryPageProps {
   params: Promise<{
@@ -39,9 +40,7 @@ export async function generateMetadata({ params }: CountryPageProps): Promise<Me
   return {
     title,
     description,
-    alternates: {
-      canonical: `${BASE_URL}/en/countries/${country.slug}`,
-    },
+    alternates: getHreflangAlternates(`/countries/${country.slug}`),
     openGraph: {
       title,
       description,

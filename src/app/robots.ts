@@ -13,7 +13,7 @@ export default function robots(): MetadataRoute.Robots {
       // Explicitly allow AI Answer Engine web crawlers for AEO indexation
       {
         userAgent: ['GPTBot', 'ChatGPT-User', 'ClaudeBot', 'PerplexityBot', 'Applebot-Extended'],
-        allow: ['/', '/en/countries', '/en/pet-travel', '/en/airlines', '/en/guides', '/en/checker'],
+        allow: ['/', '/en/about', '/en/countries', '/en/pet-travel', '/en/airlines', '/en/guides', '/en/checker'],
         disallow: ['/api/', '/dashboard/'],
       },
     ],

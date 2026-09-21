@@ -67,6 +67,13 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: 'https://pawvalid.online',
+    languages: {
+      en: 'https://pawvalid.online/en/checker',
+      de: 'https://pawvalid.online/de/checker',
+      fr: 'https://pawvalid.online/fr/checker',
+      es: 'https://pawvalid.online/es/checker',
+      'x-default': 'https://pawvalid.online',
+    },
   },
 };
 

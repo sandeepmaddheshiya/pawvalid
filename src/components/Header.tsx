@@ -212,7 +212,7 @@ export default function Header() {
             </div>
 
             <Link
-              href="#about"
+              href="/en/about"
               className="hover:text-zinc-900 transition-colors"
             >
               About
@@ -426,7 +426,7 @@ export default function Header() {
                 Pricing
               </Link>
               <Link
-                href="#about"
+                href="/en/about"
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-3 py-2 rounded-lg text-base font-medium text-zinc-700 hover:bg-zinc-50"
               >

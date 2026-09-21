@@ -3,14 +3,13 @@ import type { Metadata } from 'next';
 import { getAllCountries } from '@/lib/data/countries';
 import CountryDirectorySearch from '@/components/CountryDirectorySearch';
 import { getBreadcrumbSchema, getFaqSchema } from '@/lib/seo/schema';
+import { getHreflangAlternates } from '@/lib/seo/hreflang';
 
 export const metadata: Metadata = {
   title: 'Pet Import Rules by Country — Statutory Destination Guides (2026) | PawValid',
   description:
     'Comprehensive statutory pet import requirements, quarantine periods, blood titer testing rules, and official government health certificate protocols for the top 15 international pet travel destinations.',
-  alternates: {
-    canonical: 'https://pawvalid.online/en/countries',
-  },
+  alternates: getHreflangAlternates('/countries'),
 };
 
 const DIRECTORY_FAQS = [
