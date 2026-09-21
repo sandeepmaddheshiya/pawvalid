@@ -165,7 +165,7 @@ export default function Header() {
                     href="/en/pet-travel"
                     className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
                   >
-                    Country Corridors (19 Routes)
+                    Country Corridors (50 Routes)
                   </Link>
                   <Link
                     href="/en/airlines"

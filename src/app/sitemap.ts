@@ -115,7 +115,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  // 3. Programmatic Corridors (All 19 Routes + DB)
+  // 3. Programmatic Corridors (All 50 Routes + DB)
   let routeSlugs = Object.keys(CORRIDORS);
   try {
     const dbRoutes = await db.route.findMany({
