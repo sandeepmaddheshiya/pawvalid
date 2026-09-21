@@ -797,6 +797,117 @@ CATALOG_RULES: List[Dict[str, Any]] = [
         "wait_duration_days": 0,
         "what_to_do": "Ensure pet has a 15-digit ISO microchip matching all health and rabies certificates.",
         "details": "Mandatory for commercial pet imports and strongly enforced by all Canadian airlines (Air Canada, WestJet) for passenger check-in."
+    },
+
+    # 27. India AQCS Export Health Certificate & NOC (Outbound from India)
+    {
+        "rule_id": "IN_AQCS_EXPORT_001",
+        "name": "AQCS India Animal Quarantine Export Certificate & NOC",
+        "category": "DOCUMENTS",
+        "scope": "LEAVING",
+        "jurisdiction": "IN",
+        "source": "Animal Quarantine and Certification Services (AQCS / DAHD India)",
+        "source_title": "Department of Animal Husbandry and Dairying Export Protocol",
+        "rule_version": "AQCS-2026",
+        "effective_from": "2026-01-01",
+        "verified_at": "2026-09-21",
+        "source_url": "http://aqcsindia.gov.in/",
+        "severity": "CRITICAL_BLOCKER",
+        "applicability": {
+            "species": ["DOG", "CAT"],
+            "origins": ["IN"]
+        },
+        "requires": {
+            "evidence_type": "EXPORT_PERMIT",
+            "prerequisites": ["GLOBAL_SPECIES_VERIFIED"]
+        },
+        "wait_duration_days": 0,
+        "what_to_do": "Present pet and official vaccination/titer records at regional AQCS quarantine station within 7 days of departure to receive official Export Health Certificate.",
+        "details": "Indian customs and international airlines will not permit pet boarding without physical AQCS Animal Quarantine Export clearance."
+    },
+
+    # 28. UK DEFRA Unlisted Third Country Rabies Titer & 3-Month Latency (India to UK)
+    {
+        "rule_id": "UK_UNLISTED_RABIES_TITER_001",
+        "name": "UK DEFRA Unlisted Country RNATT Titer & 3-Month Waiting Period",
+        "category": "MEDICAL",
+        "scope": "ARRIVING",
+        "jurisdiction": "GB",
+        "source": "Animal and Plant Health Agency (APHA) & DEFRA",
+        "source_title": "Non-Commercial Movement of Pet Animals Order 2011 & Retained EU Reg 576/2013",
+        "rule_version": "DEFRA-2026",
+        "effective_from": "2026-01-01",
+        "verified_at": "2026-09-21",
+        "source_url": "https://www.gov.uk/bring-pet-to-great-britain/rabies-blood-test",
+        "severity": "CRITICAL_BLOCKER",
+        "applicability": {
+            "species": ["DOG", "CAT"],
+            "origins": ["IN"],
+            "destinations": ["GB"]
+        },
+        "requires": {
+            "evidence_type": "RABIES_TITER",
+            "prerequisites": ["EU_RABIES_001"]
+        },
+        "wait_duration_days": 90,
+        "what_to_do": "Draw blood at least 30 days post-vaccination for RNATT testing at DEFRA/EU-approved lab (≥ 0.5 IU/ml). Wait full 3 calendar months (90 days) from blood draw before entering UK.",
+        "details": "Because India is an unlisted third country for rabies, pets arriving before the 3-month post-draw window are subjected to mandatory quarantine at Heathrow/Gatwick."
+    },
+
+    # 29. US CDC High-Risk Dog Importation Rule (India to USA)
+    {
+        "rule_id": "US_CDC_HIGH_RISK_DOG_001",
+        "name": "CDC High-Risk Rabies Dog Import Protocol & ACF Booking",
+        "category": "DOCUMENTS",
+        "scope": "ARRIVING",
+        "jurisdiction": "US",
+        "source": "US Centers for Disease Control and Prevention (CDC)",
+        "source_title": "CDC Dog Importation Regulations (42 CFR 71.51)",
+        "rule_version": "CDC-2024-AUG",
+        "effective_from": "2024-08-01",
+        "verified_at": "2026-09-21",
+        "source_url": "https://www.cdc.gov/importation/bringing-an-animal-into-the-united-states/dogs.html",
+        "severity": "CRITICAL_BLOCKER",
+        "applicability": {
+            "species": ["DOG"],
+            "origins": ["IN"],
+            "destinations": ["US"]
+        },
+        "requires": {
+            "evidence_type": "IMPORT_PERMIT",
+            "prerequisites": ["US_USDA_APHIS_001"]
+        },
+        "wait_duration_days": 28,
+        "what_to_do": "Ensure dog is ≥ 6 months of age, hold official CDC Foreign Rabies Certificate endorsed by AQCS, submit online CDC Dog Import Form, and book Animal Care Facility (ACF) arrival slot.",
+        "details": "Effective August 1, 2024, all dogs from high-risk rabies countries must meet the 6-month age threshold, enter via approved CDC ports with registered ACFs, and carry CDC form receipts."
+    },
+
+    # 30. Australia DAFF Non-Approved Origin Policy (India to Australia)
+    {
+        "rule_id": "AU_DAFF_NON_APPROVED_IN_001",
+        "name": "Australia DAFF Non-Approved Country Mandatory 180-Day Intermediary Residency",
+        "category": "LOGISTICS",
+        "scope": "ARRIVING",
+        "jurisdiction": "AU",
+        "source": "Department of Agriculture, Fisheries and Forestry (DAFF)",
+        "source_title": "Biosecurity Act 2015 & Group 3 Non-Approved Country Companion Animal Policy",
+        "rule_version": "DAFF-2026",
+        "effective_from": "2026-01-01",
+        "verified_at": "2026-09-21",
+        "source_url": "https://www.agriculture.gov.au/biosecurity-trade/import/goods/live-animals/companion-animals/step-by-step-guides/non-approved-country",
+        "severity": "CRITICAL_BLOCKER",
+        "applicability": {
+            "species": ["DOG", "CAT"],
+            "origins": ["IN"],
+            "destinations": ["AU"]
+        },
+        "requires": {
+            "evidence_type": "IMPORT_PERMIT",
+            "prerequisites": ["AU_DAFF_HEALTH_002"]
+        },
+        "wait_duration_days": 180,
+        "what_to_do": "Direct import from India is prohibited. Relocate pet to an approved DAFF Group 3 country (Singapore, UK, UAE, USA) for at least 180 consecutive days before applying for Australian import permit.",
+        "details": "Direct transport applications from India are automatically rejected. After 180 days in an approved country + RNATT test, pet must complete 10-30 days PEQ at Mickleham, Melbourne."
     }
 ]
 

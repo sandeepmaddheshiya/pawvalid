@@ -310,3 +310,40 @@ def test_canada_cfia_regulatory_corridor():
     assert "CA_CFIA_RABIES_CERT_001" in arriving_ids
     assert "CA_CFIA_MICROCHIP_001" in arriving_ids
 
+def test_india_outbound_regulatory_corridors():
+    """
+    Verifies India outbound corridors:
+    - India to UK: AQCS Export NOC + DEFRA 3-month RNATT Titer latency
+    - India to USA: AQCS Export NOC + CDC August 2024 High-Risk Dog Rule
+    - India to Canada: AQCS Export NOC + CFIA Rabies Certificate
+    - India to Australia: AQCS Export NOC + DAFF Non-Approved Country 180-Day intermediary requirement
+    """
+    # 1. India to UK
+    uk_rules = get_applicable_rules(origin="India", destination="United Kingdom", species="DOG")
+    leaving_uk = [r["rule_id"] for r in uk_rules["LEAVING"]]
+    arriving_uk = [r["rule_id"] for r in uk_rules["ARRIVING"]]
+    assert "IN_AQCS_EXPORT_001" in leaving_uk
+    assert "UK_UNLISTED_RABIES_TITER_001" in arriving_uk
+
+    # 2. India to USA
+    us_rules = get_applicable_rules(origin="India", destination="United States", species="DOG")
+    leaving_us = [r["rule_id"] for r in us_rules["LEAVING"]]
+    arriving_us = [r["rule_id"] for r in us_rules["ARRIVING"]]
+    assert "IN_AQCS_EXPORT_001" in leaving_us
+    assert "US_CDC_HIGH_RISK_DOG_001" in arriving_us
+
+    # 3. India to Canada
+    ca_rules = get_applicable_rules(origin="India", destination="Canada", species="DOG")
+    leaving_ca = [r["rule_id"] for r in ca_rules["LEAVING"]]
+    arriving_ca = [r["rule_id"] for r in ca_rules["ARRIVING"]]
+    assert "IN_AQCS_EXPORT_001" in leaving_ca
+    assert "CA_CFIA_RABIES_CERT_001" in arriving_ca
+
+    # 4. India to Australia
+    au_rules = get_applicable_rules(origin="India", destination="Australia", species="DOG")
+    leaving_au = [r["rule_id"] for r in au_rules["LEAVING"]]
+    arriving_au = [r["rule_id"] for r in au_rules["ARRIVING"]]
+    assert "IN_AQCS_EXPORT_001" in leaving_au
+    assert "AU_DAFF_NON_APPROVED_IN_001" in arriving_au
+
+

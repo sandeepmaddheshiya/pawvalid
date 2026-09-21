@@ -100,7 +100,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/en/pet-travel" className="hover:text-white transition-colors">
-                  Country Requirements (15 Corridors)
+                  Country Requirements (19 Corridors)
                 </Link>
               </li>
               <li>

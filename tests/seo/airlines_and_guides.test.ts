@@ -85,9 +85,9 @@ describe('Comprehensive Content Expansion (Airlines, Guides & Corridors)', () =>
   });
 
   describe('Bilateral International Corridors (CORRIDORS)', () => {
-    it('provides 15 statutory corridors covering North America, Europe, Asia, and Oceania', () => {
+    it('provides 19 statutory corridors covering North America, Europe, Asia, and Oceania', () => {
       const corridorKeys = Object.keys(CORRIDORS);
-      expect(corridorKeys.length).toBe(15);
+      expect(corridorKeys.length).toBe(19);
 
       expect(corridorKeys).toContain('usa-to-germany');
       expect(corridorKeys).toContain('usa-to-uk');
@@ -104,6 +104,10 @@ describe('Comprehensive Content Expansion (Airlines, Guides & Corridors)', () =>
       expect(corridorKeys).toContain('usa-to-australia');
       expect(corridorKeys).toContain('usa-to-canada');
       expect(corridorKeys).toContain('usa-to-japan');
+      expect(corridorKeys).toContain('india-to-uk');
+      expect(corridorKeys).toContain('india-to-usa');
+      expect(corridorKeys).toContain('india-to-canada');
+      expect(corridorKeys).toContain('india-to-australia');
     });
 
     it('validates corridor statutory accuracy (e.g. Ireland and UK mandate tapeworm, UAE mandates titer)', () => {
