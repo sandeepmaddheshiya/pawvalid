@@ -99,10 +99,16 @@ export default function Header() {
               How It Works
             </Link>
             <Link
+              href="/en/countries"
+              className="hover:text-zinc-900 transition-colors"
+            >
+              Countries
+            </Link>
+            <Link
               href="/en/pet-travel"
               className="hover:text-zinc-900 transition-colors"
             >
-              Destinations
+              Corridors
             </Link>
             <Link
               href="/en/airlines"
@@ -150,6 +156,31 @@ export default function Header() {
                   className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-zinc-100 py-2 z-50 animate-fade-in"
                 >
                   <Link
+                    href="/en/countries"
+                    className="block px-4 py-2 text-xs font-medium text-zinc-900 hover:bg-zinc-50 transition-colors"
+                  >
+                    Destination Countries (15 Guides)
+                  </Link>
+                  <Link
+                    href="/en/pet-travel"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                  >
+                    Country Corridors (19 Routes)
+                  </Link>
+                  <Link
+                    href="/en/airlines"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                  >
+                    Airline Pet Policies (10 Carriers)
+                  </Link>
+                  <Link
+                    href="/en/guides"
+                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                  >
+                    Regulatory Guides &amp; Manuals
+                  </Link>
+                  <div className="my-1 border-t border-zinc-100" />
+                  <Link
                     href="#pet-passport"
                     className="flex items-center gap-2 px-3.5 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
                   >
@@ -175,31 +206,6 @@ export default function Header() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                     </svg>
                     <span>Live Travel Verification Pass</span>
-                  </Link>
-                  <div className="my-1 border-t border-zinc-100" />
-                  <Link
-                    href="/en/pet-travel/usa-to-germany"
-                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
-                  >
-                    Sample Report (Germany)
-                  </Link>
-                  <Link
-                    href="/en/pet-travel"
-                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
-                  >
-                    Country Corridors (19 Routes)
-                  </Link>
-                  <Link
-                    href="/en/airlines"
-                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
-                  >
-                    Airline Pet Policies (10 Carriers)
-                  </Link>
-                  <Link
-                    href="/en/guides"
-                    className="block px-4 py-2 text-xs text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
-                  >
-                    Regulatory Guides &amp; Manuals
                   </Link>
                 </div>
               )}
@@ -385,11 +391,32 @@ export default function Header() {
                 How It Works
               </Link>
               <Link
+                href="/en/countries"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg text-base font-medium text-zinc-700 hover:bg-zinc-50"
+              >
+                Destination Countries
+              </Link>
+              <Link
                 href="/en/pet-travel"
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-3 py-2 rounded-lg text-base font-medium text-zinc-700 hover:bg-zinc-50"
               >
-                Destinations
+                Flight Corridors
+              </Link>
+              <Link
+                href="/en/airlines"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg text-base font-medium text-zinc-700 hover:bg-zinc-50"
+              >
+                Airlines
+              </Link>
+              <Link
+                href="/en/guides"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg text-base font-medium text-zinc-700 hover:bg-zinc-50"
+              >
+                Guides
               </Link>
               <Link
                 href="/en/checker"

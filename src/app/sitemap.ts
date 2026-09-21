@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { AIRLINES } from '@/lib/data/airlines';
 import { GUIDES } from '@/lib/data/guides';
 import { CORRIDORS } from '@/lib/data/corridors';
+import { COUNTRIES } from '@/lib/data/countries';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://pawvalid.online';
@@ -20,6 +21,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/en/checker`,
       lastModified: now,
       changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/countries`,
+      lastModified: now,
+      changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
@@ -72,7 +79,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 2. Programmatic Corridors (All 19 Routes + DB)
+  // 2. Programmatic Destination Countries (Top 15 Destinations)
+  const countryPages: MetadataRoute.Sitemap = Object.keys(COUNTRIES).map((slug) => ({
+    url: `${baseUrl}/en/countries/${slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.85,
+  }));
+
+  // 3. Programmatic Corridors (All 19 Routes + DB)
   let routeSlugs = Object.keys(CORRIDORS);
   try {
     const dbRoutes = await db.route.findMany({
@@ -94,7 +109,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }));
 
-  // 3. Programmatic Airline Guides (10 International Airlines)
+  // 4. Programmatic Airline Guides (10 International Airlines)
   const airlinePages: MetadataRoute.Sitemap = AIRLINES.map((airline) => ({
     url: `${baseUrl}/en/airlines/${airline.slug}`,
     lastModified: now,
@@ -102,7 +117,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }));
 
-  // 4. Regulatory Knowledge Guides (4 In-Depth Guides)
+  // 5. Regulatory Knowledge Guides (4 In-Depth Guides)
   const guidePages: MetadataRoute.Sitemap = GUIDES.map((guide) => ({
     url: `${baseUrl}/en/guides/${guide.slug}`,
     lastModified: now,
@@ -110,5 +125,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }));
 
-  return [...corePages, ...corridorPages, ...airlinePages, ...guidePages];
+  return [...corePages, ...countryPages, ...corridorPages, ...airlinePages, ...guidePages];
 }

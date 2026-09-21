@@ -158,3 +158,37 @@ export function getHowToSchema(options: {
     })),
   };
 }
+
+/**
+ * MedicalWebPage Schema: Signals veterinary and statutory compliance authority for country guides
+ */
+export function getMedicalWebPageSchema(options: {
+  name: string;
+  description: string;
+  url: string;
+  authority: string;
+  authorityUrl: string;
+  lastReviewed: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalWebPage',
+    name: options.name,
+    description: options.description,
+    url: options.url.startsWith('http') ? options.url : `${BASE_URL}${options.url}`,
+    lastReviewed: options.lastReviewed,
+    reviewedBy: {
+      '@type': 'Organization',
+      name: options.authority,
+      url: options.authorityUrl,
+    },
+    medicalAudience: {
+      '@type': 'MedicalAudience',
+      audienceType: 'Pet owners and veterinarians preparing pets for international transit',
+    },
+    about: {
+      '@type': 'MedicalCondition',
+      name: 'Rabies Prophylaxis & Statutory Pet Travel Import Compliance',
+    },
+  };
+}

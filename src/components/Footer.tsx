@@ -75,8 +75,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/en/countries" className="hover:text-white transition-colors">
+                  Destination Countries
+                </Link>
+              </li>
+              <li>
                 <Link href="/en/pet-travel" className="hover:text-white transition-colors">
-                  Destinations
+                  Flight Corridors
                 </Link>
               </li>
               <li>
@@ -94,13 +99,18 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs text-zinc-400">
               <li>
-                <Link href="/en/guides" className="hover:text-white transition-colors">
-                  Regulatory Guides &amp; Manuals
+                <Link href="/en/countries" className="hover:text-white transition-colors">
+                  Destination Guides (15 Countries)
                 </Link>
               </li>
               <li>
                 <Link href="/en/pet-travel" className="hover:text-white transition-colors">
-                  Country Requirements (19 Corridors)
+                  Travel Corridors (19 Routes)
+                </Link>
+              </li>
+              <li>
+                <Link href="/en/guides" className="hover:text-white transition-colors">
+                  Regulatory Guides &amp; Manuals
                 </Link>
               </li>
               <li>
