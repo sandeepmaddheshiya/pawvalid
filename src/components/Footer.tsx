@@ -148,6 +148,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/en/editorial-policy" className="hover:text-white transition-colors">
+                  Editorial Policy
+                </Link>
+              </li>
+              <li>
                 <a href="mailto:support@pawvalid.online" className="hover:text-white transition-colors">
                   Contact
                 </a>
