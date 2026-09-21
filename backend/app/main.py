@@ -4,7 +4,7 @@ from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import HOST, PORT, OPENROUTER_MODEL
+from app.config import HOST, PORT, OPENROUTER_MODEL, ALLOWED_ORIGINS
 from app.parsers.doc_extractor import extract_from_bytes, ExtractedDocument
 from app.engine.entity_extractor import extract_facts_with_ai
 from app.engine.rules_catalog import get_applicable_rules
@@ -20,10 +20,10 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# Enable CORS for Next.js app
+# Enable CORS for allowed production and local frontend origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

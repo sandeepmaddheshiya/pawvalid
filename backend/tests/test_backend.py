@@ -19,6 +19,22 @@ def test_health():
     assert data["version"] == "2.0.0"
     assert "nemotron" in data["model"]
 
+def test_cors_restrictions():
+    # Test allowed origin
+    headers = {"Origin": "https://pawvalid.online"}
+    response = client.get("/health", headers=headers)
+    assert response.headers.get("access-control-allow-origin") == "https://pawvalid.online"
+
+    # Test allowed localhost origin
+    headers_local = {"Origin": "http://localhost:3000"}
+    response_local = client.get("/health", headers=headers_local)
+    assert response_local.headers.get("access-control-allow-origin") == "http://localhost:3000"
+
+    # Test disallowed origin
+    headers_evil = {"Origin": "https://malicious-site.com"}
+    response_evil = client.get("/health", headers=headers_evil)
+    assert response_evil.headers.get("access-control-allow-origin") is None
+
 def test_document_classification():
     assert classify_document("Rabies vaccination batch 123", "vax.pdf") == "Rabies / Vaccination Certificate"
     assert classify_document("ISO 11784 microchip transponder 985141000123456", "chip.txt") == "Microchip Registration Record"
