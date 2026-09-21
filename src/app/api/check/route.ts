@@ -31,20 +31,35 @@ export async function POST(request: NextRequest) {
 
     const { trip, pet, save } = parsed.data;
 
-    // Look up route
-    const route = await db.route.findFirst({
-      where: {
-        originCountry: { isoCode: trip.originCountry },
-        destinationCountry: { isoCode: trip.destinationCountry },
-        status: 'SUPPORTED',
-      },
-    });
+    // Parse transit countries
+    let transitCountries: string[] = [];
+    const rawTransits = trip.transitCountries || trip.transit_countries;
+    if (rawTransits) {
+      if (Array.isArray(rawTransits)) {
+        transitCountries = rawTransits.map((t) => t.trim().toUpperCase()).filter(Boolean);
+      } else if (typeof rawTransits === 'string') {
+        transitCountries = rawTransits.split(',').map((t) => t.trim().toUpperCase()).filter(Boolean);
+      }
+    }
 
-    if (!route) {
-      return NextResponse.json(
-        { error: 'This route is not yet supported' },
-        { status: 404 }
-      );
+    // Look up route in DB
+    let routeSlug = `${trip.originCountry.toLowerCase()}-to-${trip.destinationCountry.toLowerCase()}`;
+    let isDbRouteSupported = false;
+
+    try {
+      const route = await db.route.findFirst({
+        where: {
+          originCountry: { isoCode: trip.originCountry },
+          destinationCountry: { isoCode: trip.destinationCountry },
+          status: 'SUPPORTED',
+        },
+      });
+      if (route) {
+        routeSlug = route.slug;
+        isDbRouteSupported = true;
+      }
+    } catch {
+      // DB offline or query failure - continue with fallback routeSlug
     }
 
     // Build facts from the request
@@ -58,6 +73,7 @@ export async function POST(request: NextRequest) {
       [FACT_FIELDS.MICROCHIP_DATE]: pet.microchipDate,
       [FACT_FIELDS.ORIGIN_COUNTRY]: trip.originCountry,
       [FACT_FIELDS.DESTINATION_COUNTRY]: trip.destinationCountry,
+      [FACT_FIELDS.TRANSIT_COUNTRIES]: transitCountries.join(','),
       [FACT_FIELDS.DEPARTURE_DATETIME]: trip.departureDatetime,
       [FACT_FIELDS.ARRIVAL_DATETIME]: trip.arrivalDatetime,
       [FACT_FIELDS.AIRLINE]: trip.airlineSlug,
@@ -85,8 +101,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Get requirements and evaluate
-    const requirementVersions = await getCurrentRequirementVersions(route.slug, pet.species);
+    // Get requirements (including transit country rules) and evaluate
+    const requirementVersions = await getCurrentRequirementVersions(
+      routeSlug,
+      pet.species,
+      transitCountries
+    );
 
     if (requirementVersions.length === 0) {
       // FAIL-SAFE: no requirements found → can't determine

@@ -13,6 +13,8 @@ export const checkRequestSchema = z.object({
   trip: z.object({
     originCountry: z.string().min(2).max(3),
     destinationCountry: z.string().min(2).max(3),
+    transitCountries: z.union([z.array(z.string()), z.string()]).optional(),
+    transit_countries: z.union([z.array(z.string()), z.string()]).optional(),
     departureDatetime: z.string().datetime({ message: 'Must be a valid ISO datetime' }),
     arrivalDatetime: z.string().datetime({ message: 'Must be a valid ISO datetime' }),
     airlineSlug: z.string().min(1),

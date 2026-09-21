@@ -34,6 +34,7 @@ export const FACT_FIELDS = {
   // Trip facts
   ORIGIN_COUNTRY: 'origin_country',
   DESTINATION_COUNTRY: 'destination_country',
+  TRANSIT_COUNTRIES: 'transit_countries',
   DEPARTURE_DATETIME: 'departure_datetime',
   ARRIVAL_DATETIME: 'arrival_datetime',
   AIRLINE: 'airline',
@@ -73,6 +74,7 @@ export function extractFacts(pet: {
 }, trip: {
   originCountryId: string;
   destinationCountryId: string;
+  transitCountries?: string[] | string | null;
   departureDatetime: Date | string;
   arrivalDatetime: Date | string;
   airlineId: string;
@@ -108,6 +110,11 @@ export function extractFacts(pet: {
   // Trip facts
   facts[FACT_FIELDS.ORIGIN_COUNTRY] = trip.originCountryId;
   facts[FACT_FIELDS.DESTINATION_COUNTRY] = trip.destinationCountryId;
+  if (trip.transitCountries) {
+    facts[FACT_FIELDS.TRANSIT_COUNTRIES] = Array.isArray(trip.transitCountries)
+      ? trip.transitCountries.join(',')
+      : trip.transitCountries;
+  }
   facts[FACT_FIELDS.DEPARTURE_DATETIME] = new Date(trip.departureDatetime).toISOString();
   facts[FACT_FIELDS.ARRIVAL_DATETIME] = new Date(trip.arrivalDatetime).toISOString();
   facts[FACT_FIELDS.AIRLINE] = trip.airlineId;
