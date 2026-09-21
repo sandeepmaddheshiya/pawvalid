@@ -80,34 +80,15 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Social Proof with Real Avatars */}
-              <div className="pt-4 border-t border-zinc-200/70 flex items-center gap-3">
-                <div className="flex -space-x-2">
-                  <Image
-                    src="/avatar-priya.jpg"
-                    alt="Pet parent Priya"
-                    width={28}
-                    height={28}
-                    className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-2xs"
-                  />
-                  <Image
-                    src="/avatar-david.jpg"
-                    alt="Pet parent David"
-                    width={28}
-                    height={28}
-                    className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-2xs"
-                  />
-                  <Image
-                    src="/avatar-jessica.jpg"
-                    alt="Pet parent Jessica"
-                    width={28}
-                    height={28}
-                    className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-2xs"
-                  />
-                </div>
-                <div className="text-xs text-zinc-600">
-                  <span className="font-semibold text-zinc-900">Rated 4.9/5</span> from 12,000+ pet parents traveling abroad
-                </div>
+              {/* Verified Sources Trust Signal */}
+              <div className="pt-4 border-t border-zinc-200/70 flex flex-wrap items-center gap-2.5 text-xs text-zinc-600">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200/60 text-[11px]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Beta Launch
+                </span>
+                <span>
+                  Requirements verified against <strong className="font-semibold text-zinc-900">15+ official government sources</strong>
+                </span>
               </div>
             </div>
 
