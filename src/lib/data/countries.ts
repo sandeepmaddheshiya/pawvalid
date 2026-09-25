@@ -68,8 +68,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     authority: 'Animal & Veterinary Service (AVS / NParks)',
     authorityUrl: 'https://www.nparks.gov.sg/avs/pets/bringing-animals-into-singapore-and-exporting/bringing-in-dogs-and-cats',
     legalBasis: 'Animals and Birds Act (Chapter 7) & AVS Pet Import Biosecurity Framework',
-    headline: 'Singapore AVS (NParks) Dog and Cat Importation Regulations',
-    description: 'Official biosecurity and statutory import regulations for bringing companion dogs and cats into Singapore. Enforces the Animal & Veterinary Service (AVS / NParks) 4-tier category classification (A/B/C/D), mandatory GoBusiness Electronic Import Licences, RNATT rabies blood titer tests, ISO 11784/11785 microchipping, and Sembawang Animal Quarantine Facility / Changi Animal & Plant Quarantine Station (CAPQ) reservations.',
+    headline: 'Import Pet to Singapore & Cat/Dog Import Guide: Official AVS & NParks Biosecurity Regulations (2026)',
+    description: 'Official biosecurity and statutory import regulations for importing pets to Singapore, including detailed feline protocols for importing cats to Singapore under Animal & Veterinary Service (AVS / NParks) rules. Enforces the 4-tier category classification (A/B/C/D), mandatory GoBusiness Electronic Import Licences, RNATT rabies blood titer tests, ISO 11784/11785 microchipping, and Sembawang Animal Quarantine Facility / Changi Animal & Plant Quarantine Station (CAPQ) reservations.',
     titerRequired: 'Conditional (Category C & D Origins)',
     titerStatus: 'conditional',
     titerDetail: 'Category A origins (Australia, New Zealand, UK, Ireland) are exempt from rabies titer testing. Category B, C, and D origins (including USA, Canada, India, UAE, and European nations) strictly require a Rabies Neutralising Antibody Titre (RNATT / FAVN) blood test (≥ 0.5 IU/mL) drawn between 30 days and 6 months prior to departure and processed at an AVS-recognized laboratory.',
@@ -92,7 +92,41 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
       'Bengal Cat (1st to 4th generation crosses)',
       'Savannah Cat (1st to 4th generation crosses)',
     ],
+    catGuidance: {
+      headline: 'Singapore AVS Cat Import Regulations & Cat Passport Singapore Rules',
+      summary:
+        'Under Singapore Animal & Veterinary Service (AVS / NParks) biosecurity regulations, importing cats to Singapore requires ISO microchipping, core feline vaccinations (FVRCP), RNATT rabies titer testing (for Category C/D origins), GoBusiness AVS electronic import licensing, and CAPQ cattery quarantine reservations.',
+      rabiesRules:
+        'Cats originating from Category A (Australia, NZ, UK, Ireland) do not require rabies vaccination or titer testing. Category B, C, and D cats must be vaccinated against rabies at least 30 days prior to departure, with Category C/D cats requiring an RNATT serology titer (≥ 0.50 IU/mL) drawn between 30 days and 6 months prior to export.',
+      microchipRules:
+        'Mandatory 15-digit ISO 11784/11785 transponder (134.2 kHz) implanted prior to rabies vaccination and documented on all official veterinary ledgers.',
+      quarantineRules:
+        'Category A & B: 0 days quarantine (direct release at Changi Airport CAPQ station). Category C: 10 to 30 days quarantine at Animal Quarantine Centre (AQC / CAPQ) in Sembawang. Category D: 30 days mandatory quarantine at CAPQ cattery.',
+      healthCertRules:
+        'Official Singapore AVS Veterinary Health Certificate completed within 7 days of departure by an accredited veterinarian and endorsed by the sovereign veterinary authority (e.g. USDA APHIS, CFIA, DEFRA), alongside an approved GoBusiness AVS Electronic Import Licence.',
+      ageRestrictions:
+        'Cats and kittens must be at least 12 weeks (3 months) of age at the time of export to Singapore.',
+      hybridCatRules:
+        'Bengal and Savannah cat crosses of 1st to 4th generations (F1–F4) are strictly prohibited from entry into Singapore. Only 5th generation (F5) and beyond with registered pedigree documentation from CFA or TICA are permitted.',
+      checklist: [
+        '15-digit ISO 11784/11785 microchip implanted before any vaccinations or blood draws.',
+        'FVRCP core feline immunization (Feline Rhinotracheitis, Calicivirus, Panleukopenia) administered 14 days to 12 months before export.',
+        'RNATT rabies titer test (≥ 0.50 IU/mL) for Category C/D cats drawn 30 days to 6 months pre-flight.',
+        'AVS GoBusiness Electronic Import Licence applied for within 30 days of arrival (SGD $50).',
+        'CAPQ Sembawang cattery quarantine reservation via QMS booked at least 3 months in advance (if Category C/D).',
+        'Internal and external parasite treatments (Praziquantel and Fipronil) administered 2 to 7 days before export.',
+        'Official AVS Veterinary Health Certificate endorsed by exporting government authority within 7 days.',
+      ],
+    },
     faqs: [
+      {
+        q: 'How do I import a pet to Singapore step-by-step?',
+        a: 'To import a pet (dog or cat) to Singapore under AVS / NParks regulations, follow these 6 statutory steps: (1) Implant a 15-digit ISO 11784/11785 microchip; (2) Administer core vaccinations (DHPP for dogs, FVRCP for cats) and rabies vaccines at least 30 days before travel; (3) For Category C/D origins (including USA, Canada, India), obtain an RNATT rabies titer test (≥ 0.5 IU/mL) and reserve a CAPQ quarantine slot via QMS 3 months in advance; (4) Apply for an AVS Electronic Import Licence via Singapore GoBusiness within 30 days of arrival; (5) Have an accredited veterinarian complete the AVS Health Certificate and administer parasite treatments 2–7 days before flight; and (6) Book CAPQ Changi Airport veterinary inspection at least 5 working days before arrival.',
+      },
+      {
+        q: 'What are the requirements for importing cats to Singapore?',
+        a: 'Importing cats to Singapore requires an ISO 11784/11785 microchip, core FVRCP vaccination (Feline Rhinotracheitis, Calicivirus, Panleukopenia) given 14 days to 12 months before export, an AVS Import Licence from GoBusiness, and an endorsed AVS Health Certificate. Cats from Category C/D countries also require an RNATT rabies titer test (≥ 0.50 IU/mL) and a confirmed cattery reservation at the Sembawang Animal Quarantine Centre (CAPQ). Hybrid cats (F1–F4 Bengal/Savannah) are banned.',
+      },
       {
         q: 'How does Singapore classify origin countries for pet import?',
         a: 'Singapore AVS categorizes countries into four risk tiers: Category A (rabies-free: Australia, New Zealand, UK, Ireland - 0 days quarantine, no titer required); Category B (rabies-controlled: e.g. Japan, Norway, Sweden - 0 days quarantine with compliant vaccinations); Category C (e.g. USA, Canada, EU nations - 10 to 30 days quarantine unless specific Category C1 residency conditions are met); and Category D (high-risk rabies countries: e.g. India, Philippines, China - mandatory RNATT titer and 30 days quarantine at CAPQ).',
@@ -104,6 +138,10 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
       {
         q: 'What is the AVS Import Licence application procedure?',
         a: 'Pet owners must apply for an AVS Import Licence via the Singapore GoBusiness Licensing portal within 30 days of the scheduled arrival date. The licence costs SGD $50 per animal and is valid for 30 days from issuance. Airlines will deny check-in without an approved AVS Import Licence.',
+      },
+      {
+        q: 'Are cats permitted in Singapore HDB flats under the Cat Management Framework?',
+        a: 'Yes. Under the AVS Cat Management Framework launched by NParks and HDB, residents of HDB flats are legally permitted to keep up to two cats per household, provided each cat is microchipped, licensed with AVS, and kept responsibly indoors with window grilles/screens.',
       },
       {
         q: 'Are dogs permitted to live in Singapore HDB government flats?',
@@ -854,7 +892,7 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     authorityUrl: 'https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets',
     legalBasis: 'Health of Animals Act & CFIA Dog and Cat Importation Policy',
     headline: 'Pet Travel Canada: CFIA & CBSA Dog and Cat Importation Regulations (2026 Guide)',
-    description: 'Complete statutory guide to pet travel to Canada for dogs and cats under Canadian Food Inspection Agency (CFIA) and Canada Border Services Agency (CBSA) regulations. Covers bilingual rabies vaccination requirements, ISO 11784/11785 microchip rules, 0-day quarantine direct airport clearance, CBSA port inspection fees, and prohibited commercial rescue restrictions.',
+    description: 'Complete statutory guide to pet travel to Canada and how to bring a pet to Canada (dogs and cats) under Canadian Food Inspection Agency (CFIA) and Canada Border Services Agency (CBSA) regulations. Covers bilingual rabies vaccination requirements, ISO 11784/11785 microchip rules, 0-day quarantine direct airport clearance, CBSA port inspection fees, and prohibited commercial rescue restrictions.',
     titerRequired: 'Exempt for Personal Pets',
     titerStatus: 'exempt',
     titerDetail: 'Canada does not require rabies antibody titer testing (FAVN/RNATT) for personal companion dogs and cats traveling with their owners.',
@@ -893,6 +931,10 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
       {
         q: 'How do I travel to Canada with my pet?',
         a: 'To travel to Canada with your pet (dog or cat), follow these 5 statutory CFIA & CBSA requirements: (1) Ensure your pet is implanted with a 15-digit ISO 11784/11785 microchip; (2) Obtain a valid rabies vaccination certificate or official pet passport in English or French signed by a licensed veterinarian (pets 3 months or older must be vaccinated at least 30 days prior if it is a primary shot); (3) Confirm your pet is traveling as a personal companion (CFIA bans commercial rescue imports from rabies high-risk countries); (4) Book an approved airline route arriving at a Canadian port of entry such as Toronto (YYZ), Vancouver (YVR), Montreal (YUL), or Calgary (YYC); and (5) Present documents to Canada Border Services Agency (CBSA) officers upon landing and pay the standard $30 CAD + tax pet inspection fee for immediate release with 0 days quarantine.',
+      },
+      {
+        q: 'How do I bring a pet to Canada from the United States or international origins?',
+        a: 'To bring a pet to Canada (dog or cat) under Canadian Food Inspection Agency (CFIA) and CBSA regulations, ensure your animal has an ISO 15-digit microchip and a valid rabies vaccination certificate in English or French signed by a licensed veterinarian. For pets traveling from the United States, USDA endorsement is exempt for personal pets. Upon arrival at CBSA border points or airports (Toronto YYZ, Vancouver YVR, Montreal YUL), present your documents and pay the standard $30 CAD inspection fee for 0-day quarantine entry.',
       },
       {
         q: 'Does Canada require a rabies titer test or quarantine for pet travel?',

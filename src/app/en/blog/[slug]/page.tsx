@@ -49,6 +49,51 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+function renderFormattedText(text: string) {
+  const parts: (string | React.ReactElement)[] = [];
+  const regex = /\[(.*?)\]\(([^\s)]+)\)/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    const isInternal = match[2].startsWith('/');
+    if (isInternal) {
+      parts.push(
+        <Link
+          key={match.index}
+          href={match[2]}
+          className="text-emerald-700 hover:text-emerald-900 font-semibold underline underline-offset-2"
+        >
+          {match[1]}
+        </Link>
+      );
+    } else {
+      parts.push(
+        <a
+          key={match.index}
+          href={match[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-emerald-700 hover:text-emerald-900 font-semibold underline underline-offset-2 inline-flex items-center gap-0.5"
+        >
+          <span>{match[1]}</span>
+          <svg className="w-3 h-3 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      );
+    }
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  return parts.length > 0 ? parts : text;
+}
+
 export default async function BlogPostDetailPage({ params }: Props) {
   const { slug } = await params;
   const post = BLOG_POSTS.find((p) => p.slug === slug);
@@ -179,7 +224,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
 
                 {section.paragraphs.map((para, pIdx) => (
                   <p key={pIdx} className="text-xs sm:text-sm text-zinc-700 leading-relaxed">
-                    {para}
+                    {renderFormattedText(para)}
                   </p>
                 ))}
 
@@ -198,7 +243,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
                     </span>
                     <div>
                       <h4 className="font-bold text-sm mb-1">{section.callout.title}</h4>
-                      <p className="text-xs leading-relaxed">{section.callout.text}</p>
+                      <p className="text-xs leading-relaxed">{renderFormattedText(section.callout.text)}</p>
                     </div>
                   </div>
                 )}

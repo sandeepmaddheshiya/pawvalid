@@ -75,7 +75,7 @@ export const BLOG_POSTS: BlogPost[] = [
         id: 'vehcs-electronic-workflow',
         heading: '2. How the USDA VEHCS System Works',
         paragraphs: [
-          'The USDA Veterinary Export Health Certification System (VEHCS) is a secure cloud portal where accredited veterinarians draft and submit international pet health certificates electronically.',
+          'The USDA Veterinary Export Health Certification System (VEHCS) is a secure cloud portal where accredited veterinarians draft and submit international pet health certificates electronically. For a complete breakdown of federal fee schedules and step-by-step submission protocols, review our [USDA APHIS VEHCS 10-day endorsement guide](/en/guides/usda-aphis-vehcs-guide).',
           'Depending on the destination country, VEHCS operates under different acceptance tiers: Tier 1 (100% electronic: accredited vet signs digitally, USDA signs digitally with digital certificate security seal; owner prints in color) and Tier 2/3 (hybrid or paper: certificate is printed and stamped with physical embossed seal and mailed back via overnight courier).',
           'Major destination markets—including the European Union, the United Kingdom, and Australia—fully accept Tier 1 digital VEHCS endorsements with cryptographic QR verification.',
         ],
@@ -94,7 +94,7 @@ export const BLOG_POSTS: BlogPost[] = [
         id: 'ten-day-timeline',
         heading: '3. Navigating the Strict 10-Day Exam Window',
         paragraphs: [
-          'Most destination biosecurity authorities stipulate that the physical veterinary exam must occur no earlier than 10 calendar days before departure (or arrival in the destination country).',
+          'Most destination biosecurity authorities stipulate that the physical veterinary exam must occur no earlier than 10 calendar days before departure (or arrival in the destination country). If traveling to destinations with strict antibody requirements (such as Australia, Japan, or Singapore), you must complete the [FAVN rabies titer test](/en/guides/rabies-titer-test-favn-guide) months in advance of the 10-day clinical examination.',
           'To ensure seamless timing, book your USDA vet appointment exactly 8 to 10 days before flight. Your vet submits the certificate via VEHCS on Day 8; USDA reviews and approves on Day 6 or 7; you download and print the finalized endorsed document on Day 5.',
           'Never schedule your USDA vet exam more than 10 days before travel, as the document will be legally void upon arrival at foreign airport customs.',
         ],
@@ -154,8 +154,8 @@ export const BLOG_POSTS: BlogPost[] = [
         id: 'airline-vs-border',
         heading: '1. Airline Check-in Denial vs Government Border Rejection',
         paragraphs: [
-          'It is critical to distinguish who is rejecting your pet, as the legal remedies and timelines are completely different. An airline ticket counter refusal occurs before departure at your origin airport, typically triggered by IATA Live Animals Regulations (LAR) crate non-compliance (pet cannot stand erect without head touching top of crate, inadequate ventilation grilles, or missing water bowls), seasonal tarmac temperature embargoes (e.g. ambient tarmac heat exceeding 29°C / 85°F), or missing airline-specific fit-to-fly clinical health certificates.',
-          'A government border inspection rejection occurs upon landing at the destination border inspection post (such as Frankfurt Airport Animal Lounge, London Heathrow HARC, Melbourne Mickleham, or Tokyo Narita AQS). This is governed by national biosecurity and public health statutes and involves state veterinary officers refusing legal customs clearance due to non-compliant documentation, unreadable microchips, or incomplete rabies observation waiting periods.',
+          'It is critical to distinguish who is rejecting your pet, as the legal remedies and timelines are completely different. An airline ticket counter refusal occurs before departure at your origin airport, typically triggered by [IATA Live Animals Regulations (LAR) crate sizing](/en/guides/iata-crate-requirements) (pet cannot stand erect without head touching top of crate, inadequate ventilation grilles, or missing water bowls), seasonal tarmac temperature embargoes (e.g. ambient tarmac heat exceeding 29°C / 85°F), or missing airline-specific fit-to-fly clinical health certificates.',
+          'A government border inspection rejection occurs upon landing at the destination border inspection post (such as Frankfurt Airport Animal Lounge in [Germany](/en/countries/germany), London [Heathrow HARC in the UK](/en/countries/united-kingdom), Melbourne [Mickleham in Australia](/en/countries/australia), or Tokyo Narita AQS in [Japan](/en/countries/japan)). This is governed by national biosecurity and public health statutes and involves state veterinary officers refusing legal customs clearance due to non-compliant documentation, unreadable microchips, or incomplete rabies observation waiting periods.',
           'While airline gate refusals are commercial issues that can often be resolved locally within 24 hours by purchasing an upgraded IATA crate or rescheduling to an evening flight, government border rejections trigger statutory quarantine protocols, heavy penalty fees, and formal administrative detention.',
         ],
       },
@@ -245,10 +245,10 @@ export const BLOG_POSTS: BlogPost[] = [
         id: 'titer-testing-india',
         heading: '2. Rabies Titer Testing from India & Observation Clocks',
         paragraphs: [
-          'Because India is classified as a high-rabies territory by international biosecurity agencies (including the European Commission, UK DEFRA, and Australian DAFF), a Fluorescent Antibody Virus Neutralization (FAVN) or RNATT serology test with a minimum titer of ≥ 0.50 IU/mL is mandatory for most destinations.',
+          'Because India is classified as a high-rabies territory by international biosecurity agencies (including the European Commission, UK DEFRA, and Australian DAFF), an approved [rabies titer test (FAVN / RNATT)](/en/guides/rabies-titer-test-favn-guide) with a minimum titer of ≥ 0.50 IU/mL is mandatory for most destinations.',
           'Because there are currently limited international reference laboratories located within India recognized for EU/Australia RNATT certification, blood serum samples are routinely drawn by accredited private veterinarians in India and couriered to approved overseas reference laboratories (such as Kansas State University in the United States or ANSES in France).',
           'For entry into the European Union and the United Kingdom, a mandatory 90-day (3 calendar months) observation waiting period starting from the date of blood draw is strictly enforced before the pet can board an international flight.',
-          'For Australia, companion animals originating in India cannot fly directly; they must complete a mandatory 180-day residency in an approved Group 1/2/3 country (such as the United Arab Emirates, Singapore, or the UK) before receiving Australian import permit approval.',
+          'For Australia, companion animals originating in India cannot fly directly; they must complete a mandatory 180-day residency in an approved Group 1/2/3 country (such as the United Arab Emirates, Singapore, or the UK) before receiving Australian import permit approval. See our [pet travel to Australia guide](/en/countries/australia) for details.',
         ],
       },
       {
@@ -256,8 +256,8 @@ export const BLOG_POSTS: BlogPost[] = [
         heading: '3. Airline Corridors & Manifest Cargo Routing from India',
         paragraphs: [
           'Navigating airline pet policies from India requires careful planning. Air India permits small companion pets (under 5 kg total weight including compliant soft carrier) in the passenger cabin on select non-stop international flights.',
-          'For medium and large dogs, major international carriers including Lufthansa (via Frankfurt Cargo Hub) and Air France / KLM (via Paris Charles de Gaulle) offer premier temperature-controlled live animal cargo transit with specialized on-site animal lounge holding facilities during layovers.',
-          'For relocation to the United Kingdom, UK DEFRA regulations strictly mandate that all companion animals must arrive as manifest cargo through designated Border Control Posts (such as London Heathrow HARC or London Gatwick), preventing in-cabin or excess baggage transport into Great Britain.',
+          'For medium and large dogs, major international carriers including Lufthansa (via Frankfurt Cargo Hub) and Air France / KLM (via Paris Charles de Gaulle) offer premier temperature-controlled live animal cargo transit with specialized on-site animal lounge holding facilities during layovers. Make sure your carrier meets [IATA pet crate specifications](/en/guides/iata-crate-requirements).',
+          'For relocation to the United Kingdom, UK DEFRA regulations strictly mandate that all companion animals must arrive as manifest cargo through designated Border Control Posts (such as London Heathrow HARC or London Gatwick), preventing in-cabin or excess baggage transport into Great Britain (see [UK dog import requirements](/en/countries/united-kingdom)).',
           'For travel to the United States, owners must comply with the August 2024 CDC Dog Import Regulations, including obtaining a CDC Dog Import Form receipt, microchipping prior to rabies vaccination, and ensuring the pet is at least 6 months of age.',
         ],
       },
@@ -301,8 +301,8 @@ export const BLOG_POSTS: BlogPost[] = [
         id: 'what-is-annex-iv',
         heading: '1. What is the EU Annex IV Certificate?',
         paragraphs: [
-          'Under Regulation (EU) No 576/2013 and Commission Implementing Regulation (EU) No 577/2013, companion dogs, cats, and ferrets entering the European Union from third countries (including the United States, United Kingdom, Canada, Australia, and India) must travel accompanied by an official standardized model health certificate designated as Annex IV.',
-          'The Annex IV document is strictly bilingual: it must be printed and completed in English alongside the official language of the first European Union member state where your flight touches down (for example, English and German for arrivals into Frankfurt, Munich, or Berlin; English and French for Paris Charles de Gaulle; or English and Dutch for Amsterdam Schiphol).',
+          'Under Regulation (EU) No 576/2013 and Commission Implementing Regulation (EU) No 577/2013, companion dogs, cats, and ferrets entering the European Union from third countries (including the United States, United Kingdom, Canada, Australia, and India) must travel accompanied by an official standardized model health certificate designated as Annex IV. For US departures, certificates are endorsed through the [USDA APHIS VEHCS digital system](/en/guides/usda-aphis-vehcs-guide).',
+          'The Annex IV document is strictly bilingual: it must be printed and completed in English alongside the official language of the first European Union member state where your flight touches down (for example, English and German for arrivals into [Germany](/en/countries/germany) via Frankfurt or Munich; English and French for [France](/en/countries/france) via Paris Charles de Gaulle; or English and Spanish for [Spain](/en/countries/spain)).',
           'The certificate legally establishes that your pet has an ISO 11784/11785 compliant microchip implanted prior to rabies vaccination, an active rabies vaccination administered by an authorized veterinarian, and—for dogs entering Ireland, Northern Ireland, Malta, or Finland—an approved Echinococcus multilocularis (tapeworm) treatment administered between 24 and 120 hours before arrival.',
         ],
       },
@@ -369,7 +369,7 @@ export const BLOG_POSTS: BlogPost[] = [
         id: 'why-observation-clocks-exist',
         heading: '1. Why Do Governments Enforce Post-Titer Waiting Clocks?',
         paragraphs: [
-          'Many pet owners understandably ask: "If my dog or cat tested positive for protective rabies antibodies with a passing titer level today, why can’t we book our international flight for next week?"',
+          'Many pet owners understandably ask: "If my dog or cat tested positive for protective rabies antibodies with a passing titer level today, why can’t we book our international flight for next week?" For full testing protocol rules, laboratory accreditation standards, and 0.5 IU/mL thresholds, consult our [Rabies Titer Test (FAVN / RNATT) comprehensive manual](/en/guides/rabies-titer-test-favn-guide).',
           'The epidemiological rationale lies in the biological incubation period of the rabies virus. In rare scenarios, an animal could be exposed to terrestrial rabies immediately prior to or around the time of vaccination. Because the clinical incubation timeline for rabies can extend from several weeks up to six full months, rabies-controlled and rabies-free jurisdictions mandate an observation waiting latency to guarantee that the animal remains completely symptom-free and clinically sound prior to international border entry.',
           'During this observation window, the animal must remain under domestic care in the exporting country, providing biosecurity authorities with statistical certainty that no dormant virus will cross international borders.',
         ],

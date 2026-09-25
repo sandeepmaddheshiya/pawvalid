@@ -437,6 +437,14 @@ export const GUIDES: RegulatoryGuide[] = [
         a: 'Yes! Under European Commission Implementing Regulation 2026/131, EU Border Inspection Posts officially accept color printouts of digitally signed certificates bearing the official USDA APHIS cryptographic digital seal and QR validation code.',
       },
       {
+        q: 'Where is my local USDA endorsement office and can I visit in person?',
+        a: 'USDA APHIS Endorsement Service Centers (ESC) have transitioned to 100% digital processing via VEHCS. Regional USDA endorsement offices no longer accept in-person walk-in appointments for international pet certificates. Your USDA-accredited veterinarian submits your paperwork directly through the online VEHCS portal. For destination countries requiring a physical raised embossed ink seal (such as Australia or Japan), documents are processed remotely by your regional USDA Endorsement Service Center and returned to your vet or home address via pre-paid overnight courier.',
+      },
+      {
+        q: 'How do I contact a USDA APHIS Endorsement Service Center for emergency pet travel?',
+        a: 'If your departure is within 48 to 72 hours and your certificate is pending review, you can contact the USDA APHIS Customer Service Call Center or your assigned regional Endorsement Service Center (ESC) via email with your VEHCS Tracking Certificate Number and airline itinerary marked "EMERGENCY TRAVEL" in the subject line for expedited triage.',
+      },
+      {
         q: 'What if my flight is delayed past the 10-day window?',
         a: 'If your flight delay causes your pet to arrive past the 10-day validity window of the initial examination, the certificate expires. You must have an accredited veterinarian conduct a new clinical exam and submit a new certificate to USDA VEHCS.',
       },
