@@ -13,6 +13,26 @@ export interface GuideSection {
   };
 }
 
+export interface RelatedGuideLink {
+  slug: string;
+  title: string;
+  category: string;
+  description: string;
+}
+
+export interface RelatedCountryLink {
+  slug: string;
+  name: string;
+  flag: string;
+  requirementSummary: string;
+}
+
+export interface RelatedToolLink {
+  slug: string;
+  title: string;
+  description: string;
+}
+
 export interface RegulatoryGuide {
   slug: string;
   title: string;
@@ -26,6 +46,9 @@ export interface RegulatoryGuide {
   sections: GuideSection[];
   steps: Array<{ step: number; title: string; description: string }>;
   faqs: Array<{ q: string; a: string }>;
+  relatedGuides?: RelatedGuideLink[];
+  relatedCountries?: RelatedCountryLink[];
+  relatedTools?: RelatedToolLink[];
 }
 
 export const GUIDES: RegulatoryGuide[] = [
@@ -37,17 +60,17 @@ export const GUIDES: RegulatoryGuide[] = [
       'Everything pet parents and veterinarians need to know about the Fluorescent Antibody Virus Neutralization (FAVN) rabies titer test: approved laboratories, the 0.5 IU/mL threshold, 90-day EU vs 180-day Japan/Australia waiting periods, and common rejection pitfalls.',
     readTime: '9 min read',
     category: 'Veterinary Testing',
-    dateModified: '2026-09-10',
-    statutoryBasis: 'WOAH / OIE Terrestrial Manual, EU Regulation 576/2013 Annex IV, Japan MAFF Rabies Prevention Act, Australian DAFF Biosecurity Act 2015',
+    dateModified: '2026-09-21',
+    statutoryBasis: 'WOAH / OIE Terrestrial Manual, EU Regulation 576/2013 Annex IV, Singapore Animals & Birds Act, Japan MAFF Rabies Prevention Act, Australian DAFF Biosecurity Act 2015',
     summary:
-      'The FAVN (Fluorescent Antibody Virus Neutralization) rabies blood titer test measures circulating neutralizing antibodies in dogs and cats to verify protective immunity against rabies virus. A result of 0.5 IU/mL or greater is universally mandatory for entry into rabies-free and rabies-controlled jurisdictions (including Japan, Australia, New Zealand, Hawaii, and unlisted third countries entering the European Union). The blood sample must be drawn at least 30 days after vaccination and processed exclusively at a government-approved reference laboratory.',
+      'The FAVN (Fluorescent Antibody Virus Neutralization) rabies blood titer test measures circulating neutralizing antibodies in dogs and cats to verify protective immunity against rabies virus. A result of 0.5 IU/mL or greater is universally mandatory for entry into rabies-free and rabies-controlled jurisdictions (including Singapore, Japan, Australia, New Zealand, Hawaii, UAE, and unlisted third countries entering the European Union). The blood sample must be drawn at least 30 days after vaccination and processed exclusively at a government-approved reference laboratory.',
     sections: [
       {
         id: 'what-is-favn',
         title: '1. What is the FAVN / RNATT Test & Why is it Required?',
         content: [
           'The Fluorescent Antibody Virus Neutralization (FAVN) test—also termed the Rabies Neutralising Antibody Titre (RNATT) test—is an in vitro serological assay that quantifies the level of rabies virus neutralizing antibodies present in a companion animal’s blood serum.',
-          'While standard rabies vaccination certificates prove that a vaccine was physically administered, they do not prove that the animal’s immune system mounted an adequate protective immune response. Rabies-free jurisdictions (such as Australia, New Zealand, Japan, and the UK historically) and territories with strict rabies control (the European Union and Singapore) enforce the titer test to ensure zero introduction of the terrestrial rabies virus.',
+          'While standard rabies vaccination certificates prove that a vaccine was physically administered, they do not prove that the animal’s immune system mounted an adequate protective immune response. Rabies-free jurisdictions (such as Australia, New Zealand, Japan, and the UK historically) and territories with strict biosecurity import frameworks (such as Singapore and the European Union) enforce the titer test to ensure zero introduction of the terrestrial rabies virus.',
           'Under World Organisation for Animal Health (WOAH) guidelines, a serum antibody titer of at least 0.5 International Units per milliliter (≥ 0.5 IU/mL) is considered the universal scientific gold standard denoting protective immunity.',
         ],
         callout: {
@@ -62,10 +85,12 @@ export const GUIDES: RegulatoryGuide[] = [
         content: [
           'Different destination countries interpret the titer test with drastically different timeline clocks. The most critical mistake pet parents make is assuming that passing the test permits immediate flight.',
           'Most strict countries enforce a mandatory quarantine observation waiting period that begins on the date the blood was drawn, not the date the lab report was printed.',
+          'For travelers exporting pets from the United States, obtaining federal endorsement via USDA APHIS VEHCS is also mandatory once titer results are received.',
         ],
         table: {
           headers: ['Destination Jurisdiction', 'Titer Status', 'Mandatory Post-Draw Waiting Period', 'Key Biosecurity Authority'],
           rows: [
+            ['Singapore (Category C & D Origins e.g., USA, Canada, India)', 'Mandatory (≥ 0.5 IU/mL)', '30 Days to 6 Months prior to export (30-day CAPQ quarantine)', 'Singapore AVS / NParks'],
             ['European Union (from US/UK/Canada)', 'Exempt / Not Required', '0 Days (US is Annex II listed third country)', 'European Commission DG SANTE'],
             ['European Union (from Unlisted Countries e.g., Turkey, India, Egypt)', 'Mandatory (≥ 0.5 IU/mL)', '3 Months (90 Days) post-draw waiting period before EU entry', 'Regulation (EU) No 576/2013'],
             ['Japan', 'Mandatory (FAVN)', '180 Days post-draw latency (0-day quarantine if compliant)', 'Japan MAFF Animal Quarantine Service'],
@@ -87,7 +112,7 @@ export const GUIDES: RegulatoryGuide[] = [
         callout: {
           type: 'warning',
           title: 'Direct Electronic Transmission',
-          text: 'For Australia and Japan, the laboratory must submit the test result electronically directly to the destination government authorities (e.g. KSU submits directly to Australia DAFF and Japan MAFF). Paper copies carried by owners are not accepted unless authenticated in the government database.',
+          text: 'For Singapore, Australia, and Japan, the laboratory must submit the test result electronically directly to the destination government authorities (e.g. KSU submits directly to Singapore AVS, Australia DAFF, and Japan MAFF). Paper copies carried by owners are not accepted unless authenticated in the government database.',
         },
       },
       {
@@ -96,7 +121,8 @@ export const GUIDES: RegulatoryGuide[] = [
         content: [
           '1. Microchip scanned AFTER blood draw: The animal’s 15-digit ISO microchip must be verified and recorded on the laboratory requisition form before the blood is drawn. If the microchip date on medical records is after the titer date, the test is legally invalid.',
           '2. Drawing blood too early after primary vaccine: Drawing blood within 14 days of an initial rabies shot frequently yields borderline or failing titers (< 0.5 IU/mL) because the B-cell immune response has not peaked. Always wait at least 21 to 30 days after vaccination before drawing blood.',
-          '3. Mismatched pet identification details: Ensure the pet’s breed, sex, color, and age on the KSU/Auburn laboratory submission sheet match the final USDA/DEFRA health certificate letter-for-letter.',
+          '3. Mismatched pet identification details: Ensure the pet’s breed, sex, color, and age on the KSU/Auburn laboratory submission sheet match the final USDA/DEFRA/AVS health certificate letter-for-letter.',
+          '4. Missing government endorsement: Having a passed titer report does not bypass the need for an official sovereign export health certificate (such as USDA VEHCS endorsement for US departures).',
         ],
       },
     ],
@@ -124,13 +150,13 @@ export const GUIDES: RegulatoryGuide[] = [
       {
         step: 5,
         title: 'Verify ≥ 0.50 IU/mL Result & Clock Activation',
-        description: 'Upon receipt of passing certificate, record the Blood Draw Date. Begin your mandatory waiting period (e.g. 180 days for Japan/Australia).',
+        description: 'Upon receipt of passing certificate, record the Blood Draw Date. Begin your mandatory waiting period (e.g. 180 days for Japan/Australia, 30 days for Singapore).',
       },
     ],
     faqs: [
       {
         q: 'How long is a rabies titer test valid for international travel?',
-        a: 'In the European Union, once an animal passes the titer test (≥ 0.5 IU/mL), the result remains valid for the life of the animal, provided rabies booster vaccinations are administered continuously without any lapse in coverage. For Japan, the titer is valid for 2 years from the date of blood collection. For Australia, the test is valid for 12 months.',
+        a: 'In the European Union, once an animal passes the titer test (≥ 0.5 IU/mL), the result remains valid for the life of the animal, provided rabies booster vaccinations are administered continuously without any lapse in coverage. For Singapore and Japan, the titer is valid for up to 6 months to 2 years from blood collection. For Australia, the test is valid for 12 months.',
       },
       {
         q: 'What is the cost of an international FAVN rabies titer test?',
@@ -139,6 +165,75 @@ export const GUIDES: RegulatoryGuide[] = [
       {
         q: 'What happens if my dog fails the titer test (< 0.5 IU/mL)?',
         a: 'If the titer is below 0.5 IU/mL, the animal must receive an additional rabies booster injection. You should wait 21–30 days after the booster before re-drawing blood for a new laboratory submission.',
+      },
+    ],
+    relatedGuides: [
+      {
+        slug: 'usda-aphis-vehcs-guide',
+        title: 'USDA APHIS VEHCS Endorsement Guide',
+        category: 'Government Endorsement',
+        description: 'How to obtain official sovereign export endorsement within the strict 10-day pre-flight window.',
+      },
+      {
+        slug: 'iata-crate-requirements',
+        title: 'IATA-Approved Dog Crate Guidelines',
+        category: 'Aviation & Crates',
+        description: 'Official sizing formulas, metal hardware requirements, and airline container standards.',
+      },
+      {
+        slug: 'pet-travel-platform-vs-ai',
+        title: 'Why General AI Hallucinates Pet Travel Rules',
+        category: 'Regulatory Intelligence',
+        description: 'Investigative report into why LLMs miscalculate rabies waiting periods and day-zero math.',
+      },
+    ],
+    relatedCountries: [
+      {
+        slug: 'singapore',
+        name: 'Singapore',
+        flag: '🇸🇬',
+        requirementSummary: 'Mandatory RNATT titer test (≥ 0.5 IU/mL) + 30-day CAPQ quarantine for Category C/D origins.',
+      },
+      {
+        slug: 'japan',
+        name: 'Japan',
+        flag: '🇯🇵',
+        requirementSummary: 'Mandatory FAVN titer test + strict 180-day waiting period for 0-day airport release.',
+      },
+      {
+        slug: 'australia',
+        name: 'Australia',
+        flag: '🇦🇺',
+        requirementSummary: 'Mandatory RNATT titer test + 180-day waiting clock for Mickleham PEQ facility clearance.',
+      },
+      {
+        slug: 'united-arab-emirates',
+        name: 'United Arab Emirates',
+        flag: '🇦🇪',
+        requirementSummary: 'Mandatory RNATT titer test + MOCCAE import permit for Dubai and Abu Dhabi entry.',
+      },
+      {
+        slug: 'united-kingdom',
+        name: 'United Kingdom',
+        flag: '🇬🇧',
+        requirementSummary: 'Mandatory RNATT titer (3-month wait) for unlisted third country entries into Great Britain.',
+      },
+    ],
+    relatedTools: [
+      {
+        slug: 'favn-titer-calculator',
+        title: 'FAVN Titer Waiting Period Calculator',
+        description: 'Calculate your exact earliest flight date based on blood draw date and destination rules.',
+      },
+      {
+        slug: 'rabies-waiting-period-calculator',
+        title: 'Rabies Vaccine Latency Clock',
+        description: 'Determine when the 21-day primary vaccination window is fully satisfied.',
+      },
+      {
+        slug: 'quarantine-risk-checker',
+        title: 'Quarantine Risk & Exemption Checker',
+        description: 'Instantly check quarantine durations for 120+ countries and origin combinations.',
       },
     ],
   },
@@ -150,10 +245,10 @@ export const GUIDES: RegulatoryGuide[] = [
       'Complete statutory manual for obtaining USDA APHIS veterinary health certificate endorsement via the Veterinary Export Health Certification System (VEHCS). Understand the 10-day pre-flight window, accredited veterinarian requirements, and digital vs ink-seal validation.',
     readTime: '8 min read',
     category: 'Government Endorsement',
-    dateModified: '2026-09-10',
-    statutoryBasis: 'USDA Animal and Plant Health Inspection Service (APHIS), 9 CFR Part 91, European Commission Implementing Regulation (EU) 2026/131',
+    dateModified: '2026-09-21',
+    statutoryBasis: 'USDA Animal and Plant Health Inspection Service (APHIS), 9 CFR Part 91, European Commission Implementing Regulation (EU) 2026/131, Singapore AVS Import Requirements',
     summary:
-      'The USDA Animal and Plant Health Inspection Service (APHIS) Veterinary Export Health Certification System (VEHCS) is the mandatory federal portal through which international pet travel health certificates issued in the United States are reviewed and legally endorsed. For travel to the European Union, Great Britain, and most global destinations, a USDA-accredited veterinarian must physically examine your pet and submit the certificate within a strict 10-day window before scheduled arrival. Official federal endorsement validates that the animal meets all receiving nation biosecurity statutes.',
+      'The USDA Animal and Plant Health Inspection Service (APHIS) Veterinary Export Health Certification System (VEHCS) is the mandatory federal portal through which international pet travel health certificates issued in the United States are reviewed and legally endorsed. For travel to the European Union, Great Britain, Singapore, Japan, Australia, and most global destinations, a USDA-accredited veterinarian must physically examine your pet and submit the certificate within a strict 10-day window before scheduled arrival. Official federal endorsement validates that the animal meets all receiving nation biosecurity statutes.',
     sections: [
       {
         id: 'what-is-vehcs',
@@ -174,8 +269,9 @@ export const GUIDES: RegulatoryGuide[] = [
         title: '2. Understanding the Strict 10-Day Endorsement Window',
         content: [
           'For the European Union (Annex IV certificate) and Great Britain (Animal Health Certificate for non-EU travel), statutory regulations dictate that the physical clinical examination by the veterinarian must occur within 10 days of your pet’s scheduled entry through the destination border inspection post.',
-          'This 10-day clock creates the most intense logistical crunch in international pet travel:',
-          'Day 10 before arrival: Accredited vet conducts clinical exam, verifies microchip, checks vaccine validity, and uploads digital paperwork to USDA VEHCS.',
+          'For Singapore, Japan, and Australia, specific pre-departure clinical inspection windows (ranging from 48 hours to 7–10 days) apply.',
+          'This timeline creates an intense logistical crunch in international pet travel:',
+          'Day 10 before arrival: Accredited vet conducts clinical exam, verifies microchip, checks vaccine and titer validity, and uploads digital paperwork to USDA VEHCS.',
           'Days 9 to 6: USDA veterinary medical officers review the submission, verify rabies lot numbers, and digitally sign or print/emboss the certificate.',
           'Days 5 to 2: Physical document returns via overnight priority courier (if the destination country requires physical ink endorsement) or is downloaded with digital USDA cryptographic seal.',
         ],
@@ -184,6 +280,7 @@ export const GUIDES: RegulatoryGuide[] = [
           rows: [
             ['European Union (Germany, France, Spain, Italy, etc.)', 'Digital VEHCS PDF with cryptographic watermark', '24 – 48 Hours', 'No (Digital printout accepted at EU borders)'],
             ['United Kingdom (England, Scotland, Wales)', 'Digital VEHCS with official QR validation', '24 – 48 Hours', 'No (Digital printout accepted at HARC / Gatwick)'],
+            ['Singapore (AVS / NParks)', 'Digital or physical endorsed AVS certificate', '24 – 48 Hours', 'No (Printout accepted with GoBusiness Licence)'],
             ['Japan (MAFF AQS)', 'Physical embossed ink raised seal', '3 – 5 Business Days', 'Yes (Must ship via FedEx overnight with return envelope)'],
             ['Australia (DAFF)', 'Physical embossed ink seal + electronic pre-clearance', '3 – 5 Business Days', 'Yes (Must be physically attached to crate exterior)'],
             ['Canada (CFIA)', 'Standard rabies certificate (USDA endorsement exempt for personal dogs)', 'Instant', 'No USDA endorsement required for tourist dogs'],
@@ -196,7 +293,7 @@ export const GUIDES: RegulatoryGuide[] = [
         content: [
           'The USDA charges non-refundable federal user fees for processing each export certificate. These fees are set by federal regulation under 9 CFR Part 130 and are separate from your private veterinarian’s examination charges.',
           '1. Non-commercial certificate with NO diagnostic test verification required (e.g. EU Annex IV from US with no titer): $38.00 USD for the first animal + $7.00 per additional animal.',
-          '2. Certificate requiring diagnostic test verification (e.g. countries mandating titer tests or blood draws like Japan, Australia, or South Africa): $121.00 USD for the first animal + $12.00 per additional animal.',
+          '2. Certificate requiring diagnostic test verification (e.g. countries mandating titer tests or blood draws like Singapore, Japan, Australia, or South Africa): $121.00 USD for the first animal + $12.00 per additional animal.',
         ],
       },
       {
@@ -208,6 +305,7 @@ export const GUIDES: RegulatoryGuide[] = [
           '3. The veterinarian used white-out or manual cross-outs on physical forms (automatic rejection).',
           '4. Owner address in destination country is incomplete (missing postal code or hotel address).',
           '5. Primary rabies vaccine was given less than 21 days before departure.',
+          '6. Missing rabies titer (FAVN) laboratory documentation for destinations requiring blood tests.',
         ],
       },
     ],
@@ -252,6 +350,75 @@ export const GUIDES: RegulatoryGuide[] = [
         a: 'If your flight delay causes your pet to arrive past the 10-day validity window of the initial examination, the certificate expires. You must have an accredited veterinarian conduct a new clinical exam and submit a new certificate to USDA VEHCS.',
       },
     ],
+    relatedGuides: [
+      {
+        slug: 'rabies-titer-test-favn-guide',
+        title: 'FAVN Rabies Titer Test Manual',
+        category: 'Veterinary Testing',
+        description: 'Comprehensive guide to RNATT titers, 0.5 IU/mL thresholds, and mandatory waiting clocks.',
+      },
+      {
+        slug: 'iata-crate-requirements',
+        title: 'IATA-Approved Dog Crate Guidelines',
+        category: 'Aviation & Crates',
+        description: 'Airline container requirements, sizing formulas, and mandatory metal hardware.',
+      },
+      {
+        slug: 'pet-travel-platform-vs-ai',
+        title: 'Why General AI Hallucinates Pet Travel Rules',
+        category: 'Regulatory Intelligence',
+        description: 'How deterministic compliance checking prevents costly border groundings.',
+      },
+    ],
+    relatedCountries: [
+      {
+        slug: 'germany',
+        name: 'Germany',
+        flag: '🇩🇪',
+        requirementSummary: 'EU Annex IV endorsement via VEHCS + 21-day rabies latency verification.',
+      },
+      {
+        slug: 'united-kingdom',
+        name: 'United Kingdom',
+        flag: '🇬🇧',
+        requirementSummary: 'Great Britain health certificate via VEHCS + 24–120h tapeworm treatment.',
+      },
+      {
+        slug: 'france',
+        name: 'France',
+        flag: '🇫🇷',
+        requirementSummary: 'EU Annex IV endorsement via VEHCS + Category 1 breed restrictions.',
+      },
+      {
+        slug: 'singapore',
+        name: 'Singapore',
+        flag: '🇸🇬',
+        requirementSummary: 'AVS health certificate endorsement + GoBusiness Electronic Import Licence.',
+      },
+      {
+        slug: 'japan',
+        name: 'Japan',
+        flag: '🇯🇵',
+        requirementSummary: 'MAFF Form AC raised-seal physical endorsement + 180-day titer wait.',
+      },
+    ],
+    relatedTools: [
+      {
+        slug: 'rabies-waiting-period-calculator',
+        title: 'Rabies Waiting Period Calculator',
+        description: 'Calculate exact 21-day latency and expiration timelines for EU/UK endorsement.',
+      },
+      {
+        slug: 'favn-titer-calculator',
+        title: 'FAVN Titer Calculator',
+        description: 'Track laboratory turnaround times and post-draw departure windows.',
+      },
+      {
+        slug: 'quarantine-risk-checker',
+        title: 'Quarantine Risk Checker',
+        description: 'Verify if your route qualifies for immediate border release.',
+      },
+    ],
   },
   {
     slug: 'iata-crate-requirements',
@@ -261,7 +428,7 @@ export const GUIDES: RegulatoryGuide[] = [
       'Definitive engineering guide to airline-approved pet travel crates under IATA Live Animals Regulations (LAR) Container Requirement 1 (CR-1). Sizing formulas, metal hardware rules, ventilation percentages, and snub-nosed CR-82 guidelines.',
     readTime: '10 min read',
     category: 'Aviation & Crates',
-    dateModified: '2026-09-10',
+    dateModified: '2026-09-21',
     statutoryBasis: 'IATA Live Animals Regulations (LAR) 51st Edition, Container Requirement 1 (CR-1) & Container Requirement 82 (CR-82)',
     summary:
       'The International Air Transport Association (IATA) Live Animals Regulations (LAR) govern the construction, dimensions, ventilation, and hardware of all animal shipping containers traveling on commercial aircraft worldwide. Under Container Requirement 1 (CR-1), a pet crate must permit the animal to stand fully erect with head up without touching the ceiling, turn around 360 degrees effortlessly, and lie down in a natural splayed position. Failure to meet the mathematical IATA crate formula is the leading cause of gate check-in rejections across all international airlines.',
@@ -358,6 +525,59 @@ export const GUIDES: RegulatoryGuide[] = [
         a: 'Airlines require water bowls to be attached to the inside of the wire door with an exterior funnel attached through the mesh. Ground handlers can pour fresh water into the funnel from outside without opening the crate door.',
       },
     ],
+    relatedGuides: [
+      {
+        slug: 'usda-aphis-vehcs-guide',
+        title: 'USDA APHIS VEHCS Endorsement Guide',
+        category: 'Government Endorsement',
+        description: 'How to prepare and endorse international health certificates for airline check-in.',
+      },
+      {
+        slug: 'rabies-titer-test-favn-guide',
+        title: 'FAVN Rabies Titer Test Manual',
+        category: 'Veterinary Testing',
+        description: 'Mandatory antibody testing protocols and waiting periods for long-haul routes.',
+      },
+      {
+        slug: 'pet-travel-platform-vs-ai',
+        title: 'Why General AI Hallucinates Pet Travel Rules',
+        category: 'Regulatory Intelligence',
+        description: 'Why relying on AI for crate dimensions and airline policies leads to denied boarding.',
+      },
+    ],
+    relatedCountries: [
+      {
+        slug: 'united-kingdom',
+        name: 'United Kingdom',
+        flag: '🇬🇧',
+        requirementSummary: 'Manifest cargo (AWB) arrival mandatory under DEFRA live animal transport laws.',
+      },
+      {
+        slug: 'australia',
+        name: 'Australia',
+        flag: '🇦🇺',
+        requirementSummary: 'Strict IATA CR-1/CR-82 compliance mandatory for transfer to Mickleham PEQ facility.',
+      },
+      {
+        slug: 'united-states',
+        name: 'United States',
+        flag: '🇺🇸',
+        requirementSummary: 'CDC & USDA cargo/checked pet standards for transatlantic and transpacific flights.',
+      },
+      {
+        slug: 'singapore',
+        name: 'Singapore',
+        flag: '🇸🇬',
+        requirementSummary: 'Manifest cargo arrival and transfer protocols to CAPQ Changi Quarantine Station.',
+      },
+    ],
+    relatedTools: [
+      {
+        slug: 'quarantine-risk-checker',
+        title: 'Quarantine Risk & Border Checker',
+        description: 'Verify receiving port facilities and live animal reception procedures.',
+      },
+    ],
   },
   {
     slug: 'pet-travel-platform-vs-ai',
@@ -367,7 +587,7 @@ export const GUIDES: RegulatoryGuide[] = [
       'Comprehensive investigative report into why large language models (LLMs) hallucinate international pet quarantine laws, miscalculate rabies timeline days, and recommend banned airlines—and how PawValid uses deterministic statutory checking.',
     readTime: '7 min read',
     category: 'Regulatory Intelligence',
-    dateModified: '2026-09-10',
+    dateModified: '2026-09-21',
     statutoryBasis: 'Comparative Biosecurity Audit: LLM Generative Probabilities vs European Commission Regulation 576/2013 & DEFRA Microchip Statutes',
     summary:
       'While general artificial intelligence models like ChatGPT, Claude, and Gemini excel at conversational writing, they operate on probabilistic token prediction rather than deterministic statutory calculation. In international pet travel compliance, where missing a 21-day latency rule by 4 hours results in 4-month quarantine, general AI routinely hallucinates outdated COVID-era border waivers, confuses destination-versus-transit biosecurity protocols, and fails basic Day-Zero vaccine calendar math.',
@@ -402,7 +622,7 @@ export const GUIDES: RegulatoryGuide[] = [
         title: '3. The PawValid Difference: Source-Backed Proof',
         content: [
           'PawValid eliminates the risk of hallucination by coupling computer vision OCR with authoritative statutory rules:',
-          '1. Direct Government Legal Citations: Every single checklist item links directly to official government agriculture ministries (DEFRA, USDA APHIS, BMEL, DAFF, MAFF).',
+          '1. Direct Government Legal Citations: Every single checklist item links directly to official government agriculture ministries (DEFRA, USDA APHIS, BMEL, DAFF, MAFF, Singapore AVS).',
           '2. Optical Character Recognition (OCR): We extract the exact vaccine lot numbers and microchip timestamps directly from your veterinary certificates.',
           '3. Verifiable QR Passports: Customs border officers and veterinarians can scan your pet’s digital pass to inspect the immutable audit trail.',
         ],
@@ -433,6 +653,63 @@ export const GUIDES: RegulatoryGuide[] = [
       {
         q: 'What is the biggest risk of using general AI for pet travel?',
         a: 'The greatest risk is unexpected pet impoundment or deportation at the border. If an AI miscalculates a 21-day latency period by a single day, customs officers have no discretion: the animal must be placed in quarantine at your expense or placed on a return flight.',
+      },
+    ],
+    relatedGuides: [
+      {
+        slug: 'rabies-titer-test-favn-guide',
+        title: 'FAVN Rabies Titer Test Manual',
+        category: 'Veterinary Testing',
+        description: 'Understand the exact 0.5 IU/mL requirements and why AI tools miscalculate the 180-day waiting period.',
+      },
+      {
+        slug: 'usda-aphis-vehcs-guide',
+        title: 'USDA APHIS VEHCS Endorsement Guide',
+        category: 'Government Endorsement',
+        description: 'Step-by-step walkthrough of sovereign government endorsement protocols.',
+      },
+      {
+        slug: 'iata-crate-requirements',
+        title: 'IATA-Approved Dog Crate Guidelines',
+        category: 'Aviation & Crates',
+        description: 'Official mathematical crate formulas that prevent airport gate check-in denials.',
+      },
+    ],
+    relatedCountries: [
+      {
+        slug: 'singapore',
+        name: 'Singapore',
+        flag: '🇸🇬',
+        requirementSummary: 'Strict AVS Category A/B/C/D biosecurity rules and mandatory CAPQ quarantine reservation.',
+      },
+      {
+        slug: 'japan',
+        name: 'Japan',
+        flag: '🇯🇵',
+        requirementSummary: 'Immutable 180-day titer latency rule and 40-day MAFF advance notification mandate.',
+      },
+      {
+        slug: 'united-kingdom',
+        name: 'United Kingdom',
+        flag: '🇬🇧',
+        requirementSummary: 'DEFRA manifest cargo law and strict 24–120 hour tapeworm administration window.',
+      },
+    ],
+    relatedTools: [
+      {
+        slug: 'favn-titer-calculator',
+        title: 'FAVN Titer Calculator',
+        description: 'Deterministic mathematical calculation of your pet’s earliest overseas departure date.',
+      },
+      {
+        slug: 'rabies-waiting-period-calculator',
+        title: 'Rabies Waiting Period Calculator',
+        description: 'Accurate 21-day ISO latency window computation without AI hallucination risk.',
+      },
+      {
+        slug: 'quarantine-risk-checker',
+        title: 'Quarantine Risk Checker',
+        description: 'Deterministic biosecurity risk checker for international animal relocations.',
       },
     ],
   },

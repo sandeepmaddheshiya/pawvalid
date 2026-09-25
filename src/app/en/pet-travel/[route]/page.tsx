@@ -1251,7 +1251,103 @@ export default async function RoutePage({ params }: RoutePageProps) {
         </div>
       </section>
 
-      {/* ─── 6. ROUTE SPECIFIC FAQS & ADVISORIES ────────────────────────── */}
+      {/* ─── 6. RELATED REGULATORY MANUALS & DEEP DIVES ──────────────── */}
+      <section className="py-10 bg-zinc-50 border-t border-zinc-200/80">
+        <div className="section-container">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">
+                Official Compliance Manuals
+              </span>
+              <h2 className="text-xl sm:text-2xl font-serif font-bold text-zinc-900 tracking-tight">
+                Recommended Regulatory Guides for {display.from} → {display.to}
+              </h2>
+            </div>
+            <Link
+              href="/en/guides"
+              className="text-xs font-semibold text-[#0E2342] hover:text-emerald-700 transition-colors"
+            >
+              Browse All Regulatory Guides →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link
+              href="/en/guides/rabies-titer-test-favn-guide"
+              className="group bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+                    Veterinary Testing
+                  </span>
+                  <span className="text-[11px] text-zinc-400">9 min read</span>
+                </div>
+                <h3 className="font-serif text-base font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-2">
+                  FAVN Rabies Titer Test Manual
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Learn about the 0.5 IU/mL antibody threshold, approved testing laboratories (KSU, Auburn, ANSES), and mandatory post-draw waiting periods.
+                </p>
+              </div>
+              <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read FAVN Guide</span>
+                <span>→</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/en/guides/usda-aphis-vehcs-guide"
+              className="group bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200/80">
+                    Government Endorsement
+                  </span>
+                  <span className="text-[11px] text-zinc-400">8 min read</span>
+                </div>
+                <h3 className="font-serif text-base font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-2">
+                  USDA APHIS VEHCS Guide
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  How accredited veterinarians submit export certificates for sovereign government review and validation within 10 days of travel.
+                </p>
+              </div>
+              <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read VEHCS Guide</span>
+                <span>→</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/en/guides/iata-crate-requirements"
+              className="group bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200/80">
+                    Aviation &amp; Crates
+                  </span>
+                  <span className="text-[11px] text-zinc-400">10 min read</span>
+                </div>
+                <h3 className="font-serif text-base font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-2">
+                  IATA Dog Crate Requirements
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Container Requirement 1 (CR-1) sizing formulas, metal hardware specifications, and ventilation percentages for international flights.
+                </p>
+              </div>
+              <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read Crate Guide</span>
+                <span>→</span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 7. ROUTE SPECIFIC FAQS & ADVISORIES ────────────────────────── */}
       <section className="py-12 sm:py-16">
         <div className="section-container">
           <div className="mb-8 text-center max-w-2xl mx-auto">

@@ -337,6 +337,117 @@ export default async function GuideDetailPage({ params }: Props) {
                   ))}
                 </div>
               </section>
+
+              {/* Related Regulatory Guides */}
+              {guide.relatedGuides && guide.relatedGuides.length > 0 && (
+                <section className="pt-8 border-t border-zinc-200 space-y-4">
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">
+                      Cross-Referenced Manuals
+                    </span>
+                    <h2 className="font-serif text-xl sm:text-2xl font-bold text-zinc-900">
+                      Related Regulatory Guides &amp; Manuals
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {guide.relatedGuides.map((rg) => (
+                      <Link
+                        key={rg.slug}
+                        href={`/en/guides/${rg.slug}`}
+                        className="group bg-white rounded-xl border border-zinc-200/90 hover:border-emerald-500/60 p-4 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+                      >
+                        <div>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 mb-1 block">
+                            {rg.category}
+                          </span>
+                          <h3 className="font-serif text-sm font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-1.5">
+                            {rg.title}
+                          </h3>
+                          <p className="text-xs text-zinc-600 leading-relaxed">
+                            {rg.description}
+                          </p>
+                        </div>
+                        <div className="pt-3 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                          <span>Read Full Guide</span>
+                          <span>→</span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Related Destination Countries */}
+              {guide.relatedCountries && guide.relatedCountries.length > 0 && (
+                <section className="pt-8 border-t border-zinc-200 space-y-4">
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">
+                      Enforcing Jurisdictions
+                    </span>
+                    <h2 className="font-serif text-xl sm:text-2xl font-bold text-zinc-900">
+                      Destination Country Compliance Hubs
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    {guide.relatedCountries.map((rc) => (
+                      <Link
+                        key={rc.slug}
+                        href={`/en/countries/${rc.slug}`}
+                        className="group bg-white rounded-xl border border-zinc-200/90 hover:border-emerald-500/60 p-3.5 shadow-2xs hover:shadow-xs transition-all flex items-start gap-3"
+                      >
+                        <span className="text-2xl leading-none mt-0.5">{rc.flag}</span>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-xs font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors">
+                            {rc.name} Pet Import Guide
+                          </h3>
+                          <p className="text-[11px] text-zinc-500 mt-0.5 leading-snug">
+                            {rc.requirementSummary}
+                          </p>
+                        </div>
+                        <span className="text-zinc-400 group-hover:text-emerald-700 font-bold text-xs mt-1">
+                          →
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Related Tools & Calculators */}
+              {guide.relatedTools && guide.relatedTools.length > 0 && (
+                <section className="pt-8 border-t border-zinc-200 space-y-4">
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">
+                      Automated Verification Tools
+                    </span>
+                    <h2 className="font-serif text-xl sm:text-2xl font-bold text-zinc-900">
+                      Free Compliance Calculators
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                    {guide.relatedTools.map((rt) => (
+                      <Link
+                        key={rt.slug}
+                        href={`/en/tools/${rt.slug}`}
+                        className="group bg-zinc-50 hover:bg-white rounded-xl border border-zinc-200/80 hover:border-emerald-500/60 p-3.5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+                      >
+                        <div>
+                          <h3 className="text-xs font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-1">
+                            {rt.title}
+                          </h3>
+                          <p className="text-[11px] text-zinc-500 leading-snug">
+                            {rt.description}
+                          </p>
+                        </div>
+                        <span className="text-[11px] font-semibold text-emerald-700 mt-2.5 flex items-center gap-1">
+                          <span>Open Tool</span>
+                          <span>→</span>
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
             </article>
           </div>
         </div>

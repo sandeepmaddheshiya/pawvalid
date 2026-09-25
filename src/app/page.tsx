@@ -14,17 +14,21 @@ export const metadata: Metadata = {
   title: 'PawValid — Is Your Pet Ready to Travel? | Pet Travel Document Checker',
   description:
     "Upload your pet's documents and we'll check them against route-specific requirements, identify what's missing, flag potential issues, and give you a clear travel timeline.",
+  alternates: {
+    canonical: 'https://pawvalid.online',
+  },
 };
 
 const POPULAR_COUNTRIES = [
-  { flag: '🇬🇧', name: 'United Kingdom' },
-  { flag: '🇺🇸', name: 'United States' },
-  { flag: '🇩🇪', name: 'Germany' },
-  { flag: '🇫🇷', name: 'France' },
-  { flag: '🇪🇸', name: 'Spain' },
-  { flag: '🇮🇹', name: 'Italy' },
-  { flag: '🇨🇦', name: 'Canada' },
-  { flag: '🇦🇺', name: 'Australia' },
+  { flag: '🇬🇧', name: 'United Kingdom', slug: 'united-kingdom' },
+  { flag: '🇺🇸', name: 'United States', slug: 'united-states' },
+  { flag: '🇸🇬', name: 'Singapore', slug: 'singapore' },
+  { flag: '🇩🇪', name: 'Germany', slug: 'germany' },
+  { flag: '🇫🇷', name: 'France', slug: 'france' },
+  { flag: '🇯🇵', name: 'Japan', slug: 'japan' },
+  { flag: '🇦🇺', name: 'Australia', slug: 'australia' },
+  { flag: '🇦🇪', name: 'United Arab Emirates', slug: 'united-arab-emirates' },
+  { flag: '🇨🇦', name: 'Canada', slug: 'canada' },
 ];
 
 export default function HomePage() {
@@ -396,22 +400,29 @@ export default function HomePage() {
                   {POPULAR_COUNTRIES.map((c) => (
                     <Link
                       key={c.name}
-                      href="/en/pet-travel"
-                      className="flex items-center gap-2 p-2 rounded-lg bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 transition-colors text-xs font-semibold text-zinc-800 truncate"
+                      href={`/en/countries/${c.slug}`}
+                      className="flex items-center gap-2 p-2 rounded-lg bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 transition-colors text-xs font-semibold text-zinc-800 truncate group"
                     >
                       <span className="text-sm">{c.flag}</span>
-                      <span className="truncate">{c.name}</span>
+                      <span className="truncate group-hover:text-emerald-700 transition-colors">{c.name}</span>
                     </Link>
                   ))}
                 </div>
               </div>
 
-              <div className="pt-5 mt-4 border-t border-zinc-100">
+              <div className="pt-5 mt-4 border-t border-zinc-100 flex items-center justify-between">
                 <Link
-                  href="/en/pet-travel"
+                  href="/en/countries"
                   className="inline-flex items-center gap-1 text-xs font-semibold text-[#0E2342] hover:text-[#0FA958] transition-colors"
                 >
-                  <span>View all destinations</span>
+                  <span>View all 15 country guides</span>
+                  <span>→</span>
+                </Link>
+                <Link
+                  href="/en/pet-travel"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-500 hover:text-zinc-800 transition-colors"
+                >
+                  <span>Browse 50 flight corridors</span>
                   <span>→</span>
                 </Link>
               </div>
@@ -468,7 +479,135 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── 7. PRICING SECTION ───────────────────────────────────────────── */}
+      {/* ─── 7. FEATURED REGULATORY GUIDES SECTION ────────────────────────── */}
+      <section className="py-16 sm:py-20 bg-white border-b border-zinc-200/70">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between max-w-5xl mx-auto mb-10 gap-3">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F8F0] border border-[#C6EED8] text-[#0FA958] text-[10px] font-bold uppercase tracking-wider mb-2.5">
+                REGULATORY INTELLIGENCE
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#0E2342] tracking-tight">
+                Authoritative Pet Travel Manuals &amp; Guides
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-600 mt-1 max-w-xl">
+                Source-backed deep dives into international rabies titer laws, government health certificate endorsements, and airline crate engineering.
+              </p>
+            </div>
+
+            <Link
+              href="/en/guides"
+              className="text-xs font-semibold text-[#0E2342] hover:text-[#0FA958] transition-colors self-start sm:self-auto shrink-0"
+            >
+              Browse all guides →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
+            {/* Guide Card 1: FAVN Titer */}
+            <Link
+              href="/en/guides/rabies-titer-test-favn-guide"
+              className="group bg-[#F8FAFB] hover:bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+                    Veterinary Testing
+                  </span>
+                  <span className="text-[10px] text-zinc-400">9 min</span>
+                </div>
+                <h3 className="font-serif text-sm font-bold text-[#0E2342] group-hover:text-emerald-800 transition-colors mb-2 leading-snug">
+                  FAVN Rabies Titer Test Manual (2026)
+                </h3>
+                <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-3">
+                  Everything you need to know about RNATT tests, the 0.5 IU/mL standard, and 180-day waiting clocks for Singapore, Japan, and Australia.
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-[11px] font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read Manual</span>
+                <span>→</span>
+              </div>
+            </Link>
+
+            {/* Guide Card 2: USDA VEHCS */}
+            <Link
+              href="/en/guides/usda-aphis-vehcs-guide"
+              className="group bg-[#F8FAFB] hover:bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200/80">
+                    Endorsement
+                  </span>
+                  <span className="text-[10px] text-zinc-400">8 min</span>
+                </div>
+                <h3 className="font-serif text-sm font-bold text-[#0E2342] group-hover:text-emerald-800 transition-colors mb-2 leading-snug">
+                  USDA APHIS VEHCS Endorsement Guide
+                </h3>
+                <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-3">
+                  Step-by-step walkthrough of the 10-day pre-flight exam window, accredited vet submission, and federal endorsement seals.
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-[11px] font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read Manual</span>
+                <span>→</span>
+              </div>
+            </Link>
+
+            {/* Guide Card 3: IATA Crate */}
+            <Link
+              href="/en/guides/iata-crate-requirements"
+              className="group bg-[#F8FAFB] hover:bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200/80">
+                    Aviation
+                  </span>
+                  <span className="text-[10px] text-zinc-400">10 min</span>
+                </div>
+                <h3 className="font-serif text-sm font-bold text-[#0E2342] group-hover:text-emerald-800 transition-colors mb-2 leading-snug">
+                  IATA-Approved Dog Crate Guidelines
+                </h3>
+                <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-3">
+                  Official mathematical crate formulas, mandatory metal nuts/bolts hardware, and four-sided airline ventilation specs.
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-[11px] font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read Manual</span>
+                <span>→</span>
+              </div>
+            </Link>
+
+            {/* Guide Card 4: AI vs Deterministic */}
+            <Link
+              href="/en/guides/pet-travel-platform-vs-ai"
+              className="group bg-[#F8FAFB] hover:bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200/80">
+                    Analysis
+                  </span>
+                  <span className="text-[10px] text-zinc-400">7 min</span>
+                </div>
+                <h3 className="font-serif text-sm font-bold text-[#0E2342] group-hover:text-emerald-800 transition-colors mb-2 leading-snug">
+                  Why General AI Hallucinates Pet Travel
+                </h3>
+                <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-3">
+                  Investigative study into why ChatGPT and Gemini miscalculate day-zero rabies math and how deterministic checks prevent quarantine.
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-[11px] font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read Manual</span>
+                <span>→</span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 8. PRICING SECTION ───────────────────────────────────────────── */}
       <PricingSection />
 
       {/* ─── 8. FAQ ACCORDION SECTION ─────────────────────────────────────── */}

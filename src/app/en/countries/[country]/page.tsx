@@ -398,7 +398,106 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
         </div>
       </section>
 
-      {/* ─── 8. DESTINATION FAQS ────────────────────────────────────────── */}
+      {/* ─── 8. OFFICIAL BIOSECURITY GUIDES & MANUALS ─────────────────── */}
+      <section className="py-10 bg-zinc-50 border-t border-zinc-200/80">
+        <div className="section-container">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">
+                Official Regulatory Manuals
+              </span>
+              <h2 className="text-xl sm:text-2xl font-serif font-bold text-zinc-900 tracking-tight">
+                Recommended Pet Travel Guides for {country.name}
+              </h2>
+            </div>
+            <Link
+              href="/en/guides"
+              className="text-xs font-semibold text-[#0E2342] hover:text-emerald-700 transition-colors"
+            >
+              Browse All Regulatory Guides →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Guide 1: FAVN Titer Guide */}
+            <Link
+              href="/en/guides/rabies-titer-test-favn-guide"
+              className="group bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+                    Veterinary Testing
+                  </span>
+                  <span className="text-[11px] text-zinc-400">9 min read</span>
+                </div>
+                <h3 className="font-serif text-base font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-2">
+                  FAVN Rabies Titer Test Manual (2026)
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Understand the ≥ 0.5 IU/mL antibody threshold, approved international laboratories (KSU, Auburn, ANSES), and post-draw waiting clocks enforced by {country.authority}.
+                </p>
+              </div>
+              <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read Full FAVN Guide</span>
+                <span>→</span>
+              </div>
+            </Link>
+
+            {/* Guide 2: USDA APHIS VEHCS Guide */}
+            <Link
+              href="/en/guides/usda-aphis-vehcs-guide"
+              className="group bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200/80">
+                    Government Endorsement
+                  </span>
+                  <span className="text-[11px] text-zinc-400">8 min read</span>
+                </div>
+                <h3 className="font-serif text-base font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-2">
+                  USDA APHIS VEHCS Endorsement Guide
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  How to obtain sovereign veterinary endorsement for international health certificates within the mandatory 10-day pre-flight examination window.
+                </p>
+              </div>
+              <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read VEHCS Guide</span>
+                <span>→</span>
+              </div>
+            </Link>
+
+            {/* Guide 3: IATA Crate Guide */}
+            <Link
+              href="/en/guides/iata-crate-requirements"
+              className="group bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200/80">
+                    Aviation &amp; Crates
+                  </span>
+                  <span className="text-[11px] text-zinc-400">10 min read</span>
+                </div>
+                <h3 className="font-serif text-base font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-2">
+                  IATA-Approved Dog Crate Requirements
+                </h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Official mathematical sizing formulas (CR-1), mandatory metal nuts and bolts hardware, four-sided ventilation, and dangerous breed CR-82 guidelines.
+                </p>
+              </div>
+              <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+                <span>Read IATA Crate Guide</span>
+                <span>→</span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 9. DESTINATION FAQS ────────────────────────────────────────── */}
       <section className="py-12 sm:py-16">
         <div className="section-container">
           <div className="mb-8 text-center max-w-2xl mx-auto">
