@@ -2,686 +2,12 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { getCurrentRequirementVersions } from '@/lib/requirements/queries';
-import FreshnessIndicator from '@/components/FreshnessIndicator';
 import BrowseRequirementsChecklist from '@/components/BrowseRequirementsChecklist';
 import { getFaqSchema, getBreadcrumbSchema, getHowToSchema } from '@/lib/seo/schema';
-import { CORRIDORS } from '@/lib/data/corridors';
+import { CORRIDORS, type RouteIntelligence } from '@/lib/data/corridors';
+import { COUNTRIES } from '@/lib/data/countries';
 
-interface StatutoryRule {
-  id: string;
-  category: string;
-  categoryLabel: string;
-  title: string;
-  severity: 'BLOCKING' | 'NON_BLOCKING';
-  rules: string[];
-  protocol: string;
-  sourceName: string;
-  sourceUrl: string;
-  lastVerifiedAt: string;
-}
-
-interface TimelineStep {
-  step: number;
-  timing: string;
-  title: string;
-  description: string;
-}
-
-interface RouteIntelligence {
-  from: string;
-  to: string;
-  originCode: string;
-  destCode: string;
-  region: string;
-  authority: string;
-  legalBasis: string;
-  description: string;
-  titerRequired: string;
-  titerStatus: 'exempt' | 'mandatory' | 'conditional';
-  titerDetail: string;
-  quarantineDays: string;
-  quarantineDetail: string;
-  leadTime: string;
-  leadTimeDetail: string;
-  certificateType: string;
-  certificateDetail: string;
-  entryAirports: string[];
-  restrictedBreeds?: string[];
-  timelineSteps: TimelineStep[];
-  faqs: Array<{ q: string; a: string }>;
-  statutoryRequirements: StatutoryRule[];
-}
-
-export const ROUTE_DATA: Record<string, RouteIntelligence> = {
-  ...CORRIDORS,
-  'usa-to-germany': {
-    from: 'United States',
-    to: 'Germany',
-    originCode: 'US',
-    destCode: 'DE',
-    region: 'North America → European Union',
-    authority: 'German Federal Ministry of Food and Agriculture (BMEL) & European Commission (DG SANTE)',
-    legalBasis: 'Regulation (EU) No 576/2013 & Commission Implementing Regulation (EU) No 577/2013',
-    description: 'Statutory non-commercial entry regulations for traveling with dogs and cats from the USA to Germany. Verified against official German BMEL and European Union border control statutes.',
-    titerRequired: 'Exempt / Not Required',
-    titerStatus: 'exempt',
-    titerDetail: 'The US is listed as a rabies-controlled third country in Annex II of EU Reg 577/2013. No 30-day waiting period or 3-month RNATT blood titer test is required for direct travel.',
-    quarantineDays: '0 Days Quarantine',
-    quarantineDetail: 'Direct release upon customs clearance at any approved German Border Inspection Post (FRA, MUC, BER). No quarantine facility stay required.',
-    leadTime: '21 Days Minimum',
-    leadTimeDetail: 'Primary rabies vaccination requires a mandatory 21-day latency window before travel. Valid boosters administered within active duration have no waiting period.',
-    certificateType: 'EU Non-Commercial Health Certificate (Annex IV)',
-    certificateDetail: 'Must be issued by a USDA-accredited veterinarian and officially endorsed via USDA APHIS VEHCS within 10 days of scheduled EU arrival.',
-    entryAirports: ['Frankfurt Airport (FRA)', 'Munich Airport (MUC)', 'Berlin Brandenburg (BER)', 'Hamburg (HAM)', 'Düsseldorf (DUS)'],
-    restrictedBreeds: ['Pitbull Terrier', 'American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bull Terrier (and crossbreeds) under HundVerbrEinfG statutory import ban'],
-    timelineSteps: [
-      {
-        step: 1,
-        timing: 'Earliest Step',
-        title: 'ISO Microchip Implantation',
-        description: 'Implant a standard 15-digit ISO 11784/11785 compliant microchip. Must occur strictly before rabies vaccination.',
-      },
-      {
-        step: 2,
-        timing: 'At Least 21 Days Before Arrival',
-        title: 'Rabies Vaccination & Latency',
-        description: 'Administer rabies vaccination. The 21-day waiting period starts on the day after injection (Day 0).',
-      },
-      {
-        step: 3,
-        timing: 'Within 10 Days of Arrival',
-        title: 'USDA Vet Exam & VEHCS Endorsement',
-        description: 'USDA-accredited vet issues the EU Annex IV certificate. Submit electronically through VEHCS for USDA endorsement.',
-      },
-      {
-        step: 4,
-        timing: 'Flight Day at German Airport',
-        title: 'German Customs Declaration',
-        description: 'Exit via Red Customs Channel ("Goods to Declare / Zoll") at Frankfurt or Munich airport for official document and microchip check.',
-      },
-    ],
-    faqs: [
-      {
-        q: 'Do I need an EU Pet Passport if my pet resides in the United States?',
-        a: 'No. EU Pet Passports can only be issued by authorized veterinarians within the European Union. US-resident pets enter Germany on the official EU Non-Commercial Health Certificate (Annex IV) endorsed by USDA APHIS.',
-      },
-      {
-        q: 'Can my dog enter Germany with a 3-year rabies vaccination?',
-        a: 'Yes, 3-year rabies vaccines are fully recognized by German authorities, provided the vaccine was administered strictly after the microchip implantation and remains within the manufacturer’s stated validity period.',
-      },
-      {
-        q: 'What happens at German airport customs upon arrival?',
-        a: 'Pet travelers must proceed through the Red Customs Channel ("Goods to Declare / Zoll") at the airport. A border customs official or official veterinarian will verify the microchip transponder with a handheld scanner and examine the endorsed EU Annex IV certificate.',
-      },
-      {
-        q: 'Are cats subject to tapeworm (Echinococcus) treatment when traveling to Germany?',
-        a: 'No. Tapeworm treatment is not required for cats or dogs traveling directly to Germany from the United States (unlike travel to the UK, Ireland, Finland, Norway, or Malta).',
-      },
-    ],
-    statutoryRequirements: [
-      {
-        id: 'de-req-microchip',
-        category: 'MICROCHIP',
-        categoryLabel: 'ISO 11784/11785 Microchip',
-        title: 'Microchip Identification Transponder',
-        severity: 'BLOCKING',
-        rules: [
-          'ISO 11784/11785 compliant 15-digit microchip (transponder) is required.',
-          'Microchip must be implanted strictly prior to or on the same day as the rabies vaccination.',
-          'Microchip number must be readable by standard HDX or FDX-B scanners at German Border Inspection Posts.',
-        ],
-        protocol: 'Sequence Mandatory: Microchip MUST be implanted and verified strictly prior to rabies vaccination. Any vaccine administered before microchipping is legally invalid in the European Union.',
-        sourceName: 'European Commission — Non-Commercial Movement of Pets',
-        sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement/eu-legislation/non-commercial-non-eu_en',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'de-req-rabies',
-        category: 'RABIES_VACCINATION',
-        categoryLabel: 'Rabies Immunization Protocol',
-        title: 'Rabies Vaccination & 21-Day Latency Window',
-        severity: 'BLOCKING',
-        rules: [
-          'Valid rabies vaccination administered by an accredited veterinarian after microchip implantation.',
-          'Pet must be at least 12 weeks old at the time of primary vaccination.',
-          'At least 21 days must elapse between the primary rabies vaccination and arrival in Germany.',
-        ],
-        protocol: '21-Day Wait Rule: The primary rabies vaccination is legally effective starting on Day 22 (Day 0 = date of injection). Valid booster shots administered within the manufacturer validity duration have no waiting period.',
-        sourceName: 'German Federal Ministry of Food and Agriculture (BMEL)',
-        sourceUrl: 'https://www.bmel.de/EN/topics/animals/pets/pets_node.html',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'de-req-health-cert',
-        category: 'HEALTH_CERTIFICATE',
-        categoryLabel: 'EU Health Certificate (Annex IV)',
-        title: 'USDA-Accredited Health Certificate & Endorsement',
-        severity: 'BLOCKING',
-        rules: [
-          'EU-format non-commercial veterinary health certificate (Annex IV) completed in English and German.',
-          'Issued by a USDA-accredited veterinarian following clinical examination.',
-          'Endorsed electronically via USDA APHIS VEHCS within 10 days of scheduled EU arrival.',
-        ],
-        protocol: '10-Day Endorsement Window: Completed by a USDA-accredited veterinarian and officially endorsed via USDA APHIS VEHCS within 10 days of scheduled EU arrival.',
-        sourceName: 'USDA APHIS Pet Travel to Germany',
-        sourceUrl: 'https://www.aphis.usda.gov/aphis/pet-travel/by-country/eu/eu-echc/germany',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'de-req-tapeworm',
-        category: 'TAPEWORM_TREATMENT',
-        categoryLabel: 'Echinococcus Multilocularis Protocol',
-        title: 'Tapeworm Advisory for Transiting Pets',
-        severity: 'NON_BLOCKING',
-        rules: [
-          'Direct entry from the USA into Germany does not mandate preventive tapeworm treatment.',
-          'Transiting pets: Dogs continuing travel to the UK, Ireland, Finland, Norway, or Malta mandate veterinary praziquantel treatment within 24 to 120 hours.',
-        ],
-        protocol: 'Route Advisory: Direct arrival at Frankfurt (FRA), Munich (MUC), or Berlin (BER) has no tapeworm mandate. Verify onward European connection requirements.',
-        sourceName: 'German Federal Ministry of Food and Agriculture (BMEL)',
-        sourceUrl: 'https://www.bmel.de/EN/topics/animals/pets/pets_node.html',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-    ],
-  },
-  'usa-to-uk': {
-    from: 'United States',
-    to: 'United Kingdom',
-    originCode: 'US',
-    destCode: 'GB',
-    region: 'North America → Great Britain',
-    authority: 'UK Animal and Plant Health Agency (APHA) & DEFRA',
-    legalBasis: 'UK Non-Commercial Movement of Pet Animals Order & Retained Regulation (EU) 576/2013',
-    description: 'Comprehensive pet import regulations for dogs, cats, and ferrets traveling from the USA to Great Britain under the UK Pet Travel Scheme (PETS).',
-    titerRequired: 'Exempt / Not Required',
-    titerStatus: 'exempt',
-    titerDetail: 'The United States is recognized as a Part 2 listed country under UK regulations. No rabies blood titer (RNATT) test is required.',
-    quarantineDays: '0 Days Quarantine',
-    quarantineDetail: 'Zero quarantine when entering on an approved transport company and route with compliant Great Britain Pet Health Certificate.',
-    leadTime: '21 Days Minimum',
-    leadTimeDetail: '21-day latency period for primary rabies vaccine, plus a strictly timed veterinary tapeworm treatment 1 to 5 days prior to arrival.',
-    certificateType: 'Great Britain Pet Health Certificate',
-    certificateDetail: 'Must be issued by a USDA-accredited veterinarian and officially endorsed by USDA APHIS within 10 days of departure.',
-    entryAirports: ['London Heathrow (LHR)', 'London Gatwick (LGW)', 'Manchester (MAN)', 'Edinburgh (EDI)'],
-    restrictedBreeds: ['XL Bully', 'Pitbull Terrier', 'Japanese Tosa', 'Dogo Argentino', 'Fila Brasileiro (Dangerous Dogs Act 1991)'],
-    timelineSteps: [
-      {
-        step: 1,
-        timing: 'Day -30 or Earlier',
-        title: 'ISO Microchip & Rabies Vaccination',
-        description: 'Implant 15-digit ISO microchip, followed immediately by rabies vaccination with a 21-day latency period.',
-      },
-      {
-        step: 2,
-        timing: 'Day -20 to -14',
-        title: 'Approved Route & Cargo Booking',
-        description: 'Commercial airlines require manifest cargo booking into London Heathrow (HARC), Gatwick, or Manchester Animal Reception Centres.',
-      },
-      {
-        step: 3,
-        timing: 'Day -5 to Day -1 (24–120h Window)',
-        title: 'Tapeworm (Praziquantel) Treatment',
-        description: 'USDA vet administers praziquantel and records exact date and time on the Great Britain Health Certificate.',
-      },
-      {
-        step: 4,
-        timing: 'Within 10 Days of Arrival',
-        title: 'USDA APHIS VEHCS Endorsement',
-        description: 'Submit health certificate through USDA VEHCS for federal endorsement prior to flight departure.',
-      },
-    ],
-    faqs: [
-      {
-        q: 'What is the mandatory tapeworm treatment window for dogs entering the UK?',
-        a: 'Dogs must receive an approved praziquantel tapeworm treatment administered by a licensed veterinarian between 24 and 120 hours (1 to 5 days) before the scheduled arrival time in the UK.',
-      },
-      {
-        q: 'Can pets fly in-cabin on commercial flights to the UK?',
-        a: 'No commercial airline is permitted to carry pets into the UK in passenger cabins (except certified assistance dogs). Pets must travel as manifest cargo under IATA Live Animals Regulations, or via authorized pet courier routes.',
-      },
-      {
-        q: 'Does Great Britain accept EU Pet Passports issued in the EU?',
-        a: 'Yes, Great Britain accepts valid EU Pet Passports issued in EU member states, provided the rabies vaccination was administered and recorded by an authorized EU veterinarian.',
-      },
-      {
-        q: 'Are cats required to have tapeworm treatment for the UK?',
-        a: 'No. The Echinococcus tapeworm treatment rule strictly applies to dogs. Cats and ferrets entering the UK do not require tapeworm medication.',
-      },
-    ],
-    statutoryRequirements: [
-      {
-        id: 'uk-req-microchip',
-        category: 'MICROCHIP',
-        categoryLabel: 'ISO 11784/11785 Microchip',
-        title: 'Microchip Identification',
-        severity: 'BLOCKING',
-        rules: [
-          'ISO 11784/11785 compliant 15-digit microchip must be implanted before rabies vaccination.',
-          'Microchip number must match all veterinary records and cargo airway bills exactly.',
-        ],
-        protocol: 'Sequence Mandatory: Microchip must be implanted before rabies vaccination. Any vaccination prior to microchipping is invalid in the UK.',
-        sourceName: 'UK Animal and Plant Health Agency (APHA)',
-        sourceUrl: 'https://www.gov.uk/bring-pet-to-great-britain',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'uk-req-rabies',
-        category: 'RABIES_VACCINATION',
-        categoryLabel: 'Rabies Immunization Protocol',
-        title: 'Rabies Vaccination & 21-Day Wait',
-        severity: 'BLOCKING',
-        rules: [
-          'Valid rabies vaccination administered by an accredited vet after microchipping.',
-          'Pet must be at least 12 weeks old at the time of primary vaccination.',
-          'At least 21 days must elapse after primary vaccination before entering Great Britain.',
-        ],
-        protocol: '21-Day Wait Rule: The primary rabies vaccination becomes valid on Day 22. Valid continuous booster shots have no waiting period.',
-        sourceName: 'UK DEFRA',
-        sourceUrl: 'https://www.gov.uk/bring-pet-to-great-britain',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'uk-req-tapeworm',
-        category: 'TAPEWORM_TREATMENT',
-        categoryLabel: 'Echinococcus Multilocularis Protocol',
-        title: 'Mandatory Tapeworm Treatment (24–120 Hours)',
-        severity: 'BLOCKING',
-        rules: [
-          'Approved praziquantel tapeworm treatment administered by a licensed veterinarian.',
-          'Treatment must be administered between 24 and 120 hours (1 to 5 days) before scheduled arrival in the UK.',
-          'Veterinarian must explicitly record the product name, date, and exact time of administration.',
-        ],
-        protocol: 'Strict Window: Must be given not less than 24 hours and not more than 120 hours before UK arrival. Failure results in border quarantine or refusal.',
-        sourceName: 'UK DEFRA Pet Travel Scheme',
-        sourceUrl: 'https://www.gov.uk/bring-pet-to-great-britain',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'uk-req-health-cert',
-        category: 'HEALTH_CERTIFICATE',
-        categoryLabel: 'Great Britain Health Certificate',
-        title: 'USDA-Accredited Health Certificate & Endorsement',
-        severity: 'BLOCKING',
-        rules: [
-          'Official Great Britain Pet Health Certificate completed by a USDA-accredited veterinarian.',
-          'Officially endorsed by USDA APHIS within 10 days of arrival in the UK.',
-        ],
-        protocol: '10-Day Endorsement Window: Issued and federally endorsed by USDA APHIS within 10 days of scheduled UK entry.',
-        sourceName: 'USDA APHIS Pet Travel to Great Britain',
-        sourceUrl: 'https://www.aphis.usda.gov/aphis/pet-travel/by-country/united-kingdom',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-    ],
-  },
-  'usa-to-australia': {
-    from: 'United States',
-    to: 'Australia',
-    originCode: 'US',
-    destCode: 'AU',
-    region: 'North America → Oceania',
-    authority: 'Australian Department of Agriculture, Fisheries and Forestry (DAFF)',
-    legalBasis: 'Biosecurity Act 2015 & Group 3 Approved Country Non-Commercial Import Conditions',
-    description: 'Rigorous biosecurity requirements for importing pets from the USA into Australia. Australia is rabies-free with mandatory post-entry quarantine.',
-    titerRequired: 'Mandatory Blood Titer (RNATT)',
-    titerStatus: 'mandatory',
-    titerDetail: 'Mandatory Rabies Neutralising Antibody Titre (RNATT) test with antibody level ≥ 0.5 IU/ml, followed by a mandatory 180-day waiting period before export.',
-    quarantineDays: '10 to 30 Days Quarantine',
-    quarantineDetail: 'Mandatory stay at the Mickleham Post-Entry Quarantine (PEQ) Facility in Melbourne. Reservations must be secured months in advance.',
-    leadTime: '7 Months Minimum',
-    leadTimeDetail: 'Due to the 180-day post-titer waiting duration and DAFF Import Permit processing times, preparations must begin at least 7 months prior to travel.',
-    certificateType: 'DAFF Import Permit & USDA APHIS Form',
-    certificateDetail: 'Requires a formal DAFF Import Permit approved in Canberra, plus multi-stage veterinary health certificates endorsed by USDA APHIS.',
-    entryAirports: ['Melbourne Tullamarine (MEL) — Direct PEQ Transfer Only'],
-    timelineSteps: [
-      {
-        step: 1,
-        timing: 'Month -7 (180+ Days Out)',
-        title: 'Microchip & RNATT Blood Titer Draw',
-        description: 'USDA vet scans microchip and draws blood for RNATT test. 180-day countdown begins on the date the sample arrives at an approved lab.',
-      },
-      {
-        step: 2,
-        timing: 'Month -5 to -4',
-        title: 'DAFF Import Permit Application',
-        description: 'Submit online application through Australian DAFF BICON system with passing titer result (≥ 0.5 IU/ml). Allow 20–30 business days.',
-      },
-      {
-        step: 3,
-        timing: 'Month -3',
-        title: 'Mickleham PEQ Quarantine Booking',
-        description: 'Reserve post-entry quarantine space at the Mickleham Quarantine Facility in Melbourne immediately upon permit issuance.',
-      },
-      {
-        step: 4,
-        timing: 'Month -1 to Departure',
-        title: 'Parasite Treatments & Final USDA Exam',
-        description: 'Complete mandatory internal/external parasite treatments at prescribed intervals and obtain USDA APHIS endorsed final health certificate.',
-      },
-    ],
-    faqs: [
-      {
-        q: 'Can pets fly into Sydney or Brisbane when relocating to Australia?',
-        a: 'No. All cats and dogs entering Australia must arrive directly into Melbourne Airport (MEL) for immediate transfer to the Mickleham Post-Entry Quarantine Facility.',
-      },
-      {
-        q: 'How long is the mandatory quarantine stay in Australia?',
-        a: 'Pets from the US completing all pre-export requirements and blood tests accurately qualify for the minimum 10-day quarantine stay. If requirements are missing, stay may extend to 30 days.',
-      },
-      {
-        q: 'What is the RNATT blood titer requirement?',
-        a: 'The pet must test with a rabies neutralising antibody level of 0.5 IU/ml or greater at an approved laboratory. The pet cannot enter Australia until at least 180 days have passed since the blood draw date.',
-      },
-      {
-        q: 'Can pets travel in passenger cabins to Australia?',
-        a: 'No. Australian biosecurity regulations mandate that all companion animals enter as manifest air cargo directly into Melbourne.',
-      },
-    ],
-    statutoryRequirements: [
-      {
-        id: 'au-req-microchip',
-        category: 'MICROCHIP',
-        categoryLabel: 'ISO 11784/11785 Microchip',
-        title: 'Microchip Implantation & Verification',
-        severity: 'BLOCKING',
-        rules: [
-          'ISO 11784/11785 compliant microchip implanted prior to rabies vaccination and RNATT blood draw.',
-          'Microchip must be scanned at every veterinary visit and recorded on all laboratory reports.',
-        ],
-        protocol: 'Identity Integrity: Blood drawn before microchip verification will be rejected by Australian biosecurity officials.',
-        sourceName: 'Australian DAFF Biosecurity',
-        sourceUrl: 'https://www.agriculture.gov.au/biosecurity-trade/cats-dogs',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'au-req-titer',
-        category: 'TITER_TEST',
-        categoryLabel: 'RNATT Antibody Titer & 180-Day Wait',
-        title: 'Rabies Blood Titer (RNATT) & 180-Day Duration',
-        severity: 'BLOCKING',
-        rules: [
-          'Blood draw for RNATT test performed by a USDA-accredited vet and tested at an approved lab (e.g. Kansas State University).',
-          'Antibody titer result must be ≥ 0.5 IU/ml.',
-          'Mandatory 180-day waiting period from the date of blood collection before flight departure.',
-        ],
-        protocol: 'Critical 180-Day Timeline: Entry into Australia cannot occur before 180 days have elapsed from the laboratory blood draw date.',
-        sourceName: 'Australian DAFF Biosecurity',
-        sourceUrl: 'https://www.agriculture.gov.au/biosecurity-trade/cats-dogs',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'au-req-import-permit',
-        category: 'IMPORT_PERMIT',
-        categoryLabel: 'DAFF Biosecurity Import Permit',
-        title: 'Australian Government Import Permit',
-        severity: 'BLOCKING',
-        rules: [
-          'Formal import permit application submitted online through the DAFF BICON system.',
-          'Permit takes 20 to 30 Australian business days to process.',
-        ],
-        protocol: 'Advance Authorization: Must be granted before booking quarantine facility or arranging final export flight booking.',
-        sourceName: 'Australian DAFF BICON',
-        sourceUrl: 'https://bicon.agriculture.gov.au/BiconWeb4.0',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'au-req-peq',
-        category: 'QUARANTINE_BOOKING',
-        categoryLabel: 'Post-Entry Quarantine (PEQ)',
-        title: 'Mickleham Quarantine Reservation & Final Exam',
-        severity: 'BLOCKING',
-        rules: [
-          'Confirmed booking at the Mickleham Post-Entry Quarantine Facility in Melbourne.',
-          'Mandatory internal/external parasite treatments at statutory intervals within 28 days of export.',
-          'Final USDA APHIS endorsed veterinary health certificate.',
-        ],
-        protocol: 'Direct Port Arrival: All companion animals must land at Melbourne Airport (MEL) for bonded transfer to Mickleham.',
-        sourceName: 'Australian DAFF PEQ Operations',
-        sourceUrl: 'https://www.agriculture.gov.au/biosecurity-trade/cats-dogs/quarantine-facilities',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-    ],
-  },
-  'usa-to-canada': {
-    from: 'United States',
-    to: 'Canada',
-    originCode: 'US',
-    destCode: 'CA',
-    region: 'North America Cross-Border',
-    authority: 'Canadian Food Inspection Agency (CFIA)',
-    legalBasis: 'Health of Animals Act & Regulations, Section 51',
-    description: 'Cross-border import requirements for bringing companion dogs and cats from the United States into Canada via air or land border crossings.',
-    titerRequired: 'Exempt / Not Required',
-    titerStatus: 'exempt',
-    titerDetail: 'No rabies titer test or quarantine is required for pets entering Canada from the USA.',
-    quarantineDays: '0 Days Quarantine',
-    quarantineDetail: 'Zero quarantine. Pets are released directly to owners upon CBSA inspection at the port of entry.',
-    leadTime: 'Current Rabies Certificate',
-    leadTimeDetail: 'Valid rabies vaccination certificate signed by a licensed veterinarian. No 21-day latency wait is imposed on adult pets entering from the USA.',
-    certificateType: 'Official Rabies Vaccination Certificate',
-    certificateDetail: 'Standard rabies certificate or USDA APHIS international health certificate detailing microchip, vaccine manufacturer, lot, and duration.',
-    entryAirports: ['Toronto Pearson (YYZ)', 'Vancouver (YVR)', 'Montreal (YUL)', 'All Land Border Crossings'],
-    timelineSteps: [
-      {
-        step: 1,
-        timing: 'Day -30 or Earlier',
-        title: 'Microchip Identification',
-        description: 'Implant an ISO 11784/11785 standard 15-digit microchip. Recommended for all pets, required for commercial imports.',
-      },
-      {
-        step: 2,
-        timing: 'Prior to Travel',
-        title: 'Rabies Vaccination Status Check',
-        description: 'Ensure rabies vaccination is active and certificate is signed by a licensed veterinarian.',
-      },
-      {
-        step: 3,
-        timing: 'Within 30 Days of Travel',
-        title: 'Veterinary Health Inspection',
-        description: 'Have a licensed vet verify that the pet is clinically healthy and free of contagious diseases.',
-      },
-      {
-        step: 4,
-        timing: 'Port of Entry Arrival',
-        title: 'CBSA Customs Clearance',
-        description: 'Present pet and rabies certificate to Canada Border Services Agency (CBSA) officer at airport or land border crossing.',
-      },
-    ],
-    faqs: [
-      {
-        q: 'Do dogs need a microchip to enter Canada from the US?',
-        a: 'Microchips are highly recommended for all pets entering Canada and are mandatory for commercial shipments or specific service animals, though commercial pet travel requires microchip documentation.',
-      },
-      {
-        q: 'Does Canada impose a 21-day rabies waiting period for US pets?',
-        a: 'No. Adult dogs and cats entering Canada from the United States do not face a 21-day waiting period after a rabies vaccine, provided the vaccine certificate is current and valid on travel day.',
-      },
-      {
-        q: 'Can I bring my pet across the US-Canada land border by car?',
-        a: 'Yes. Cross-border pet travel by car is straightforward. Present the pet’s valid rabies certificate and identification directly to the CBSA officer at the border booth.',
-      },
-      {
-        q: 'What is the minimum age for puppies or kittens entering Canada?',
-        a: 'Puppies and kittens must be at least 3 months old to receive their rabies vaccination, which is mandatory for entry into Canada.',
-      },
-    ],
-    statutoryRequirements: [
-      {
-        id: 'ca-req-rabies',
-        category: 'RABIES_VACCINATION',
-        categoryLabel: 'Rabies Immunization',
-        title: 'Valid Rabies Vaccination Certificate',
-        severity: 'BLOCKING',
-        rules: [
-          'Pet must be accompanied by a valid rabies vaccination certificate issued and signed by a licensed veterinarian.',
-          'Certificate must clearly specify pet breed, sex, color, weight, microchip, vaccine manufacturer, lot, and duration.',
-          'Canada recognizes both 1-year and 3-year rabies vaccines within manufacturer stated duration.',
-        ],
-        protocol: 'Continuous Validity: Rabies vaccination certificate must be current on the date of entry into Canada.',
-        sourceName: 'Canadian Food Inspection Agency (CFIA)',
-        sourceUrl: 'https://inspection.canada.ca/animal-health/terrestrial-animals/imports/import-policies/live-animals/pet-imports',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'ca-req-microchip',
-        category: 'MICROCHIP',
-        categoryLabel: 'ISO Microchip Identification',
-        title: 'Microchip Identification Standards',
-        severity: 'NON_BLOCKING',
-        rules: [
-          'ISO 11784/11785 compliant 15-digit microchip strongly recommended for companion pets.',
-          'Mandatory for commercial pet travel or unaccompanied cargo shipments.',
-        ],
-        protocol: 'Identification Standard: Having a matching microchip number eliminates border inspection delays with CBSA.',
-        sourceName: 'Canada Border Services Agency (CBSA)',
-        sourceUrl: 'https://www.cbsa-asfc.gc.ca',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'ca-req-health-exam',
-        category: 'HEALTH_CERTIFICATE',
-        categoryLabel: 'Clinical Health Inspection',
-        title: 'Veterinary Health & Welfare Inspection',
-        severity: 'BLOCKING',
-        rules: [
-          'Pet must appear clinically healthy and free of communicable diseases upon physical inspection.',
-          'Subject to a standard CBSA animal inspection fee at the port of entry.',
-        ],
-        protocol: 'Port Clearance: Pets with visible signs of illness may be referred to an official CFIA veterinarian at owner expense.',
-        sourceName: 'CFIA Health of Animals Regulations',
-        sourceUrl: 'https://inspection.canada.ca',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-    ],
-  },
-  'usa-to-japan': {
-    from: 'United States',
-    to: 'Japan',
-    originCode: 'US',
-    destCode: 'JP',
-    region: 'North America → East Asia',
-    authority: 'Japan Ministry of Agriculture, Forestry and Fisheries (MAFF) Animal Quarantine Service (AQS)',
-    legalBasis: 'Rabies Prevention Law & Domestic Animal Infectious Diseases Control Act',
-    description: 'Strict import standards for companion animals entering Japan. Japan is rabies-free; pets without compliant advance documentation face up to 180 days of quarantine.',
-    titerRequired: 'Mandatory FAVN/RNATT Test',
-    titerStatus: 'mandatory',
-    titerDetail: 'Requires 2 rabies vaccinations followed by a FAVN blood titer test (≥ 0.5 IU/ml) at a designated laboratory (e.g. KSU-VBSL), plus a 180-day waiting period.',
-    quarantineDays: '0 to 12 Hours (if compliant)',
-    quarantineDetail: 'If the 180-day waiting period is satisfied in the US, port-of-entry quarantine is completed within 12 hours. Non-compliant pets face 180 days of detention.',
-    leadTime: '7 to 8 Months Minimum',
-    leadTimeDetail: 'Preparations require at least 7 months to complete 2 vaccinations, FAVN blood draw, 180-day wait, and 40-day advance notification to Japanese AQS.',
-    certificateType: 'MAFF Form A/C & USDA VEHCS Endorsement',
-    certificateDetail: 'Japan MAFF Form A & C health certificates completed by a USDA-accredited vet and endorsed by USDA APHIS.',
-    entryAirports: ['Tokyo Narita (NRT)', 'Tokyo Haneda (HND)', 'Osaka Kansai (KIX)', 'Nagoya Chubu (NGO)'],
-    timelineSteps: [
-      {
-        step: 1,
-        timing: 'Month -8 (210+ Days Out)',
-        title: 'Microchip & Dual Rabies Vaccines',
-        description: 'Implant ISO microchip, administer first rabies shot, and administer second rabies shot at least 30 days later.',
-      },
-      {
-        step: 2,
-        timing: 'Month -7 (180+ Days Out)',
-        title: 'FAVN Blood Titer Test & 180-Day Wait',
-        description: 'Draw blood for FAVN test at accredited vet. 180-day countdown starts on the blood draw date.',
-      },
-      {
-        step: 3,
-        timing: 'Day -40 Before Arrival',
-        title: '40-Day Advance Notification to AQS',
-        description: 'Submit formal import notice to Animal Quarantine Service at intended entry airport. Receive approval code.',
-      },
-      {
-        step: 4,
-        timing: 'Within 10 Days of Departure',
-        title: 'USDA Exam & MAFF Form Endorsement',
-        description: 'USDA-accredited vet completes MAFF Form A & C. Endorsed by USDA APHIS via VEHCS.',
-      },
-    ],
-    faqs: [
-      {
-        q: 'What is the 40-Day Advance Notification requirement for Japan?',
-        a: 'Travelers must submit an official "Notification for Import Inspection of Dogs/Cats" to the Animal Quarantine Service (AQS) at the intended port of entry at least 40 days prior to arrival. AQS will issue an "Approval of Inspection" which must be presented at airline check-in.',
-      },
-      {
-        q: 'Why does Japan require two rabies vaccinations?',
-        a: 'Under the Japanese Rabies Prevention Law, companion animals must have two lifetime rabies vaccinations administered with killed or recombinant virus at least 30 days apart, both given after microchip implantation.',
-      },
-      {
-        q: 'What happens if the 180-day waiting period is not completed before flying to Japan?',
-        a: 'If a pet arrives in Japan before the 180 days elapse, the pet will be quarantined at an AQS quarantine facility for the remainder of the 180 days at the owner’s substantial expense.',
-      },
-      {
-        q: 'How fast is customs clearance at Narita or Haneda if all paperwork is compliant?',
-        a: 'Compliant pets with approved advance notification and satisfied 180-day wait are released within 2 to 12 hours after physical transponder and document verification.',
-      },
-    ],
-    statutoryRequirements: [
-      {
-        id: 'jp-req-microchip',
-        category: 'MICROCHIP',
-        categoryLabel: 'ISO 11784/11785 Microchip',
-        title: 'Microchip Implantation',
-        severity: 'BLOCKING',
-        rules: [
-          'ISO 11784/11785 compliant microchip implanted prior to any qualifying rabies vaccination.',
-          'Microchip number must be recorded on all vaccination records and AQS forms.',
-        ],
-        protocol: 'Sequence Mandatory: Any vaccine administered prior to microchip implantation is completely void under Japan MAFF regulations.',
-        sourceName: 'Japan Animal Quarantine Service (AQS)',
-        sourceUrl: 'https://www.maff.go.jp/aqs/english/animal/dog/index.html',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'jp-req-dual-rabies',
-        category: 'RABIES_VACCINATION',
-        categoryLabel: 'Dual Rabies Protocol',
-        title: 'Two Inactivated Rabies Vaccinations',
-        severity: 'BLOCKING',
-        rules: [
-          'Two lifetime rabies vaccinations administered with killed/recombinant virus at least 30 days apart.',
-          'Both vaccinations must be administered after microchip implantation.',
-        ],
-        protocol: 'Spacing Mandate: Second vaccine must be given at least 30 days after the first and within its active duration.',
-        sourceName: 'Japan MAFF Rabies Prevention Law',
-        sourceUrl: 'https://www.maff.go.jp/aqs/english/animal/dog/index.html',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'jp-req-favn',
-        category: 'TITER_TEST',
-        categoryLabel: 'FAVN Rabies Antibody Titer',
-        title: 'FAVN Blood Titer Test & 180-Day Wait',
-        severity: 'BLOCKING',
-        rules: [
-          'Blood drawn by USDA-accredited vet and tested at a designated lab (KSU-VBSL or DOD).',
-          'Antibody titer level must be ≥ 0.5 IU/ml.',
-          'Pet must wait a minimum of 180 days in the US from blood collection before flight.',
-        ],
-        protocol: '180-Day Countdown: Calculated strictly from the blood draw date. Premature arrival results in airport quarantine.',
-        sourceName: 'Japan Animal Quarantine Service (AQS)',
-        sourceUrl: 'https://www.maff.go.jp/aqs/english/animal/dog/index.html',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-      {
-        id: 'jp-req-notification',
-        category: 'ADVANCE_NOTIFICATION',
-        categoryLabel: '40-Day Advance Notification',
-        title: 'Animal Quarantine Service Advance Notice & Form A/C',
-        severity: 'BLOCKING',
-        rules: [
-          'Submit advance notification to AQS at port of entry at least 40 days prior to arrival.',
-          'Obtain AQS Approval of Inspection.',
-          'USDA APHIS endorsed Japan MAFF Form A & C health certificates.',
-        ],
-        protocol: 'Airline Clearance: Airlines will not issue boarding passes for pets to Japan without the AQS Approval Certificate.',
-        sourceName: 'Japan MAFF & USDA APHIS',
-        sourceUrl: 'https://www.aphis.usda.gov/aphis/pet-travel/by-country/japan',
-        lastVerifiedAt: 'September 4, 2026',
-      },
-    ],
-  },
-};
+export const ROUTE_DATA: Record<string, RouteIntelligence> = CORRIDORS;
 
 interface RoutePageProps {
   params: Promise<{ route: string }>;
@@ -792,87 +118,55 @@ export default async function RoutePage({ params }: RoutePageProps) {
 
   const checkerHref = `/en/checker?origin=${display.originCode}&destination=${display.destCode}&petType=DOG`;
 
+  // Lookup country pages for internal linking
+  const originCountry = Object.values(COUNTRIES).find(
+    (c) => c.code.toUpperCase() === display.originCode.toUpperCase() || c.name.toLowerCase() === display.from.toLowerCase()
+  );
+  const destCountry = Object.values(COUNTRIES).find(
+    (c) => c.code.toUpperCase() === display.destCode.toUpperCase() || c.name.toLowerCase() === display.to.toLowerCase()
+  );
+
   // Standard category display helper
   const getCategoryMeta = (cat: string) => {
     switch (cat) {
       case 'MICROCHIP':
         return {
           label: 'ISO 11784/11785 Microchip',
-          icon: (
-            <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V5.25a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 5.25v13.5A2.25 2.25 0 006.75 21z" />
-            </svg>
-          ),
-          protocol: 'Sequence Mandatory: Microchip MUST be implanted and scanned strictly prior to rabies vaccination. Any vaccine administered before microchipping is legally invalid in the European Union.',
+          protocol: 'Sequence Mandatory: Microchip MUST be implanted and scanned strictly prior to rabies vaccination.',
         };
       case 'RABIES_VACCINATION':
         return {
           label: 'Rabies Immunization Protocol',
-          icon: (
-            <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-            </svg>
-          ),
-          protocol: '21-Day Wait Rule: The primary rabies vaccination is legally effective for entry starting on Day 22 (Day 0 = injection date). Pet must be at least 12 weeks old at the time of injection.',
+          protocol: 'Validity Window: Primary rabies vaccination requires full latency period before international departure.',
         };
       case 'HEALTH_CERTIFICATE':
         return {
-          label: 'EU Health Certificate (Annex IV)',
-          icon: (
-            <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-            </svg>
-          ),
-          protocol: '10-Day Endorsement Window: Completed by a USDA-accredited veterinarian and officially endorsed via USDA APHIS VEHCS within 10 days of scheduled EU arrival.',
+          label: 'Veterinary Health Certificate & Endorsement',
+          protocol: 'Government Endorsement: Issued by an accredited vet and officially stamped or digitally endorsed by the sovereign veterinary authority.',
         };
       case 'TAPEWORM_TREATMENT':
         return {
           label: 'Echinococcus Multilocularis Protocol',
-          icon: (
-            <svg className="w-4 h-4 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-            </svg>
-          ),
-          protocol: 'Route Advisory: Direct entry into Germany from the USA does not mandate tapeworm treatment. However, dogs transiting through or continuing travel into the UK, Ireland, Norway, or Malta mandate praziquantel treatment within 24–120 hours.',
+          protocol: 'Strict Window: Must be administered by a veterinarian between 24 and 120 hours before arrival.',
         };
       case 'TITER_TEST':
         return {
-          label: 'Rabies Neutralising Antibody Titre (RNATT)',
-          icon: (
-            <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 01-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L4.2 15.3" />
-            </svg>
-          ),
+          label: 'Rabies Neutralising Antibody Titre (RNATT / FAVN)',
           protocol: 'Laboratory Protocol: Blood drawn by accredited veterinarian and tested at an approved government-certified laboratory (result ≥ 0.5 IU/ml).',
         };
       case 'IMPORT_PERMIT':
         return {
           label: 'Government Import Authorization',
-          icon: (
-            <svg className="w-4 h-4 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-2.171-7.14a2.25 2.25 0 00-3.158 0L3.375 8.906a2.25 2.25 0 000 3.158l6.716 6.716a2.25 2.25 0 003.158 0l6.716-6.716a2.25 2.25 0 000-3.158L13.829 2.61z" />
-            </svg>
-          ),
           protocol: 'Advance Permit: Formal biosecurity permit granted by destination national authority prior to departure.',
         };
       case 'QUARANTINE_BOOKING':
         return {
           label: 'Post-Entry Quarantine Facility',
-          icon: (
-            <svg className="w-4 h-4 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1.09" />
-            </svg>
-          ),
           protocol: 'Direct Port Arrival: All companion animals must land at approved port for immediate bonded transfer to the quarantine facility.',
         };
       default:
         return {
           label: cat.replace(/_/g, ' '),
-          icon: (
-            <svg className="w-4 h-4 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          ),
           protocol: 'Compliance standard verified against destination regulatory authority statutes.',
         };
     }
@@ -887,6 +181,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
         categoryLabel: string;
         title: string;
         severity: 'BLOCKING' | 'NON_BLOCKING';
+        applicableSpecies?: 'DOG' | 'CAT' | 'BOTH';
         rules: string[];
         protocol: string;
         sourceName: string;
@@ -909,6 +204,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
             categoryLabel: meta.label,
             title: req.category.replace(/_/g, ' '),
             severity: req.severity === 'BLOCKING' ? 'BLOCKING' : 'NON_BLOCKING',
+            applicableSpecies: 'BOTH',
             rules: [req.ruleText],
             protocol: meta.protocol,
             sourceName: req.source.publisher,
@@ -1016,7 +312,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
           </p>
 
           {/* AEO Quick Answer / AI Direct Snippet Box */}
-          <div className="bg-gradient-to-br from-emerald-50/70 via-white to-slate-50 border border-emerald-200/90 rounded-2xl p-5 sm:p-6 mb-8 shadow-xs">
+          <div className="bg-gradient-to-br from-emerald-50/70 via-white to-slate-50 border border-emerald-200/90 rounded-2xl p-5 sm:p-6 mb-6 shadow-xs">
             <div className="flex items-center gap-2 mb-2.5">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold uppercase tracking-wider">
                 <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -1049,6 +345,31 @@ export default async function RoutePage({ params }: RoutePageProps) {
                 <span className="font-bold text-zinc-900 mt-0.5 block truncate" title={display.certificateType}>{display.certificateType}</span>
               </div>
             </div>
+          </div>
+
+          {/* Quick Hub Navigation Links */}
+          <div className="flex flex-wrap items-center gap-2 mb-6 text-xs">
+            <span className="text-zinc-400 font-medium mr-1">Authority Hubs:</span>
+            {originCountry && (
+              <Link
+                href={`/en/countries/${originCountry.slug}`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-semibold transition-colors"
+              >
+                <span>{originCountry.flag}</span>
+                <span>{display.from} Export &amp; Guide</span>
+                <span className="text-zinc-400">→</span>
+              </Link>
+            )}
+            {destCountry && (
+              <Link
+                href={`/en/countries/${destCountry.slug}`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200/80 font-semibold transition-colors"
+              >
+                <span>{destCountry.flag}</span>
+                <span>{display.to} Pet Import Rules</span>
+                <span className="text-emerald-600">→</span>
+              </Link>
+            )}
           </div>
 
           {/* Quick Authority Badges */}
@@ -1173,8 +494,174 @@ export default async function RoutePage({ params }: RoutePageProps) {
         </div>
       </section>
 
-      {/* ─── 4. STATUTORY REQUIREMENTS CHECKLIST ───────────────────────── */}
-      <section id="statutory-checklist" className="py-12 sm:py-16">
+      {/* ─── 4. AIRLINE POLICIES & CARRIER OPTIONS ────────────────────────── */}
+      {display.airlinePolicies && display.airlinePolicies.length > 0 && (
+        <section className="py-12 sm:py-16 bg-white border-b border-zinc-200/80">
+          <div className="section-container">
+            <div className="max-w-3xl mb-8">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Aviation &amp; Transport</span>
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 tracking-tight mt-0.5">
+                Airline Policies &amp; Transport Options: {display.from} → {display.to}
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+                Verified carrier rules flying this specific corridor, including in-cabin eligibility, manifest cargo requirements, weight caps, and estimated fees.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {display.airlinePolicies.map((airline, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-2xl border border-zinc-200/90 bg-zinc-50/50 p-5 sm:p-6 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded bg-[#0E2342] text-white text-[10px] font-bold uppercase tracking-wider">
+                            {airline.code}
+                          </span>
+                          <h3 className="font-serif text-base sm:text-lg font-bold text-zinc-900">
+                            {airline.name}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-1">
+                        {airline.inCabinAllowed ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-semibold">
+                            <svg className="w-3 h-3 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                            </svg>
+                            In-Cabin Allowed {airline.maxInCabinWeightKg ? `(≤ ${airline.maxInCabinWeightKg}kg)` : ''}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-semibold">
+                            In-Cabin Prohibited (Cargo / Ferry Only)
+                          </span>
+                        )}
+
+                        {airline.cargoAllowed && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200 text-[10px] font-medium">
+                            Cargo / Hold Supported
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-zinc-600 leading-relaxed mb-4">
+                      {airline.notes}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-zinc-200/70 flex items-center justify-between flex-wrap gap-2 text-xs">
+                    <div>
+                      <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider block">Estimated Carrier Fee</span>
+                      <span className="font-bold text-zinc-900">{airline.feeEstimate}</span>
+                    </div>
+
+                    {airline.airlineGuideSlug && (
+                      <Link
+                        href={`/en/airlines/${airline.airlineGuideSlug}`}
+                        className="text-xs font-semibold text-[#0E2342] hover:text-emerald-700 transition-colors inline-flex items-center gap-1"
+                      >
+                        <span>View {airline.name} Pet Guide</span>
+                        <span>→</span>
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── 5. TRANSIT, LAYOVERS & BORDER CROSSING ADVICE ───────────────── */}
+      {display.transitAdvice && (
+        <section className="py-12 sm:py-16 bg-zinc-50 border-b border-zinc-200/80">
+          <div className="section-container">
+            <div className="max-w-3xl mb-8">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Corridor Route Intelligence</span>
+              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 tracking-tight mt-0.5">
+                {display.transitAdvice.headline}
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+                Practical navigation advice for direct flights, layovers, land border vehicle crossings, and climate temperature embargoes.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Direct vs Transit Card */}
+              <div className="bg-white rounded-2xl border border-zinc-200/90 p-5 sm:p-6 shadow-2xs">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xs">
+                    ✈
+                  </div>
+                  <h3 className="font-serif text-base font-bold text-zinc-900">
+                    Direct Flights vs Connections
+                  </h3>
+                </div>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  {display.transitAdvice.directVsTransit}
+                </p>
+              </div>
+
+              {/* Layover Rules Card */}
+              <div className="bg-white rounded-2xl border border-zinc-200/90 p-5 sm:p-6 shadow-2xs">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                    🛡
+                  </div>
+                  <h3 className="font-serif text-base font-bold text-zinc-900">
+                    Layover &amp; Transit Biosecurity Rules
+                  </h3>
+                </div>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  {display.transitAdvice.layoverRules}
+                </p>
+              </div>
+
+              {/* Land Border Crossing Option if present */}
+              {display.transitAdvice.landBorderOption && (
+                <div className="bg-white rounded-2xl border border-zinc-200/90 p-5 sm:p-6 shadow-2xs">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-800 flex items-center justify-center font-bold text-xs">
+                      🚗
+                    </div>
+                    <h3 className="font-serif text-base font-bold text-zinc-900">
+                      Driving &amp; Surface Transit Options
+                    </h3>
+                  </div>
+                  <p className="text-xs text-zinc-600 leading-relaxed">
+                    {display.transitAdvice.landBorderOption}
+                  </p>
+                </div>
+              )}
+
+              {/* Climate & Embargo Warnings if present */}
+              {display.transitAdvice.climateRestrictions && (
+                <div className="bg-white rounded-2xl border border-zinc-200/90 p-5 sm:p-6 shadow-2xs">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-lg bg-red-50 text-red-700 flex items-center justify-center font-bold text-xs">
+                      🌡
+                    </div>
+                    <h3 className="font-serif text-base font-bold text-zinc-900">
+                      Climate &amp; Temperature Embargoes
+                    </h3>
+                  </div>
+                  <p className="text-xs text-zinc-600 leading-relaxed">
+                    {display.transitAdvice.climateRestrictions}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── 6. STATUTORY REQUIREMENTS CHECKLIST ───────────────────────── */}
+      <section id="statutory-checklist" className="py-12 sm:py-16 bg-white border-b border-zinc-200/80">
         <div className="section-container">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
             <div>
@@ -1215,22 +702,22 @@ export default async function RoutePage({ params }: RoutePageProps) {
         </div>
       </section>
 
-      {/* ─── 5. STEP-BY-STEP CHRONOLOGICAL ROADMAP ──────────────────────── */}
-      <section className="py-12 sm:py-16 bg-white border-y border-zinc-200/80">
+      {/* ─── 7. STEP-BY-STEP CHRONOLOGICAL ROADMAP ──────────────────────── */}
+      <section className="py-12 sm:py-16 bg-zinc-50 border-b border-zinc-200/80">
         <div className="section-container">
           <div className="mb-10 text-center max-w-2xl mx-auto">
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Chronological Workflow</span>
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 tracking-tight mt-0.5">
-              The 4-Step Preparation Timeline
+              The Preparation Timeline for {display.from} → {display.to}
             </h2>
             <p className="text-xs sm:text-sm text-zinc-500 mt-1.5">
               Follow this verified corridor timeline to prevent border delays or invalid document rejections.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-5 relative">
+          <div className={`grid grid-cols-1 ${display.timelineSteps.length === 5 ? 'md:grid-cols-5' : 'md:grid-cols-4'} gap-4 relative`}>
             {display.timelineSteps.map((step) => (
-              <div key={step.step} className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200 relative flex flex-col justify-between">
+              <div key={step.step} className="p-5 rounded-2xl bg-white border border-zinc-200 relative flex flex-col justify-between shadow-2xs">
                 <div>
                   <span className="w-7 h-7 rounded-full bg-[#0E2342] text-white font-bold text-xs flex items-center justify-center mb-3">
                     {step.step}
@@ -1251,8 +738,8 @@ export default async function RoutePage({ params }: RoutePageProps) {
         </div>
       </section>
 
-      {/* ─── 6. RELATED REGULATORY MANUALS & DEEP DIVES ──────────────── */}
-      <section className="py-10 bg-zinc-50 border-t border-zinc-200/80">
+      {/* ─── 8. RELATED REGULATORY MANUALS & DEEP DIVES ──────────────── */}
+      <section className="py-10 bg-white border-b border-zinc-200/80">
         <div className="section-container">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
             <div>
@@ -1274,7 +761,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               href="/en/guides/rabies-titer-test-favn-guide"
-              className="group bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+              className="group bg-zinc-50/50 hover:bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-2.5">
@@ -1290,7 +777,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
                   Learn about the 0.5 IU/mL antibody threshold, approved testing laboratories (KSU, Auburn, ANSES), and mandatory post-draw waiting periods.
                 </p>
               </div>
-              <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+              <div className="pt-4 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
                 <span>Read FAVN Guide</span>
                 <span>→</span>
               </div>
@@ -1298,7 +785,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
 
             <Link
               href="/en/guides/usda-aphis-vehcs-guide"
-              className="group bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+              className="group bg-zinc-50/50 hover:bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-2.5">
@@ -1314,7 +801,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
                   How accredited veterinarians submit export certificates for sovereign government review and validation within 10 days of travel.
                 </p>
               </div>
-              <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+              <div className="pt-4 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
                 <span>Read VEHCS Guide</span>
                 <span>→</span>
               </div>
@@ -1322,7 +809,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
 
             <Link
               href="/en/guides/iata-crate-requirements"
-              className="group bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+              className="group bg-zinc-50/50 hover:bg-white rounded-2xl border border-zinc-200/90 hover:border-emerald-500/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-2.5">
@@ -1338,7 +825,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
                   Container Requirement 1 (CR-1) sizing formulas, metal hardware specifications, and ventilation percentages for international flights.
                 </p>
               </div>
-              <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
+              <div className="pt-4 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
                 <span>Read Crate Guide</span>
                 <span>→</span>
               </div>
@@ -1347,8 +834,8 @@ export default async function RoutePage({ params }: RoutePageProps) {
         </div>
       </section>
 
-      {/* ─── 7. ROUTE SPECIFIC FAQS & ADVISORIES ────────────────────────── */}
-      <section className="py-12 sm:py-16">
+      {/* ─── 9. ROUTE SPECIFIC FAQS & ADVISORIES ────────────────────────── */}
+      <section className="py-12 sm:py-16 bg-zinc-50">
         <div className="section-container">
           <div className="mb-8 text-center max-w-2xl mx-auto">
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Practical Guidance</span>
@@ -1395,7 +882,67 @@ export default async function RoutePage({ params }: RoutePageProps) {
         </div>
       </section>
 
-      {/* ─── 7. EXECUTIVE CONVERSION CTA BANNER ─────────────────────────── */}
+      {/* ─── 10. TWO-WAY COUNTRY AUTHORITY HUB NAVIGATION ────────────────── */}
+      <section className="py-12 bg-white border-t border-zinc-200/80">
+        <div className="section-container">
+          <div className="mb-6">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Official National Hubs</span>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-zinc-900 tracking-tight mt-0.5">
+              Explore Sovereign Country Compliance Hubs
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {originCountry && (
+              <Link
+                href={`/en/countries/${originCountry.slug}`}
+                className="p-5 rounded-2xl border border-zinc-200 hover:border-emerald-500/50 bg-zinc-50/50 hover:bg-white transition-all flex items-start justify-between gap-4 shadow-2xs group"
+              >
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-2xl">{originCountry.flag}</span>
+                    <span className="font-serif font-bold text-base text-zinc-900 group-hover:text-emerald-800 transition-colors">
+                      {originCountry.name} Authority Directory
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-600 leading-relaxed line-clamp-2 mb-2">
+                    {originCountry.headline}
+                  </p>
+                  <span className="text-[11px] font-semibold text-[#0E2342] group-hover:text-emerald-700 flex items-center gap-1">
+                    <span>View {originCountry.name} Regulations</span>
+                    <span>→</span>
+                  </span>
+                </div>
+              </Link>
+            )}
+
+            {destCountry && (
+              <Link
+                href={`/en/countries/${destCountry.slug}`}
+                className="p-5 rounded-2xl border border-zinc-200 hover:border-emerald-500/50 bg-zinc-50/50 hover:bg-white transition-all flex items-start justify-between gap-4 shadow-2xs group"
+              >
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-2xl">{destCountry.flag}</span>
+                    <span className="font-serif font-bold text-base text-zinc-900 group-hover:text-emerald-800 transition-colors">
+                      {destCountry.name} Import Hub
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-600 leading-relaxed line-clamp-2 mb-2">
+                    {destCountry.headline}
+                  </p>
+                  <span className="text-[11px] font-semibold text-[#0E2342] group-hover:text-emerald-700 flex items-center gap-1">
+                    <span>View {destCountry.name} Biosecurity Rules</span>
+                    <span>→</span>
+                  </span>
+                </div>
+              </Link>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 11. EXECUTIVE CONVERSION CTA BANNER ─────────────────────────── */}
       <section className="py-12 bg-white border-t border-zinc-200/80">
         <div className="section-container">
           <div className="bg-[#08162A] text-white rounded-3xl p-8 sm:p-12 border border-white/10 shadow-xl text-center relative overflow-hidden">
@@ -1407,7 +954,7 @@ export default async function RoutePage({ params }: RoutePageProps) {
                 Traveling from {display.from} to {display.to} with your pet?
               </h2>
               <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed mb-6">
-                Upload your pet&apos;s vaccination records and microchip certificate. We verify vaccination dates, 21-day latency windows, and USDA health certificate deadlines against official {display.authority} rules in seconds.
+                Upload your pet&apos;s vaccination records and microchip certificate. We verify vaccination dates, 21-day latency windows, and government health certificate deadlines against official {display.authority} rules in seconds.
               </p>
               <Link
                 href={checkerHref}

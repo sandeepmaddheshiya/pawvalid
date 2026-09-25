@@ -4,6 +4,7 @@ export interface StatutoryRule {
   categoryLabel: string;
   title: string;
   severity: 'BLOCKING' | 'NON_BLOCKING';
+  applicableSpecies?: 'DOG' | 'CAT' | 'BOTH';
   rules: string[];
   protocol: string;
   sourceName: string;
@@ -16,6 +17,25 @@ export interface TimelineStep {
   timing: string;
   title: string;
   description: string;
+}
+
+export interface RouteAirlinePolicy {
+  name: string;
+  code: string;
+  inCabinAllowed: boolean;
+  cargoAllowed: boolean;
+  maxInCabinWeightKg?: number;
+  notes: string;
+  feeEstimate: string;
+  airlineGuideSlug?: string;
+}
+
+export interface RouteTransitAdvice {
+  headline: string;
+  layoverRules: string;
+  directVsTransit: string;
+  landBorderOption?: string;
+  climateRestrictions?: string;
 }
 
 export interface RouteIntelligence {
@@ -41,6 +61,8 @@ export interface RouteIntelligence {
   certificateDetail: string;
   entryAirports: string[];
   restrictedBreeds?: string[];
+  airlinePolicies?: RouteAirlinePolicy[];
+  transitAdvice?: RouteTransitAdvice;
   timelineSteps: TimelineStep[];
   faqs: Array<{ q: string; a: string }>;
   statutoryRequirements: StatutoryRule[];
@@ -165,89 +187,198 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "region": "North America → Great Britain",
     "authority": "Animal and Plant Health Agency (APHA) & Department for Environment, Food & Rural Affairs (DEFRA)",
     "legalBasis": "The Non-Commercial Movement of Pet Animals Order 2011 & Retained EU Regulation 576/2013",
-    "description": "Official Great Britain entry protocols for companion animals traveling from the USA. Verified against UK DEFRA and APHA biosecurity rules.",
+    "description": "Comprehensive pet import regulations for dogs, cats, and ferrets traveling from the USA to Great Britain under the UK Pet Travel Scheme (PETS). Covers mandatory manifest cargo routing, London Heathrow Animal Reception Centre (HARC) intake, USDA APHIS VEHCS endorsement within 10 days, 24–120 hour tapeworm rules, and XL Bully breed bans.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "The United States is listed as a Part 2 country under UK pet travel statutes. No rabies blood titer test is required for direct entry into Great Britain.",
+    "titerDetail": "The United States is recognized as a Part 2 listed country under UK regulations. No rabies blood titer (RNATT) test is required for direct entry into Great Britain.",
     "quarantineDays": "0 Days Quarantine",
-    "quarantineDetail": "Direct release upon compliant customs inspection at approved UK Border Inspection Posts (Heathrow HARC or Gatwick).",
+    "quarantineDetail": "Zero quarantine when entering on an approved transport company and route with compliant Great Britain Pet Health Certificate.",
     "leadTime": "21 Days + Tapeworm",
     "leadTimeDetail": "21-day rabies vaccination wait + strict veterinary tapeworm administration window (24–120 hours before arrival).",
     "certificateType": "Great Britain Pet Health Certificate",
     "certificateDetail": "Must be issued by a USDA-accredited veterinarian and officially endorsed by USDA APHIS via VEHCS within 10 days of UK entry.",
     "entryAirports": [
-      "London Heathrow Airport (LHR)",
-      "London Gatwick Airport (LGW)",
-      "Manchester Airport (MAN)",
-      "Edinburgh Airport (EDI)"
+      "London Heathrow Airport (LHR - HARC Cargo)",
+      "London Gatwick Airport (LGW - Cargo)",
+      "Manchester Airport (MAN - Cargo)",
+      "Edinburgh Airport (EDI - Cargo)"
     ],
     "restrictedBreeds": [
+      "XL Bully (Dangerous Dogs Act 1991)",
       "Pit Bull Terrier",
       "Japanese Tosa",
       "Dogo Argentino",
-      "Fila Brasileiro",
-      "XL Bully under the Dangerous Dogs Act 1991"
+      "Fila Brasileiro"
     ],
+    "airlinePolicies": [
+      {
+        "name": "British Airways",
+        "code": "BA",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "All pets entering the UK on BA must travel as manifest cargo booked via IAG Cargo into London Heathrow (LHR) or Manchester (MAN). In-cabin pet travel is strictly prohibited for UK arrivals.",
+        "feeEstimate": "$1,200–$2,800 USD (based on crate volume and weight)",
+        "airlineGuideSlug": "british-airways"
+      },
+      {
+        "name": "Virgin Atlantic",
+        "code": "VS",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "Pets fly exclusively as manifest cargo via Virgin Atlantic Cargo into London Heathrow Animal Reception Centre (HARC).",
+        "feeEstimate": "$1,400–$3,000 USD",
+        "airlineGuideSlug": "virgin-atlantic"
+      },
+      {
+        "name": "Delta Air Lines",
+        "code": "DL",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "Delta Cargo operates live animal transport from US hubs into London Heathrow. No in-cabin pets allowed on UK-bound flights.",
+        "feeEstimate": "$1,100–$2,500 USD",
+        "airlineGuideSlug": "delta-air-lines"
+      },
+      {
+        "name": "Air France (Paris Transit Workaround)",
+        "code": "AF",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 8,
+        "notes": "Travelers wishing to keep pets in-cabin often fly Air France from the US to Paris CDG (pets under 8kg), then take a licensed pet taxi or Eurotunnel Le Shuttle into the UK.",
+        "feeEstimate": "$200 USD (in-cabin to Paris) + £250–£600 (pet taxi / Eurotunnel)",
+        "airlineGuideSlug": "air-france"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "UK Manifest Cargo Mandate & In-Cabin Transit Alternatives",
+      "layoverRules": "Transiting through third countries: If your flight connects through a rabies-unlisted country (e.g. Turkey or Egypt), the pet must remain sealed in the airport transit zone under customs supervision to prevent voiding UK Part 2 rabies-exempt status.",
+      "directVsTransit": "Direct flights to London Heathrow (LHR) or Gatwick (LGW) require booking through an approved IPATA pet shipper or direct airline cargo desk. Pets cannot be checked as excess baggage.",
+      "landBorderOption": "In-Cabin Alternative: Fly to Paris Charles de Gaulle (CDG), Brussels (BRU), or Amsterdam (AMS) with your pet in-cabin, then cross into the UK via Eurotunnel Le Shuttle (Folkestone) in a private vehicle.",
+      "climateRestrictions": "Transatlantic live animal shipments are subject to airline temperature embargoes (typically canceled if ground temps exceed 85°F / 29.4°C or fall below 45°F / 7.2°C at departure or arrival stations)."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "Earliest Step",
-        "title": "ISO 11784/11785 Microchip",
-        "description": "Implant 15-digit microchip. Must precede or coincide with rabies immunization."
+        "timing": "Day -30 or Earlier",
+        "title": "ISO 11784/11785 Microchip & Rabies Vaccination",
+        "description": "Implant standard 15-digit microchip. Administer rabies vaccine on the same day or after; a 21-day latency period must elapse before departure."
       },
       {
         "step": 2,
-        "timing": "At Least 21 Days Before Arrival",
-        "title": "Rabies Immunization",
-        "description": "Administer rabies vaccine. The 21-day latency period must elapse before departure."
+        "timing": "Day -21 to -14",
+        "title": "Approved Route & Manifest Cargo Booking",
+        "description": "Commercial airlines require manifest cargo booking with an Air Waybill (AWB) into London Heathrow (HARC), Gatwick, or Manchester Animal Reception Centres."
       },
       {
         "step": 3,
-        "timing": "Within 10 Days of Arrival",
-        "title": "USDA Health Certificate & Endorsement",
-        "description": "Accredited vet submits the Great Britain Pet Health Certificate via USDA VEHCS."
+        "timing": "Day -5 to Day -1 (24–120h Window)",
+        "title": "Mandatory Tapeworm (Praziquantel) Treatment",
+        "description": "USDA-accredited vet administers praziquantel and records exact date and time on Section II of the Great Britain Health Certificate."
       },
       {
         "step": 4,
-        "timing": "24 to 120 Hours Before UK Landing",
-        "title": "Mandatory Tapeworm Treatment",
-        "description": "Veterinarian administers Praziquantel treatment and records date, time, and drug manufacturer in Section II."
+        "timing": "Within 10 Days of UK Arrival",
+        "title": "USDA APHIS VEHCS Digital Endorsement",
+        "description": "Accredited vet submits the completed GB Health Certificate through USDA VEHCS for federal electronic endorsement."
       },
       {
         "step": 5,
-        "timing": "Arrival at UK Airport",
-        "title": "APHA / HARC Inspection",
-        "description": "Direct transfer to Heathrow Animal Reception Centre (HARC) for microchip scanning and customs clearance."
+        "timing": "Arrival Day at Heathrow HARC",
+        "title": "Animal Reception Centre Inspection & Release",
+        "description": "Direct bonded transfer to Heathrow Animal Reception Centre (HARC) for microchip verification and immediate 0-day quarantine release (typically 2–4 hours)."
       }
     ],
     "faqs": [
       {
-        "q": "Can my dog fly in the cabin into the UK from the US?",
-        "a": "No. Under DEFRA regulations, commercial airlines cannot bring pets into the UK inside the cabin or as checked baggage (except recognized assistance dogs). All companion pets must enter as manifest cargo through an approved Border Inspection Post."
+        "q": "Can my dog fly in the cabin from the USA to the UK?",
+        "a": "No. Under DEFRA regulations, commercial airlines are legally prohibited from carrying pets in passenger cabins on UK inbound flights (except certified assistance dogs). Pets must enter the UK as manifest cargo under an Air Waybill (AWB) or via approved pet ferry/Eurotunnel routes."
       },
       {
-        "q": "What is the tapeworm treatment requirement for the UK?",
-        "a": "Dogs entering Great Britain must be treated against Echinococcus multilocularis using an approved product containing Praziquantel. Treatment must be administered by a licensed veterinarian between 24 and 120 hours (1 to 5 days) before scheduled arrival in the UK."
+        "q": "What is the mandatory tapeworm treatment window for dogs entering the UK?",
+        "a": "Dogs must receive an approved praziquantel tapeworm treatment administered by a licensed veterinarian between 24 and 120 hours (1 to 5 days) before the scheduled arrival time in the UK. The exact date, hour, and drug brand must be recorded on the Great Britain Health Certificate."
+      },
+      {
+        "q": "How can I bring my dog to the UK in-cabin using the Paris workaround?",
+        "a": "Many pet owners fly with their pet in-cabin on US-to-Europe flights landing in Paris (CDG), Brussels (BRU), or Amsterdam (AMS) where in-cabin pets are permitted. After clearing EU customs on an EU Annex IV certificate, they enter the UK via Eurotunnel Le Shuttle (Folkestone) or a cross-channel pet taxi with an Animal Health Certificate and tapeworm treatment."
       },
       {
         "q": "Is a rabies titer test required for dogs coming from the USA to the UK?",
-        "a": "No. The United States is listed as a Part 2 country by DEFRA. A rabies titer test is not required for direct travel from the US to Great Britain."
+        "a": "No. The United States is listed as a Part 2 rabies-controlled country by UK DEFRA. A rabies titer test (RNATT/FAVN) is not required for direct travel from the US to Great Britain."
+      },
+      {
+        "q": "How do I get USDA APHIS endorsement for pet travel to Great Britain?",
+        "a": "Your USDA-accredited veterinarian completes the official Great Britain Pet Health Certificate and submits it electronically via the USDA APHIS Veterinary Export Health Certification System (VEHCS). USDA endorses the certificate digitally within 10 days of your scheduled arrival."
+      },
+      {
+        "q": "Are XL Bully and Pitbull breeds banned from entering the United Kingdom?",
+        "a": "Yes. Under the UK Dangerous Dogs Act 1991 (updated for XL Bullies), importing Pit Bull Terriers, Japanese Tosas, Dogo Argentinos, Fila Brasileiros, and American Bully XL dogs into Great Britain is strictly illegal."
       }
     ],
     "statutoryRequirements": [
       {
-        "id": "uk-req-1",
-        "category": "TAPEWORM_TREATMENT",
-        "categoryLabel": "Echinococcus Multilocularis Praziquantel Protocol",
-        "title": "Mandatory 24–120 Hour Tapeworm Treatment",
+        "id": "uk-req-microchip",
+        "category": "MICROCHIP",
+        "categoryLabel": "ISO 11784/11785 Microchip",
+        "title": "ISO 15-Digit Microchip Implantation",
+        "applicableSpecies": "BOTH",
         "severity": "BLOCKING",
         "rules": [
-          "Must contain Praziquantel or an equivalent licensed product effective against tapeworm.",
-          "Must be administered by a licensed vet not less than 24 hours and not more than 120 hours before UK entry."
+          "ISO 11784/11785 compliant 15-digit microchip must be implanted before rabies vaccination.",
+          "Microchip number must match all veterinary records, health certificates, and cargo airway bills exactly."
         ],
-        "protocol": "Strict Window: If administered 23 hours or 121 hours prior to landing, entry is blocked.",
-        "sourceName": "UK APHA & DEFRA",
+        "protocol": "Sequence Mandatory: Microchip must be implanted and verified before rabies vaccination. Any vaccination administered prior to microchipping is legally invalid in the UK.",
+        "sourceName": "UK Animal and Plant Health Agency (APHA)",
         "sourceUrl": "https://www.gov.uk/bring-pet-to-great-britain",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "uk-req-rabies",
+        "category": "RABIES_VACCINATION",
+        "categoryLabel": "Rabies Immunization Protocol",
+        "title": "Rabies Vaccination & 21-Day Wait",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Valid rabies vaccination administered by an accredited vet after microchipping.",
+          "Pet must be at least 12 weeks old at the time of primary vaccination.",
+          "At least 21 days must elapse after primary vaccination before entering Great Britain."
+        ],
+        "protocol": "21-Day Wait Rule: The primary rabies vaccination becomes valid on Day 22. Valid continuous booster shots have no waiting period.",
+        "sourceName": "UK DEFRA",
+        "sourceUrl": "https://www.gov.uk/bring-pet-to-great-britain",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "uk-req-tapeworm",
+        "category": "TAPEWORM_TREATMENT",
+        "categoryLabel": "Echinococcus Multilocularis Protocol",
+        "title": "Mandatory 24–120 Hour Tapeworm Treatment",
+        "applicableSpecies": "DOG",
+        "severity": "BLOCKING",
+        "rules": [
+          "Approved praziquantel tapeworm treatment administered by a licensed veterinarian.",
+          "Treatment must be administered between 24 and 120 hours (1 to 5 days) before scheduled arrival in the UK.",
+          "Veterinarian must explicitly record the product name, date, and exact time of administration."
+        ],
+        "protocol": "Strict Window: Must be given not less than 24 hours and not more than 120 hours before UK arrival. Failure results in border quarantine or refusal.",
+        "sourceName": "UK DEFRA Pet Travel Scheme",
+        "sourceUrl": "https://www.gov.uk/bring-pet-to-great-britain",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "uk-req-health-cert",
+        "category": "HEALTH_CERTIFICATE",
+        "categoryLabel": "Great Britain Health Certificate",
+        "title": "USDA-Accredited Health Certificate & Endorsement",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Official Great Britain Pet Health Certificate completed by a USDA-accredited veterinarian.",
+          "Officially endorsed by USDA APHIS via VEHCS within 10 days of arrival in the UK."
+        ],
+        "protocol": "10-Day Endorsement Window: Issued and federally endorsed by USDA APHIS within 10 days of scheduled UK entry.",
+        "sourceName": "USDA APHIS Pet Travel to Great Britain",
+        "sourceUrl": "https://www.aphis.usda.gov/aphis/pet-travel/by-country/united-kingdom",
         "lastVerifiedAt": "September 21, 2026"
       }
     ]
@@ -359,64 +490,116 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "region": "Great Britain → European Union (Eurotunnel / Ferry)",
     "authority": "French Ministry of Agriculture and Food Sovereignty (DGAL) & EU DG SANTE",
     "legalBasis": "Regulation (EU) No 576/2013 & French Rural Code Article L211-14",
-    "description": "Statutory transit rules for taking dogs and cats from the UK to France via Eurotunnel LeShuttle, cross-channel ferries, or Eurostar (assistance dogs only).",
+    "description": "Statutory transit rules for taking dogs and cats from the UK to France post-Brexit. Covers DEFRA Animal Health Certificates (AHC), 21-day rabies latency, Eurotunnel Le Shuttle Folkestone-Calais pet travel, cross-channel ferries, Category 1 dangerous breed bans, and mandatory tapeworm treatment before returning to the UK.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "Great Britain is a Part 2 listed country under EU Regulation 577/2013. No rabies serological titer test is required.",
+    "titerDetail": "Great Britain is a Part 2 listed country under EU Regulation 577/2013. No rabies serological titer test is required for direct travel into France.",
     "quarantineDays": "0 Days Quarantine",
-    "quarantineDetail": "Direct clearance through Eurotunnel Pet Reception Centre in Folkestone or ferry terminal pet control in Dover.",
+    "quarantineDetail": "Direct clearance through Eurotunnel Pet Reception Centre in Folkestone or ferry terminal pet control in Dover with 0 days quarantine.",
     "leadTime": "21 Days Minimum",
     "leadTimeDetail": "21-day latency window for primary rabies vaccine. AHC must be issued within 10 days of travel.",
     "certificateType": "UK Animal Health Certificate (AHC) or EU Pet Passport",
-    "certificateDetail": "Must be issued by an accredited Official Veterinarian (OV) within 10 days of French border crossing.",
+    "certificateDetail": "Must be issued by an accredited Official Veterinarian (OV) within 10 days of French border crossing, or a valid EU Pet Passport.",
     "entryAirports": [
+      "Eurotunnel Folkestone-Calais Terminal (Vehicle)",
+      "Port of Dover / Port of Calais (P&O / DFDS Ferries)",
+      "Portsmouth / Plymouth (Brittany Ferries)",
       "Paris Charles de Gaulle (CDG)",
-      "Eurotunnel Folkestone-Calais Terminal",
-      "Port of Dover / Port of Calais",
       "Nice Côte d’Azur (NCE)"
     ],
     "restrictedBreeds": [
-      "Category 1 (Attack dogs without pedigree e.g. Pitbulls, Boerboels - strictly banned from France)",
-      "Category 2 (Guard dogs with pedigree e.g. Rottweilers, American Staffordshire - require muzzle, leash, and insurance)"
+      "Category 1 (Attack dogs without kennel club pedigree e.g. Pitbulls, Boerboels - strictly banned from France under Article L211-14)",
+      "Category 2 (Guard dogs with recognized pedigree e.g. purebred Rottweilers, American Staffordshire - require muzzle, leash, insurance, and permit)"
     ],
+    "airlinePolicies": [
+      {
+        "name": "Eurotunnel Le Shuttle (Folkestone → Calais)",
+        "code": "ES",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "Drive onto the train in your vehicle with your pet in 35 minutes. Pre-booked check-in at Folkestone Pet Reception Centre (£22 per pet each way).",
+        "feeEstimate": "£22 GBP per pet each way"
+      },
+      {
+        "name": "P&O Ferries / DFDS (Dover → Calais / Dunkirk)",
+        "code": "PO",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "notes": "Offers dedicated pet lounges (pets on leash inside lounge) or pet stays inside vehicle on vehicle deck (90-minute crossing).",
+        "feeEstimate": "£15–£30 GBP per pet each way"
+      },
+      {
+        "name": "Brittany Ferries (Portsmouth/Plymouth → Caen/St Malo)",
+        "code": "BF",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "notes": "Overnight and day sailings with dedicated pet-friendly cabins and open-air pet exercise areas.",
+        "feeEstimate": "£30–£50 GBP per pet each way"
+      },
+      {
+        "name": "Air France",
+        "code": "AF",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 8,
+        "notes": "Direct flights from London Heathrow/Manchester to Paris CDG allowing pets under 8kg in cabin.",
+        "feeEstimate": "€70–€125 EUR each way",
+        "airlineGuideSlug": "air-france"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "Eurotunnel Folkestone Check-In & Onward EU Mobility",
+      "layoverRules": "4-Month EU Validity: A single UK Animal Health Certificate (AHC) is valid for up to 4 months of continuous onward travel throughout all 27 EU member states and Switzerland, and for returning to the UK.",
+      "directVsTransit": "Eurotunnel Le Shuttle vs Ferry: Eurotunnel is the fastest and least stressful crossing (35 minutes, pet stays in vehicle). Ferries offer pet lounges or pet cabins for longer crossings.",
+      "landBorderOption": "Driving via Eurotunnel: Check in at the Folkestone Pet Reception Centre 1 to 2 hours before train departure. Staff scan the microchip and verify the AHC.",
+      "climateRestrictions": "Return to UK Tapeworm Rule: Before returning to Great Britain from France, your dog MUST receive a praziquantel tapeworm treatment from an EU vet between 24 and 120 hours before UK check-in."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "Earliest Step",
-        "title": "ISO 11784/11785 Microchip",
-        "description": "Confirm microchip is active and readable."
+        "timing": "Day -30 or Earlier",
+        "title": "ISO 11784/11785 Microchip & Rabies Vaccination",
+        "description": "Confirm 15-digit microchip. Administer rabies shot; a 21-day latency period must elapse before entering France."
       },
       {
         "step": 2,
-        "timing": "At Least 21 Days Before Travel",
-        "title": "Rabies Vaccination",
-        "description": "Administer vaccine and observe 21-day latency period."
+        "timing": "Within 10 Days Before Departure",
+        "title": "Official Veterinarian Issues UK AHC",
+        "description": "UK Official Veterinarian (OV) examines pet and completes bilingual French-English Animal Health Certificate."
       },
       {
         "step": 3,
-        "timing": "Within 10 Days Before Departure",
-        "title": "Official Veterinarian AHC Exam",
-        "description": "Veterinarian completes bilingual French-English Animal Health Certificate."
+        "timing": "Day -3 to -1",
+        "title": "Book Eurotunnel / Ferry Pet Slot",
+        "description": "Add pet to vehicle booking with Eurotunnel Le Shuttle or cross-channel ferry operator."
       },
       {
         "step": 4,
         "timing": "Day of Departure at Folkestone / Dover",
-        "title": "Pet Reception Centre Check-in",
-        "description": "Staff scans microchip and reviews paperwork before vehicle boards shuttle or ferry."
+        "title": "Pet Reception Centre Verification",
+        "description": "Folkestone Pet Reception Centre scans microchip, stamps paperwork, and approves boarding with 0 days quarantine."
       }
     ],
     "faqs": [
       {
-        "q": "Can my dog travel on Eurostar between London and Paris?",
-        "a": "No. Eurostar strictly does not permit companion pets on passenger trains through the Channel Tunnel, with the sole exception of certified guide and assistance dogs."
+        "q": "How do I take my dog from the UK to France using the Eurotunnel Le Shuttle?",
+        "a": "To take your dog to France via Eurotunnel: (1) Ensure microchip and rabies vaccine (at least 21 days old); (2) Obtain a UK Animal Health Certificate (AHC) within 10 days of travel; (3) Book a pet ticket (£22) on Le Shuttle; and (4) Stop at the Folkestone Pet Reception Centre 1–2 hours before departure for a quick microchip scan and document check before driving onto the train."
       },
       {
-        "q": "How does pet check-in work on Eurotunnel LeShuttle?",
-        "a": "Pet owners must check in at the dedicated Eurotunnel Pet Reception Centre at Folkestone. Attendants scan the microchip and cross-reference your AHC or EU Pet Passport. The pet remains with you in your vehicle during the 35-minute tunnel transit."
+        "q": "How long is a UK Animal Health Certificate (AHC) valid in France and the EU?",
+        "a": "A UK Animal Health Certificate is valid for entry into the EU within 10 days of its issuance date, and remains valid for up to 4 months of onward travel throughout EU member states and for re-entering Great Britain."
       },
       {
-        "q": "Can I bring a Pitbull into France for a holiday?",
-        "a": "No. Category 1 attack dogs (unregistered Pitbulls, Boerboels, and Tosa types without recognized kennel club pedigree) are strictly banned from entering or transiting French territory under severe penal code penalties."
+        "q": "What tapeworm treatment is needed when returning to the UK from France?",
+        "a": "Before re-entering Great Britain from France, every dog must be treated against tapeworm (Praziquantel) by a licensed EU veterinarian between 24 and 120 hours (1 to 5 days) prior to scheduled UK check-in at Calais."
+      },
+      {
+        "q": "Can my dog travel on Eurostar passenger trains between London and Paris?",
+        "a": "No. Eurostar passenger trains through the Channel Tunnel do NOT allow pets on board (except registered assistance dogs). You must use Eurotunnel Le Shuttle (by car) or a cross-channel ferry."
+      },
+      {
+        "q": "Are Pit Bulls and dangerous breeds banned in France?",
+        "a": "Yes. France enforces strict laws: Category 1 attack dogs (Pit Bulls, Boerboels, and Tosa types without recognized kennel club pedigree) are completely banned from entering or transiting French territory."
       }
     ],
     "statutoryRequirements": [
@@ -424,15 +607,62 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
         "id": "fr-req-1",
         "category": "BREED_RESTRICTIONS",
         "categoryLabel": "French Category 1 Dangerous Dogs Prohibition",
-        "title": "Category 1 Import Ban",
+        "title": "Category 1 Attack Dog Import Ban",
+        "applicableSpecies": "DOG",
         "severity": "BLOCKING",
         "rules": [
-          "Category 1 dogs (Pitbulls, Boerboels without pedigree) cannot enter French territory.",
+          "Category 1 dogs (Pitbulls, Boerboels, and mastiff crosses without kennel club pedigree) cannot enter French territory.",
           "Violation results in immediate seizure, fine up to €15,000, and mandatory repatriation or euthanasia."
         ],
         "protocol": "Border Inspection: Verified by French border police and Eurotunnel attendants.",
         "sourceName": "French Ministry of Agriculture (DGAL)",
         "sourceUrl": "https://agriculture.gouv.fr/telecharger/87508",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "fr-req-2",
+        "category": "HEALTH_CERTIFICATE",
+        "categoryLabel": "UK Animal Health Certificate (AHC)",
+        "title": "UK Animal Health Certificate within 10 Days",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Bilingual French/English Animal Health Certificate issued by UK Official Veterinarian within 10 days of border entry, OR valid EU Pet Passport."
+        ],
+        "protocol": "Inspected at Folkestone Pet Reception Centre or ferry terminal.",
+        "sourceName": "EU DG SANTE & UK DEFRA",
+        "sourceUrl": "https://www.gov.uk/take-pet-abroad",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "fr-req-3",
+        "category": "RABIES_VACCINATION",
+        "categoryLabel": "Rabies Immunization Protocol",
+        "title": "Rabies Vaccination with 21-Day Wait",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Microchip implanted before rabies vaccination.",
+          "Primary vaccination requires 21-day latency before entry into France."
+        ],
+        "protocol": "Primary vaccine effective on Day 22.",
+        "sourceName": "French Ministry of Agriculture",
+        "sourceUrl": "https://agriculture.gouv.fr",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "fr-req-4",
+        "category": "MICROCHIP",
+        "categoryLabel": "ISO 11784/11785 Microchip",
+        "title": "Standard 15-Digit Microchip Implantation",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "15-digit ISO 11784/11785 compliant microchip."
+        ],
+        "protocol": "Scanned with universal scanner at French border.",
+        "sourceName": "EU Regulation 576/2013",
+        "sourceUrl": "https://agriculture.gouv.fr",
         "lastVerifiedAt": "September 21, 2026"
       }
     ]
@@ -447,64 +677,119 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "destCode": "FR",
     "region": "North America → European Union",
     "authority": "French Ministry of Agriculture and Food Sovereignty (DGAL) & USDA APHIS",
-    "legalBasis": "Regulation (EU) No 576/2013 Annex IV",
-    "description": "Official requirements for flying companion dogs and cats from the United States to France. Covers USDA APHIS VEHCS electronic endorsement, Paris CDG entry, and French dangerous breed laws.",
+    "legalBasis": "Regulation (EU) No 576/2013 Annex IV & French Rural Code",
+    "description": "Comprehensive statutory guide for moving dogs and cats from the United States to France. Covers EU Non-Commercial Health Certificate (Annex IV) endorsed via USDA APHIS VEHCS within 10 days, 21-day rabies vaccination latency, ISO microchips, Category 1 dangerous dog bans, and Paris CDG/Orly customs clearance.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "The United States is listed as an Annex II rabies-controlled third country. No rabies titer test is required for direct travel.",
+    "titerDetail": "The United States is listed as an Annex II rabies-controlled third country. No rabies titer test (FAVN/RNATT) is required for direct travel into France.",
     "quarantineDays": "0 Days Quarantine",
     "quarantineDetail": "Direct release upon customs declaration at Paris Charles de Gaulle (CDG), Paris Orly (ORY), or Nice (NCE).",
     "leadTime": "21 Days Minimum",
-    "leadTimeDetail": "21-day rabies latency period + USDA VEHCS endorsement issued within 10 days of landing.",
+    "leadTimeDetail": "21-day rabies latency period + USDA VEHCS electronic endorsement issued within 10 days of landing.",
     "certificateType": "EU Non-Commercial Health Certificate (Annex IV)",
     "certificateDetail": "Must be issued by USDA-accredited vet and endorsed electronically via USDA APHIS VEHCS within 10 days of EU arrival.",
     "entryAirports": [
       "Paris Charles de Gaulle (CDG)",
       "Paris Orly (ORY)",
       "Nice Côte d’Azur (NCE)",
-      "Lyon-Saint Exupéry (LYS)"
+      "Lyon-Saint Exupéry (LYS)",
+      "Marseille Provence (MRS)"
     ],
     "restrictedBreeds": [
-      "Category 1 (Pitbulls, Staffordshire crosses without pedigree, Boerboels - strictly banned from France)"
+      "Category 1 (Pitbulls, Staffordshire crosses without pedigree, Boerboels - strictly banned from France)",
+      "Category 2 (Rottweilers with pedigree - require muzzle, leash, and French permit)"
     ],
+    "airlinePolicies": [
+      {
+        "name": "Air France",
+        "code": "AF",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 8,
+        "notes": "Direct flights from major US hubs (JFK, BOS, MIA, LAX, SFO, ORD) to Paris CDG. Dogs and cats under 8kg (including soft carrier) allowed in-cabin ($125–$200 USD fee).",
+        "feeEstimate": "$125–$200 USD (in-cabin) / $400 USD (hold)",
+        "airlineGuideSlug": "air-france"
+      },
+      {
+        "name": "Delta Air Lines",
+        "code": "DL",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "Allows small in-cabin dogs and cats on direct transatlantic flights to Paris CDG and Nice ($95 USD fee).",
+        "feeEstimate": "$95 USD each way",
+        "airlineGuideSlug": "delta-air-lines"
+      },
+      {
+        "name": "United Airlines",
+        "code": "UA",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "In-cabin pets allowed on direct US-to-Paris flights ($150 USD fee).",
+        "feeEstimate": "$150 USD each way",
+        "airlineGuideSlug": "united-airlines"
+      },
+      {
+        "name": "American Airlines",
+        "code": "AA",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "Accepts in-cabin pets on transatlantic routes into Paris ($150 USD fee).",
+        "feeEstimate": "$150 USD each way"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "Paris CDG Customs Clearance & European Onward Travel",
+      "layoverRules": "Intra-EU Mobility: Once your EU Annex IV certificate is stamped by French Douane at Paris CDG, your pet can travel freely across all 27 EU member states for up to 4 months.",
+      "directVsTransit": "Direct flights to Paris (CDG/ORY) avoid intermediate customs checks. If connecting through Frankfurt or Amsterdam, customs clearance occurs at your first EU airport.",
+      "landBorderOption": "In-Cabin Arrival for UK Transits: Many travelers flying from the US to the UK fly into Paris CDG on Air France with in-cabin pets, then take a pet taxi via Eurotunnel to the UK.",
+      "climateRestrictions": "Summer heat embargoes: Transatlantic airlines enforce cargo/hold heat restrictions during hot summer months (above 85°F / 29.4°C)."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "Earliest Step",
-        "title": "ISO 11784/11785 Microchip",
-        "description": "Implant 15-digit microchip prior to rabies vaccination."
+        "timing": "Day -30 or Earlier",
+        "title": "ISO 11784/11785 Microchip & Rabies Vaccination",
+        "description": "Implant 15-digit microchip strictly before or on the day of rabies vaccination; 21-day latency period required before export."
       },
       {
         "step": 2,
-        "timing": "At Least 21 Days Before Arrival",
-        "title": "Rabies Immunization",
-        "description": "Administer vaccine; wait 21 days for primary vaccination latency."
+        "timing": "Day -21 to -14",
+        "title": "Airline In-Cabin or Cargo Reservation",
+        "description": "Book pet reservation with Air France, Delta, or United."
       },
       {
         "step": 3,
-        "timing": "Within 10 Days of Arrival",
-        "title": "USDA Vet Exam & VEHCS Submission",
-        "description": "USDA accredited vet submits EU Annex IV certificate via VEHCS for federal approval."
+        "timing": "Within 10 Days of EU Arrival",
+        "title": "USDA Vet Exam & VEHCS Endorsement",
+        "description": "USDA-accredited vet completes EU Annex IV certificate; USDA endorses electronically via VEHCS."
       },
       {
         "step": 4,
-        "timing": "Arrival at Paris CDG",
-        "title": "Customs Declaration",
-        "description": "Proceed through the Red Customs Lane (\"Douane / Marchandises à déclarer\") for microchip scan."
+        "timing": "Flight & Arrival Day at Paris CDG",
+        "title": "French Customs (Douane) Clearance",
+        "description": "Proceed through the Red Customs Lane (\"Douane / Marchandises à déclarer\") for microchip scan and immediate 0-day quarantine entry."
       }
     ],
     "faqs": [
       {
-        "q": "Can my small dog fly in the cabin on flights to France?",
-        "a": "Yes! Air France, Delta, United, and American Airlines permit small dogs and cats up to 8 kg (including soft carrier) in the passenger cabin on flights from the US to Paris."
+        "q": "What are the step-by-step requirements for moving a pet to France from the US?",
+        "a": "To move a dog or cat to France from the US: (1) Implant a 15-digit ISO 11784/11785 microchip; (2) Administer a rabies vaccination (at least 21 days before departure); (3) Have a USDA-accredited vet complete the EU Annex IV certificate within 10 days of arrival; (4) Obtain electronic USDA APHIS VEHCS endorsement; and (5) Declare pet at French Douane customs at Paris CDG or Orly. 0 days quarantine."
       },
       {
-        "q": "Is a rabies titer test required for travel from the US to France?",
-        "a": "No. The United States is an Annex II listed country. Direct flights do not require a rabies antibody titer test."
+        "q": "How long before travel to France does USDA VEHCS need to endorse the health certificate?",
+        "a": "The EU Annex IV health certificate must be completed by your vet and officially endorsed by USDA APHIS within 10 days of your scheduled arrival date in France."
       },
       {
-        "q": "Does France recognize a 3-year rabies vaccination from the US?",
-        "a": "Yes, provided the primary vaccine was followed by boosters administered within the manufacturer’s licensed duration and recorded on the USDA certificate."
+        "q": "Which dog breeds are banned from entering France under Category 1 laws?",
+        "a": "France strictly prohibits Category 1 attack dogs without recognized kennel club pedigree: Staffordshire Bull Terriers / American Staffordshire Terriers without pedigree (Pit Bulls), Mastiff crosses (Boerboels), and Tosa crosses. These breeds face seizure and heavy fines."
+      },
+      {
+        "q": "Can I fly my dog in the cabin from the USA to Paris Charles de Gaulle (CDG)?",
+        "a": "Yes! Air France, Delta, United, and American Airlines permit small dogs and cats up to 8 kg (17.6 lbs) including their soft-sided carrier in the passenger cabin on flights from the US to Paris."
+      },
+      {
+        "q": "Does France require a rabies titer test or quarantine for pets from the US?",
+        "a": "No. The United States is listed as an Annex II rabies-controlled country. Pets flying directly to France do not require a rabies titer test (RNATT/FAVN) and enter with 0 days quarantine."
       }
     ],
     "statutoryRequirements": [
@@ -512,15 +797,63 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
         "id": "fr-us-req-1",
         "category": "HEALTH_CERTIFICATE",
         "categoryLabel": "USDA APHIS Endorsed EU Annex IV",
-        "title": "10-Day USDA Endorsement Mandate",
+        "title": "10-Day USDA Endorsed EU Health Certificate",
+        "applicableSpecies": "BOTH",
         "severity": "BLOCKING",
         "rules": [
-          "Must be endorsed by USDA APHIS within 10 days of EU entry.",
-          "Must feature digital cryptographic watermark or ink seal."
+          "Must be issued by a USDA-accredited veterinarian.",
+          "Must be endorsed electronically via USDA APHIS VEHCS within 10 days of EU entry.",
+          "Features digital USDA cryptographic seal and watermark."
         ],
-        "protocol": "Customs Verification at CDG / ORY.",
+        "protocol": "Customs Verification: Stamped by French Douane at CDG or ORY.",
         "sourceName": "French DGAL & USDA APHIS",
         "sourceUrl": "https://www.aphis.usda.gov/pet-travel/us-to-france",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "fr-us-req-2",
+        "category": "RABIES_VACCINATION",
+        "categoryLabel": "Rabies Immunization Protocol",
+        "title": "Rabies Vaccination with 21-Day Wait",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Administered strictly after ISO microchip implantation.",
+          "Primary vaccine requires a 21-day waiting period before travel."
+        ],
+        "protocol": "21-Day Wait Rule: Primary vaccine valid on Day 22.",
+        "sourceName": "French Ministry of Agriculture",
+        "sourceUrl": "https://agriculture.gouv.fr",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "fr-us-req-3",
+        "category": "MICROCHIP",
+        "categoryLabel": "ISO 11784/11785 Microchip",
+        "title": "Standard 15-Digit Microchip Implantation",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "ISO 11784/11785 compliant 15-digit microchip implanted before rabies vaccination."
+        ],
+        "protocol": "Microchip verified by French customs scanner.",
+        "sourceName": "EU DG SANTE",
+        "sourceUrl": "https://agriculture.gouv.fr",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "fr-us-req-4",
+        "category": "BREED_RESTRICTIONS",
+        "categoryLabel": "French Category 1 Prohibition",
+        "title": "Category 1 Dangerous Dog Import Ban",
+        "applicableSpecies": "DOG",
+        "severity": "BLOCKING",
+        "rules": [
+          "Non-pedigreed Pit Bulls, Boerboels, and Tosa crosses are strictly barred from entering France."
+        ],
+        "protocol": "Customs Enforcement: Seizure and immediate repatriation for illegal breeds.",
+        "sourceName": "French Ministry of Agriculture (DGAL)",
+        "sourceUrl": "https://agriculture.gouv.fr",
         "lastVerifiedAt": "September 21, 2026"
       }
     ]
@@ -621,70 +954,183 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "region": "North America Cross-Border",
     "authority": "National Service of Agro-Alimentary Public Health, Safety and Quality (SENASICA)",
     "legalBasis": "Mexican Federal Animal Health Law & SENASICA Official Notice B00.02.01.01.01",
-    "description": "Cross-border non-commercial entry regulations for companion dogs and cats traveling from the United States to Mexico across land crossings or commercial flights.",
+    "description": "Complete statutory guide on how to take a dog or cat to Mexico from the USA under SENASICA and SADER regulations. Explains the 2019+ streamlined protocol (no USDA health certificate required for tourist pets), mandatory rabies vaccination certificates, free physical inspection at OISA border checkpoints, driving vs flying, and airline policies.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "No rabies titer test is required for entry into Mexico from the United States.",
+    "titerDetail": "No rabies antibody titer test (FAVN/RNATT) is required for dogs or cats entering Mexico from the United States.",
     "quarantineDays": "0 Days Quarantine",
     "quarantineDetail": "Direct release upon physical inspection by SENASICA officers at the Agricultural Sanitation Inspection Office (OISA).",
     "leadTime": "Current Vaccine",
-    "leadTimeDetail": "Valid current rabies vaccination required. No mandatory 21-day latency period enforced for tourist pet entries.",
-    "certificateType": "Rabies Certificate & SENASICA OISA Inspection",
-    "certificateDetail": "Under the simplified US-Mexico bilateral agreement, private veterinary health certificates are exempt for tourist pets entering from the US; inspection at SENASICA port of entry verifies health.",
+    "leadTimeDetail": "Valid current rabies vaccination required. No mandatory 21-day latency period enforced for tourist pet entries from the US.",
+    "certificateType": "Rabies Certificate & SENASICA OISA Inspection (CIS)",
+    "certificateDetail": "Under the simplified US-Mexico bilateral agreement, USDA APHIS international health certificates are exempt for tourist pets; SENASICA issues a free Pet Import Certificate (CIS) upon port inspection.",
     "entryAirports": [
       "Cancún International (CUN)",
       "Mexico City Benito Juárez (MEX)",
       "Guadalajara (GDL)",
-      "Tijuana Land Crossings (CBX)",
-      "Los Cabos (SJD)"
+      "Puerto Vallarta (PVR)",
+      "Los Cabos (SJD)",
+      "All US-Mexico Land Border Crossings (San Ysidro, Otay Mesa, Laredo, El Paso, CBX)"
     ],
+    "airlinePolicies": [
+      {
+        "name": "Aeromexico",
+        "code": "AM",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 9,
+        "notes": "Allows dogs and cats in-cabin on direct US-Mexico flights ($125–$150 USD fee). Combined weight of pet and carrier must not exceed 9kg (20 lbs).",
+        "feeEstimate": "$125–$150 USD each way"
+      },
+      {
+        "name": "Volaris",
+        "code": "Y4",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 10,
+        "notes": "Popular low-cost option allowing small pets in cabin ($100–$130 USD fee).",
+        "feeEstimate": "$100–$130 USD each way"
+      },
+      {
+        "name": "Delta Air Lines",
+        "code": "DL",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "Accepts in-cabin pets on direct flights into Cancun, Mexico City, and Cabo ($95 USD fee).",
+        "feeEstimate": "$95 USD each way",
+        "airlineGuideSlug": "delta-air-lines"
+      },
+      {
+        "name": "United Airlines",
+        "code": "UA",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "Accepts small dogs and cats in-cabin on US-Mexico routes ($150 USD fee).",
+        "feeEstimate": "$150 USD each way",
+        "airlineGuideSlug": "united-airlines"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "Border Driving Crossings vs Mexican Airport OISA Inspection",
+      "layoverRules": "Domestic Mexican connections: Once your pet clears the SENASICA OISA inspection at your first port of entry (e.g. Mexico City MEX or Guadalajara GDL), you receive the green CIS certificate, which allows smooth transit on domestic flights.",
+      "directVsTransit": "Airport Arrival Protocol: Upon deplaning in Mexico, proceed to the SENASICA / SAGARPA OISA module before exiting customs. The officer conducts a physical check for external parasites and stamps your clearance in 10–15 minutes.",
+      "landBorderOption": "Driving Across the US-Mexico Border: At land ports (San Ysidro, Otay Mesa, El Paso, Laredo), stop at the OISA checkpoint. If entering via the Cross Border Xpress (CBX) bridge from San Diego into Tijuana Airport, an OISA station is located inside the terminal.",
+      "climateRestrictions": "Commercial pet food rules: You may bring one unopened commercial bag of dry pet food (up to 50 lbs / 22 kg) with USDA labels in English or Spanish. Loose bags or fresh/raw meat products are strictly confiscated."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "Prior to Travel",
-        "title": "Verify Current Rabies Vaccination",
-        "description": "Ensure pet has a valid rabies vaccination certificate with vaccine manufacturer and lot number."
+        "timing": "Day -30 or Earlier",
+        "title": "Rabies Vaccination & Microchip Verification",
+        "description": "Ensure rabies vaccine is current and signed by a licensed veterinarian. Confirm 15-digit ISO microchip (mandatory for returning to the US under CDC rules)."
       },
       {
         "step": 2,
-        "timing": "Prior to Departure",
-        "title": "Preventive Ectoparasite Treatment",
-        "description": "Ensure pet is free of fleas, ticks, and external parasites to pass SENASICA physical inspection."
+        "timing": "Day -14 to -7 Before Travel",
+        "title": "Parasite Prevention Protocol",
+        "description": "Administer veterinary flea, tick, and deworming treatments. Ensuring the pet is 100% free of external parasites avoids border treatment delays."
       },
       {
         "step": 3,
-        "timing": "Upon Arrival in Mexico",
-        "title": "SENASICA OISA Office Inspection",
-        "description": "Present pet to the Agricultural Health Inspection Office (OISA) at the airport or border port for free physical inspection."
+        "timing": "Day -3 to -1",
+        "title": "Airline In-Cabin Pet Booking",
+        "description": "Confirm in-cabin pet reservation with Aeromexico, Volaris, Delta, United, or American."
+      },
+      {
+        "step": 4,
+        "timing": "Arrival Day at Mexico Port of Entry",
+        "title": "SENASICA OISA Office Physical Inspection",
+        "description": "Present pet and rabies certificate to the SENASICA OISA inspection post at the airport or border booth for free physical exam and issuance of the Official Pet Import Certificate (CIS)."
       }
     ],
     "faqs": [
       {
-        "q": "Do I need an official USDA health certificate to travel to Mexico?",
-        "a": "No! Under the simplified bilateral protocol between USDA and SENASICA, companion dogs and cats entering Mexico from the US for tourism no longer require a formal USDA-endorsed health certificate. SENASICA conducts a free physical inspection upon arrival to check for fleas, ticks, and open lesions."
+        "q": "How can I take my dog to Mexico from the USA?",
+        "a": "To take a dog to Mexico from the US: (1) Ensure your dog has a valid rabies vaccination certificate signed by a licensed vet; (2) Ensure your pet is treated for fleas, ticks, and worms; (3) Book an in-cabin pet flight on Aeromexico, Volaris, Delta, or United (or drive across a land border); and (4) Upon arrival in Mexico, take your pet to the SENASICA OISA office at the airport or border for a free physical inspection. You will be issued a free Official Pet Import Certificate (CIS) with 0 days quarantine."
       },
       {
-        "q": "Can I bring pet food into Mexico from the US?",
-        "a": "You may bring one day’s supply of dry pet food in an unmarked bag, or up to 50 lbs (22 kg) of food in an unopened, sealed commercial bag bearing USDA/FDA labels in English or Spanish. Bulk loose food or raw meat is confiscated at the border."
+        "q": "Does Mexico SENASICA require an official USDA health certificate for dogs?",
+        "a": "No! Under the simplified bilateral accord between USDA APHIS and Mexico SENASICA, companion dogs and cats entering Mexico from the US for tourism no longer require a formal USDA-endorsed international health certificate. A standard veterinary rabies certificate and on-site SENASICA OISA inspection are all that is required."
       },
       {
-        "q": "Is a microchip required to enter Mexico?",
-        "a": "While a microchip is not strictly mandatory under Mexican federal law for companion dogs, it is strongly recommended because it is mandatory when returning to the United States under CDC guidelines."
+        "q": "Can I drive across the US-Mexico border with my dog or cat?",
+        "a": "Yes! Driving across land border crossings (like San Ysidro, Otay Mesa, Laredo, or El Paso) is very common. Stop at the SENASICA inspection post to have your pet’s rabies certificate reviewed and your pet checked for ectoparasites."
+      },
+      {
+        "q": "What happens at SENASICA airport inspection in Cancun, Mexico City, or Puerto Vallarta?",
+        "a": "After landing and collecting your luggage, you visit the SENASICA OISA desk. The official veterinarian checks your pet’s rabies certificate, scans the microchip, and briefly inspects the pet’s fur and ears for ticks or fleas. The process takes 10–15 minutes, is completely free, and grants immediate entry."
+      },
+      {
+        "q": "Can I bring pet food into Mexico from the United States?",
+        "a": "Yes, but with strict rules: you may bring one unopened, factory-sealed commercial bag of dry pet food (up to 50 lbs / 22 kg) that includes USDA/FDA packaging labels. Open bags, homemade pet food, or bulk raw meat will be confiscated by Mexican agricultural inspectors."
+      },
+      {
+        "q": "What is needed to bring my dog back to the US from Mexico?",
+        "a": "Under CDC regulations, because Mexico is classified as a dog-rabies free/low-risk country, returning to the US only requires: (1) An ISO 11784/11785 microchip; (2) The dog must be at least 6 months old; and (3) A free online CDC Dog Import Form submission receipt generated on cdc.gov prior to crossing."
       }
     ],
     "statutoryRequirements": [
       {
         "id": "mx-req-1",
         "category": "PARASITE_TREATMENT",
-        "categoryLabel": "SENASICA External Parasite Free Inspection",
-        "title": "OISA Physical Health Inspection",
+        "categoryLabel": "SENASICA Physical Health Inspection",
+        "title": "OISA Ectoparasite Inspection & Clearance",
+        "applicableSpecies": "BOTH",
         "severity": "BLOCKING",
         "rules": [
-          "Pet must be free of ectoparasites (ticks, fleas, mites).",
-          "If ticks or fleas are detected upon arrival, owner must pay for private Mexican veterinary treatment before entry."
+          "Pet must be clinically healthy and free of ectoparasites (ticks, fleas, mites) and skin lesions upon physical inspection.",
+          "If ectoparasites are found during inspection, the owner must pay for private Mexican veterinary treatment before entry is granted."
         ],
-        "protocol": "Physical inspection conducted by SENASICA veterinarian at OISA office.",
+        "protocol": "Physical inspection conducted by SENASICA veterinarian at airport or border OISA office.",
+        "sourceName": "SENASICA Mexico (SADER)",
+        "sourceUrl": "https://www.gob.mx/senasica/documentos/si-viajas-con-tu-mascota-194177",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "mx-req-2",
+        "category": "RABIES_VACCINATION",
+        "categoryLabel": "Rabies Immunization",
+        "title": "Current Rabies Vaccination Certificate",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Valid rabies vaccination certificate signed by a licensed US veterinarian.",
+          "Must state animal breed, sex, age, weight, vaccine manufacturer, lot number, and expiration date.",
+          "Animals under 3 months of age are exempt from rabies vaccination."
+        ],
+        "protocol": "Document Review: Inspected by SENASICA officer at port of entry.",
         "sourceName": "SENASICA Mexico",
+        "sourceUrl": "https://www.gob.mx/senasica/documentos/si-viajas-con-tu-mascota-194177",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "mx-req-3",
+        "category": "MICROCHIP",
+        "categoryLabel": "ISO 11784/11785 Microchip",
+        "title": "Microchip Identification Standard",
+        "applicableSpecies": "BOTH",
+        "severity": "NON_BLOCKING",
+        "rules": [
+          "15-digit ISO microchip strongly recommended for Mexican entry and mandatory for re-entry into the United States under CDC guidelines."
+        ],
+        "protocol": "Identity Scanning: Scanned at OISA desk and recorded on entry certificate.",
+        "sourceName": "SENASICA / CDC",
+        "sourceUrl": "https://www.gob.mx/senasica/documentos/si-viajas-con-tu-mascota-194177",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "mx-req-4",
+        "category": "IMPORT_PERMIT",
+        "categoryLabel": "SENASICA Certificate of Import (CIS)",
+        "title": "Official Zoosanitary Import Certificate (CIS)",
+        "applicableSpecies": "BOTH",
+        "severity": "NON_BLOCKING",
+        "rules": [
+          "Issued free of charge by SENASICA officer upon completing physical inspection at port of entry.",
+          "Serves as official entry document for domestic travel within Mexico."
+        ],
+        "protocol": "Issued on-site at airport customs hall or border station.",
+        "sourceName": "SENASICA SADER",
         "sourceUrl": "https://www.gob.mx/senasica/documentos/si-viajas-con-tu-mascota-194177",
         "lastVerifiedAt": "September 21, 2026"
       }
@@ -891,10 +1337,10 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "region": "North America Cross-Border",
     "authority": "Centers for Disease Control and Prevention (CDC) & USDA APHIS",
     "legalBasis": "CDC Final Rule on Dog Importation (42 CFR Part 71) & Canadian Food Inspection Agency (CFIA)",
-    "description": "Updated cross-border regulations for bringing dogs and cats from Canada into the United States under active CDC 2024–2026 entry rules.",
+    "description": "Updated cross-border regulations for bringing dogs and cats from Canada into the United States under active CDC 2024–2026 entry rules. Covers mandatory free online CDC Dog Import Form receipts, 6-month age limits, ISO microchip verification, 0-day quarantine, and land border vs airport clearance.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "Canada is classified by the CDC as a dog-rabies free or low-risk country. No rabies titer test is required.",
+    "titerDetail": "Canada is classified by the CDC as a dog-rabies free or low-risk country. No rabies titer test is required for entry into the United States.",
     "quarantineDays": "0 Days Quarantine",
     "quarantineDetail": "Immediate clearance at US land border ports or airport customs with valid CDC documentation.",
     "leadTime": "Instant Online Form",
@@ -902,41 +1348,105 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "certificateType": "CDC Dog Import Form Receipt & CFIA Rabies Certificate",
     "certificateDetail": "Free online CDC Dog Import Form submission receipt + proof of valid rabies vaccination.",
     "entryAirports": [
-      "All US-Canada Land Border Ports (Blaine, Peace Arch, Ambassador Bridge, etc.)",
-      "Pre-Clearance Airports (YYZ, YVR, YUL, YYC)"
+      "All US-Canada Land Border Ports (Blaine, Peace Arch, Ambassador Bridge, Buffalo Peace Bridge)",
+      "Pre-Clearance Airports (Toronto YYZ, Vancouver YVR, Montreal YUL, Calgary YYC)"
     ],
+    "airlinePolicies": [
+      {
+        "name": "Air Canada",
+        "code": "AC",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 10,
+        "notes": "Allows small dogs and cats in-cabin on cross-border US flights ($50–$100 CAD fee). Pets must fit under the seat in an approved carrier.",
+        "feeEstimate": "$50–$100 CAD each way",
+        "airlineGuideSlug": "air-canada"
+      },
+      {
+        "name": "WestJet",
+        "code": "WS",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 7.5,
+        "notes": "Allows in-cabin pets on direct flights from Canada to US destinations ($50–$100 CAD fee).",
+        "feeEstimate": "$50–$100 CAD each way"
+      },
+      {
+        "name": "United Airlines",
+        "code": "UA",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "Accepts in-cabin dogs and cats on cross-border flights from Canadian airports ($150 USD fee).",
+        "feeEstimate": "$150 USD each way",
+        "airlineGuideSlug": "united-airlines"
+      },
+      {
+        "name": "Delta Air Lines",
+        "code": "DL",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "Accepts small companion pets in passenger cabin on all flights from Canada to US hubs ($95 USD fee).",
+        "feeEstimate": "$95 USD each way",
+        "airlineGuideSlug": "delta-air-lines"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "Cross-Border Driving vs Airport Pre-Clearance",
+      "layoverRules": "Domestic US connections: Once cleared through US Customs and Border Protection (CBP) at the border or Canadian airport pre-clearance, pets travel under standard domestic airline transit rules.",
+      "directVsTransit": "Flights departing major Canadian airports (YYZ, YVR, YUL, YYC) clear US CBP customs before departure in Canada (US Pre-Clearance). Present the CDC receipt and Canadian rabies certificate at pre-clearance.",
+      "landBorderOption": "Driving Across the Border: Pet owners driving across US-Canada land border crossings (e.g. Blaine, Detroit-Windsor, Niagara Falls) show the digital CDC QR code on their smartphone to the CBP officer in the inspection booth.",
+      "climateRestrictions": "Canadian winter travel: Airlines may restrict pets traveling as checked baggage/cargo if airport ramp temperatures drop below -10°C (14°F)."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "Prior to Travel",
-        "title": "ISO 11784/11785 Microchip",
-        "description": "Dog must have a 15-digit microchip implanted before crossing into the US."
+        "timing": "Day -30 or Earlier",
+        "title": "ISO 11784/11785 Microchip & Rabies Vaccine",
+        "description": "Ensure 15-digit microchip is implanted and rabies vaccine is current on Canadian veterinary records."
       },
       {
         "step": 2,
-        "timing": "Prior to Travel",
-        "title": "Submit Free CDC Dog Import Form",
-        "description": "Complete the official online CDC Dog Import Form; save and print the email receipt QR code."
+        "timing": "Day -7 to -1 Before Departure",
+        "title": "Submit Free Online CDC Dog Import Form",
+        "description": "Complete the official online CDC Dog Import Form on cdc.gov; download the email receipt containing the QR code (valid for 6 months)."
       },
       {
         "step": 3,
-        "timing": "Border Crossing",
-        "title": "US Customs & Border Protection (CBP) Inspection",
-        "description": "Show CDC receipt and Canadian rabies certificate at land border booth or airport pre-clearance."
+        "timing": "Day -3 to -1",
+        "title": "Reserve Pet Space with Airline",
+        "description": "Confirm in-cabin pet reservation with Air Canada, WestJet, United, or Delta."
+      },
+      {
+        "step": 4,
+        "timing": "Border Crossing / Departure Day",
+        "title": "US Customs & Border Protection (CBP) Clearance",
+        "description": "Present CDC receipt QR code and Canadian rabies certificate at land border booth or airport US pre-clearance for 0-day quarantine entry."
       }
     ],
     "faqs": [
       {
         "q": "What is the new CDC Dog Import Form required for dogs from Canada?",
-        "a": "Under CDC rules implemented in August 2024 and active through 2026, all dogs entering the United States from Canada must have an approved CDC Dog Import Form receipt. It is free to generate online and is valid for multiple entries for up to 6 months."
+        "a": "Under CDC regulations implemented in August 2024 and active through 2026, all dogs entering the United States from Canada (including returning US dogs) must have an approved CDC Dog Import Form receipt. The form is 100% free to generate online on the CDC website and is valid for multiple entries for up to 6 months."
       },
       {
         "q": "Can puppies under 6 months cross from Canada to the US?",
-        "a": "No. Under federal CDC regulations, all dogs entering the United States must be at least 6 months (24 weeks) of age at the time of entry."
+        "a": "No. Under federal CDC regulations, all dogs entering the United States from any foreign country must be at least 6 months (24 weeks) of age at the time of entry. Puppies under 6 months will be denied entry."
+      },
+      {
+        "q": "Can I drive my dog across the Canadian border into the US by car?",
+        "a": "Yes. Cross-border driving is very popular. You only need to show the digital or printed CDC Dog Import Form receipt QR code along with your Canadian rabies certificate to the US CBP officer at the land border booth."
       },
       {
         "q": "Are cats required to have a CDC form to enter the US from Canada?",
-        "a": "No. The CDC Dog Import Form applies exclusively to dogs. Domestic cats do not require CDC paperwork or a rabies certificate for federal US entry, though individual states may enforce rabies requirements."
+        "a": "No. The CDC Dog Import Form applies exclusively to dogs. Domestic cats do not require CDC paperwork or a federal rabies certificate to enter the US from Canada, although airlines require rabies records and state health laws may apply."
+      },
+      {
+        "q": "Does Canada to US pet travel require a rabies titer test or quarantine?",
+        "a": "No. Because Canada is recognized as rabies-free/low-risk by the CDC, no rabies titer test (FAVN/RNATT) is required and dogs qualify for immediate release with 0 days quarantine."
+      },
+      {
+        "q": "Is USDA endorsement or CFIA certification required for Canadian tourist dogs?",
+        "a": "No. For tourist dogs entering the US from Canada, formal CFIA export endorsement or USDA import permits are not required. The free online CDC receipt and standard Canadian veterinary rabies certificate are sufficient."
       }
     ],
     "statutoryRequirements": [
@@ -944,15 +1454,65 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
         "id": "ca-us-req-1",
         "category": "HEALTH_CERTIFICATE",
         "categoryLabel": "CDC Dog Import Form Receipt",
-        "title": "CDC 6-Month Mandate & Age Limit",
+        "title": "Mandatory Online CDC Dog Import Form Receipt",
+        "applicableSpecies": "DOG",
         "severity": "BLOCKING",
         "rules": [
-          "Dog must be at least 6 months old.",
-          "Must possess valid CDC Dog Import Form receipt and ISO microchip."
+          "Must complete the free online CDC Dog Import Form prior to travel.",
+          "Must present digital or printed email confirmation receipt with QR code to airline and CBP officers.",
+          "Form receipt is valid for multiple entries for 6 months as long as the dog has not visited a rabies-high-risk country."
         ],
-        "protocol": "CBP officer checks receipt at port of entry.",
+        "protocol": "CBP Gate Check: CBP officers scan receipt QR code at land border booths and airport pre-clearance.",
+        "sourceName": "US Centers for Disease Control (CDC)",
+        "sourceUrl": "https://www.cdc.gov/importation/bringing-an-animal-into-the-united-states/dogs.html",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "ca-us-req-2",
+        "category": "AGE_RESTRICTION",
+        "categoryLabel": "CDC 6-Month Minimum Age Mandate",
+        "title": "Minimum 6-Month (24-Week) Age Requirement",
+        "applicableSpecies": "DOG",
+        "severity": "BLOCKING",
+        "rules": [
+          "All dogs entering the United States must be at least 6 months old at the time of entry.",
+          "Puppies under 6 months of age are strictly prohibited from entry."
+        ],
+        "protocol": "Strict Age Enforcement: Birthdate on veterinary certificate is verified by border officers.",
         "sourceName": "CDC Dog Importation Rules",
         "sourceUrl": "https://www.cdc.gov/importation/bringing-an-animal-into-the-united-states/dogs.html",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "ca-us-req-3",
+        "category": "MICROCHIP",
+        "categoryLabel": "ISO 11784/11785 Microchip",
+        "title": "Standard 15-Digit Microchip Implantation",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Must have an ISO 11784/11785 compliant 15-digit microchip implanted before travel.",
+          "Microchip number must be accurately entered on the CDC Dog Import Form."
+        ],
+        "protocol": "Identity Verification: Microchip number must match all accompanying health documents.",
+        "sourceName": "CDC & USDA APHIS",
+        "sourceUrl": "https://www.cdc.gov/importation/bringing-an-animal-into-the-united-states/dogs.html",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "ca-us-req-4",
+        "category": "RABIES_VACCINATION",
+        "categoryLabel": "Canadian Rabies Certificate",
+        "title": "Valid Rabies Immunization Certificate",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Valid rabies vaccination certificate signed by a licensed Canadian veterinarian.",
+          "Certificate must specify animal breed, sex, age, weight, vaccine manufacturer, lot number, and expiration."
+        ],
+        "protocol": "Border Review: Presented to CBP officer upon crossing.",
+        "sourceName": "Canadian Food Inspection Agency (CFIA)",
+        "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets",
         "lastVerifiedAt": "September 21, 2026"
       }
     ]
@@ -1060,11 +1620,11 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "destCode": "US",
     "region": "Great Britain → North America",
     "authority": "Centers for Disease Control and Prevention (CDC) & USDA APHIS",
-    "legalBasis": "CDC Final Rule on Dog Importation (42 CFR Part 71)",
-    "description": "Official US entry regulations for dogs and cats flying from Great Britain to the United States under active CDC biosecurity statutes.",
+    "legalBasis": "CDC Final Rule on Dog Importation (42 CFR Part 71) & 9 CFR Part 91",
+    "description": "Official US entry regulations for dogs and cats flying from Great Britain to the United States under active CDC biosecurity statutes. Covers the August 2024 CDC Dog Import Form submission, 6-month age floor, ISO microchip verification, in-cabin flight options on outbound transatlantic carriers, and 0-day quarantine.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "The United Kingdom is categorized by the CDC as a dog-rabies free country. No rabies titer test is required.",
+    "titerDetail": "The United Kingdom is categorized by the CDC as a dog-rabies free country. No rabies titer test or CDC Animal Care Facility reservation is required.",
     "quarantineDays": "0 Days Quarantine",
     "quarantineDetail": "Direct release at all US international gateway airports upon presentation of the CDC Dog Import Form receipt.",
     "leadTime": "Instant Online Form",
@@ -1073,66 +1633,175 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "certificateDetail": "Free online CDC submission receipt + proof of ISO microchip and rabies vaccination.",
     "entryAirports": [
       "New York (JFK)",
-      "Boston (BOS)",
-      "Chicago (ORD)",
+      "Boston Logan (BOS)",
+      "Chicago O'Hare (ORD)",
       "Los Angeles (LAX)",
       "Miami (MIA)",
-      "San Francisco (SFO)"
+      "San Francisco (SFO)",
+      "Washington Dulles (IAD)"
     ],
+    "airlinePolicies": [
+      {
+        "name": "British Airways",
+        "code": "BA",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "BA flies pets as manifest cargo only on transatlantic flights departing London Heathrow into US gateway airports.",
+        "feeEstimate": "£900–£2,200 GBP",
+        "airlineGuideSlug": "british-airways"
+      },
+      {
+        "name": "Virgin Atlantic",
+        "code": "VS",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "Accepts pet dogs and cats in temperature-controlled cargo hold departing London Heathrow to US destinations.",
+        "feeEstimate": "£950–£2,400 GBP",
+        "airlineGuideSlug": "virgin-atlantic"
+      },
+      {
+        "name": "Air France (via Paris CDG)",
+        "code": "AF",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 8,
+        "notes": "Outbound passengers from the UK can transit via Paris CDG to fly small pets in-cabin to the US on Air France.",
+        "feeEstimate": "€125–€200 EUR each way",
+        "airlineGuideSlug": "air-france"
+      },
+      {
+        "name": "KLM Royal Dutch Airlines (via Amsterdam AMS)",
+        "code": "KL",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 8,
+        "notes": "Allows in-cabin dogs and cats under 8kg departing UK airports (e.g. Manchester, Edinburgh, Heathrow) via Amsterdam to the US.",
+        "feeEstimate": "€125–€200 EUR each way"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "Outbound Flights from UK: In-Cabin vs Direct Cargo",
+      "layoverRules": "European transit flights: If transiting through Paris (CDG), Amsterdam (AMS), or Frankfurt (FRA) with an in-cabin pet, verify that the pet stays with you in the passenger transit zone. Ensure your CDC Dog Import Form lists the origin as the UK.",
+      "directVsTransit": "Direct flights on British Airways and Virgin Atlantic require booking live animal cargo. If you want your pet in the cabin, booking a connecting flight through an EU hub (Air France or KLM) is the standard method.",
+      "landBorderOption": "UK to US travel is entirely transatlantic by air.",
+      "climateRestrictions": "US summer heat embargoes: Many US airports enforce cargo embargoes between May 15 and September 15 when ramp temperatures exceed 85°F (29.4°C)."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "Prior to Travel",
-        "title": "ISO 11784/11785 Microchip",
-        "description": "Confirm 15-digit microchip is implanted and recorded on veterinary records."
+        "timing": "Day -30 or Earlier",
+        "title": "ISO 11784/11785 Microchip Verification",
+        "description": "Confirm 15-digit microchip is active, scannable, and recorded on UK veterinary records."
       },
       {
         "step": 2,
-        "timing": "Prior to Departure",
-        "title": "Complete Online CDC Dog Import Form",
-        "description": "Submit free CDC form on official cdc.gov portal; save the email confirmation with QR code."
+        "timing": "Day -14 to -7 Before Departure",
+        "title": "UK Official Vet Health Exam & Export Certificate",
+        "description": "Licensed UK veterinarian conducts pre-flight clinical examination and issues export health documentation."
       },
       {
         "step": 3,
-        "timing": "Within 10 Days Before Flight",
-        "title": "UK Official Vet Health Certificate",
-        "description": "Veterinarian conducts pre-flight exam and issues export certificate."
+        "timing": "Day -7 to -1",
+        "title": "Submit Free Online CDC Dog Import Form",
+        "description": "Complete the official online CDC Dog Import Form on cdc.gov; download the email receipt containing the QR code (valid for 6 months)."
       },
       {
         "step": 4,
-        "timing": "Arrival at US Airport",
-        "title": "Customs & Border Protection (CBP) Clearance",
-        "description": "Show CDC receipt and airline transport documents at CBP inspection."
+        "timing": "Departure & Arrival Day",
+        "title": "Airline Gate & US CBP Customs Clearance",
+        "description": "Present CDC receipt QR code and UK vet records to airline agent at check-in and US Customs and Border Protection at US port of entry for immediate release."
       }
     ],
     "faqs": [
       {
-        "q": "Can my dog fly in the cabin from London to the US?",
-        "a": "While entering the UK mandates cargo, leaving the UK on outbound international flights permits in-cabin pet travel on select foreign airlines (such as Air France via Paris, KLM via Amsterdam, or Lufthansa via Frankfurt) if the pet meets their in-cabin size limits."
+        "q": "How do I bring my dog from the UK to the United States under the new CDC rule?",
+        "a": "To bring a dog from the UK to the US under CDC regulations: (1) Ensure your dog is at least 6 months old; (2) Verify the dog has an ISO 11784/11785 15-digit microchip; (3) Complete the free online CDC Dog Import Form on cdc.gov before departure; and (4) Show the email receipt QR code to airline staff and US CBP officers upon landing for 0-day quarantine entry."
       },
       {
-        "q": "What is the CDC requirement for dogs flying from the UK to the US?",
-        "a": "Because the UK is rabies-free, dogs only require an ISO microchip, to be at least 6 months old, and to have a free CDC Dog Import Form receipt generated online prior to arrival."
+        "q": "Can dogs fly in the passenger cabin on flights leaving the UK for America?",
+        "a": "Yes! While entering the UK prohibits in-cabin pets, leaving the UK on outbound international flights permits in-cabin pet travel on select carriers transiting through European hubs (such as Air France via Paris CDG or KLM via Amsterdam AMS) for pets under 8kg with carrier."
       },
       {
-        "q": "Is quarantine required when entering the US from the UK?",
-        "a": "No quarantine is required for dogs arriving in the United States from rabies-free countries like the UK."
+        "q": "What CDC documents are required for dogs from Great Britain?",
+        "a": "Because Great Britain is officially classified by the CDC as dog-rabies free, dogs only require an ISO microchip, proof of being at least 6 months old, and a free online CDC Dog Import Form submission receipt."
+      },
+      {
+        "q": "Does the US require rabies quarantine for British pets?",
+        "a": "No. Companion animals entering the United States directly from rabies-free countries like the United Kingdom face zero quarantine and are released immediately upon CBP document inspection."
+      },
+      {
+        "q": "Can puppies under 6 months old travel from the UK to the US?",
+        "a": "No. CDC regulations strictly ban the entry of any dog under 6 months (24 weeks) of age into the United States from any foreign country."
+      },
+      {
+        "q": "Do cats need a CDC form or health certificate to fly from the UK to the US?",
+        "a": "No. The CDC Dog Import Form applies exclusively to dogs. Domestic cats do not require CDC paperwork or federal rabies certificates for entry, though airlines require a veterinary health certificate."
       }
     ],
     "statutoryRequirements": [
       {
         "id": "uk-us-req-1",
         "category": "HEALTH_CERTIFICATE",
-        "categoryLabel": "CDC Dog Import Form",
-        "title": "CDC Rabies-Free Entry Receipt",
+        "categoryLabel": "CDC Dog Import Form Receipt",
+        "title": "Mandatory Online CDC Dog Import Form Receipt",
+        "applicableSpecies": "DOG",
         "severity": "BLOCKING",
         "rules": [
-          "Dog must be at least 6 months old.",
-          "Must have ISO microchip and completed CDC receipt."
+          "Must complete the free online CDC Dog Import Form prior to boarding.",
+          "Must present digital or printed email confirmation receipt with QR code to airline and CBP officers.",
+          "Receipt is valid for 6 months for multiple entries from rabies-free countries."
         ],
-        "protocol": "CBP inspection at US airport of arrival.",
+        "protocol": "CBP Gate Check: CBP officers scan receipt QR code at airport port of entry.",
+        "sourceName": "US Centers for Disease Control (CDC)",
+        "sourceUrl": "https://www.cdc.gov/importation/bringing-an-animal-into-the-united-states/dogs.html",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "uk-us-req-2",
+        "category": "AGE_RESTRICTION",
+        "categoryLabel": "CDC 6-Month Minimum Age Mandate",
+        "title": "Minimum 6-Month Age Requirement",
+        "applicableSpecies": "DOG",
+        "severity": "BLOCKING",
+        "rules": [
+          "All dogs entering the United States must be at least 6 months (24 weeks) old on travel day.",
+          "Puppies younger than 6 months are denied entry."
+        ],
+        "protocol": "Strict Age Enforcement: Birthdate on veterinary certificate is verified by border officers.",
         "sourceName": "CDC Dog Importation Rules",
         "sourceUrl": "https://www.cdc.gov/importation/bringing-an-animal-into-the-united-states/dogs.html",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "uk-us-req-3",
+        "category": "MICROCHIP",
+        "categoryLabel": "ISO 11784/11785 Microchip",
+        "title": "Standard 15-Digit Microchip Implantation",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Must have an ISO 11784/11785 compliant 15-digit microchip implanted before travel.",
+          "Microchip number must be accurately entered on the CDC Dog Import Form."
+        ],
+        "protocol": "Identity Verification: Microchip number must match all accompanying health documents.",
+        "sourceName": "CDC & USDA APHIS",
+        "sourceUrl": "https://www.cdc.gov/importation/bringing-an-animal-into-the-united-states/dogs.html",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "uk-us-req-4",
+        "category": "EXPORT_CERTIFICATE",
+        "categoryLabel": "UK Export Documentation",
+        "title": "UK Official Vet Health & Export Certificate",
+        "applicableSpecies": "BOTH",
+        "severity": "NON_BLOCKING",
+        "rules": [
+          "Clinical health certificate issued by a registered UK veterinary surgeon within 10 days of travel.",
+          "Confirms animal is fit to travel and free of infectious diseases."
+        ],
+        "protocol": "Airline Check-In: Required by transatlantic airline before boarding.",
+        "sourceName": "UK DEFRA & APHA",
+        "sourceUrl": "https://www.gov.uk/take-pet-abroad",
         "lastVerifiedAt": "September 21, 2026"
       }
     ]
@@ -1241,78 +1910,192 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "originCode": "US",
     "destCode": "CA",
     "region": "North America Cross-Border",
-    "authority": "Canadian Food Inspection Agency (CFIA)",
-    "legalBasis": "Health of Animals Regulations (C.R.C., c. 296) Part V",
-    "description": "Canadian Food Inspection Agency cross-border pet import requirements for companion animals entering Canada from the United States.",
+    "authority": "Canadian Food Inspection Agency (CFIA) & Canada Border Services Agency (CBSA)",
+    "legalBasis": "Health of Animals Act (S.C. 1990, c. 21) & CFIA Live Animal Import Regulations",
+    "description": "Official statutory compliance guide for taking dogs and cats from the United States into Canada. Covers bilingual rabies certificates, ISO 11784/11785 microchips, 0-day quarantine direct airport and land border entry, Ontario DOLA breed restrictions, and airline cabin vs baggage options.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "No rabies blood titer test is required for dogs or cats entering Canada directly from the United States.",
+    "titerDetail": "Canada does not require rabies antibody titer testing (FAVN/RNATT) for personal companion dogs and cats traveling directly from the United States.",
     "quarantineDays": "0 Days Quarantine",
-    "quarantineDetail": "Direct release upon visual documentation inspection by Canada Border Services Agency (CBSA) officers.",
-    "leadTime": "Current Vaccine",
-    "leadTimeDetail": "Valid current rabies vaccination required. No mandatory 21-day latency period enforced for tourist pet entries.",
-    "certificateType": "Standard Rabies Vaccination Certificate",
-    "certificateDetail": "Signed rabies certificate by a licensed US veterinarian specifying breed, sex, age, weight, vaccine trade name, lot number, and expiration.",
+    "quarantineDetail": "Direct release upon visual documentation inspection by Canada Border Services Agency (CBSA) officers at land border ports or airport customs.",
+    "leadTime": "Current Vaccine (30 Days if Primary)",
+    "leadTimeDetail": "Valid current rabies vaccination required. If it is a primary vaccination, at least 30 days must have elapsed before border entry for pets ≥ 3 months old.",
+    "certificateType": "Official Rabies Vaccination Certificate (Bilingual)",
+    "certificateDetail": "Signed rabies certificate by a licensed US veterinarian specifying breed, sex, age, weight, vaccine trade name, lot number, and expiration (English or French).",
     "entryAirports": [
       "Toronto Pearson (YYZ)",
       "Vancouver International (YVR)",
       "Montréal-Trudeau (YUL)",
-      "All US-Canada Land Border Ports"
+      "Calgary International (YYC)",
+      "All US-Canada Land Border Crossings (Blaine, Detroit, Niagara, Buffalo)"
     ],
     "restrictedBreeds": [
-      "Pit Bull Terrier",
-      "American Staffordshire Terrier",
-      "Staffordshire Bull Terrier",
-      "American Pit Bull (and crossbreeds) strictly banned from entry or transit into the Province of Ontario under the Dog Owners’ Liability Act (DOLA)"
+      "Pit Bull Terrier (Ontario BSL - DOLA)",
+      "American Staffordshire Terrier (Ontario)",
+      "Staffordshire Bull Terrier (Ontario)",
+      "American Pit Bull (and crossbreeds) strictly banned from entry or transit into the Province of Ontario under the Dog Owners’ Liability Act"
     ],
+    "airlinePolicies": [
+      {
+        "name": "Air Canada",
+        "code": "AC",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 10,
+        "notes": "Allows small dogs and cats in-cabin on cross-border US flights ($50–$100 CAD fee). Pets must fit under the seat in an approved carrier.",
+        "feeEstimate": "$50–$100 CAD each way",
+        "airlineGuideSlug": "air-canada"
+      },
+      {
+        "name": "WestJet",
+        "code": "WS",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 7.5,
+        "notes": "Allows in-cabin pets on direct flights from US to Canadian destinations ($50–$100 CAD fee).",
+        "feeEstimate": "$50–$100 CAD each way"
+      },
+      {
+        "name": "Delta Air Lines",
+        "code": "DL",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "Accepts small dogs and cats in-cabin on all direct US-to-Canada flights ($95 USD fee).",
+        "feeEstimate": "$95 USD each way",
+        "airlineGuideSlug": "delta-air-lines"
+      },
+      {
+        "name": "United Airlines",
+        "code": "UA",
+        "inCabinAllowed": true,
+        "cargoAllowed": false,
+        "notes": "Accepts in-cabin dogs and cats on cross-border flights into Canadian hubs ($150 USD fee).",
+        "feeEstimate": "$150 USD each way",
+        "airlineGuideSlug": "united-airlines"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "Cross-Border Driving vs Commercial Air Travel",
+      "layoverRules": "Domestic Canadian onward travel: Once cleared through CBSA customs at your first Canadian point of entry, pets travel under standard domestic carrier policies without further border checks.",
+      "directVsTransit": "Direct flights landing at YYZ, YVR, YUL, or YYC clear CBSA customs in the baggage hall. Pay the standard $30 CAD inspection fee at the customs desk.",
+      "landBorderOption": "Driving Across the Border: Pet owners driving across US-Canada land border crossings (e.g. Blaine/Peace Arch, Detroit-Windsor, Buffalo Peace Bridge) show the veterinary rabies certificate directly to the CBSA officer in the border booth.",
+      "climateRestrictions": "Winter pet travel: Canadian carriers may restrict pets in the baggage hold during extreme winter cold (below -10°C / 14°F)."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "Prior to Departure",
-        "title": "Verify Rabies Vaccination Validity",
-        "description": "Ensure pet has a current rabies certificate with full animal description and vaccine expiration date."
+        "timing": "Day -30 or Earlier",
+        "title": "ISO 11784/11785 Microchip & Rabies Vaccination",
+        "description": "Ensure pet has a 15-digit microchip and active rabies certificate signed by a licensed US veterinarian (in English or French)."
       },
       {
         "step": 2,
-        "timing": "Recommended",
-        "title": "Microchip Check",
-        "description": "While microchip is not federally mandatory for pet dogs over 8 months entering Canada, it is strongly recommended."
+        "timing": "Day -14 to -7 Before Travel",
+        "title": "Veterinary Pre-Flight Clinical Exam",
+        "description": "Licensed US vet confirms pet is clinically healthy and fits airline cabin carrier dimensions."
       },
       {
         "step": 3,
-        "timing": "At CBSA Border Post",
-        "title": "Customs Inspection & Fee",
-        "description": "Present pet and rabies certificate to Canada Border Services Agency officer. Pay $30 CAD inspection fee if applicable."
+        "timing": "Day -3 to -1",
+        "title": "Airline Pet Reservation",
+        "description": "Reserve in-cabin pet space with Air Canada, WestJet, Delta, or United."
+      },
+      {
+        "step": 4,
+        "timing": "Border Crossing Day",
+        "title": "CBSA Border Customs Declaration & Fee",
+        "description": "Present rabies certificate at land border booth or airport customs counter; pay standard $30 CAD inspection fee for immediate 0-day quarantine entry."
       }
     ],
     "faqs": [
       {
-        "q": "Is a USDA health certificate required to take a dog to Canada?",
-        "a": "No. For personal companion dogs and cats entering Canada from the US, a standard rabies vaccination certificate signed by your licensed private veterinarian is accepted. Formal USDA APHIS endorsement is not required for tourist pets."
+        "q": "How do I travel to Canada with my pet from the United States?",
+        "a": "To travel to Canada from the US with a dog or cat: (1) Ensure your pet has an ISO 11784/11785 microchip; (2) Obtain a valid rabies vaccination certificate in English or French signed by a licensed US vet; (3) Verify your pet is traveling as a personal companion (CFIA bans commercial rescue imports from rabies-high-risk countries); and (4) Present paperwork to CBSA officers at the airport or land border and pay the standard $30 CAD inspection fee."
       },
       {
-        "q": "Are pitbulls allowed in Canada?",
-        "a": "While Canada has no federal breed ban, the Province of Ontario enforces an import ban on Pit Bull Terriers, Staffordshire Bull Terriers, and American Staffordshire Terriers under the Dog Owners’ Liability Act (DOLA)."
+        "q": "Is a USDA APHIS health certificate required to take a dog to Canada?",
+        "a": "No. For personal companion dogs and cats entering Canada from the US for tourism or relocation with their owners, a standard rabies vaccination certificate signed by your licensed private veterinarian is accepted. Formal USDA APHIS endorsement is NOT required for personal tourist pets."
       },
       {
-        "q": "How old must a puppy be to enter Canada from the US?",
-        "a": "Commercial puppies must be at least 8 months old. Personal pets must be at least 3 months old to receive their primary rabies vaccination."
+        "q": "Can I drive across the US-Canada border with my dog or cat?",
+        "a": "Yes! Driving across US-Canada land border crossings (such as Peace Arch, Ambassador Bridge, or Niagara Falls) is seamless. Hand your pet’s rabies certificate directly to the CBSA officer in the inspection booth."
+      },
+      {
+        "q": "Are Pit Bulls and restricted breeds allowed into Canada?",
+        "a": "While Canada has no federal breed ban, the Province of Ontario enforces an import ban on Pit Bull Terriers, Staffordshire Bull Terriers, and American Staffordshire Terriers under the Dog Owners’ Liability Act (DOLA). Restricted breeds cannot be imported into or transit through Ontario."
+      },
+      {
+        "q": "What is the CBSA pet inspection fee at Canadian airports?",
+        "a": "Canada Border Services Agency (CBSA) collects a statutory pet inspection fee of approx. $30 CAD + tax for the first animal ($5 CAD for each additional animal) upon clearing customs at Canadian international airports."
+      },
+      {
+        "q": "Does Canada require a rabies titer test or quarantine for US pets?",
+        "a": "No. Personal companion dogs and cats traveling directly from the United States do not require a rabies antibody titer test (FAVN/RNATT) and are completely exempt from quarantine."
       }
     ],
     "statutoryRequirements": [
       {
-        "id": "ca-req-1",
+        "id": "us-ca-req-1",
         "category": "RABIES_VACCINATION",
         "categoryLabel": "CFIA Rabies Certificate Requirement",
-        "title": "Valid Rabies Certificate",
+        "title": "Bilingual Rabies Vaccination Certificate",
+        "applicableSpecies": "BOTH",
         "severity": "BLOCKING",
         "rules": [
-          "Must clearly state breed, color, sex, and weight of the animal.",
-          "Must state trade name, lot number, and duration of immunity of the rabies vaccine."
+          "Must clearly state breed, color, sex, age, and weight of the animal.",
+          "Must state vaccine trade name, lot number, serial number, and duration of immunity (1-year or 3-year).",
+          "Must be in English or French and signed by a licensed US veterinarian."
         ],
-        "protocol": "CBSA border officer inspection.",
+        "protocol": "CBSA Border Check: CBSA officers inspect rabies certificates at land border booths and airport primary inspection posts.",
         "sourceName": "Canadian Food Inspection Agency (CFIA)",
-        "sourceUrl": "https://inspection.canada.ca/animal-health/terrestrial-animals/imports/import-policies/live-animals/pet-imports/",
+        "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "us-ca-req-2",
+        "category": "MICROCHIP",
+        "categoryLabel": "ISO 11784/11785 Microchip",
+        "title": "Standard 15-Digit Microchip Implantation",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "ISO 11784/11785 compliant 15-digit microchip implanted before travel.",
+          "Mandatory for all dogs; strongly recommended and airline-required for cats."
+        ],
+        "protocol": "Identity Integrity: Microchip number eliminates border inspection delays with CBSA.",
+        "sourceName": "CFIA Animal Health Division",
+        "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "us-ca-req-3",
+        "category": "BREED_RESTRICTIONS",
+        "categoryLabel": "Ontario DOLA Breed Ban",
+        "title": "Ontario Dog Owners' Liability Act (DOLA) Pit Bull Ban",
+        "applicableSpecies": "DOG",
+        "severity": "BLOCKING",
+        "rules": [
+          "Pit Bull Terriers, Staffordshire Bull Terriers, American Staffordshire Terriers, and American Pit Bulls are strictly banned from entering Ontario.",
+          "Applies to dogs entering or transiting through Ontario (including layovers at Toronto Pearson YYZ)."
+        ],
+        "protocol": "Provincial Enforcement: Prohibited breeds entering Ontario face seizure and immediate re-exportation.",
+        "sourceName": "Government of Ontario / CFIA",
+        "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "us-ca-req-4",
+        "category": "CUSTOMS_FEE",
+        "categoryLabel": "CBSA Port Inspection Fee",
+        "title": "Statutory Airport Inspection Fee ($30 CAD + Tax)",
+        "applicableSpecies": "BOTH",
+        "severity": "NON_BLOCKING",
+        "rules": [
+          "Payable at CBSA primary inspection upon clearing Canadian airport customs ($30 CAD + tax for first animal)."
+        ],
+        "protocol": "Collected at CBSA customs counter at Toronto (YYZ), Vancouver (YVR), Montreal (YUL), or Calgary (YYC).",
+        "sourceName": "CBSA",
+        "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets",
         "lastVerifiedAt": "September 21, 2026"
       }
     ]
@@ -3966,62 +4749,122 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "region": "North America → Great Britain",
     "authority": "Department for Environment, Food & Rural Affairs (DEFRA) & APHA",
     "legalBasis": "The Non-Commercial Movement of Pet Animals Order 2011 & Retained Regulation (EU) 576/2013",
-    "description": "Statutory non-commercial entry regulations for traveling with pets from Canada to Great Britain. Canada is listed in Part 1 of Annex II to Regulation (EU) No 577/2013 (rabies-controlled country). Requires ISO microchip, rabies vaccination (with 21-day latency), Great Britain pet health certificate endorsed by CFIA, 24–120 hour tapeworm treatment for dogs, and arrival as manifest cargo.",
+    "description": "Statutory non-commercial entry regulations for traveling with pets from Canada to Great Britain under the UK Pet Travel Scheme (PETS). Covers mandatory CFIA district office endorsement within 10 days, 24–120 hour veterinary tapeworm treatment, manifest cargo arrival at London Heathrow HARC, and 0-day quarantine.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "Canada is a Part 1 listed country. No rabies antibody titer test is required for direct entry into Great Britain.",
+    "titerDetail": "Canada is recognized as a Part 1 listed country under UK DEFRA statutes. No rabies antibody titer test is required for direct entry into Great Britain.",
     "quarantineDays": "0 Days Quarantine",
-    "quarantineDetail": "Direct release upon customs inspection at London Heathrow Animal Reception Centre (HARC) or Gatwick.",
+    "quarantineDetail": "Direct release upon customs inspection at London Heathrow Animal Reception Centre (HARC), Gatwick, or Manchester.",
     "leadTime": "30 Days Minimum",
-    "leadTimeDetail": "Microchip + rabies vaccine with 21-day latency + CFIA export endorsement + 24–120 hour tapeworm treatment.",
-    "certificateType": "Great Britain Pet Health Certificate (endorsed by CFIA)",
-    "certificateDetail": "Must be issued by a licensed Canadian vet and endorsed with an official CFIA stamp within 10 days of travel.",
+    "leadTimeDetail": "Microchip + rabies vaccine with 21-day latency + CFIA district office export endorsement + 24–120 hour tapeworm treatment.",
+    "certificateType": "Great Britain Pet Health Certificate (CFIA Endorsed)",
+    "certificateDetail": "Must be issued by a licensed Canadian veterinarian and endorsed with an official CFIA stamp within 10 days of travel.",
     "entryAirports": [
       "London Heathrow (LHR - HARC Cargo)",
       "London Gatwick (LGW - Cargo)",
-      "Manchester Airport (MAN - Cargo)"
+      "Manchester Airport (MAN - Cargo)",
+      "Edinburgh Airport (EDI - Cargo)"
     ],
     "restrictedBreeds": [
+      "XL Bully (Dangerous Dogs Act 1991)",
       "Pit Bull Terrier",
       "Japanese Tosa",
       "Dogo Argentino",
-      "Fila Brasileiro",
-      "XL Bully"
+      "Fila Brasileiro"
     ],
+    "airlinePolicies": [
+      {
+        "name": "Air Canada Cargo (AC PetConnect)",
+        "code": "AC",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "Air Canada transports pets as manifest cargo via AC PetConnect from Toronto YYZ, Vancouver YVR, and Montreal YUL into London Heathrow HARC. In-cabin pet travel is strictly prohibited for UK arrivals.",
+        "feeEstimate": "$1,100–$2,600 CAD",
+        "airlineGuideSlug": "air-canada"
+      },
+      {
+        "name": "British Airways / IAG Cargo",
+        "code": "BA",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "Flies pets as manifest cargo into LHR HARC and Manchester.",
+        "feeEstimate": "$1,200–$2,800 CAD",
+        "airlineGuideSlug": "british-airways"
+      },
+      {
+        "name": "Air France (via Paris Transit Workaround)",
+        "code": "AF",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 8,
+        "notes": "Travelers wishing to avoid cargo can fly Air France in-cabin to Paris CDG, then enter the UK via Eurotunnel Le Shuttle with an accredited pet taxi.",
+        "feeEstimate": "$200 CAD + £300–£600 (Eurotunnel / pet taxi)",
+        "airlineGuideSlug": "air-france"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "CFIA Physical Endorsement & Manifest Cargo Protocol",
+      "layoverRules": "Direct transatlantic routing is strongly recommended. If transiting through European airports, ensure the pet remains in transit and documents are not stamped by intermediate EU customs unless intentionally entering the EU first.",
+      "directVsTransit": "All commercial airline flights landing in the UK require booking pets as manifest cargo with an Air Waybill (AWB). Hand luggage / in-cabin pets cannot be brought directly into UK airports.",
+      "landBorderOption": "In-Cabin Workaround: Fly in-cabin from Montreal/Toronto to Paris CDG or Amsterdam AMS, then drive across to Great Britain via Eurotunnel Folkestone.",
+      "climateRestrictions": "Winter pet travel: Extreme Canadian winter cold (temperatures below -10°C / 14°F) can trigger ground cargo embargoes at Toronto YYZ and Montreal YUL."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "30+ Days Before Departure",
+        "timing": "Day -30 or Earlier",
         "title": "ISO Microchip & Rabies Vaccination",
-        "description": "Administer rabies vaccine after confirming 15-digit ISO microchip."
+        "description": "Implant 15-digit ISO microchip. Administer rabies shot on the same day or after; a 21-day latency period must elapse before export."
       },
       {
         "step": 2,
-        "timing": "24 to 120 Hours Before UK Landing",
-        "title": "Tapeworm Treatment for Dogs",
-        "description": "Canadian vet administers Praziquantel and records exact date and time on GB health certificate."
+        "timing": "Day -21 to -14",
+        "title": "Book Manifest Cargo Air Waybill (AWB)",
+        "description": "Reserve live animal manifest cargo space with Air Canada Cargo (PetConnect) or IAG Cargo into London Heathrow HARC."
       },
       {
         "step": 3,
-        "timing": "Within 10 Days of Departure",
-        "title": "CFIA District Office Endorsement",
-        "description": "CFIA official veterinarian inspects pet and stamps the Great Britain health certificate."
+        "timing": "Day -5 to -1 (24–120h Window)",
+        "title": "Mandatory Tapeworm (Praziquantel) Treatment",
+        "description": "Canadian veterinarian administers Praziquantel and records exact date and time on Section II of the Great Britain Health Certificate."
       },
       {
         "step": 4,
+        "timing": "Within 10 Days of Departure",
+        "title": "CFIA District Office Official Endorsement",
+        "description": "Official CFIA veterinarian inspects the health certificate and applies the physical sovereign endorsement stamp."
+      },
+      {
+        "step": 5,
         "timing": "Arrival at Heathrow HARC",
-        "title": "Manifest Cargo Clearance & Release",
-        "description": "HARC inspection and release to pet owner."
+        "title": "Animal Reception Centre Inspection & Release",
+        "description": "HARC verifies microchip, stamps customs clearance, and releases pet to owner within 2–4 hours of flight landing."
       }
     ],
     "faqs": [
       {
-        "q": "Can my dog fly from Toronto or Vancouver in-cabin to London?",
-        "a": "No. All pets entering the UK by air must arrive as manifest cargo with an airway bill (AWB)."
+        "q": "Can my dog fly in-cabin from Toronto or Vancouver to London?",
+        "a": "No. Under UK DEFRA regulations, commercial airlines are legally prohibited from bringing pets into the UK in passenger cabins (except certified assistance dogs). All companion pets must arrive as manifest cargo under an Air Waybill (AWB)."
       },
       {
-        "q": "Is tapeworm treatment mandatory for dogs coming from Canada to the UK?",
-        "a": "Yes. All dogs entering Great Britain from Canada must be treated with Praziquantel by a licensed veterinarian 24 to 120 hours before landing."
+        "q": "How do I get CFIA endorsement for the Great Britain Pet Health Certificate?",
+        "a": "Your private veterinarian in Canada fills out the official Great Britain Pet Health Certificate. You then take or courier the certificate to your local CFIA District Office (Animal Health Division), where an official CFIA veterinarian reviews the records and applies the sovereign endorsement stamp within 10 days of travel."
+      },
+      {
+        "q": "Is tapeworm treatment mandatory for dogs entering the UK from Canada?",
+        "a": "Yes. All dogs entering Great Britain from Canada must be treated with an approved praziquantel product by a licensed veterinarian between 24 and 120 hours (1 to 5 days) before scheduled arrival in the UK."
+      },
+      {
+        "q": "Is a rabies titer test required for pets from Canada to the UK?",
+        "a": "No. Canada is listed as a Part 1 rabies-controlled country by UK DEFRA. No rabies antibody titer test (FAVN/RNATT) is required for direct travel."
+      },
+      {
+        "q": "What happens at London Heathrow Animal Reception Centre (HARC) upon arrival?",
+        "a": "Upon landing at Heathrow (LHR), airline staff transport your pet directly to HARC. Official veterinary staff scan the microchip, check the CFIA-endorsed health certificate and tapeworm records, and release the pet to you or your clearing agent in approx. 2 to 4 hours."
+      },
+      {
+        "q": "Are XL Bullies and Pitbulls permitted into the UK from Canada?",
+        "a": "No. The UK Dangerous Dogs Act strictly prohibits importing XL Bullies, Pit Bull Terriers, Japanese Tosas, Dogo Argentinos, and Fila Brasileiros."
       }
     ],
     "statutoryRequirements": [
@@ -4030,12 +4873,61 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
         "category": "TAPEWORM_TREATMENT",
         "categoryLabel": "DEFRA Tapeworm Protocol for Dogs",
         "title": "Mandatory 24–120h Praziquantel Treatment",
+        "applicableSpecies": "DOG",
         "severity": "BLOCKING",
         "rules": [
-          "Administered 24 to 120 hours before UK landing by registered Canadian vet.",
-          "Contains Praziquantel."
+          "Administered 24 to 120 hours before UK landing by registered Canadian veterinarian.",
+          "Must contain Praziquantel or licensed equivalent.",
+          "Exact date, hour, and drug brand must be entered on Section II of the Great Britain certificate."
         ],
-        "protocol": "Verified at London Heathrow Animal Reception Centre (HARC).",
+        "protocol": "Strict Window: Administering outside the 24–120h window results in border quarantine or refusal.",
+        "sourceName": "UK DEFRA Pet Travel Scheme",
+        "sourceUrl": "https://www.gov.uk/bring-pet-to-great-britain",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "ca-gb-req-2",
+        "category": "HEALTH_CERTIFICATE",
+        "categoryLabel": "CFIA Endorsed GB Health Certificate",
+        "title": "CFIA District Office Health Certificate Endorsement",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Official Great Britain Pet Health Certificate completed by licensed Canadian veterinarian.",
+          "Officially stamped and endorsed by a CFIA District Veterinarian within 10 days of departure."
+        ],
+        "protocol": "10-Day Window: Must be stamped by CFIA within 10 days of UK landing.",
+        "sourceName": "Canadian Food Inspection Agency (CFIA)",
+        "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/exports/live-animals",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "ca-gb-req-3",
+        "category": "MICROCHIP",
+        "categoryLabel": "ISO 11784/11785 Microchip",
+        "title": "Standard 15-Digit Microchip Implantation",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "15-digit ISO 11784/11785 compliant microchip must be implanted before rabies vaccination."
+        ],
+        "protocol": "Identity Integrity: Microchip transponder must match all documents and cargo Air Waybill.",
+        "sourceName": "UK APHA & DEFRA",
+        "sourceUrl": "https://www.gov.uk/bring-pet-to-great-britain",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "ca-gb-req-4",
+        "category": "RABIES_VACCINATION",
+        "categoryLabel": "Rabies Immunization Protocol",
+        "title": "Rabies Vaccination with 21-Day Wait",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Valid rabies vaccination given at 12 weeks of age or older after microchipping.",
+          "Primary vaccine requires a 21-day latency period before departure."
+        ],
+        "protocol": "Latency Clock: Primary rabies vaccine becomes legally effective on Day 22.",
         "sourceName": "UK DEFRA",
         "sourceUrl": "https://www.gov.uk/bring-pet-to-great-britain",
         "lastVerifiedAt": "September 21, 2026"
@@ -4051,12 +4943,12 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "originCode": "GB",
     "destCode": "CA",
     "region": "Great Britain → North America",
-    "authority": "Canadian Food Inspection Agency (CFIA) & CBSA",
+    "authority": "Canadian Food Inspection Agency (CFIA) & Canada Border Services Agency (CBSA)",
     "legalBasis": "Health of Animals Act & CFIA Dog and Cat Importation Policy",
     "description": "Statutory non-commercial entry regulations for traveling with pets from Great Britain to Canada. Requires valid rabies vaccination certificate (in English or French), ISO microchip, DEFRA veterinary export certificate, and payment of the standard CBSA inspection fee ($30 CAD) upon airport arrival.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "Canada does not require rabies antibody titer testing for personal companion pets arriving from the UK.",
+    "titerDetail": "Canada does not require rabies antibody titer testing (FAVN/RNATT) for personal companion pets arriving from the UK.",
     "quarantineDays": "0 Days Quarantine",
     "quarantineDetail": "Direct release upon CBSA document inspection and payment of the veterinary inspection fee at Canadian airports.",
     "leadTime": "30 Days Minimum",
@@ -4069,49 +4961,151 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
       "Montréal-Trudeau (YUL)",
       "Calgary International (YYC)"
     ],
+    "airlinePolicies": [
+      {
+        "name": "Air Canada",
+        "code": "AC",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 10,
+        "notes": "Direct flights from London Heathrow (LHR) to Toronto, Vancouver, Montreal, and Calgary. Small pets permitted in-cabin ($50–$100 CAD fee); larger pets travel via AC Cargo.",
+        "feeEstimate": "$50–$100 CAD (in-cabin) / $1,000–$2,200 CAD (cargo)",
+        "airlineGuideSlug": "air-canada"
+      },
+      {
+        "name": "British Airways",
+        "code": "BA",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "Accepts pets as manifest cargo departing London Heathrow into Toronto YYZ and Vancouver YVR.",
+        "feeEstimate": "£900–£2,200 GBP",
+        "airlineGuideSlug": "british-airways"
+      },
+      {
+        "name": "WestJet",
+        "code": "WS",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "maxInCabinWeightKg": 7.5,
+        "notes": "Direct flights from London Gatwick (LGW) and Edinburgh (EDI) to Calgary and Toronto. Allows in-cabin pets under 7.5kg.",
+        "feeEstimate": "$50–$100 CAD each way"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "Direct Transatlantic Flights & Airport Customs Clearance",
+      "layoverRules": "Direct flights from London (LHR/LGW) to Toronto (YYZ) or Vancouver (YVR) are fastest. If connecting through an EU hub, ensure the pet remains in the sterile transit area.",
+      "directVsTransit": "Air Canada and WestJet allow in-cabin companion pets departing UK airports to Canadian gateways, providing a comfortable journey without mandatory cargo booking.",
+      "landBorderOption": "UK to Canada travel is entirely transatlantic by air.",
+      "climateRestrictions": "Canadian winter cold: Canadian airlines enforce ramp temperature embargoes below -10°C (14°F) for hold/cargo animals."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "30+ Days Before Departure",
+        "timing": "Day -30 or Earlier",
         "title": "ISO Microchip & Rabies Vaccination",
-        "description": "Confirm ISO microchip and administer valid rabies vaccination."
+        "description": "Confirm ISO microchip and administer valid rabies vaccination (if primary, at least 30 days before travel)."
       },
       {
         "step": 2,
         "timing": "Within 10 Days of Departure",
-        "title": "UK Vet Exam & DEFRA Certificate",
-        "description": "Official Veterinarian completes bilingual export health certificate."
+        "title": "UK Vet Exam & Export Health Certificate",
+        "description": "UK Official Veterinarian completes bilingual export health certificate specifying breed, microchip, and vaccine details."
       },
       {
         "step": 3,
+        "timing": "Day -3 to -1",
+        "title": "Airline Pet Reservation",
+        "description": "Confirm in-cabin pet reservation with Air Canada or WestJet, or finalize cargo booking."
+      },
+      {
+        "step": 4,
         "timing": "Arrival at Canadian Airport",
         "title": "CBSA Customs Inspection & Fee Payment",
-        "description": "CBSA officer inspects paperwork and collects standard inspection fee ($30 CAD)."
+        "description": "CBSA officer inspects paperwork and collects standard inspection fee ($30 CAD) for immediate 0-day quarantine entry."
       }
     ],
     "faqs": [
       {
-        "q": "Can my pet fly in-cabin from London to Toronto?",
-        "a": "Yes, provided the operating carrier (e.g. Air Canada, British Airways) permits in-cabin pets and your pet meets the carrier size and weight constraints."
+        "q": "Can my pet fly in-cabin from London to Toronto or Vancouver?",
+        "a": "Yes! Unlike inbound flights to the UK, outbound transatlantic flights from London to Canada on Air Canada and WestJet permit small companion dogs and cats in the passenger cabin (under 8–10kg including carrier)."
       },
       {
-        "q": "What is required by CFIA for bringing a dog from the UK into Canada?",
-        "a": "Canada CFIA requires a valid rabies vaccination certificate signed by a licensed veterinarian, in English or French, specifying breed, weight, and microchip number."
+        "q": "What health certificate does Canada CFIA require from the UK?",
+        "a": "CFIA requires a valid rabies vaccination certificate signed by a licensed veterinarian (in English or French) specifying the animal’s breed, sex, weight, microchip number, vaccine brand, and lot number."
+      },
+      {
+        "q": "Is there any quarantine for pets moving from the UK to Canada?",
+        "a": "No. The UK is recognized as a rabies-free territory by CFIA. Pets enter Canada with 0 days quarantine upon document verification at CBSA customs."
+      },
+      {
+        "q": "What is the CBSA pet inspection fee at Canadian ports of entry?",
+        "a": "CBSA collects an inspection fee of approx. $30 CAD + tax for the first animal ($5 CAD for each additional animal) at Canadian airport customs counters."
+      },
+      {
+        "q": "Are Pit Bulls and dangerous breeds banned from entering Canada from the UK?",
+        "a": "While Canada has no federal breed ban, the Province of Ontario enforces an import ban on Pit Bull Terriers, Staffordshire Bull Terriers, and American Staffordshire Terriers under the Dog Owners’ Liability Act (DOLA)."
       }
     ],
     "statutoryRequirements": [
       {
         "id": "gb-ca-req-1",
-        "category": "HEALTH_CERTIFICATE",
+        "category": "RABIES_VACCINATION",
         "categoryLabel": "CFIA Rabies Certificate Mandate",
         "title": "Bilingual Rabies Certificate for Canada",
+        "applicableSpecies": "BOTH",
         "severity": "BLOCKING",
         "rules": [
           "Must be in English or French and signed by a licensed veterinarian.",
-          "Must list animal identification, microchip number, vaccine trade name, and expiration date."
+          "Must list animal identification, microchip number, vaccine trade name, lot number, and expiration date.",
+          "Primary vaccine must be given at least 30 days prior to border entry."
         ],
-        "protocol": "CBSA border officer checks documentation upon airport landing.",
+        "protocol": "CBSA Border Check: CBSA border officer checks documentation upon landing.",
         "sourceName": "Canadian Food Inspection Agency (CFIA)",
+        "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "gb-ca-req-2",
+        "category": "MICROCHIP",
+        "categoryLabel": "ISO 11784/11785 Microchip",
+        "title": "Standard 15-Digit Microchip Implantation",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "ISO 11784/11785 compliant 15-digit microchip implanted before travel."
+        ],
+        "protocol": "Identity Integrity: Microchip number eliminates border inspection delays with CBSA.",
+        "sourceName": "CFIA Animal Health Division",
+        "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "gb-ca-req-3",
+        "category": "BREED_RESTRICTIONS",
+        "categoryLabel": "Ontario DOLA Breed Ban",
+        "title": "Ontario Dog Owners' Liability Act (DOLA) Pit Bull Ban",
+        "applicableSpecies": "DOG",
+        "severity": "BLOCKING",
+        "rules": [
+          "Pit Bull Terriers, Staffordshire Bull Terriers, American Staffordshire Terriers, and American Pit Bulls are strictly banned from entering Ontario."
+        ],
+        "protocol": "Provincial Enforcement: Prohibited breeds entering Ontario face seizure and immediate re-exportation.",
+        "sourceName": "Government of Ontario / CFIA",
+        "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "gb-ca-req-4",
+        "category": "CUSTOMS_FEE",
+        "categoryLabel": "CBSA Port Inspection Fee",
+        "title": "Statutory Airport Inspection Fee ($30 CAD + Tax)",
+        "applicableSpecies": "BOTH",
+        "severity": "NON_BLOCKING",
+        "rules": [
+          "Payable at CBSA primary inspection upon clearing Canadian airport customs ($30 CAD + tax for first animal)."
+        ],
+        "protocol": "Collected at CBSA customs counter at Toronto (YYZ), Vancouver (YVR), Montreal (YUL), or Calgary (YYC).",
+        "sourceName": "CBSA",
         "sourceUrl": "https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets",
         "lastVerifiedAt": "September 21, 2026"
       }
@@ -4291,10 +5285,10 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
     "region": "Great Britain → Republic of Ireland",
     "authority": "Department of Agriculture, Food and the Marine (DAFM Ireland) & DEFRA",
     "legalBasis": "Pet Passport (No. 2) Regulations 2014 & Regulation (EU) No 576/2013",
-    "description": "Statutory non-commercial entry regulations for traveling with pets from Great Britain to the Republic of Ireland post-Brexit. Governs APHA Animal Health Certificate (AHC) or valid EU Pet Passport, ISO microchip, 21-day rabies latency, mandatory 24–120 hour tapeworm treatment for dogs (Echinococcus multilocularis), and advance notification to DAFM before arrival.",
+    "description": "Statutory non-commercial entry regulations for taking dogs, cats, and ferrets from Great Britain to the Republic of Ireland post-Brexit. Governs DEFRA Animal Health Certificate (AHC) or valid EU Pet Passport, ISO microchip, 21-day rabies latency, mandatory 24–120 hour tapeworm treatment for dogs, 24-hour advance DAFM notification, and ferry/air transport options.",
     "titerRequired": "Exempt / Not Required",
     "titerStatus": "exempt",
-    "titerDetail": "Great Britain is a Part 2 listed third country. No rabies titer test is required for direct entry into Ireland.",
+    "titerDetail": "Great Britain is a Part 2 listed third country under EU Regulation 577/2013. No rabies blood titer test is required for direct entry into Ireland.",
     "quarantineDays": "0 Days Quarantine",
     "quarantineDetail": "Direct release upon document and microchip check at Dublin Airport (DUB), Cork Airport (ORK), or Dublin / Rosslare ferry ports.",
     "leadTime": "21 Days Minimum",
@@ -4305,8 +5299,8 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
       "Dublin Airport (DUB)",
       "Cork Airport (ORK)",
       "Shannon Airport (SNN)",
-      "Dublin Port (Ferry)",
-      "Rosslare Europort (Ferry)"
+      "Dublin Port (Irish Ferries / Stena Line)",
+      "Rosslare Europort (Stena Line / Irish Ferries)"
     ],
     "restrictedBreeds": [
       "American Pit Bull Terrier",
@@ -4318,48 +5312,106 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
       "Rhodesian Ridgeback",
       "Rottweiler",
       "Japanese Akita",
-      "Japanese Tosa (Restricted breeds in Ireland must be leashed and muzzled in public)"
+      "Japanese Tosa (Must be securely muzzled and on a strong short leash ≤ 2m in all public spaces in Ireland under the Control of Dogs Act)"
     ],
+    "airlinePolicies": [
+      {
+        "name": "Irish Ferries (Holyhead → Dublin / Pembroke → Rosslare)",
+        "code": "IF",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "notes": "Offers dedicated pet-friendly passenger cabins and heated onboard kennels. Pets can also stay inside your vehicle on the vehicle deck.",
+        "feeEstimate": "£15–£30 GBP per pet each way"
+      },
+      {
+        "name": "Stena Line (Holyhead → Dublin / Fishguard → Rosslare)",
+        "code": "SL",
+        "inCabinAllowed": true,
+        "cargoAllowed": true,
+        "notes": "Dedicated pet lounges on select vessels (pets allowed on leash in pet lounge) or in private pet cabins and pre-booked kennels.",
+        "feeEstimate": "£15–£25 GBP per pet each way"
+      },
+      {
+        "name": "Aer Lingus",
+        "code": "EI",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "Aer Lingus Cargo handles companion animals as cargo on select routes; assistance dogs permitted in cabin.",
+        "feeEstimate": "£150–£350 GBP"
+      },
+      {
+        "name": "British Airways",
+        "code": "BA",
+        "inCabinAllowed": false,
+        "cargoAllowed": true,
+        "notes": "Live animal transport operated via IAG Cargo into Dublin.",
+        "feeEstimate": "£200–£450 GBP",
+        "airlineGuideSlug": "british-airways"
+      }
+    ],
+    "transitAdvice": {
+      "headline": "Irish Sea Ferry Crossings vs Commercial Air Travel",
+      "layoverRules": "Northern Ireland Transit: Under the Windsor Framework and Common Travel Area arrangements, pets moving between Great Britain and Northern Ireland for non-commercial purposes travel seamlessly, but travel onwards across the border into the Republic of Ireland must satisfy EU/DAFM rules.",
+      "directVsTransit": "Ferry travel (Holyhead to Dublin or Fishguard to Rosslare) is the most popular, stress-free route because pet owners can keep pets in pet-friendly cabins or dedicated lounges without cargo crating.",
+      "landBorderOption": "Driving & Ferries: Drive onto Irish Ferries or Stena Line at Holyhead or Pembroke; clear DAFM check upon landing at Dublin Port or Rosslare.",
+      "climateRestrictions": "Winter sea conditions: Irish Sea crossings operate year-round, though stormy weather may cause ferry delays."
+    },
     "timelineSteps": [
       {
         "step": 1,
-        "timing": "Prior to Travel",
-        "title": "ISO Microchip & Rabies Vaccine",
-        "description": "Confirm ISO microchip and valid rabies vaccination with 21-day latency."
+        "timing": "Day -30 or Earlier",
+        "title": "ISO Microchip & Rabies Vaccination",
+        "description": "Confirm 15-digit microchip. Administer rabies vaccine (21-day latency period must elapse before entering Ireland)."
       },
       {
         "step": 2,
         "timing": "Within 10 Days of Departure",
-        "title": "UK Official Veterinarian AHC Exam",
-        "description": "UK Official Veterinarian issues bilingual English/Irish Animal Health Certificate."
+        "title": "UK Official Veterinarian Issues AHC",
+        "description": "UK Official Veterinarian conducts health exam and issues bilingual Animal Health Certificate (or updates active EU Pet Passport)."
       },
       {
         "step": 3,
-        "timing": "24 to 120 Hours Before Arrival in Ireland",
-        "title": "Mandatory Tapeworm Treatment for Dogs",
-        "description": "Licensed vet administers Praziquantel and records exact date and time on health certificate."
+        "timing": "24 to 120 Hours Before Landing in Ireland",
+        "title": "Mandatory Tapeworm (Praziquantel) Treatment",
+        "description": "Licensed vet administers Praziquantel and records exact date and hour on the AHC or EU Pet Passport."
       },
       {
         "step": 4,
-        "timing": "At Least 24 Hours Before Arrival",
-        "title": "DAFM Advance Notice Submission",
-        "description": "Submit advance notice email/form to DAFM portal at port of entry (Dublin Airport or ferry terminal)."
+        "timing": "At Least 24 Hours Before Travel",
+        "title": "DAFM Advance Compliance Notice",
+        "description": "Email the DAFM Border Control Post at your port of arrival (Dublin Airport, Cork, Rosslare, or Dublin Port) with pet details and travel time."
       },
       {
         "step": 5,
         "timing": "Arrival in Ireland",
-        "title": "DAFM Biosecurity Check",
-        "description": "DAFM officers verify microchip and tapeworm timestamp before release."
+        "title": "DAFM Port Clearance & Release",
+        "description": "DAFM biosecurity officers scan microchip and verify tapeworm window timestamp for immediate release with 0 days quarantine."
       }
     ],
     "faqs": [
       {
-        "q": "Is tapeworm treatment required for dogs traveling from the UK to Ireland?",
-        "a": "Yes. Ireland is free of Echinococcus multilocularis tapeworm and strictly enforces mandatory veterinary administration of Praziquantel 24 to 120 hours before arrival."
+        "q": "Taking a dog to Ireland from UK: What are the statutory requirements?",
+        "a": "To take a dog from Great Britain to Ireland post-Brexit: (1) Ensure your dog has an ISO 11784/11785 microchip; (2) Administer a rabies vaccine at least 21 days before departure; (3) Obtain an Animal Health Certificate (AHC) from a UK Official Veterinarian within 10 days of travel (or use a valid EU Pet Passport); (4) Have a vet administer tapeworm (praziquantel) treatment 24 to 120 hours before arrival; and (5) Notify DAFM at least 24 hours in advance. Entry has 0 days quarantine."
       },
       {
-        "q": "Can I travel between Northern Ireland and the Republic of Ireland with my pet?",
-        "a": "Under the Common Travel Area and Northern Ireland Protocol, checks are not routine on the land border, but all pets entering Ireland must comply with EU/DAFM statutory health rules."
+        "q": "Is tapeworm treatment required for dogs traveling from the UK to Ireland?",
+        "a": "Yes! Because the Republic of Ireland is officially free of Echinococcus multilocularis tapeworm, all dogs entering Ireland from Great Britain must be treated with an approved Praziquantel product by a licensed veterinarian between 24 and 120 hours (1 to 5 days) before scheduled arrival."
+      },
+      {
+        "q": "Can I take my pet on the ferry from Holyhead to Dublin?",
+        "a": "Yes! Both Irish Ferries and Stena Line operate pet-friendly ferry services between Holyhead and Dublin Port. You can book private pet-friendly cabins, dedicated pet lounges, or pre-reserved onboard kennels."
+      },
+      {
+        "q": "Does an EU Pet Passport issued in Ireland or the EU work for UK-Ireland travel?",
+        "a": "Yes. If your pet has a valid EU Pet Passport issued in the Republic of Ireland or another EU member state (with current rabies vaccination recorded by an EU vet), it remains fully valid for travel between the UK and Ireland without needing a UK AHC."
+      },
+      {
+        "q": "How do I notify DAFM before arriving in Ireland with a pet?",
+        "a": "You must send an advance notification email to the DAFM portal team at your intended point of entry (e.g. petmove@agriculture.gov.ie for Dublin Airport or the specific DAFM office for Dublin Port / Rosslare) at least 24 hours prior to arrival with pet and travel details."
+      },
+      {
+        "q": "Are restricted dog breeds allowed in Ireland?",
+        "a": "Ireland permits restricted breeds (such as German Shepherds, Rottweilers, Staffordshire Bull Terriers, and Dobermans), but by law they must be securely muzzled and controlled on a strong short leash (maximum 2 meters) by a person over 16 years old in all public places under the Control of Dogs Regulations."
       }
     ],
     "statutoryRequirements": [
@@ -4368,14 +5420,63 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
         "category": "TAPEWORM_TREATMENT",
         "categoryLabel": "Echinococcus Multilocularis Protocol for Ireland",
         "title": "Mandatory 24–120h Praziquantel Treatment for Dogs",
+        "applicableSpecies": "DOG",
         "severity": "BLOCKING",
         "rules": [
-          "Administered by licensed vet 24 to 120 hours before scheduled arrival in Ireland.",
-          "Active ingredient must be Praziquantel.",
-          "Must be recorded in UK Animal Health Certificate with date and exact hour."
+          "Administered by licensed veterinarian 24 to 120 hours before scheduled arrival in Ireland.",
+          "Active ingredient must be Praziquantel or licensed equivalent.",
+          "Must be recorded in UK Animal Health Certificate or EU Pet Passport with exact date and hour of administration."
         ],
-        "protocol": "Verified by DAFM compliance officers at Dublin Airport and ferry terminals.",
+        "protocol": "Strict Window: Administering less than 24 hours or more than 120 hours prior to arrival results in border quarantine or refusal.",
         "sourceName": "Irish Department of Agriculture, Food and the Marine (DAFM)",
+        "sourceUrl": "https://www.gov.ie/en/publication/21d40-pet-travel/",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "gb-ie-req-2",
+        "category": "HEALTH_CERTIFICATE",
+        "categoryLabel": "UK Animal Health Certificate (AHC)",
+        "title": "UK Animal Health Certificate within 10 Days",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Must possess an Animal Health Certificate (AHC) issued by an Official Veterinarian (OV) in the UK within 10 days of travel, OR a valid EU Pet Passport.",
+          "AHC is valid for 4 months of onward travel throughout the EU and return to the UK."
+        ],
+        "protocol": "Border Verification: Inspected by DAFM compliance officers at Dublin, Cork, or Rosslare.",
+        "sourceName": "DAFM Ireland & UK DEFRA",
+        "sourceUrl": "https://www.gov.ie/en/publication/21d40-pet-travel/",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "gb-ie-req-3",
+        "category": "ADVANCE_NOTIFICATION",
+        "categoryLabel": "DAFM 24-Hour Notice",
+        "title": "Mandatory 24-Hour DAFM Advance Notice",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Travelers must email the DAFM Border Control Post at their port of arrival at least 24 hours prior to travel.",
+          "Includes pet transponder number, owner contact info, and flight/ferry booking details."
+        ],
+        "protocol": "Notification Logging: DAFM logs arrival and prepares on-site biosecurity inspector.",
+        "sourceName": "DAFM Ireland",
+        "sourceUrl": "https://www.gov.ie/en/publication/21d40-pet-travel/",
+        "lastVerifiedAt": "September 21, 2026"
+      },
+      {
+        "id": "gb-ie-req-4",
+        "category": "RABIES_VACCINATION",
+        "categoryLabel": "Rabies Immunization Protocol",
+        "title": "Rabies Vaccination with 21-Day Latency",
+        "applicableSpecies": "BOTH",
+        "severity": "BLOCKING",
+        "rules": [
+          "Pet must be microchipped before rabies vaccine is administered.",
+          "At least 21 days must elapse after primary rabies vaccination before travel."
+        ],
+        "protocol": "21-Day Rule: Primary vaccine becomes legally active on Day 22.",
+        "sourceName": "DAFM Ireland & European Commission",
         "sourceUrl": "https://www.gov.ie/en/publication/21d40-pet-travel/",
         "lastVerifiedAt": "September 21, 2026"
       }
