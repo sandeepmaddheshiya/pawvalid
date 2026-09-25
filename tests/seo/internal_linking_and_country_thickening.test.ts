@@ -459,4 +459,383 @@ describe('SEO Architecture & Content Thickening Validation', () => {
       expect(ageReq?.rules.join(' ')).toContain('6 months');
     });
   });
+
+  describe('Section 9: Route Page Strategy & Depth Qualification Framework', () => {
+    const PRIORITY_CORRIDORS = [
+      'usa-to-uk',
+      'uk-to-usa',
+      'usa-to-canada',
+      'canada-to-usa',
+      'uk-to-canada',
+      'canada-to-uk',
+      'usa-to-mexico',
+      'uk-to-ireland',
+      'uk-to-france',
+      'usa-to-france',
+    ];
+
+    it('all 10 priority routes must pass the comprehensive corridor qualification framework', async () => {
+      const { CORRIDORS } = await import('@/lib/data/corridors');
+
+      for (const slug of PRIORITY_CORRIDORS) {
+        const route = CORRIDORS[slug];
+        expect(route, `Corridor ${slug} should exist in CORRIDORS`).toBeDefined();
+        if (!route) continue;
+
+        // 1. Flight-specific carrier policies
+        expect(route.airlinePolicies, `Corridor ${slug} must have airlinePolicies`).toBeDefined();
+        expect(route.airlinePolicies!.length).toBeGreaterThanOrEqual(2);
+        for (const airline of route.airlinePolicies!) {
+          expect(airline.name).toBeTruthy();
+          expect(airline.code).toBeTruthy();
+          expect(airline.notes).toBeTruthy();
+          expect(airline.feeEstimate).toBeTruthy();
+        }
+
+        // 2. Layover and border crossing transit advice
+        expect(route.transitAdvice, `Corridor ${slug} must have transitAdvice`).toBeDefined();
+        expect(route.transitAdvice!.headline).toBeTruthy();
+        expect(route.transitAdvice!.directVsTransit).toBeTruthy();
+        expect(route.transitAdvice!.layoverRules).toBeTruthy();
+
+        // 3. Combined route timeline (4-5 steps)
+        expect(route.timelineSteps.length).toBeGreaterThanOrEqual(4);
+        for (const step of route.timelineSteps) {
+          expect(step.step).toBeGreaterThanOrEqual(1);
+          expect(step.timing).toBeTruthy();
+          expect(step.title).toBeTruthy();
+          expect(step.description).toBeTruthy();
+        }
+
+        // 4. Conversational FAQ block (at least 5-6 FAQs per route)
+        expect(route.faqs.length).toBeGreaterThanOrEqual(5);
+
+        // 5. Statutory requirements with species qualification
+        expect(route.statutoryRequirements.length).toBeGreaterThanOrEqual(4);
+        for (const req of route.statutoryRequirements) {
+          expect(req.title).toBeTruthy();
+          expect(req.rules.length).toBeGreaterThanOrEqual(1);
+          expect(req.protocol).toBeTruthy();
+          expect(req.sourceName).toBeTruthy();
+          expect(req.lastVerifiedAt).toContain('2026');
+        }
+      }
+    });
+
+    it('should verify USA to Mexico corridor matches "how can i take my dog to mexico" query intent', async () => {
+      const { CORRIDORS } = await import('@/lib/data/corridors');
+      const route = CORRIDORS['usa-to-mexico'];
+      expect(route).toBeDefined();
+      if (!route) return;
+
+      expect(route.authority).toContain('SENASICA');
+      expect(route.titerStatus).toBe('exempt');
+      expect(route.quarantineDays).toBe('0 Days Quarantine');
+      expect(route.transitAdvice?.landBorderOption).toContain('Cross Border Xpress');
+      expect(route.airlinePolicies?.map((a) => a.name)).toContain('Aeromexico');
+      expect(route.airlinePolicies?.map((a) => a.name)).toContain('Volaris');
+
+      const faqText = route.faqs.map((f) => f.q + ' ' + f.a).join(' ');
+      expect(faqText).toContain('SENASICA OISA');
+      expect(faqText).toContain('CIS');
+    });
+
+    it('should verify UK to Ireland corridor matches "taking a dog to ireland" intent with ferry details', async () => {
+      const { CORRIDORS } = await import('@/lib/data/corridors');
+      const route = CORRIDORS['uk-to-ireland'];
+      expect(route).toBeDefined();
+      if (!route) return;
+
+      expect(route.authority).toContain('DAFM');
+      expect(route.transitAdvice?.directVsTransit).toContain('Holyhead to Dublin');
+      expect(route.airlinePolicies?.map((a) => a.name)).toContain('Irish Ferries (Holyhead → Dublin / Pembroke → Rosslare)');
+      expect(route.airlinePolicies?.map((a) => a.name)).toContain('Stena Line (Holyhead → Dublin / Fishguard → Rosslare)');
+
+      const tapewormReq = route.statutoryRequirements.find((r) => r.category === 'TAPEWORM_TREATMENT');
+      expect(tapewormReq).toBeDefined();
+      expect(tapewormReq?.applicableSpecies).toBe('DOG');
+    });
+
+    it('should verify UK to France corridor matches "moving pets to france" with Eurotunnel Le Shuttle', async () => {
+      const { CORRIDORS } = await import('@/lib/data/corridors');
+      const route = CORRIDORS['uk-to-france'];
+      expect(route).toBeDefined();
+      if (!route) return;
+
+      expect(route.transitAdvice?.headline).toContain('Eurotunnel Folkestone');
+      expect(route.airlinePolicies?.map((a) => a.name)).toContain('Eurotunnel Le Shuttle (Folkestone → Calais)');
+      expect(route.airlinePolicies?.map((a) => a.name)).toContain('P&O Ferries / DFDS (Dover → Calais / Dunkirk)');
+
+      const breedReq = route.statutoryRequirements.find((r) => r.category === 'BREED_RESTRICTIONS');
+      expect(breedReq).toBeDefined();
+      expect(breedReq?.rules.join(' ')).toContain('Category 1');
+    });
+
+    it('should verify UK to USA corridor enforces August 2024 CDC Dog Import Rule & 6-month age floor', async () => {
+      const { CORRIDORS } = await import('@/lib/data/corridors');
+      const route = CORRIDORS['uk-to-usa'];
+      expect(route).toBeDefined();
+      if (!route) return;
+
+      expect(route.legalBasis).toContain('CDC Final Rule on Dog Importation (42 CFR Part 71)');
+      const ageReq = route.statutoryRequirements.find((r) => r.category === 'AGE_RESTRICTION');
+      expect(ageReq).toBeDefined();
+      expect(ageReq?.rules.join(' ')).toContain('6 months');
+
+      const cdcReq = route.statutoryRequirements.find((r) => r.category === 'HEALTH_CERTIFICATE');
+      expect(cdcReq).toBeDefined();
+      expect(cdcReq?.rules.join(' ')).toContain('CDC Dog Import Form');
+    });
+
+    it('should verify USA to UK corridor covers manifest cargo into London HARC and Paris workaround', async () => {
+      const { CORRIDORS } = await import('@/lib/data/corridors');
+      const route = CORRIDORS['usa-to-uk'];
+      expect(route).toBeDefined();
+      if (!route) return;
+
+      expect(route.authority).toContain('DEFRA');
+      expect(route.transitAdvice?.landBorderOption).toContain('Eurotunnel Le Shuttle');
+      expect(route.restrictedBreeds).toContain('XL Bully (Dangerous Dogs Act 1991)');
+
+      const ba = route.airlinePolicies?.find((a) => a.name === 'British Airways');
+      expect(ba).toBeDefined();
+      expect(ba?.inCabinAllowed).toBe(false);
+      expect(ba?.cargoAllowed).toBe(true);
+      expect(ba?.notes).toContain('IAG Cargo');
+    });
+  });
+
+  describe('Section 11: USDA / APHIS / VEHCS Content Cluster', () => {
+    it('should map all five striking-distance query variants directly into explicit H3 FAQs on the VEHCS guide', () => {
+      const vehcsGuide = GUIDES.find((g) => g.slug === 'usda-aphis-vehcs-guide');
+      expect(vehcsGuide).toBeDefined();
+      if (!vehcsGuide) return;
+
+      const questions = vehcsGuide.faqs.map((f) => f.q.toLowerCase());
+
+      // 1. Literal search phrase: "vehcs"
+      expect(questions.some((q) => q.includes('vehcs'))).toBe(true);
+
+      // 2. Literal search phrase: "usda aphis vehcs"
+      expect(questions.some((q) => q.includes('usda aphis vehcs'))).toBe(true);
+
+      // 3. Literal search phrase: "vehcs aphis"
+      expect(questions.some((q) => q.includes('vehcs aphis'))).toBe(true);
+
+      // 4. Literal search phrase: "usda endorsement"
+      expect(questions.some((q) => q.includes('usda endorsement'))).toBe(true);
+
+      // 5. Literal search phrase: "usda endorsement office"
+      expect(questions.some((q) => q.includes('usda endorsement office'))).toBe(true);
+    });
+
+    it('should clarify 100% digital ESC transition (no walk-ins) in the "usda endorsement office" answer', () => {
+      const vehcsGuide = GUIDES.find((g) => g.slug === 'usda-aphis-vehcs-guide');
+      expect(vehcsGuide).toBeDefined();
+      if (!vehcsGuide) return;
+
+      const officeFaq = vehcsGuide.faqs.find((f) => f.q.toLowerCase().includes('usda endorsement office'));
+      expect(officeFaq).toBeDefined();
+      expect(officeFaq?.a).toContain('100% digital processing');
+      expect(officeFaq?.a).toContain('no longer accept walk-in appointments');
+      expect(officeFaq?.a).toContain('Endorsement Service Centers');
+    });
+  });
+
+  describe('Section 14: Programmatic SEO — Minimum Quality Bar', () => {
+    it('Rule 1: should ensure all 16 country pages pass the checklist bar with at least 5 populated requirement items', () => {
+      const all = getAllCountries();
+      expect(all.length).toBe(16);
+
+      for (const country of all) {
+        expect(
+          country.statutoryRequirements.length,
+          `Country ${country.slug} failed requirement count bar (got ${country.statutoryRequirements.length})`
+        ).toBeGreaterThanOrEqual(5);
+
+        for (const req of country.statutoryRequirements) {
+          expect(req.id).toBeTruthy();
+          expect(req.category).toBeTruthy();
+          expect(req.categoryLabel).toBeTruthy();
+          expect(req.title).toBeTruthy();
+          expect(req.rules.length).toBeGreaterThanOrEqual(1);
+          expect(req.protocol).toBeTruthy();
+          expect(req.sourceName).toBeTruthy();
+          expect(req.sourceUrl.startsWith('http')).toBe(true);
+          expect(req.lastVerifiedAt).toContain('2026');
+        }
+      }
+    });
+
+    it('Rule 2: should ensure all 16 country pages have at least 3 FAQs matching real query intents', () => {
+      const all = getAllCountries();
+      for (const country of all) {
+        expect(
+          country.faqs.length,
+          `Country ${country.slug} failed FAQ count bar (got ${country.faqs.length})`
+        ).toBeGreaterThanOrEqual(3);
+
+        for (const faq of country.faqs) {
+          expect(faq.q.length).toBeGreaterThanOrEqual(10);
+          expect(faq.a.length).toBeGreaterThanOrEqual(20);
+        }
+      }
+    });
+
+    it('Rule 3: should ensure all 16 country pages have at least 1 verified inbound route and guide links', () => {
+      const all = getAllCountries();
+      for (const country of all) {
+        expect(
+          country.inboundCorridors.length,
+          `Country ${country.slug} failed inbound corridors bar`
+        ).toBeGreaterThanOrEqual(1);
+
+        for (const corridor of country.inboundCorridors) {
+          expect(corridor.originName).toBeTruthy();
+          expect(corridor.originFlag).toBeTruthy();
+          expect(corridor.corridorSlug).toBeTruthy();
+          expect(corridor.leadTime).toBeTruthy();
+        }
+      }
+    });
+
+    it('Rule 4: should ensure all 16 country pages have a named, linked government source', () => {
+      const all = getAllCountries();
+      for (const country of all) {
+        expect(country.authority).toBeTruthy();
+        expect(country.authorityUrl.startsWith('http')).toBe(true);
+        expect(country.legalBasis).toBeTruthy();
+      }
+    });
+
+    it('Rule 5: should ensure all 16 country pages have genuinely unique country-specific statutes and elements', () => {
+      const all = getAllCountries();
+      const uniqueStatutes = new Set<string>();
+
+      for (const country of all) {
+        expect(country.legalBasis.length).toBeGreaterThanOrEqual(15);
+        uniqueStatutes.add(country.legalBasis);
+
+        // Every country must have entryAirports defined
+        expect(country.entryAirports.length).toBeGreaterThanOrEqual(1);
+
+        // Check specific signature elements for priority countries
+        if (country.slug === 'singapore') {
+          expect(country.description).toContain('CAPQ');
+          expect(country.statutoryRequirements.map((r) => r.category)).toContain('IMPORT_PERMIT');
+        } else if (country.slug === 'australia') {
+          expect(country.description).toContain('Mickleham');
+        } else if (country.slug === 'japan') {
+          expect(country.description).toContain('MAFF');
+          expect(country.statutoryRequirements.map((r) => r.category)).toContain('ADVANCE_NOTIFICATION');
+        } else if (country.slug === 'germany') {
+          expect(country.description).toContain('HundVerbrEinfG');
+        } else if (country.slug === 'switzerland') {
+          expect(country.description).toContain('TSchV');
+        } else if (country.slug === 'mexico') {
+          expect(country.description).toContain('SENASICA');
+        }
+      }
+
+      // Legal bases across all 16 countries must be distinct
+      expect(uniqueStatutes.size).toBe(16);
+    });
+  });
+
+  describe('Section 15: E-E-A-T / Trust & Reviewer Transparency Validation', () => {
+    it('should verify that 100% of guides feature named credentialed reviewers and primary official sources', () => {
+      expect(GUIDES.length).toBeGreaterThanOrEqual(4);
+      for (const guide of GUIDES) {
+        expect(guide.reviewerName, `Guide ${guide.slug} missing reviewerName`).toBeTruthy();
+        expect(guide.reviewerName).toContain('Dr. Sarah Miller, DVM');
+        expect(guide.reviewerTitle).toBeTruthy();
+        expect(guide.reviewerUrl).toBeTruthy();
+        expect(guide.dateModified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(guide.lastReviewedDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(guide.officialSources?.length, `Guide ${guide.slug} missing official sources`).toBeGreaterThanOrEqual(3);
+
+        for (const source of guide.officialSources || []) {
+          expect(source.name).toBeTruthy();
+          expect(source.authority).toBeTruthy();
+          expect(source.url.startsWith('http')).toBe(true);
+        }
+      }
+    });
+
+    it('should verify that all 16 country pages have primary sovereign authority citations', () => {
+      const all = getAllCountries();
+      expect(all.length).toBe(16);
+      for (const country of all) {
+        expect(country.authority).toBeTruthy();
+        expect(country.authorityUrl.startsWith('http')).toBe(true);
+        expect(country.legalBasis.length).toBeGreaterThanOrEqual(10);
+      }
+    });
+  });
+
+  describe('Section 16: CTR Optimization Validation', () => {
+    it('should optimize titles and meta descriptions for high-intent search queries', () => {
+      const favn = GUIDES.find((g) => g.slug === 'rabies-titer-test-favn-guide');
+      expect(favn?.title).toBe('Rabies Titer Test (FAVN) Guide: Cost, Rules & Wait Times by Country (2026)');
+      expect(favn?.seoTitle).toBe('Rabies Titer Test (FAVN) Guide: Cost, Rules & Wait Times by Country (2026) | PawValid');
+      expect(favn?.description).toContain('Step-by-step rabies titer test (FAVN) guide');
+
+      const vehcs = GUIDES.find((g) => g.slug === 'usda-aphis-vehcs-guide');
+      expect(vehcs?.title).toBe('USDA Pet Health Certificate: What It Is & How to Get One (2026)');
+      expect(vehcs?.seoTitle).toBe('USDA Pet Health Certificate: What It Is & How to Get One (2026) | PawValid');
+      expect(vehcs?.description).toContain('Step-by-step guide to the USDA pet health certificate');
+
+      const iata = GUIDES.find((g) => g.slug === 'iata-crate-requirements');
+      expect(iata?.title).toBe('IATA Pet Crate Requirements: Sizing Rules & Checklist (2026)');
+      expect(iata?.seoTitle).toBe('IATA Pet Crate Requirements: Sizing Rules & Checklist (2026) | PawValid');
+      expect(iata?.description).toContain('Exact IATA-approved crate dimensions');
+    });
+  });
+
+  describe('Section 17: Internal Linking Plan Validation', () => {
+    it('should verify natural cross-linking between FAVN and VEHCS guides', () => {
+      const favn = GUIDES.find((g) => g.slug === 'rabies-titer-test-favn-guide');
+      const vehcs = GUIDES.find((g) => g.slug === 'usda-aphis-vehcs-guide');
+
+      const favnContent = JSON.stringify(favn?.sections);
+      expect(favnContent).toContain('[USDA APHIS VEHCS endorsement](/en/guides/usda-aphis-vehcs-guide)');
+
+      const vehcsContent = JSON.stringify(vehcs?.sections);
+      expect(vehcsContent).toContain('[rabies titer test requirements](/en/guides/rabies-titer-test-favn-guide)');
+    });
+
+    it('should verify country page inbound and contextual guide links for Singapore, Canada, and UK', () => {
+      const sg = getCountryBySlug('singapore');
+      const sgText = JSON.stringify(sg?.statutoryRequirements);
+      expect(sgText).toContain('[FAVN / RNATT rabies titer test](/en/guides/rabies-titer-test-favn-guide)');
+      expect(sgText).toContain('[importing a pet from the US to Singapore](/en/pet-travel/usa-to-singapore)');
+
+      const ca = getCountryBySlug('canada');
+      const caText = JSON.stringify(ca?.statutoryRequirements);
+      expect(caText).toContain('[USDA endorsement (exempt for personal pet travel to Canada)](/en/guides/usda-aphis-vehcs-guide)');
+
+      const uk = getCountryBySlug('united-kingdom');
+      const ukText = JSON.stringify(uk?.statutoryRequirements);
+      expect(ukText).toContain('[USDA-endorsed health certificate](/en/guides/usda-aphis-vehcs-guide)');
+      expect(ukText).toContain('[rabies titer test](/en/guides/rabies-titer-test-favn-guide)');
+    });
+
+    it('should verify that guide comparison tables link out to country hubs', () => {
+      const favn = GUIDES.find((g) => g.slug === 'rabies-titer-test-favn-guide');
+      const vehcs = GUIDES.find((g) => g.slug === 'usda-aphis-vehcs-guide');
+
+      const favnTables = JSON.stringify(favn?.sections.filter((s) => s.table));
+      expect(favnTables).toContain('[Singapore](/en/countries/singapore)');
+      expect(favnTables).toContain('[Japan](/en/countries/japan)');
+      expect(favnTables).toContain('[Australia](/en/countries/australia)');
+
+      const vehcsTables = JSON.stringify(vehcs?.sections.filter((s) => s.table));
+      expect(vehcsTables).toContain('[United Kingdom](/en/countries/united-kingdom)');
+      expect(vehcsTables).toContain('[Singapore](/en/countries/singapore)');
+      expect(vehcsTables).toContain('[Canada](/en/countries/canada)');
+    });
+  });
 });
+
+
+

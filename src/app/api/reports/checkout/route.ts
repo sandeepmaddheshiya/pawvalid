@@ -106,7 +106,15 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // ─── 3. SANDBOX / DEMO MODE ────────────────────────────────────────────
+    // ─── 3. SANDBOX / DEMO MODE (Development Only) ────────────────────────────
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[Reports Checkout] No payment provider configured. POLAR_ACCESS_TOKEN is missing or invalid.');
+      return NextResponse.json(
+        { error: 'Payment gateway configuration error. POLAR_ACCESS_TOKEN is not loaded on the server.' },
+        { status: 500 }
+      );
+    }
+
     const mockOrderId = `order_demo_${assessmentId.slice(0, 8)}_${Date.now()}`;
     const mockPaymentId = `pay_demo_${Date.now()}`;
 
