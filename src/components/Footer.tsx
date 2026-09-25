@@ -76,7 +76,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/en/countries" className="hover:text-white transition-colors">
-                  Destination Countries
+                  Pet Import by Country
                 </Link>
               </li>
               <li>
@@ -100,7 +100,7 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs text-zinc-400">
               <li>
                 <Link href="/en/countries" className="hover:text-white transition-colors">
-                  Destination Guides (15 Countries)
+                  Pet Import Guides (15 Countries)
                 </Link>
               </li>
               <li>

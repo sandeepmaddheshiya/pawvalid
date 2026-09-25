@@ -159,7 +159,7 @@ export default function Header() {
                     href="/en/countries"
                     className="block px-4 py-2 text-xs font-medium text-zinc-900 hover:bg-zinc-50 transition-colors"
                   >
-                    Destination Countries (15 Guides)
+                    Pet Import Rules (15 Countries)
                   </Link>
                   <Link
                     href="/en/pet-travel"

@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: CountryPageProps): Promise<Me
     title,
     description,
     keywords: [
+      `pet import ${country.name.toLowerCase()}`,
       `pet travel ${country.name.toLowerCase()}`,
       `dog import ${country.name.toLowerCase()}`,
       `cat passport ${country.name.toLowerCase()}`,
@@ -74,7 +75,7 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
 
   const breadcrumbs = [
     { name: 'Home', url: '/' },
-    { name: 'Destination Countries', url: '/en/countries' },
+    { name: 'Pet Import Directory', url: '/en/countries' },
     { name: country.name, url: `/en/countries/${country.slug}` },
   ];
 
@@ -113,7 +114,7 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-zinc-600 text-xs">
             <Link href="/" className="hover:text-zinc-900 transition-colors">Home</Link>
             <span className="text-zinc-300">/</span>
-            <Link href="/en/countries" className="hover:text-zinc-900 transition-colors">Destination Countries</Link>
+            <Link href="/en/countries" className="hover:text-zinc-900 transition-colors font-medium">Pet Import Hub</Link>
             <span className="text-zinc-300">/</span>
             <span className="font-semibold text-zinc-900">{country.name}</span>
           </nav>
@@ -654,7 +655,27 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
         </div>
       </section>
 
-      {/* ─── 9. CONVERSION CTA BANNER ───────────────────────────────────── */}
+      {/* ─── 9. GLOBAL PET IMPORT HUB BACKLINK ─────────────────────────── */}
+      <section className="py-8 bg-zinc-50 border-t border-zinc-200/80">
+        <div className="section-container flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="font-serif text-base font-bold text-zinc-900">
+              Need Pet Import Requirements for Other Countries?
+            </h3>
+            <p className="text-xs text-zinc-600 mt-0.5">
+              Compare biosecurity protocols, rabies titer rules, and quarantine lead times across 15+ destination guides.
+            </p>
+          </div>
+          <Link
+            href="/en/countries"
+            className="inline-flex items-center gap-2 text-xs font-bold text-emerald-800 hover:text-emerald-950 bg-white hover:bg-emerald-50 border border-zinc-200 hover:border-emerald-300 px-4 py-2.5 rounded-xl transition-all shadow-2xs whitespace-nowrap"
+          >
+            <span>← Browse All Pet Import Requirements &amp; Guides</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* ─── 10. CONVERSION CTA BANNER ──────────────────────────────────── */}
       <section className="py-12 bg-white border-t border-zinc-200/80">
         <div className="section-container">
           <div className="bg-[#08162A] text-white rounded-3xl p-8 sm:p-12 border border-white/10 shadow-xl text-center relative overflow-hidden">

@@ -6,13 +6,40 @@ import { getBreadcrumbSchema, getFaqSchema } from '@/lib/seo/schema';
 import { getHreflangAlternates } from '@/lib/seo/hreflang';
 
 export const metadata: Metadata = {
-  title: 'Pet Import Rules by Country — Statutory Destination Guides (2026) | PawValid',
+  title: 'Pet Import Requirements by Country: 2026 Global Directory | PawValid',
   description:
     'Comprehensive statutory pet import requirements, quarantine periods, blood titer testing rules, and official government health certificate protocols for the top 15 international pet travel destinations.',
+  keywords: [
+    'pet import',
+    'pet import requirements',
+    'pet import rules by country',
+    'dog import',
+    'cat import',
+    'international pet import guide',
+    'veterinary health certificate import',
+  ],
   alternates: getHreflangAlternates('/countries'),
+  openGraph: {
+    title: 'Pet Import Requirements by Country: 2026 Global Directory | PawValid',
+    description:
+      'Comprehensive statutory pet import requirements, quarantine periods, blood titer testing rules, and official government health certificate protocols for international dog and cat arrivals.',
+    url: 'https://pawvalid.online/en/countries',
+    siteName: 'PawValid',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pet Import Requirements by Country: 2026 Global Directory | PawValid',
+    description:
+      'Comprehensive statutory pet import requirements, quarantine periods, blood titer testing rules, and official government health certificate protocols.',
+  },
 };
 
 const DIRECTORY_FAQS = [
+  {
+    q: 'What is pet import and what documents are required?',
+    a: 'Pet import refers to the legal, veterinary, and customs process of transporting a domestic companion animal (such as a dog or cat) into a sovereign nation or territory. Standard statutory requirements across all countries include an ISO 11784/11785 compliant microchip, an up-to-date rabies vaccination administered after microchipping, an endorsed Veterinary Health Certificate (or electronic VEHCS submission), and, where mandated by biosecurity law, advance import permits, rabies titer (FAVN/RNATT) testing, and internal/external parasite treatments.',
+  },
   {
     q: 'Why do pet import rules vary significantly by destination country?',
     a: 'Pet entry regulations are established by each sovereign country\'s national veterinary authority (e.g., DEFRA in the UK, USDA APHIS in the US, DAFF in Australia, BMEL in Germany) to protect domestic animal populations and public health against rabies, Echinococcus multilocularis tapeworms, screw-worm, and other communicable zoonotic diseases.',
@@ -36,7 +63,7 @@ export default function CountriesIndexPage() {
 
   const breadcrumbs = [
     { name: 'Home', url: '/' },
-    { name: 'Destination Countries', url: '/en/countries' },
+    { name: 'Pet Import Directory', url: '/en/countries' },
   ];
 
   const breadcrumbSchema = getBreadcrumbSchema(breadcrumbs);
@@ -60,7 +87,7 @@ export default function CountriesIndexPage() {
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-zinc-600 text-xs">
             <Link href="/" className="hover:text-zinc-900 transition-colors">Home</Link>
             <span className="text-zinc-300">/</span>
-            <span className="font-semibold text-zinc-900">Destination Countries</span>
+            <span className="font-semibold text-zinc-900">Pet Import Directory</span>
           </nav>
           <div className="inline-flex items-center gap-1.5 text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/80 text-[11px] font-semibold">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -74,14 +101,26 @@ export default function CountriesIndexPage() {
         <div className="section-container">
           <div className="max-w-3xl">
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">
-              Statutory Entry Protocols
+              Global Pet Import Hub &amp; Statutory Entry Protocols
             </span>
             <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-900 tracking-tight leading-tight mb-3">
               Pet Import Requirements by Destination Country
             </h1>
-            <p className="text-sm sm:text-base text-zinc-600 leading-relaxed">
+            <p className="text-sm sm:text-base text-zinc-600 leading-relaxed mb-6">
               Authoritative border control protocols, blood titer requirements, mandatory quarantine rules, and government health certificate procedures for international dog and cat arrivals across the top 15 global destinations.
             </p>
+
+            {/* Direct Definition Callout Box */}
+            <div className="bg-emerald-50/70 rounded-2xl border border-emerald-200/80 p-5 sm:p-6 text-zinc-800">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-emerald-700 font-bold text-xs uppercase tracking-wider">
+                  Direct Answer • Pet Import Definition &amp; Statutory Basics
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm leading-relaxed text-zinc-700">
+                <strong>What is pet import?</strong> Pet import is the formal process of legally transporting a dog, cat, or other domestic animal into a foreign country in compliance with national veterinary public health laws. Every destination enforces specific requirements—including <strong>ISO 15-digit microchipping</strong>, <strong>rabies vaccination timelines</strong>, <strong>FAVN blood titer tests</strong>, <strong>tapeworm deworming</strong>, and <strong>government-endorsed health certificates</strong>—to prevent the entry of communicable diseases.
+              </p>
+            </div>
           </div>
 
           {/* Quick Metrics */}

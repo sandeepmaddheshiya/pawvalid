@@ -415,7 +415,7 @@ export default function HomePage() {
                   href="/en/countries"
                   className="inline-flex items-center gap-1 text-xs font-semibold text-[#0E2342] hover:text-[#0FA958] transition-colors"
                 >
-                  <span>View all 15 country guides</span>
+                  <span>Browse all 15 pet import country guides</span>
                   <span>→</span>
                 </Link>
                 <Link
