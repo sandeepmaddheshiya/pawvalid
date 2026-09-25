@@ -303,7 +303,33 @@ export const GUIDES: RegulatoryGuide[] = [
     readTime: '8 min read',
     category: 'Government Endorsement',
     dateModified: '2026-09-21',
+    lastReviewedDate: '2026-09-21',
+    reviewerName: 'Dr. Sarah Miller, DVM',
+    reviewerTitle: 'Veterinary Biosecurity Specialist & Regulatory Reviewer',
+    reviewerUrl: '/en/editorial-policy',
     statutoryBasis: 'USDA Animal and Plant Health Inspection Service (APHIS), 9 CFR Part 91, European Commission Implementing Regulation (EU) 2026/131, Singapore AVS Import Requirements',
+    officialSources: [
+      {
+        name: 'USDA APHIS Pet Travel Official Endorsement Portal (VEHCS)',
+        url: 'https://www.aphis.usda.gov/pet-travel',
+        authority: 'United States Department of Agriculture (USDA APHIS)',
+      },
+      {
+        name: 'eCFR: Title 9 CFR Part 91 (Inspection and Handling of Livestock for Exportation)',
+        url: 'https://www.ecfr.gov/current/title-9/chapter-I/subchapter-D/part-91',
+        authority: 'US Code of Federal Regulations',
+      },
+      {
+        name: 'eCFR: Title 9 CFR Part 130 (User Fees for Export Health Certificates)',
+        url: 'https://www.ecfr.gov/current/title-9/chapter-I/subchapter-G/part-130',
+        authority: 'US Code of Federal Regulations',
+      },
+      {
+        name: 'European Commission DG SANTE Implementing Regulation (EU) 2026/131',
+        url: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32013R0576',
+        authority: 'European Union Animal Health Law',
+      },
+    ],
     summary:
       'The USDA Animal and Plant Health Inspection Service (APHIS) Veterinary Export Health Certification System (VEHCS) is the mandatory federal portal through which international pet travel health certificates issued in the United States are reviewed and legally endorsed. For travel to the European Union, Great Britain, Singapore, Japan, Australia, and most global destinations, a USDA-accredited veterinarian must physically examine your pet and submit the certificate within a strict 10-day window before scheduled arrival. Official federal endorsement validates that the animal meets all receiving nation biosecurity statutes.',
     sections: [
@@ -311,8 +337,8 @@ export const GUIDES: RegulatoryGuide[] = [
         id: 'what-is-vehcs',
         title: '1. What is VEHCS?',
         content: [
-          'VEHCS (Veterinary Export Health Certification System) is the official online federal portal operated by the USDA Animal and Plant Health Inspection Service (APHIS) through which USDA-accredited veterinarians electronically create, sign, and submit international pet health certificates for sovereign government endorsement.',
-          'Under international bilateral agreements, destination foreign governments (including the European Union, United Kingdom, Singapore, Japan, and Australia) do not accept health certificates signed merely by a private, licensed veterinarian. They require sovereign government-to-government certification from the USDA APHIS Veterinary Services division—the competent veterinary authority of the United States.',
+          'VEHCS (Veterinary Export Health Certification System) is the official online federal portal operated by the [USDA Animal and Plant Health Inspection Service (APHIS)](https://www.aphis.usda.gov/pet-travel) through which USDA-accredited veterinarians electronically create, sign, and submit international pet health certificates for sovereign government endorsement.',
+          'Under international bilateral agreements and [9 CFR Part 91](https://www.ecfr.gov/current/title-9/chapter-I/subchapter-D/part-91), destination foreign governments (including the European Union, United Kingdom, Singapore, Japan, and Australia) do not accept health certificates signed merely by a private, licensed veterinarian. They require sovereign government-to-government certification from the USDA APHIS Veterinary Services division—the competent veterinary authority of the United States.',
           'Without an official USDA endorsement stamp (either an electronic cryptographic seal or a physical raised embossed ink seal, depending on the receiving country), airline check-in agents will refuse boarding, and destination customs authorities will ground the pet at the border inspection post or mandate immediate repatriation at the owner’s expense.',
         ],
         callout: {
@@ -340,7 +366,7 @@ export const GUIDES: RegulatoryGuide[] = [
             ['Singapore (AVS / NParks)', 'Digital or physical endorsed AVS certificate', '24 – 48 Hours', 'No (Printout accepted with GoBusiness Licence)'],
             ['Japan (MAFF AQS)', 'Physical embossed ink raised seal', '3 – 5 Business Days', 'Yes (Must ship via FedEx overnight with return envelope)'],
             ['Australia (DAFF)', 'Physical embossed ink seal + electronic pre-clearance', '3 – 5 Business Days', 'Yes (Must be physically attached to crate exterior)'],
-            ['Canada (CFIA)', 'Standard rabies certificate (USDA endorsement exempt for personal dogs)', 'Instant', 'No USDA endorsement required for tourist dogs'],
+            ['Canada (CFIA)', 'Standard rabies certificate (USDA endorsement exempt for personal dogs)', 'Instant', 'No USDA endorsement required for tourist dogs (see Canada pet travel requirements)'],
           ],
         },
       },
@@ -350,7 +376,7 @@ export const GUIDES: RegulatoryGuide[] = [
         content: [
           'The USDA charges non-refundable federal user fees for processing each export certificate. These fees are set by federal regulation under 9 CFR Part 130 and are separate from your private veterinarian’s examination charges.',
           '1. Non-commercial certificate with NO diagnostic test verification required (e.g. EU Annex IV from US with no titer): $38.00 USD for the first animal + $7.00 per additional animal.',
-          '2. Certificate requiring diagnostic test verification (e.g. countries mandating titer tests or blood draws like Singapore, Japan, Australia, or South Africa): $121.00 USD for the first animal + $12.00 per additional animal.',
+          '2. Certificate requiring diagnostic test verification (e.g. destinations mandating [rabies titer test requirements](/en/guides/rabies-titer-test-favn-guide) like Singapore, Japan, Australia, or South Africa): $121.00 USD for the first animal + $12.00 per additional animal.',
         ],
       },
       {
@@ -449,22 +475,34 @@ export const GUIDES: RegulatoryGuide[] = [
         requirementSummary: 'Great Britain health certificate via VEHCS + 24–120h tapeworm treatment.',
       },
       {
-        slug: 'france',
-        name: 'France',
-        flag: '🇫🇷',
-        requirementSummary: 'EU Annex IV endorsement via VEHCS + Category 1 breed restrictions.',
+        slug: 'canada',
+        name: 'Canada',
+        flag: '🇨🇦',
+        requirementSummary: 'CFIA rabies vaccination certificate (USDA endorsement exempt for companion dogs/cats).',
       },
       {
         slug: 'singapore',
         name: 'Singapore',
         flag: '🇸🇬',
-        requirementSummary: 'AVS health certificate endorsement + GoBusiness Electronic Import Licence.',
+        requirementSummary: 'AVS health certificate endorsement via VEHCS + CAPQ quarantine reservation.',
       },
       {
         slug: 'japan',
         name: 'Japan',
         flag: '🇯🇵',
-        requirementSummary: 'MAFF Form AC raised-seal physical endorsement + 180-day titer wait.',
+        requirementSummary: 'MAFF Form AC physical embossed ink seal endorsement via USDA APHIS.',
+      },
+      {
+        slug: 'australia',
+        name: 'Australia',
+        flag: '🇦🇺',
+        requirementSummary: 'DAFF Model Certificate physical embossed endorsement + BICON permit verification.',
+      },
+      {
+        slug: 'france',
+        name: 'France',
+        flag: '🇫🇷',
+        requirementSummary: 'EU Annex IV endorsement via VEHCS + Category 1 breed restrictions.',
       },
     ],
     relatedTools: [
