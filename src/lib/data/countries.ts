@@ -732,8 +732,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     authority: 'Canadian Food Inspection Agency (CFIA)',
     authorityUrl: 'https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets',
     legalBasis: 'Health of Animals Act & CFIA Dog and Cat Importation Policy',
-    headline: 'CFIA & CBSA Dog and Cat Importation Regulations for Canada',
-    description: 'Statutory import guidelines enforced by the Canadian Food Inspection Agency (CFIA) and Canada Border Services Agency (CBSA). Governs rabies vaccination standards, microchip requirements, personal companion exceptions, and high-risk commercial rescue prohibitions.',
+    headline: 'Pet Travel Canada: CFIA & CBSA Dog and Cat Importation Regulations (2026 Guide)',
+    description: 'Complete statutory guide to pet travel to Canada for dogs and cats under Canadian Food Inspection Agency (CFIA) and Canada Border Services Agency (CBSA) regulations. Covers bilingual rabies vaccination requirements, ISO 11784/11785 microchip rules, 0-day quarantine direct airport clearance, CBSA port inspection fees, and prohibited commercial rescue restrictions.',
     titerRequired: 'Exempt for Personal Pets',
     titerStatus: 'exempt',
     titerDetail: 'Canada does not require rabies antibody titer testing (FAVN/RNATT) for personal companion dogs and cats traveling with their owners.',
@@ -769,6 +769,18 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
       ],
     },
     faqs: [
+      {
+        q: 'How do I travel to Canada with my pet?',
+        a: 'To travel to Canada with your pet (dog or cat), follow these 5 statutory CFIA & CBSA requirements: (1) Ensure your pet is implanted with a 15-digit ISO 11784/11785 microchip; (2) Obtain a valid rabies vaccination certificate or official pet passport in English or French signed by a licensed veterinarian (pets 3 months or older must be vaccinated at least 30 days prior if it is a primary shot); (3) Confirm your pet is traveling as a personal companion (CFIA bans commercial rescue imports from rabies high-risk countries); (4) Book an approved airline route arriving at a Canadian port of entry such as Toronto (YYZ), Vancouver (YVR), Montreal (YUL), or Calgary (YYC); and (5) Present documents to Canada Border Services Agency (CBSA) officers upon landing and pay the standard $30 CAD + tax pet inspection fee for immediate release with 0 days quarantine.',
+      },
+      {
+        q: 'Does Canada require a rabies titer test or quarantine for pet travel?',
+        a: 'No. Personal companion dogs and cats traveling to Canada do not require a rabies antibody titer test (FAVN/RNATT) and are exempt from quarantine. Pets are granted immediate border clearance at Canadian airports provided their rabies vaccination certificates and veterinary records are valid.',
+      },
+      {
+        q: 'Can American pet owners drive across the land border into Canada with their dog or cat?',
+        a: 'Yes. US pet owners can drive across US-Canada land border crossings with their dog or cat. You must present an official rabies vaccination certificate signed by a licensed US veterinarian specifying the pet’s breed, color, sex, weight, microchip number, vaccine lot, and validity duration. No USDA endorsement is required for personal tourist dogs and cats.',
+      },
       {
         q: 'What are the CFIA cat passport and health certificate requirements for Canada?',
         a: 'To bring a cat into Canada, CFIA requires a rabies vaccination certificate or official pet passport (in English or French) signed by a licensed veterinarian for cats 3 months of age or older. The document must specify the cat’s breed, color, weight, vaccine trade name, lot number, and expiration date. Personal companion cats do not require a rabies titer test and are exempt from quarantine.',
@@ -839,6 +851,21 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
       },
       {
         id: 'ca-c-req-4',
+        category: 'COMMERCIAL_RESCUE_BAN',
+        categoryLabel: 'CFIA Commercial Rescue Restrictions',
+        title: 'High-Risk Rabies Commercial Dog Import Prohibition',
+        severity: 'BLOCKING',
+        rules: [
+          'CFIA strictly prohibits the importation of commercial dogs (including dogs for rescue, fostering, adoption, or resale) from countries at high risk for dog rabies.',
+          'Personal companion dogs owned and traveling with their owners remain fully permitted.',
+        ],
+        protocol: 'CBSA border enforcement under CFIA Health of Animals Act.',
+        sourceName: 'CFIA Animal Import Division',
+        sourceUrl: 'https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'ca-c-req-5',
         category: 'CUSTOMS_FEE',
         categoryLabel: 'CBSA Port Inspection Fee',
         title: 'Statutory Airport Inspection Fee ($30 CAD)',
@@ -852,6 +879,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     ],
     inboundCorridors: [
       { originName: 'United States', originFlag: '🇺🇸', corridorSlug: 'usa-to-canada', leadTime: '30 Days' },
+      { originName: 'United Kingdom', originFlag: '🇬🇧', corridorSlug: 'uk-to-canada', leadTime: '30 Days' },
+      { originName: 'France', originFlag: '🇫🇷', corridorSlug: 'france-to-canada', leadTime: '30 Days' },
       { originName: 'India', originFlag: '🇮🇳', corridorSlug: 'india-to-canada', leadTime: '30–60 Days' },
     ],
   },
