@@ -57,7 +57,7 @@ export default function PrivacyPage() {
                 <strong>Account &amp; Contact Details:</strong> Email address, traveler name, and optional WhatsApp telephone number (for Priority Concierge liaison).
               </li>
               <li>
-                <strong>Payment Records:</strong> Transactions are securely processed through PCI-DSS Level 1 certified processors (Razorpay). PawValid does not store raw credit card or banking numbers on our servers.
+                <strong>Payment Records:</strong> Transactions are securely processed through PCI-DSS Level 1 certified processors (Polar.sh). PawValid does not store raw credit card or banking numbers on our servers.
               </li>
             </ul>
           </section>

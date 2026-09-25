@@ -66,7 +66,7 @@ export default function RefundPolicyPage() {
           <section>
             <h2 className="text-lg font-bold text-[#0F172A] mb-3">1. Scope of This Policy</h2>
             <p>
-              This Refund &amp; Cancellation Policy applies to all digital products, regulatory compliance passes, and concierge services purchased on <a href="https://pawvalid.online" className="text-emerald-600 underline">pawvalid.online</a> (&quot;Platform&quot;), operated by PawValid. Payments are processed securely via PCI-DSS Level 1 compliant payment gateways (Razorpay) in British Sterling Pounds (£ GBP).
+              This Refund &amp; Cancellation Policy applies to all digital products, regulatory compliance passes, and concierge services purchased on <a href="https://pawvalid.online" className="text-emerald-600 underline">pawvalid.online</a> (&quot;Platform&quot;), operated by PawValid. Payments are processed securely via PCI-DSS Level 1 compliant payment gateways (Polar.sh) in British Sterling Pounds (£ GBP).
             </p>
           </section>
 
@@ -176,16 +176,16 @@ export default function RefundPolicyPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2 mt-2">
               <li>
-                The refund is immediately submitted through our payment processor, <strong>Razorpay</strong>.
+                The refund is immediately submitted through our payment processor, <strong>Polar.sh</strong>.
               </li>
               <li>
-                Funds are returned to your original payment instrument (credit card, debit card, UPI, or net banking).
+                Funds are returned to your original payment instrument (credit card, debit card, Apple Pay, Google Pay).
               </li>
               <li>
                 Depending on your card issuer or banking institution, the credit will typically reflect on your bank statement within <strong>5 to 7 business days</strong>.
               </li>
               <li>
-                You will receive an automated email confirmation from Razorpay and PawValid containing your refund transaction ARN / reference number.
+                You will receive an automated email confirmation from Polar and PawValid containing your refund transaction reference number.
               </li>
             </ul>
           </section>
