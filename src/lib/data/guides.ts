@@ -252,11 +252,11 @@ export const GUIDES: RegulatoryGuide[] = [
     sections: [
       {
         id: 'what-is-vehcs',
-        title: '1. What is USDA VEHCS and Why is it Legally Mandatory?',
+        title: '1. What is VEHCS?',
         content: [
-          'Under international bilateral agreements, destination foreign governments do not accept health certificates signed merely by a private, licensed veterinarian. They require sovereign government-to-government certification.',
-          'The USDA APHIS Veterinary Services division serves as the federal competent veterinary authority for the United States. Through VEHCS, private accredited veterinarians electronically prepare, sign, and transmit export health certificates directly to USDA veterinary medical officers for federal review and electronic or embossed ink endorsement.',
-          'Without a valid USDA endorsement stamp, airline check-in agents will refuse passenger boarding, and destination customs authorities will ground the pet at the border or order immediate repatriation at the owner’s expense.',
+          'VEHCS (Veterinary Export Health Certification System) is the official online federal portal operated by the USDA Animal and Plant Health Inspection Service (APHIS) through which USDA-accredited veterinarians electronically create, sign, and submit international pet health certificates for sovereign government endorsement.',
+          'Under international bilateral agreements, destination foreign governments (including the European Union, United Kingdom, Singapore, Japan, and Australia) do not accept health certificates signed merely by a private, licensed veterinarian. They require sovereign government-to-government certification from the USDA APHIS Veterinary Services division—the competent veterinary authority of the United States.',
+          'Without an official USDA endorsement stamp (either an electronic cryptographic seal or a physical raised embossed ink seal, depending on the receiving country), airline check-in agents will refuse boarding, and destination customs authorities will ground the pet at the border inspection post or mandate immediate repatriation at the owner’s expense.',
         ],
         callout: {
           type: 'statute',
