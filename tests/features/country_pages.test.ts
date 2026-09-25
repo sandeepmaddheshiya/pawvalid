@@ -20,11 +20,12 @@ describe('Destination Countries Dataset (COUNTRIES)', () => {
     'netherlands',
     'switzerland',
     'singapore',
+    'vietnam',
   ];
 
-  it('should contain exactly the top 15 destination countries', () => {
+  it('should contain all 16 destination countries', () => {
     const keys = Object.keys(COUNTRIES);
-    expect(keys.length).toBe(15);
+    expect(keys.length).toBe(16);
     for (const slug of EXPECTED_COUNTRIES) {
       expect(COUNTRIES[slug]).toBeDefined();
     }
@@ -67,9 +68,9 @@ describe('Destination Countries Dataset (COUNTRIES)', () => {
     }
   });
 
-  it('getAllCountries() returns an array of 15 countries', () => {
+  it('getAllCountries() returns an array of 16 countries', () => {
     const all = getAllCountries();
-    expect(all.length).toBe(15);
+    expect(all.length).toBe(16);
     expect(all.map((c) => c.slug)).toEqual(expect.arrayContaining(EXPECTED_COUNTRIES));
   });
 
@@ -82,9 +83,9 @@ describe('Destination Countries Dataset (COUNTRIES)', () => {
     expect(invalid).toBeUndefined();
   });
 
-  it('generateStaticParams() yields static routes for all 15 countries', async () => {
+  it('generateStaticParams() yields static routes for all 16 countries', async () => {
     const params = await generateStaticParams();
-    expect(params.length).toBe(15);
+    expect(params.length).toBe(16);
     expect(params.map((p) => p.country)).toEqual(expect.arrayContaining(EXPECTED_COUNTRIES));
   });
 });

@@ -10,6 +10,7 @@ export interface StatutoryChecklistRule {
   categoryLabel?: string;
   title: string;
   severity: 'BLOCKING' | 'NON_BLOCKING';
+  applicableSpecies?: 'DOG' | 'CAT' | 'BOTH';
   rules: string[];
   protocol: string;
   sourceName: string;
@@ -109,7 +110,13 @@ export default function BrowseRequirementsChecklist({
   // Filter requirements depending on species
   const filteredRequirements = useMemo(() => {
     return requirements.filter((req) => {
-      // Echinococcus tapeworm rule usually applies only to dogs
+      if (req.applicableSpecies === 'DOG' && species === 'CAT') {
+        return false;
+      }
+      if (req.applicableSpecies === 'CAT' && species === 'DOG') {
+        return false;
+      }
+      // Echinococcus tapeworm rule applies only to dogs
       if (species === 'CAT' && req.category === 'TAPEWORM_TREATMENT') {
         return false;
       }
