@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   description:
     'Know if your pet is actually ready to travel. Route-specific, source-backed compliance assessments for international pet travel.',
   keywords: [
+    'pet document verification',
     'pet travel',
     'pet travel compliance',
     'dog travel international',

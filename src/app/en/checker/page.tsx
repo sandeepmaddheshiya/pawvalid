@@ -22,10 +22,10 @@ export default function CheckerPage() {
       <section className="bg-white dark:bg-surface-900 border-b border-zinc-100 dark:border-zinc-800">
         <div className="max-w-4xl mx-auto px-4 py-10 text-center">
           <h1 className="text-3xl sm:text-4xl font-display font-black text-zinc-900 dark:text-white mb-3">
-            Pet Travel Readiness &amp; Document Checker
+            Pet Document Verification &amp; Readiness Checker
           </h1>
           <p className="text-sm sm:text-base text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto">
-            Upload your pet&apos;s vaccination records &amp; passport for instant AI border compliance verification, or complete the manual checklist.
+            Upload your pet&apos;s vaccination records &amp; passport for instant AI pet document verification, or complete the manual checklist.
           </p>
 
           {!formResult && !scanResult && (

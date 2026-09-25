@@ -11,9 +11,9 @@ import { getFaqSchema } from '@/lib/seo/schema';
 import { HOME_FAQS } from '@/lib/seo/faqs';
 
 export const metadata: Metadata = {
-  title: 'PawValid — Is Your Pet Ready to Travel? | Pet Travel Document Checker',
+  title: 'Pet Document Verification & Travel Compliance | PawValid',
   description:
-    "Upload your pet's documents and we'll check them against route-specific requirements, identify what's missing, flag potential issues, and give you a clear travel timeline.",
+    "Instant pet document verification against official international entry statutes. Upload your pet's vaccination records, microchip paperwork, and health certificates for automated compliance verification.",
   alternates: {
     canonical: 'https://pawvalid.online',
   },
@@ -52,14 +52,14 @@ export default function HomePage() {
             {/* Left Column: Authentic Editorial Copy & CTA */}
             <div className="lg:col-span-7 xl:col-span-6 space-y-5 text-left">
               {/* Category Label */}
-              <div className="inline-flex items-center text-[10px] sm:text-[11px] font-bold tracking-widest text-zinc-500 uppercase">
-                PET TRAVEL DOCUMENT CHECKER
+              <div className="inline-flex items-center text-[10px] sm:text-[11px] font-bold tracking-widest text-emerald-800 uppercase bg-emerald-50 border border-emerald-200/80 px-3 py-1 rounded-full">
+                PET DOCUMENT VERIFICATION &amp; TRAVEL COMPLIANCE
               </div>
 
               {/* Main Headline (Editorial Serif) */}
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-[54px] font-bold tracking-tight leading-[1.08] text-[#0E2342]">
-                Is Your Pet Ready<br />
-                to Travel?
+                Pet Document Verification: <br />
+                Is Your Pet Ready to Travel?
               </h1>
 
               {/* Subheading */}
