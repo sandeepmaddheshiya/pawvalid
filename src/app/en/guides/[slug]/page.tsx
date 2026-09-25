@@ -403,7 +403,7 @@ export default async function GuideDetailPage({ params }: Props) {
                             <tr key={rIdx} className="hover:bg-zinc-50/50">
                               {row.map((cell, cIdx) => (
                                 <td key={cIdx} className="p-3 text-zinc-700 leading-relaxed">
-                                  {cell}
+                                  {renderFormattedText(cell)}
                                 </td>
                               ))}
                             </tr>

@@ -174,7 +174,7 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         severity: 'BLOCKING',
         rules: [
           'Mandatory for all dogs and cats originating from Category C and Category D countries (USA, Canada, India, etc.).',
-          'Blood sample must be drawn at least 30 days after rabies vaccination and between 30 days and 6 months prior to export.',
+          'Must meet all [FAVN / RNATT rabies titer test](/en/guides/rabies-titer-test-favn-guide) protocol standards (drawn ≥ 30 days after rabies vaccine and 30 days to 6 months prior to export).',
           'Test result must be at least 0.50 IU/mL processed at an AVS-recognized international reference laboratory (e.g. KSU, Auburn, ANSES, FLI).',
         ],
         protocol: 'Direct Verification: Original laboratory test report must accompany the official veterinary health certificate and be uploaded during the GoBusiness licence application.',
@@ -253,6 +253,7 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
           'Must use the official Singapore AVS Veterinary Health Certificate template matching the specific country category (A/B/C/D).',
           'Clinical exam must be conducted within 7 days of scheduled departure.',
           'Must be signed by a licensed private veterinarian and officially endorsed with sovereign seal by competent government authorities (e.g. USDA APHIS, CFIA, DEFRA, AQCS).',
+          'For pet owners [importing a pet from the US to Singapore](/en/pet-travel/usa-to-singapore), USDA APHIS electronic endorsement via VEHCS is required.',
         ],
         protocol: 'Original Document: The physical endorsed certificate must accompany the animal during transport and be submitted to CAPQ inspectors at Changi Airport.',
         sourceName: 'Singapore AVS Health Certification',
@@ -420,7 +421,7 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         severity: 'BLOCKING',
         rules: [
           'Required for dogs/cats arriving from unlisted third countries (e.g. India, UAE, Turkey, Egypt).',
-          'Sample drawn ≥ 30 days after rabies vaccination and analyzed at a DEFRA-approved laboratory (≥ 0.5 IU/mL).',
+          'Sample drawn ≥ 30 days after rabies vaccination and analyzed at a DEFRA-approved laboratory (≥ 0.5 IU/mL). See [rabies titer test](/en/guides/rabies-titer-test-favn-guide) procedures.',
           'Strict 3-month (90-day) post-draw waiting period before UK arrival.',
         ],
         protocol: 'Verified by HARC/Gatwick BIP upon border inspection.',
@@ -436,7 +437,7 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         severity: 'BLOCKING',
         rules: [
           'Must be issued by an Official Veterinarian (OV) within 10 days of entering Great Britain.',
-          'Must be endorsed by sovereign exporting authority (USDA APHIS, CFIA, DAFF, etc.).',
+          'Must be endorsed by sovereign exporting authority (such as a [USDA-endorsed health certificate](/en/guides/usda-aphis-vehcs-guide), CFIA, or DAFF).',
         ],
         protocol: 'Border Inspection: HARC or Gatwick BIP verifies physical certificate against transponder chip.',
         sourceName: 'UK DEFRA / APHA',
@@ -1224,6 +1225,7 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
           'Must be in English or French and signed by a licensed veterinarian.',
           'Must list animal identification, microchip number, vaccine trade name, and lot number.',
           'Primary rabies vaccine must be given at least 30 days prior to border entry.',
+          'For travelers from the US, [USDA endorsement (exempt for personal pet travel to Canada)](/en/guides/usda-aphis-vehcs-guide) is not required for personal companion dogs and cats.',
         ],
         protocol: 'CBSA border officer checks documentation upon airport landing.',
         sourceName: 'Canadian Food Inspection Agency (CFIA)',

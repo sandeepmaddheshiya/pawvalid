@@ -517,14 +517,14 @@ export default function HomePage() {
                   <span className="text-[10px] text-zinc-400">9 min</span>
                 </div>
                 <h3 className="font-serif text-sm font-bold text-[#0E2342] group-hover:text-emerald-800 transition-colors mb-2 leading-snug">
-                  FAVN Rabies Titer Test Manual (2026)
+                  Rabies Titer Test (FAVN) Guide (2026)
                 </h3>
                 <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-3">
-                  Everything you need to know about RNATT tests, the 0.5 IU/mL standard, and 180-day waiting clocks for Singapore, Japan, and Australia.
+                  Complete breakdown of FAVN/RNATT laboratory rules, 0.50 IU/mL thresholds, and 180-day waiting clocks for Singapore, Japan, and Australia.
                 </p>
               </div>
               <div className="pt-3 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-[11px] font-semibold text-[#0E2342] group-hover:text-emerald-700">
-                <span>Read Manual</span>
+                <span>FAVN rabies titer test</span>
                 <span>→</span>
               </div>
             </Link>
@@ -542,14 +542,14 @@ export default function HomePage() {
                   <span className="text-[10px] text-zinc-400">8 min</span>
                 </div>
                 <h3 className="font-serif text-sm font-bold text-[#0E2342] group-hover:text-emerald-800 transition-colors mb-2 leading-snug">
-                  USDA APHIS VEHCS Endorsement Guide
+                  USDA Pet Health Certificate &amp; VEHCS
                 </h3>
                 <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-3">
-                  Step-by-step walkthrough of the 10-day pre-flight exam window, accredited vet submission, and federal endorsement seals.
+                  Step-by-step guide to the 10-day pre-flight exam window, accredited vet submission, fees, and digital cryptographic endorsement.
                 </p>
               </div>
               <div className="pt-3 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-[11px] font-semibold text-[#0E2342] group-hover:text-emerald-700">
-                <span>Read Manual</span>
+                <span>USDA VEHCS endorsement</span>
                 <span>→</span>
               </div>
             </Link>
@@ -567,14 +567,14 @@ export default function HomePage() {
                   <span className="text-[10px] text-zinc-400">10 min</span>
                 </div>
                 <h3 className="font-serif text-sm font-bold text-[#0E2342] group-hover:text-emerald-800 transition-colors mb-2 leading-snug">
-                  IATA-Approved Dog Crate Guidelines
+                  IATA Pet Crate Requirements (2026)
                 </h3>
                 <p className="text-[11px] text-zinc-500 leading-relaxed line-clamp-3">
                   Official mathematical crate formulas, mandatory metal nuts/bolts hardware, and four-sided airline ventilation specs.
                 </p>
               </div>
               <div className="pt-3 mt-3 border-t border-zinc-200/60 flex items-center justify-between text-[11px] font-semibold text-[#0E2342] group-hover:text-emerald-700">
-                <span>Read Manual</span>
+                <span>IATA pet crate requirements</span>
                 <span>→</span>
               </div>
             </Link>
