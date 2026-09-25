@@ -169,6 +169,8 @@ export function getMedicalWebPageSchema(options: {
   authority: string;
   authorityUrl: string;
   lastReviewed: string;
+  reviewerName?: string;
+  reviewerTitle?: string;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -177,10 +179,27 @@ export function getMedicalWebPageSchema(options: {
     description: options.description,
     url: options.url.startsWith('http') ? options.url : `${BASE_URL}${options.url}`,
     lastReviewed: options.lastReviewed,
-    reviewedBy: {
-      '@type': 'Organization',
+    reviewedBy: options.reviewerName
+      ? {
+          '@type': 'Person',
+          name: options.reviewerName,
+          jobTitle: options.reviewerTitle || 'Veterinary Biosecurity & Compliance Consultant',
+          url: `${BASE_URL}/en/editorial-policy#review-board`,
+        }
+      : {
+          '@type': 'Organization',
+          name: options.authority,
+          url: options.authorityUrl,
+        },
+    sourceOrganization: {
+      '@type': 'GovernmentOrganization',
       name: options.authority,
       url: options.authorityUrl,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'PawValid',
+      url: BASE_URL,
     },
     medicalAudience: {
       '@type': 'MedicalAudience',

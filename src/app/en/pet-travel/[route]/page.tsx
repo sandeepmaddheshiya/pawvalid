@@ -242,6 +242,18 @@ export default async function RoutePage({ params }: RoutePageProps) {
     '@type': 'MedicalWebPage',
     name: `Pet Travel Requirements: ${display.from} to ${display.to}`,
     description: display.description,
+    lastReviewed: '2026-09-21',
+    reviewedBy: {
+      '@type': 'Person',
+      name: 'Dr. Sarah Miller, DVM',
+      jobTitle: 'Veterinary Biosecurity & Compliance Consultant',
+      url: 'https://pawvalid.online/en/editorial-policy#review-board',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'PawValid',
+      url: 'https://pawvalid.online',
+    },
     mainEntity: {
       '@type': 'GovernmentService',
       name: `Veterinary Pet Movement from ${display.from} to ${display.to}`,

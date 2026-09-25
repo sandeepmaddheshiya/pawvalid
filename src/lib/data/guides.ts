@@ -37,6 +37,7 @@ export interface OfficialSourceLink {
   name: string;
   url: string;
   authority: string;
+  statuteRef?: string;
 }
 
 export interface RegulatoryGuide {
@@ -544,9 +545,39 @@ export const GUIDES: RegulatoryGuide[] = [
     readTime: '10 min read',
     category: 'Aviation & Crates',
     dateModified: '2026-09-21',
+    lastReviewedDate: '2026-09-21',
+    reviewerName: 'Dr. Sarah Miller, DVM',
+    reviewerTitle: 'Veterinary Biosecurity & Compliance Consultant',
+    reviewerUrl: '/en/editorial-policy',
     statutoryBasis: 'IATA Live Animals Regulations (LAR) 51st Edition, Container Requirement 1 (CR-1) & Container Requirement 82 (CR-82)',
     summary:
       'The International Air Transport Association (IATA) Live Animals Regulations (LAR) govern the construction, dimensions, ventilation, and hardware of all animal shipping containers traveling on commercial aircraft worldwide. Under Container Requirement 1 (CR-1), a pet crate must permit the animal to stand fully erect with head up without touching the ceiling, turn around 360 degrees effortlessly, and lie down in a natural splayed position. Failure to meet the mathematical IATA crate formula is the leading cause of gate check-in rejections across all international airlines.',
+    officialSources: [
+      {
+        name: 'IATA Live Animals Regulations (LAR)',
+        url: 'https://www.iata.org/en/programs/cargo/live-animals/',
+        authority: 'International Air Transport Association (IATA)',
+        statuteRef: 'Container Requirement 1 (CR-1) & CR-82 Standards',
+      },
+      {
+        name: 'USDA APHIS Animal Welfare Act',
+        url: 'https://www.aphis.usda.gov/pet-travel',
+        authority: 'USDA Animal and Plant Health Inspection Service',
+        statuteRef: '9 CFR Part 3 - Standards for Humane Handling and Transportation of Animals',
+      },
+      {
+        name: 'UK DEFRA / APHA Live Animal Transport Guidance',
+        url: 'https://www.gov.uk/bring-pet-to-great-britain',
+        authority: 'Department for Environment, Food & Rural Affairs (DEFRA / APHA)',
+        statuteRef: 'Welfare of Animals (Transport) (England) Order 2006',
+      },
+      {
+        name: 'WOAH World Organisation for Animal Health',
+        url: 'https://www.woah.org',
+        authority: 'World Organisation for Animal Health (WOAH)',
+        statuteRef: 'Terrestrial Animal Health Code: Animal Welfare During Air Transport',
+      },
+    ],
     sections: [
       {
         id: 'iata-sizing-formula',
@@ -703,9 +734,39 @@ export const GUIDES: RegulatoryGuide[] = [
     readTime: '7 min read',
     category: 'Regulatory Intelligence',
     dateModified: '2026-09-21',
+    lastReviewedDate: '2026-09-21',
+    reviewerName: 'Dr. Sarah Miller, DVM',
+    reviewerTitle: 'Veterinary Biosecurity & Compliance Consultant',
+    reviewerUrl: '/en/editorial-policy',
     statutoryBasis: 'Comparative Biosecurity Audit: LLM Generative Probabilities vs European Commission Regulation 576/2013 & DEFRA Microchip Statutes',
     summary:
       'While general artificial intelligence models like ChatGPT, Claude, and Gemini excel at conversational writing, they operate on probabilistic token prediction rather than deterministic statutory calculation. In international pet travel compliance, where missing a 21-day latency rule by 4 hours results in 4-month quarantine, general AI routinely hallucinates outdated COVID-era border waivers, confuses destination-versus-transit biosecurity protocols, and fails basic Day-Zero vaccine calendar math.',
+    officialSources: [
+      {
+        name: 'European Commission DG SANTE',
+        url: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32013R0576',
+        authority: 'European Commission Directorate-General for Health and Food Safety',
+        statuteRef: 'Regulation (EU) No 576/2013 on the non-commercial movement of pet animals',
+      },
+      {
+        name: 'USDA APHIS Pet Travel Regulations',
+        url: 'https://www.aphis.usda.gov/pet-travel',
+        authority: 'USDA Animal and Plant Health Inspection Service',
+        statuteRef: 'USDA APHIS Veterinary Export Health Certification System (VEHCS)',
+      },
+      {
+        name: 'UK Department for Environment, Food & Rural Affairs (DEFRA)',
+        url: 'https://www.gov.uk/bring-pet-to-great-britain',
+        authority: 'Department for Environment, Food & Rural Affairs (DEFRA)',
+        statuteRef: 'Non-Commercial Movement of Pet Animals Order (Northern Ireland & GB)',
+      },
+      {
+        name: 'WOAH World Organisation for Animal Health',
+        url: 'https://www.woah.org',
+        authority: 'World Organisation for Animal Health (WOAH)',
+        statuteRef: 'WOAH Terrestrial Manual Chapter on Rabies Surveillance & Titer Standards',
+      },
+    ],
     sections: [
       {
         id: 'probabilistic-vs-deterministic',

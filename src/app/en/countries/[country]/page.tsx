@@ -89,6 +89,8 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
     authority: country.authority,
     authorityUrl: country.authorityUrl,
     lastReviewed: '2026-09-21',
+    reviewerName: 'Dr. Sarah Miller, DVM',
+    reviewerTitle: 'Veterinary Biosecurity & Compliance Consultant',
   });
 
   const checkerHref = `/en/assessment?destCountry=${country.code}`;
@@ -148,24 +150,35 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
             </p>
 
             {/* Regulatory Authority Bar */}
-            <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-600 bg-zinc-50 p-4 rounded-xl border border-zinc-200">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-zinc-900">National Veterinary Authority:</span>
-                <a
-                  href={country.authorityUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-emerald-700 hover:text-emerald-800 font-semibold underline underline-offset-2 flex items-center gap-1"
-                >
-                  <span>{country.authority}</span>
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
+            <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-zinc-600 bg-zinc-50 p-4 rounded-xl border border-zinc-200">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-zinc-900">National Veterinary Authority:</span>
+                  <a
+                    href={country.authorityUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-emerald-700 hover:text-emerald-800 font-semibold underline underline-offset-2 flex items-center gap-1"
+                  >
+                    <span>{country.authority}</span>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+                <div className="w-full sm:w-auto flex items-center gap-2 text-zinc-500">
+                  <span className="font-semibold text-zinc-700">Legal Basis:</span>
+                  <span className="font-mono text-[11px] text-zinc-600">{country.legalBasis}</span>
+                </div>
               </div>
-              <div className="w-full sm:w-auto flex items-center gap-2 text-zinc-500">
-                <span className="font-semibold text-zinc-700">Legal Basis:</span>
-                <span className="font-mono text-[11px] text-zinc-600">{country.legalBasis}</span>
+              <div className="flex items-center gap-1.5 text-xs text-zinc-500 pt-2 sm:pt-0 border-t sm:border-t-0 border-zinc-200 w-full sm:w-auto">
+                <span>Clinical Review:</span>
+                <Link
+                  href="/en/editorial-policy#review-board"
+                  className="font-semibold text-emerald-700 hover:underline"
+                >
+                  Dr. Sarah Miller, DVM
+                </Link>
               </div>
             </div>
           </div>

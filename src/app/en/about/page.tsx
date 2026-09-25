@@ -48,6 +48,12 @@ export default function AboutPage() {
         url: BASE_URL,
       },
     },
+    contributor: {
+      '@type': 'Person',
+      name: 'Dr. Sarah Miller, DVM',
+      jobTitle: 'Veterinary Biosecurity & Compliance Consultant',
+      url: `${BASE_URL}/en/editorial-policy#review-board`,
+    },
   };
 
   return (
@@ -271,14 +277,19 @@ export default function AboutPage() {
                 Transparency &amp; Governance
               </span>
               <h3 className="font-serif text-lg font-bold text-zinc-900 mb-2">
-                Editorial Review Board &amp; Corrections
+                Veterinary Review Board &amp; Corrections
               </h3>
-              <p className="text-xs text-zinc-600 leading-relaxed mb-4">
-                We maintain an active regulatory corrections desk. If an airline updates their pet crate embargoes or a government ministry alters its import health certificate, our team investigates and patches the rules engine within 24 hours.
+              <p className="text-xs text-zinc-600 leading-relaxed mb-3">
+                All statutory rules, vaccine latency equations, and titer interpretations undergo clinical review by <strong>Dr. Sarah Miller, DVM</strong> alongside our engineering team before deployment.
               </p>
-              <div className="text-xs text-zinc-700 space-y-1 font-medium">
+              <div className="text-xs text-zinc-700 space-y-1 font-medium mb-3">
                 <div>• Editorial Inquiries: <a href="mailto:regulatory@pawvalid.online" className="text-emerald-700 underline">regulatory@pawvalid.online</a></div>
                 <div>• General Support: <a href="mailto:support@pawvalid.online" className="text-emerald-700 underline">support@pawvalid.online</a></div>
+              </div>
+              <div className="pt-2 border-t border-zinc-100 text-[11px]">
+                <Link href="/en/editorial-policy#review-board" className="text-emerald-700 font-semibold hover:underline">
+                  Read our full Editorial &amp; Verification Policy →
+                </Link>
               </div>
             </div>
 

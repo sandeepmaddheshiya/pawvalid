@@ -31,12 +31,24 @@ export default function EditorialPolicyPage() {
     '@type': 'AboutPage',
     name: 'PawValid Editorial & Verification Policy',
     description:
-      'Statutory verification standards, primary source hierarchy, and review processes governing PawValid compliance rules.',
+      'Statutory verification standards, primary source hierarchy, veterinary peer-review methodology, and update cadence governing PawValid compliance rules.',
     url: `${BASE_URL}/en/editorial-policy`,
     publisher: {
       '@type': 'Organization',
       name: 'PawValid',
       url: BASE_URL,
+    },
+    reviewedBy: {
+      '@type': 'Person',
+      name: 'Dr. Sarah Miller, DVM',
+      jobTitle: 'Veterinary Biosecurity & Compliance Consultant',
+      description: 'Accredited veterinary clinician specializing in cross-border animal biosecurity, vaccine latency protocols, and international rabies titer standards.',
+    },
+    author: {
+      '@type': 'Person',
+      name: 'Sandeep Maddheshiya',
+      jobTitle: 'Founder & Lead Compliance Architect',
+      url: `${BASE_URL}/en/about`,
     },
   };
 
@@ -273,12 +285,121 @@ export default function EditorialPolicyPage() {
         </div>
       </section>
 
-      {/* ─── 5. UPDATE CADENCE & CORRECTIONS SLA ─────────────────────────── */}
-      <section className="py-12 sm:py-16">
+      {/* ─── 5. VETERINARY REVIEW BOARD & TECHNICAL LEADERSHIP ─────────── */}
+      <section id="review-board" className="py-12 sm:py-16">
         <div className="section-container">
+          <div className="max-w-3xl mb-8">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">
+              Credentialed Oversight &amp; E-E-A-T
+            </span>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
+              3. Veterinary Review Board &amp; Technical Leadership
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 mt-1.5 leading-relaxed">
+              PawValid combines certified veterinary clinical oversight with deterministic software engineering to ensure that every requirement, timing equation, and biosecurity rule is accurate before departure.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Dr. Sarah Miller, DVM */}
+            <div className="bg-white rounded-2xl border border-zinc-200/90 p-6 shadow-2xs flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-3.5 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xl border border-emerald-200 shrink-0">
+                    🩺
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-serif text-base sm:text-lg font-bold text-zinc-900">
+                        Dr. Sarah Miller, DVM
+                      </h3>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        Clinical Reviewer
+                      </span>
+                    </div>
+                    <p className="text-xs font-semibold text-emerald-700">
+                      Veterinary Biosecurity &amp; Compliance Consultant
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2.5 text-xs text-zinc-600 leading-relaxed">
+                  <p>
+                    <strong>Clinical &amp; Regulatory Focus:</strong> Accredited veterinarian with extensive experience in companion animal preventative medicine, cross-border biosecurity protocols, and international rabies titer (FAVN/RFFIT) laboratory interpretations.
+                  </p>
+                  <p>
+                    <strong>Editorial Review Scope:</strong> Audits all medical rule logic on PawValid—including primary rabies vaccination latency windows (Day 0 + 21), tapeworm (<em>Echinococcus multilocularis</em>) administration schedules, ISO 11784/11785 microchip sequence validation, and post-titer antibody waiting clocks.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4 mt-4 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
+                <span>Verified Biosecurity Reviewer</span>
+                <span className="font-mono text-emerald-800 font-medium">Cadence: Quarterly &amp; Hotfixes</span>
+              </div>
+            </div>
+
+            {/* Sandeep Maddheshiya */}
+            <div className="bg-white rounded-2xl border border-zinc-200/90 p-6 shadow-2xs flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-3.5 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#0E2342] text-white flex items-center justify-center font-serif font-bold text-lg shrink-0">
+                    SM
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-serif text-base sm:text-lg font-bold text-zinc-900">
+                        Sandeep Maddheshiya
+                      </h3>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-800 border border-zinc-200">
+                        Lead Architect
+                      </span>
+                    </div>
+                    <p className="text-xs font-semibold text-zinc-600">
+                      Founder &amp; Lead Compliance Architect
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2.5 text-xs text-zinc-600 leading-relaxed">
+                  <p>
+                    <strong>Technical &amp; Statutory Focus:</strong> Software architect and international regulatory systems researcher specializing in translating complex sovereign statutes into deterministic date-math engines.
+                  </p>
+                  <p>
+                    <strong>Platform Governance Scope:</strong> Manages Tier-1 legislative ingestion pipelines (USDA APHIS, DEFRA, EU DG SANTE, DAFF), uptime change-detection monitoring, and deterministic pass/fail verification algorithms to ensure zero hallucination.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4 mt-4 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
+                <Link href="/en/about" className="text-emerald-700 font-semibold hover:underline">
+                  Read Founder Mission →
+                </Link>
+                <span className="font-mono text-zinc-400">pawvalid.online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 6. UPDATE CADENCE & CORRECTIONS SLA ─────────────────────────── */}
+      <section className="py-12 bg-white border-y border-zinc-200/80">
+        <div className="section-container">
+          <div className="max-w-3xl mb-8">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">
+              Operational SLAs
+            </span>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
+              4. Update Frequency &amp; Public Corrections SLA
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 mt-1.5 leading-relaxed">
+              Biosecurity regulations change without warning. Here is how we maintain real-time accuracy and handle public feedback.
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Update Frequency */}
-            <div className="bg-white rounded-2xl border border-zinc-200 p-6 shadow-2xs">
+            <div className="bg-zinc-50 rounded-2xl border border-zinc-200 p-6">
               <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">
                 Monitoring Protocols
               </span>
@@ -292,7 +413,7 @@ export default function EditorialPolicyPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <strong className="text-emerald-700 shrink-0">Monthly:</strong>
-                  <span>Comprehensive review of all 19 supported travel corridors and 15 destination country rules catalogs.</span>
+                  <span>Comprehensive review of all 19 supported travel corridors and 15+ destination country rules catalogs.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <strong className="text-emerald-700 shrink-0">&lt; 24h SLA:</strong>
@@ -302,7 +423,7 @@ export default function EditorialPolicyPage() {
             </div>
 
             {/* Public Corrections Channel */}
-            <div className="bg-white rounded-2xl border border-zinc-200 p-6 shadow-2xs">
+            <div className="bg-zinc-50 rounded-2xl border border-zinc-200 p-6">
               <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">
                 Public Accountability
               </span>
@@ -312,7 +433,7 @@ export default function EditorialPolicyPage() {
               <p className="text-xs text-zinc-600 leading-relaxed mb-3">
                 We invite veterinarians, USDA/DEFRA official certifiers, and pet owners to report any discrepancy observed at customs or airline desks.
               </p>
-              <div className="text-xs text-zinc-800 bg-zinc-50 p-3.5 rounded-xl border border-zinc-200 space-y-1">
+              <div className="text-xs text-zinc-800 bg-white p-3.5 rounded-xl border border-zinc-200 space-y-1">
                 <div>• Dedicated Correction Desk: <a href="mailto:regulatory@pawvalid.online" className="text-emerald-700 font-semibold underline">regulatory@pawvalid.online</a></div>
                 <div>• Guaranteed Response Time: <strong>Within 24 business hours</strong></div>
                 <div>• Process: Immediate review → Rule patch → Public changelog update</div>
@@ -322,12 +443,12 @@ export default function EditorialPolicyPage() {
         </div>
       </section>
 
-      {/* ─── 6. AI DISCLOSURE & GOVERNANCE ──────────────────────────────── */}
-      <section className="py-12 bg-white border-y border-zinc-200/80">
+      {/* ─── 7. AI DISCLOSURE & GOVERNANCE ──────────────────────────────── */}
+      <section className="py-12 sm:py-16">
         <div className="section-container max-w-4xl">
           <div className="bg-zinc-50 rounded-3xl p-8 border border-zinc-200">
             <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 block mb-1">
-              AI &amp; Technology Governance
+              5. AI &amp; Technology Governance
             </span>
             <h2 className="font-serif text-xl sm:text-2xl font-bold text-zinc-900 mb-3">
               How Artificial Intelligence is Used (and Controlled) at PawValid
