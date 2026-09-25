@@ -43,9 +43,10 @@ export async function generateMetadata({ params }: CountryPageProps): Promise<Me
     keywords: [
       `pet import ${country.name.toLowerCase()}`,
       `pet travel ${country.name.toLowerCase()}`,
+      `pet travel to ${country.name.toLowerCase()}`,
+      country.slug === 'australia' ? 'australian pet passport' : `${country.name.toLowerCase()} pet passport`,
       `dog import ${country.name.toLowerCase()}`,
       `cat passport ${country.name.toLowerCase()}`,
-      `pet passport ${country.name.toLowerCase()}`,
       `${country.name.toLowerCase()} pet quarantine`,
       `${country.authority.toLowerCase()}`,
     ],
