@@ -33,6 +33,12 @@ export interface RelatedToolLink {
   description: string;
 }
 
+export interface OfficialSourceLink {
+  name: string;
+  url: string;
+  authority: string;
+}
+
 export interface RegulatoryGuide {
   slug: string;
   title: string;
@@ -41,7 +47,12 @@ export interface RegulatoryGuide {
   readTime: string;
   category: 'Veterinary Testing' | 'Government Endorsement' | 'Aviation & Crates' | 'Regulatory Intelligence';
   dateModified: string;
+  lastReviewedDate?: string;
+  reviewerName?: string;
+  reviewerTitle?: string;
+  reviewerUrl?: string;
   statutoryBasis: string;
+  officialSources?: OfficialSourceLink[];
   summary: string;
   sections: GuideSection[];
   steps: Array<{ step: number; title: string; description: string }>;
@@ -54,24 +65,70 @@ export interface RegulatoryGuide {
 export const GUIDES: RegulatoryGuide[] = [
   {
     slug: 'rabies-titer-test-favn-guide',
-    title: 'Rabies Titer Test (FAVN & RNATT): The Definitive 2026 International Pet Travel Guide',
-    seoTitle: 'Rabies Titer Test Guide (2026): FAVN & RNATT Rules, 0.5 IU/mL & Waiting Times | PawValid',
+    title: 'FAVN Rabies Titer Test Guide: Rules, Cost & Wait Times by Country (2026)',
+    seoTitle: 'Rabies Titer Test (FAVN & RNATT) Guide: Rules, Cost & Wait Times (2026) | PawValid',
     description:
-      'Complete statutory guide to the rabies titer test (FAVN and RNATT serological blood testing) for international dog and cat travel. Approved reference laboratories (KSU, Auburn, ANSES), the mandatory 0.5 IU/mL antibody threshold, 90-day EU vs 180-day Japan and Australia waiting periods, and border clearance rules.',
+      'Complete statutory guide to the rabies titer test (FAVN and RNATT serological blood testing) for international dog and cat travel. Official rules for approved reference laboratories (KSU, Auburn, ANSES), the 0.50 IU/mL antibody threshold, 90-day EU vs 180-day Japan and Australia waiting periods, and veterinary health certificate endorsements.',
     readTime: '9 min read',
     category: 'Veterinary Testing',
     dateModified: '2026-09-21',
+    lastReviewedDate: '2026-09-21',
+    reviewerName: 'Dr. Sarah Miller, DVM',
+    reviewerTitle: 'Veterinary Biosecurity Specialist & Regulatory Reviewer',
+    reviewerUrl: '/en/editorial-policy',
     statutoryBasis: 'WOAH / OIE Terrestrial Manual, EU Regulation 576/2013 Annex IV, Singapore Animals & Birds Act, Japan MAFF Rabies Prevention Act, Australian DAFF Biosecurity Act 2015',
+    officialSources: [
+      {
+        name: 'World Organisation for Animal Health (WOAH) Terrestrial Code Chapter 8.14 (Rabies)',
+        url: 'https://www.woah.org',
+        authority: 'WOAH International Reference Standard',
+      },
+      {
+        name: 'EUR-Lex: Regulation (EU) No 576/2013 Annex IV (Rabies Antibody Titration)',
+        url: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32013R0576',
+        authority: 'European Commission DG SANTE',
+      },
+      {
+        name: 'Japan MAFF Animal Quarantine Service: Import Requirements for Dogs and Cats',
+        url: 'https://www.maff.go.jp/aqs/english/animal/dog/index.html',
+        authority: 'Ministry of Agriculture, Forestry and Fisheries (MAFF Japan)',
+      },
+      {
+        name: 'Australian Government DAFF: Bringing Cats and Dogs to Australia (RNATT Protocols)',
+        url: 'https://www.agriculture.gov.au/biosecurity-trade/cats-dogs',
+        authority: 'Department of Agriculture, Fisheries and Forestry (DAFF Australia)',
+      },
+      {
+        name: 'Singapore NParks AVS: Veterinary Conditions for the Importation of Dogs and Cats',
+        url: 'https://www.nparks.gov.sg/avs',
+        authority: 'Animal & Veterinary Service (AVS Singapore)',
+      },
+    ],
     summary:
-      'A rabies titer test (specifically the FAVN or RNATT serological blood test) measures circulating neutralizing antibody levels in dogs and cats to verify protective immunity against the rabies virus. A rabies titer result of 0.5 IU/mL or greater is universally mandatory for pet travel into rabies-free and rabies-controlled jurisdictions (including Singapore, Japan, Australia, New Zealand, Hawaii, UAE, and unlisted third countries entering the European Union). The blood sample must be drawn at least 30 days after vaccination and processed exclusively at an officially approved reference laboratory.',
+      'A rabies titer test (specifically the FAVN or RNATT serological blood test) measures circulating neutralizing antibody levels in dogs and cats to verify protective immunity against the rabies virus. A rabies titer result of 0.50 IU/mL or greater is universally mandatory for pet travel into rabies-free and rabies-controlled jurisdictions (including Singapore, Japan, Australia, New Zealand, Hawaii, UAE, and unlisted third countries entering the European Union). The blood sample must be drawn at least 30 days after vaccination and processed exclusively at an officially approved reference laboratory.',
     sections: [
       {
-        id: 'what-is-favn',
-        title: '1. What is a Rabies Titer Test (FAVN / RNATT) & Why is it Required?',
+        id: 'favn-vs-titer',
+        title: '1. Rabies Titer Test vs. FAVN Test: Are They the Same Thing?',
         content: [
-          'A rabies titer test—most commonly performed as the Fluorescent Antibody Virus Neutralization (FAVN) or Rabies Neutralising Antibody Titre (RNATT) assay—is an official serological blood test that quantifies the concentration of protective rabies neutralizing antibodies in an animal’s bloodstream.',
-          'While standard rabies vaccination certificates prove that a vaccine was physically administered, they do not prove that the animal’s immune system mounted an adequate protective immune response. Rabies-free jurisdictions (such as Australia, New Zealand, Japan, and the UK historically) and territories with strict biosecurity import frameworks (such as Singapore and the European Union) enforce the titer test to ensure zero introduction of the terrestrial rabies virus.',
-          'Under World Organisation for Animal Health (WOAH) guidelines, a serum antibody titer of at least 0.5 International Units per milliliter (≥ 0.5 IU/mL) is considered the universal scientific gold standard denoting protective immunity.',
+          'A "rabies titer test" is the broad medical umbrella term for any serological blood test that measures the concentration of neutralizing rabies antibodies in an animal’s bloodstream.',
+          'The FAVN (Fluorescent Antibody Virus Neutralization) test is a specific, standardized laboratory assay method—developed by the CDC and Kansas State University—that is recognized by international veterinary health ministries worldwide. It is the primary assay required by the European Union under [Regulation (EU) No 576/2013](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32013R0576), [Singapore AVS](https://www.nparks.gov.sg/avs), [Japan MAFF](https://www.maff.go.jp/aqs/english/animal/dog/index.html), Hawaii (HDOA), and the United Arab Emirates (MOCCAE).',
+          'RNATT (Rabies Neutralising Antibody Titre) is the official terminology mandated by the [Australian DAFF](https://www.agriculture.gov.au/biosecurity-trade/cats-dogs) and New Zealand Ministry for Primary Industries (MPI). While the terminology differs slightly, both FAVN and RNATT assays quantify the exact same antibody threshold: an absolute minimum of 0.50 International Units per milliliter (≥ 0.50 IU/mL) as standardized by the [World Organisation for Animal Health (WOAH)](https://www.woah.org).',
+          'In summary: If a destination veterinary authority requests a "rabies titer test," "FAVN test," or "RNATT test," they are all referring to an approved serological blood test meeting the 0.50 IU/mL threshold performed at an accredited international reference laboratory.',
+        ],
+        callout: {
+          type: 'statute',
+          title: 'Key Distinction for Pet Owners',
+          text: 'Standard in-clinic point-of-care rapid test kits cannot be used for travel compliance. Only serological neutralization titers performed by accredited reference laboratories (such as KSU, Auburn, or ANSES) and accompanied by an official signed laboratory certificate with microchip verification are legally accepted at international borders.',
+        },
+      },
+      {
+        id: 'what-is-favn',
+        title: '2. Scientific Mechanism: Why Do Countries Require a Rabies Titer Test?',
+        content: [
+          'While standard rabies vaccination certificates prove that a vaccine was physically administered by a veterinarian, they do not prove that the animal’s immune system mounted an adequate protective immune response. Factors like vaccine storage temperature, immune compromise, or individual genetics can result in vaccine failure.',
+          'Rabies-free jurisdictions (such as Australia, New Zealand, Japan, and the UK historically) and territories with strict biosecurity import frameworks (such as Singapore and the European Union) enforce the titer test to ensure zero introduction of the terrestrial rabies virus into their domestic wildlife and human populations.',
+          'Under [World Organisation for Animal Health (WOAH)](https://www.woah.org) guidelines, a serum antibody titer of at least 0.50 International Units per milliliter (≥ 0.50 IU/mL) is considered the universal scientific gold standard denoting robust protective immunity.',
         ],
         callout: {
           type: 'statute',
@@ -81,7 +138,7 @@ export const GUIDES: RegulatoryGuide[] = [
       },
       {
         id: 'country-comparison',
-        title: '2. Country-by-Country Titer Mandates & Waiting Clocks',
+        title: '3. Country-by-Country Titer Mandates & Waiting Clocks',
         content: [
           'Different destination countries interpret the titer test with drastically different timeline clocks. The most critical mistake pet parents make is assuming that passing the test permits immediate flight.',
           'Most strict countries enforce a mandatory quarantine observation waiting period that begins on the date the blood was drawn, not the date the lab report was printed.',
@@ -103,7 +160,7 @@ export const GUIDES: RegulatoryGuide[] = [
       },
       {
         id: 'approved-laboratories',
-        title: '3. Approved International Reference Laboratories',
+        title: '4. Approved International Reference Laboratories (KSU, Auburn, ANSES)',
         content: [
           'You cannot run a rabies titer test at your local veterinary clinic’s in-house laboratory. The blood sample must be centrifuged into serum and shipped to an officially accredited government reference laboratory.',
           'In the United States, the primary reference lab is the Kansas State University (KSU) Rabies Laboratory in Manhattan, Kansas, along with the Auburn University College of Veterinary Medicine and the CDC Rabies Laboratory.',
@@ -117,7 +174,7 @@ export const GUIDES: RegulatoryGuide[] = [
       },
       {
         id: 'common-rejection-causes',
-        title: '4. Common Pitfalls That Lead to Airport Rejection',
+        title: '5. Common Pitfalls That Lead to Airport Rejection',
         content: [
           '1. Microchip scanned AFTER blood draw: The animal’s 15-digit ISO microchip must be verified and recorded on the laboratory requisition form before the blood is drawn. If the microchip date on medical records is after the titer date, the test is legally invalid.',
           '2. Drawing blood too early after primary vaccine: Drawing blood within 14 days of an initial rabies shot frequently yields borderline or failing titers (< 0.5 IU/mL) because the B-cell immune response has not peaked. Always wait at least 21 to 30 days after vaccination before drawing blood.',

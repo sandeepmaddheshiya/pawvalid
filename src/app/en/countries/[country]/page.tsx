@@ -226,6 +226,17 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
                 </div>
                 <h3 className="text-sm font-bold text-zinc-900 mb-1.5">{country.titerRequired}</h3>
                 <p className="text-xs text-zinc-600 leading-relaxed">{country.titerDetail}</p>
+                {country.titerStatus !== 'exempt' && (
+                  <div className="pt-2.5 mt-2.5 border-t border-zinc-100">
+                    <Link
+                      href="/en/guides/rabies-titer-test-favn-guide"
+                      className="text-[11px] font-semibold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 transition-colors"
+                    >
+                      <span>FAVN rabies titer requirements guide</span>
+                      <span>→</span>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -565,14 +576,14 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
                   <span className="text-[11px] text-zinc-400">9 min read</span>
                 </div>
                 <h3 className="font-serif text-base font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-2">
-                  FAVN Rabies Titer Test Manual (2026)
+                  FAVN Rabies Titer Test Guide (2026)
                 </h3>
                 <p className="text-xs text-zinc-600 leading-relaxed">
-                  Understand the ≥ 0.5 IU/mL antibody threshold, approved international laboratories (KSU, Auburn, ANSES), and post-draw waiting clocks enforced by {country.authority}.
+                  Understand the ≥ 0.50 IU/mL antibody threshold, approved international laboratories (KSU, Auburn, ANSES), and post-draw waiting clocks enforced by {country.authority}.
                 </p>
               </div>
               <div className="pt-4 mt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700">
-                <span>Read Full FAVN Guide</span>
+                <span>FAVN rabies titer requirements</span>
                 <span>→</span>
               </div>
             </Link>
