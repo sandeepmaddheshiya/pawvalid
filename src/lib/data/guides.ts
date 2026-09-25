@@ -54,22 +54,22 @@ export interface RegulatoryGuide {
 export const GUIDES: RegulatoryGuide[] = [
   {
     slug: 'rabies-titer-test-favn-guide',
-    title: 'FAVN Rabies Titer Test: The Definitive 2026 International Pet Travel Manual',
-    seoTitle: 'FAVN Rabies Titer Test Guide (2026): RNATT Rules, 0.5 IU/mL & Wait Times | PawValid',
+    title: 'Rabies Titer Test (FAVN & RNATT): The Definitive 2026 International Pet Travel Guide',
+    seoTitle: 'Rabies Titer Test Guide (2026): FAVN & RNATT Rules, 0.5 IU/mL & Waiting Times | PawValid',
     description:
-      'Everything pet parents and veterinarians need to know about the Fluorescent Antibody Virus Neutralization (FAVN) rabies titer test: approved laboratories, the 0.5 IU/mL threshold, 90-day EU vs 180-day Japan/Australia waiting periods, and common rejection pitfalls.',
+      'Complete statutory guide to the rabies titer test (FAVN and RNATT serological blood testing) for international dog and cat travel. Approved reference laboratories (KSU, Auburn, ANSES), the mandatory 0.5 IU/mL antibody threshold, 90-day EU vs 180-day Japan and Australia waiting periods, and border clearance rules.',
     readTime: '9 min read',
     category: 'Veterinary Testing',
     dateModified: '2026-09-21',
     statutoryBasis: 'WOAH / OIE Terrestrial Manual, EU Regulation 576/2013 Annex IV, Singapore Animals & Birds Act, Japan MAFF Rabies Prevention Act, Australian DAFF Biosecurity Act 2015',
     summary:
-      'The FAVN (Fluorescent Antibody Virus Neutralization) rabies blood titer test measures circulating neutralizing antibodies in dogs and cats to verify protective immunity against rabies virus. A result of 0.5 IU/mL or greater is universally mandatory for entry into rabies-free and rabies-controlled jurisdictions (including Singapore, Japan, Australia, New Zealand, Hawaii, UAE, and unlisted third countries entering the European Union). The blood sample must be drawn at least 30 days after vaccination and processed exclusively at a government-approved reference laboratory.',
+      'A rabies titer test (specifically the FAVN or RNATT serological blood test) measures circulating neutralizing antibody levels in dogs and cats to verify protective immunity against the rabies virus. A rabies titer result of 0.5 IU/mL or greater is universally mandatory for pet travel into rabies-free and rabies-controlled jurisdictions (including Singapore, Japan, Australia, New Zealand, Hawaii, UAE, and unlisted third countries entering the European Union). The blood sample must be drawn at least 30 days after vaccination and processed exclusively at an officially approved reference laboratory.',
     sections: [
       {
         id: 'what-is-favn',
-        title: '1. What is the FAVN / RNATT Test & Why is it Required?',
+        title: '1. What is a Rabies Titer Test (FAVN / RNATT) & Why is it Required?',
         content: [
-          'The Fluorescent Antibody Virus Neutralization (FAVN) test—also termed the Rabies Neutralising Antibody Titre (RNATT) test—is an in vitro serological assay that quantifies the level of rabies virus neutralizing antibodies present in a companion animal’s blood serum.',
+          'A rabies titer test—most commonly performed as the Fluorescent Antibody Virus Neutralization (FAVN) or Rabies Neutralising Antibody Titre (RNATT) assay—is an official serological blood test that quantifies the concentration of protective rabies neutralizing antibodies in an animal’s bloodstream.',
           'While standard rabies vaccination certificates prove that a vaccine was physically administered, they do not prove that the animal’s immune system mounted an adequate protective immune response. Rabies-free jurisdictions (such as Australia, New Zealand, Japan, and the UK historically) and territories with strict biosecurity import frameworks (such as Singapore and the European Union) enforce the titer test to ensure zero introduction of the terrestrial rabies virus.',
           'Under World Organisation for Animal Health (WOAH) guidelines, a serum antibody titer of at least 0.5 International Units per milliliter (≥ 0.5 IU/mL) is considered the universal scientific gold standard denoting protective immunity.',
         ],
