@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       'international pet transport',
       'rabies titer test',
       'usda aphis vehcs',
+      'vehcs aphis',
       'iata dog crate',
     ],
     alternates: {

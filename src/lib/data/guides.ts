@@ -338,6 +338,14 @@ export const GUIDES: RegulatoryGuide[] = [
     ],
     faqs: [
       {
+        q: 'What is USDA APHIS VEHCS?',
+        a: 'USDA APHIS VEHCS (Veterinary Export Health Certification System) is the official online federal portal operated by the United States Department of Agriculture Animal and Plant Health Inspection Service. VEHCS APHIS enables accredited veterinarians to electronically issue, sign, and submit international pet health certificates for USDA endorsement, validating entry requirements for overseas destinations.',
+      },
+      {
+        q: 'How does VEHCS APHIS work for pet owners traveling internationally?',
+        a: 'In the VEHCS APHIS system, your private veterinarian (who must hold Category II USDA accreditation) conducts your pet’s physical examination, records vaccine and microchip data, and uploads the health certificate directly into VEHCS. USDA medical officers review the certificate and either issue a cryptographic digital endorsement or stamp a physical ink certificate for transit.',
+      },
+      {
         q: 'How long does USDA take to endorse a pet health certificate?',
         a: 'For countries accepting electronic digital signatures (like the EU and UK), electronic approval through VEHCS typically takes 24 to 48 hours. For countries requiring physical paper certificates with an embossed raised ink seal, plan for 3 to 5 business days plus overnight FedEx transit time.',
       },
