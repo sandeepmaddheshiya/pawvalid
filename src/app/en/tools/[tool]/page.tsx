@@ -166,6 +166,28 @@ export default async function ToolDetailPage({ params }: Props) {
             </div>
           </div>
 
+          {/* Guide Cross-Linking Banner */}
+          <div className="bg-gradient-to-r from-[#0E2342] to-[#16345E] text-white rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block mb-1">
+                Official Regulatory Manual
+              </span>
+              <h4 className="font-serif text-base font-bold text-white mb-1">
+                FAVN Rabies Titer Test: Comprehensive 2026 Travel Guide
+              </h4>
+              <p className="text-xs text-zinc-300 leading-relaxed max-w-xl">
+                Read our in-depth manual covering the ≥ 0.50 IU/mL threshold, approved reference labs (KSU, Auburn, ANSES), 90 vs 180-day waiting clocks, and average testing costs ($280–$450).
+              </p>
+            </div>
+            <Link
+              href="/en/guides/rabies-titer-test-favn-guide"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#0FA958] hover:bg-[#0D8E4A] text-white font-bold text-xs shadow-md transition-all active:scale-98 shrink-0 whitespace-nowrap"
+            >
+              <span>Read FAVN Guide</span>
+              <span>→</span>
+            </Link>
+          </div>
+
           {/* FAQs */}
           <div>
             <h3 className="text-xl font-bold text-[#0E2342] mb-4">Frequently Asked Questions</h3>
