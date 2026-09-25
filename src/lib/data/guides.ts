@@ -422,31 +422,35 @@ export const GUIDES: RegulatoryGuide[] = [
     faqs: [
       {
         q: 'What is USDA APHIS VEHCS?',
-        a: 'USDA APHIS VEHCS (Veterinary Export Health Certification System) is the official online federal portal operated by the United States Department of Agriculture Animal and Plant Health Inspection Service. VEHCS APHIS enables accredited veterinarians to electronically issue, sign, and submit international pet health certificates for USDA endorsement, validating entry requirements for overseas destinations.',
+        a: 'USDA APHIS VEHCS (Veterinary Export Health Certification System) is the official federal online portal operated by the United States Department of Agriculture Animal and Plant Health Inspection Service. VEHCS enables accredited veterinarians to electronically issue, sign, and submit international pet health certificates for USDA endorsement, validating entry requirements for overseas destinations.',
       },
       {
-        q: 'How does VEHCS APHIS work for pet owners traveling internationally?',
-        a: 'In the VEHCS APHIS system, your private veterinarian (who must hold Category II USDA accreditation) conducts your pet’s physical examination, records vaccine and microchip data, and uploads the health certificate directly into VEHCS. USDA medical officers review the certificate and either issue a cryptographic digital endorsement or stamp a physical ink certificate for transit.',
+        q: 'What is VEHCS (Veterinary Export Health Certification System)?',
+        a: 'VEHCS (Veterinary Export Health Certification System) is the official online federal system used by Category II USDA-accredited veterinarians and federal veterinary medical officers to issue and validate international veterinary health certificates for international travel.',
       },
       {
-        q: 'How long does USDA take to endorse a pet health certificate?',
-        a: 'For countries accepting electronic digital signatures (like the EU and UK), electronic approval through VEHCS typically takes 24 to 48 hours. For countries requiring physical paper certificates with an embossed raised ink seal, plan for 3 to 5 business days plus overnight FedEx transit time.',
+        q: 'How does VEHCS APHIS work for pet health certificate endorsement?',
+        a: 'In the VEHCS APHIS workflow: (1) A USDA-accredited private veterinarian examines your pet within the destination country’s clinical window (typically 10 days before entry); (2) The vet uploads vaccination, microchip, and diagnostic test records into the VEHCS portal; (3) USDA veterinary officers review statutory compliance; and (4) USDA either applies a cryptographic digital signature and QR code for countries accepting electronic certificates, or prints and stamps a physical raised embossed seal for destinations requiring ink documents.',
       },
       {
-        q: 'Does the European Union accept digitally signed USDA certificates?',
-        a: 'Yes! Under European Commission Implementing Regulation 2026/131, EU Border Inspection Posts officially accept color printouts of digitally signed certificates bearing the official USDA APHIS cryptographic digital seal and QR validation code.',
+        q: 'What is a USDA endorsement and why is it mandatory for pet travel?',
+        a: 'A USDA endorsement is official sovereign validation from the United States federal government certifying that your pet’s health certificate is genuine and fully compliant with receiving nation biosecurity statutes. Foreign customs and quarantine officials (such as EU Border Inspection Posts, UK DEFRA, or Japan MAFF) do not accept health certificates signed only by private veterinarians—sovereign government-to-government USDA endorsement is legally mandatory.',
       },
       {
         q: 'Where is my local USDA endorsement office and can I visit in person?',
-        a: 'USDA APHIS Endorsement Service Centers (ESC) have transitioned to 100% digital processing via VEHCS. Regional USDA endorsement offices no longer accept in-person walk-in appointments for international pet certificates. Your USDA-accredited veterinarian submits your paperwork directly through the online VEHCS portal. For destination countries requiring a physical raised embossed ink seal (such as Australia or Japan), documents are processed remotely by your regional USDA Endorsement Service Center and returned to your vet or home address via pre-paid overnight courier.',
+        a: 'USDA APHIS Endorsement Service Centers (ESC) have transitioned to 100% digital processing via VEHCS. Regional USDA endorsement offices no longer accept walk-in appointments or in-person visits for companion pet health certificates. Your accredited veterinarian submits the certificate online through VEHCS. If the destination country (e.g., Japan, Australia) requires a physical raised embossed seal, your regional USDA endorsement office processes the certificate remotely and returns it via pre-paid overnight courier (FedEx/UPS).',
+      },
+      {
+        q: 'How long does USDA take to endorse a pet health certificate via VEHCS?',
+        a: 'For destination countries accepting digital certificates (such as the European Union and Great Britain), electronic endorsement through VEHCS is typically completed within 24 to 48 business hours. For countries requiring physical paper certificates with an embossed raised ink seal (such as Australia or Japan), allow 3 to 5 business days plus overnight courier delivery time.',
       },
       {
         q: 'How do I contact a USDA APHIS Endorsement Service Center for emergency pet travel?',
-        a: 'If your departure is within 48 to 72 hours and your certificate is pending review, you can contact the USDA APHIS Customer Service Call Center or your assigned regional Endorsement Service Center (ESC) via email with your VEHCS Tracking Certificate Number and airline itinerary marked "EMERGENCY TRAVEL" in the subject line for expedited triage.',
+        a: 'If your flight departure is within 48 to 72 hours and your certificate remains pending in the federal queue, you can contact the USDA APHIS Customer Service Call Center or email your assigned regional Endorsement Service Center (ESC) with your VEHCS Certificate Tracking Number and airline ticket marked "EMERGENCY TRAVEL" in the subject line for expedited triage.',
       },
       {
-        q: 'What if my flight is delayed past the 10-day window?',
-        a: 'If your flight delay causes your pet to arrive past the 10-day validity window of the initial examination, the certificate expires. You must have an accredited veterinarian conduct a new clinical exam and submit a new certificate to USDA VEHCS.',
+        q: 'What happens if my flight is delayed past the 10-day USDA endorsement window?',
+        a: 'If an airline delay or travel postponement causes your pet to land in the destination country past the statutory 10-day validity window of the initial veterinary examination, the certificate becomes legally invalid. You must have a USDA-accredited veterinarian conduct a new clinical examination and submit a fresh certificate to USDA VEHCS.',
       },
     ],
     relatedGuides: [
