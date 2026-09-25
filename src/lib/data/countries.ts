@@ -753,6 +753,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
       { q: 'Are Pitbulls allowed to enter Germany for a vacation?', a: 'No. Under the German Dog Transfer and Import Restriction Act (HundVerbrEinfG), Pitbull Terriers, American Staffordshire Terriers, Staffordshire Bull Terriers, and Bull Terriers are strictly prohibited from entering Germany, even for temporary tourist stays.' },
       { q: 'What happens at German airport customs upon arrival?', a: 'You must proceed through the Red Customs Channel ("Zoll / Goods to Declare") at Frankfurt, Munich, or Berlin. Customs officials will scan the microchip and verify the official EU Annex IV health certificate.' },
       { q: 'Is tapeworm treatment required to enter Germany?', a: 'No. Direct travel to Germany does not mandate tapeworm treatment. However, if you transit through Germany to the UK, Ireland, Norway, or Malta, tapeworm treatment is mandatory.' },
+      { q: 'What is the 21-day rabies latency rule for entering Germany?', a: 'Under Regulation (EU) No 576/2013, a primary rabies vaccination is only considered valid for border entry once 21 full days have elapsed from the date of vaccination. Booster vaccinations administered within the previous vaccine’s period of validity do not require a waiting period.' },
+      { q: 'What documents and vaccinations are required for importing cats to Germany?', a: 'Cats entering Germany require a 15-digit ISO 11784/11785 microchip, a valid rabies vaccination (administered at 12 weeks of age or older with a 21-day latency period), and an official EU Annex IV health certificate endorsed by the sovereign veterinary authority within 10 days of arrival.' },
     ],
     statutoryRequirements: [
       {
@@ -803,6 +805,21 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         sourceUrl: 'https://www.zoll.de/EN/Private-individuals/Travel/Entering-Germany/Restrictions/Dangerous-dogs/dangerous-dogs_node.html',
         lastVerifiedAt: 'September 21, 2026',
       },
+      {
+        id: 'de-c-req-5',
+        category: 'CUSTOMS_DECLARATION',
+        categoryLabel: 'Zoll Red Channel Customs & Non-Commercial Declaration',
+        title: 'Mandatory Customs Red Channel Inspection',
+        severity: 'BLOCKING',
+        rules: [
+          'Travelers arriving with companion animals must declare pets at the Red Channel ("Zoll / Goods to Declare") at German airports.',
+          'Owner or authorized person must submit a signed non-commercial declaration confirming movement is not for sale or transfer of ownership.',
+        ],
+        protocol: 'Zoll Port Clearance: Customs officials verify microchip ID and endorse the border crossing register.',
+        sourceName: 'German Customs (Zoll)',
+        sourceUrl: 'https://www.zoll.de/EN/Private-individuals/Travel/Entering-Germany/Restrictions/Animals-and-plants/animals-and-plants_node.html',
+        lastVerifiedAt: 'September 21, 2026',
+      },
     ],
     inboundCorridors: [
       { originName: 'United States', originFlag: '🇺🇸', corridorSlug: 'usa-to-germany', leadTime: '21 Days' },
@@ -834,6 +851,9 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     faqs: [
       { q: 'Can I travel on Eurostar with my dog to France?', a: 'No. Eurostar trains do not permit pets, except for certified assistance and guide dogs. To travel overland from the UK to France with pets, use Eurotunnel LeShuttle or cross-channel ferries.' },
       { q: 'What is the French Category 1 dog law?', a: 'Category 1 dogs are unregistered attack dogs (such as Staffordshire terrier or American Staffordshire terrier types without pedigree, Mastiff/Boerboel types, and Tosa types). They are completely banned from entering or transiting France.' },
+      { q: 'How do I take my dog or cat through the Eurotunnel LeShuttle pet reception?', a: 'When departing the UK for France via Eurotunnel, you must visit the Pet Reception Centre at Folkestone terminal before check-in. Staff scan the microchip and verify the EU Pet Passport or endorsed Animal Health Certificate (AHC). The fee is £22 per pet each way.' },
+      { q: 'What health certificate do I need to bring a pet to France from the US or UK?', a: 'Travelers from the US require an EU Annex IV non-commercial health certificate endorsed by USDA APHIS via VEHCS within 10 days of EU arrival. Travelers from Great Britain require a UK Animal Health Certificate (AHC) issued by an Official Veterinarian within 10 days of departure.' },
+      { q: 'Does France require a rabies titer test or quarantine for pets?', a: 'No. Dogs and cats arriving directly from EU countries, the UK, USA, Canada, Australia, and other listed third countries do not require a rabies titer test and enter with 0 days quarantine upon document clearance.' },
     ],
     statutoryRequirements: [
       {
@@ -884,6 +904,21 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         sourceUrl: 'https://agriculture.gouv.fr/telecharger/87508',
         lastVerifiedAt: 'September 21, 2026',
       },
+      {
+        id: 'fr-c-req-5',
+        category: 'BORDER_INSPECTION',
+        categoryLabel: 'French Customs (Douane) & Eurotunnel Inspection Protocol',
+        title: 'Border Control Post Verification',
+        severity: 'BLOCKING',
+        rules: [
+          'Pets arriving by air at Paris CDG/Orly or Nice must clear the Douane (Customs) inspection post with microchip scanning.',
+          'Overland arrivals via Eurotunnel or cross-channel ferries must be processed at designated pet reception facilities prior to embarkation.',
+        ],
+        protocol: 'Douane Clearance: Microchip matching and documentation ledger check conducted prior to entry into French territory.',
+        sourceName: 'French Customs (Douane)',
+        sourceUrl: 'https://www.douane.gouv.fr/fiche/travel-companion-animals',
+        lastVerifiedAt: 'September 21, 2026',
+      },
     ],
     inboundCorridors: [
       { originName: 'United Kingdom', originFlag: '🇬🇧', corridorSlug: 'uk-to-france', leadTime: '21 Days' },
@@ -915,6 +950,10 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     restrictedBreeds: ['Pit Bull Terrier', 'Staffordshire Bull Terrier', 'American Staffordshire Terrier', 'Rottweiler', 'Dogo Argentino', 'Fila Brasileiro', 'Tosa Inu', 'Akita Inu under Spanish Law 50/1999'],
     faqs: [
       { q: 'Do dogs need muzzles in Spain?', a: 'Under Spanish Law 50/1999, breeds classified as Potentially Dangerous Dogs (PPP) such as Rottweilers, Pitbulls, and Staffies must wear a muzzle and be kept on a non-extendable leash under 2 meters in all public spaces.' },
+      { q: 'What health certificate is required to bring a pet into Spain?', a: 'Pets from non-EU countries require an official bilingual Spanish-English EU Annex IV non-commercial health certificate signed by an authorized veterinarian and endorsed by the national government authority (such as USDA APHIS or UK APHA) within 10 days of entering the EU.' },
+      { q: 'What are the rules for bringing a cat to Spain?', a: 'Cats entering Spain must have a 15-digit ISO 11784/11785 microchip, a valid rabies vaccination administered at least 21 days before travel, and an endorsed bilingual health certificate. Cats enter with 0 days quarantine.' },
+      { q: 'How do Spanish customs (MAPA) inspect pets at Madrid Barajas or Barcelona El Prat?', a: 'Upon landing at Madrid (MAD) or Barcelona (BCN), you must declare your pet at the customs tax/animal control desk. Border officials scan the microchip to confirm identity matches the endorsed health certificate.' },
+      { q: 'Does Spain require a rabies titer test or quarantine for pet dogs and cats?', a: 'No. Dogs and cats arriving directly from listed third countries (such as the USA, UK, Canada, and EU nations) do not require a rabies titer test and are exempt from quarantine.' },
     ],
     statutoryRequirements: [
       {
@@ -953,6 +992,36 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         sourceUrl: 'https://www.mapa.gob.es/en/ganaderia/temas/comercio-exterior-ganadero/desplazamiento-animales-compania/',
         lastVerifiedAt: 'September 21, 2026',
       },
+      {
+        id: 'es-c-req-4',
+        category: 'BREED_RESTRICTIONS',
+        categoryLabel: 'Spanish Law 50/1999 Potentially Dangerous Dogs (PPP) Mandate',
+        title: 'Potentially Dangerous Dogs (PPP) Muzzle & Leash Rules',
+        severity: 'BLOCKING',
+        rules: [
+          'Breeds classified under Law 50/1999 (Pit Bulls, Staffies, Rottweilers, Dogo Argentino, etc.) must be muzzled and kept on a non-extendable leash under 2 meters in public.',
+          'Owners residing in Spain must obtain a municipal administrative license and civil liability insurance.',
+        ],
+        protocol: 'Municipal & Police Enforcement: Inspected by Guardia Civil / Policía Local across Spanish autonomous communities.',
+        sourceName: 'Spanish Ministry of the Interior & MAPA',
+        sourceUrl: 'https://www.mapa.gob.es/en/ganaderia/temas/comercio-exterior-ganadero/desplazamiento-animales-compania/',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'es-c-req-5',
+        category: 'BORDER_INSPECTION',
+        categoryLabel: 'MAPA Veterinary Border Inspection Post Clearance',
+        title: 'Designated Port of Entry Customs Check',
+        severity: 'BLOCKING',
+        rules: [
+          'Pets entering Spain from non-EU countries must arrive at designated Points of Entry (PE) equipped for animal control.',
+          'Owner must present documents at the customs counter for microchip verification and declaration of non-commercial movement.',
+        ],
+        protocol: 'MAPA Inspection Post: Veterinary officers at Madrid (MAD), Barcelona (BCN), or Malaga (AGP) verify paperwork for direct release.',
+        sourceName: 'Spanish MAPA Border Control',
+        sourceUrl: 'https://www.mapa.gob.es/en/ganaderia/temas/comercio-exterior-ganadero/desplazamiento-animales-compania/',
+        lastVerifiedAt: 'September 21, 2026',
+      },
     ],
     inboundCorridors: [
       { originName: 'United Kingdom', originFlag: '🇬🇧', corridorSlug: 'uk-to-spain', leadTime: '21 Days' },
@@ -982,6 +1051,10 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     entryAirports: ['Rome Fiumicino (FCO)', 'Milan Malpensa (MXP)', 'Venice Marco Polo (VCE)', 'Naples (NAP)'],
     faqs: [
       { q: 'Is a muzzle required on public transport in Italy?', a: 'Yes. Italian municipal regulations require dog owners to carry a leash (max 1.5m) and a suitable muzzle on public trains, buses, and ferries.' },
+      { q: 'What are the official entry requirements for dogs and cats traveling to Italy?', a: 'To enter Italy, pets require a 15-digit ISO 11784/11785 microchip, a primary rabies vaccination administered at least 21 days before travel, and an official EU Annex IV health certificate endorsed by the sovereign veterinary authority within 10 days of departure.' },
+      { q: 'Does Italy require a rabies titer test for pets from the US, UK, or Canada?', a: 'No. Pets arriving directly from listed third countries such as the United States, United Kingdom, and Canada do not require a rabies blood titer test and enter Italy with 0 days quarantine.' },
+      { q: 'How are pets cleared through Italian customs (Dogana) at Rome Fiumicino or Milan Malpensa?', a: 'Upon arrival at Rome (FCO) or Milan (MXP), travelers with pets must proceed to the Dogana (Customs) office in the baggage reclaim area. Customs officers verify the microchip number and validate the endorsed health certificate for immediate release.' },
+      { q: 'Can I travel with my cat to Italy and what documents are needed?', a: 'Yes. Cats entering Italy require an ISO microchip, an unexpired rabies vaccination administered at least 21 days prior, and an endorsed EU health certificate. Cats are exempt from quarantine and tapeworm treatment.' },
     ],
     statutoryRequirements: [
       {
@@ -1018,6 +1091,36 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         protocol: 'Day 0 is vaccination date; Day 21 must be completed.',
         sourceName: 'Ministero della Salute',
         sourceUrl: 'https://www.salute.gov.it/portale/caniGatti/homeCaniGatti.jsp',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'it-c-req-4',
+        category: 'PUBLIC_TRANSIT_RULES',
+        categoryLabel: 'Italian Ministry Ordinance on Leash & Muzzle Compliance',
+        title: 'Mandatory Public Transit Leash (≤ 1.5m) and Muzzle Carriage',
+        severity: 'NON_BLOCKING',
+        rules: [
+          'Under Ministry of Health Ordinances, dog owners in Italy must use a leash no longer than 1.5 meters in public urban areas.',
+          'Owners must always carry a suitable muzzle (rigid or soft) to be applied on request by authorities or on public transit.',
+        ],
+        protocol: 'Municipal Police Enforcement: Inspected by Polizia Municipale and Trenitalia / Italo rail attendants.',
+        sourceName: 'Ministero della Salute Ordinances',
+        sourceUrl: 'https://www.salute.gov.it/portale/caniGatti/homeCaniGatti.jsp',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'it-c-req-5',
+        category: 'BORDER_INSPECTION',
+        categoryLabel: 'Dogana & PIF Border Veterinary Clearance',
+        title: 'Customs Point of Entry Verification',
+        severity: 'BLOCKING',
+        rules: [
+          'Must arrive at an authorized Border Inspection Post (PIF / UVAC) at major airports such as Rome (FCO) or Milan (MXP).',
+          'Customs officers scan the microchip and log the pet in the national animal movement register.',
+        ],
+        protocol: 'Dogana Release: Physical documentation validated at airport customs office before baggage exit.',
+        sourceName: 'Agenzia delle Dogane e dei Monopoli & Ministero della Salute',
+        sourceUrl: 'https://www.adm.gov.it/portale/en/ee/citizens/travellers/travelling-with-animals',
         lastVerifiedAt: 'September 21, 2026',
       },
     ],
@@ -1492,8 +1595,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     authority: 'Ministry of Agriculture, Forestry and Fisheries (MAFF) Animal Quarantine Service (AQS)',
     authorityUrl: 'https://www.maff.go.jp/aqs/english/animal/dog/index.html',
     legalBasis: 'Rabies Prevention Act & Domestic Animal Infectious Diseases Control Act',
-    headline: 'Japan MAFF Animal Quarantine Service Import Regulations',
-    description: 'Comprehensive guidelines for importing companion pets into Japan. Details dual rabies vaccination protocols, FAVN titer testing, the mandatory 180-day post-draw waiting period, 40-day advance notification to AQS, and port inspection procedures.',
+    headline: 'Japan MAFF Animal Quarantine Service Import Regulations (2026 Guide)',
+    description: 'Comprehensive guidelines for importing companion pets into Japan under MAFF Animal Quarantine Service (AQS) rules. Details ISO 11784/11785 microchipping, dual rabies vaccinations, FAVN rabies antibody titer testing (≥ 0.5 IU/mL), the mandatory 180-day post-draw waiting period, 40-day advance notification to AQS, and port inspection procedures at Narita, Haneda, and Kansai.',
     titerRequired: 'Mandatory FAVN (≥ 0.5 IU/mL)',
     titerStatus: 'mandatory',
     titerDetail: 'FAVN test must be performed at an approved laboratory with result ≥ 0.5 IU/mL. The blood draw date starts a mandatory 180-day waiting period before travel.',
@@ -1504,8 +1607,51 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     certificateType: 'MAFF Form AC / Form C & Government Endorsed Health Certificate',
     certificateDetail: 'Official Japanese AQS Form AC endorsed with physical raised embossed ink seal or digital government signature.',
     entryAirports: ['Tokyo Narita (NRT)', 'Tokyo Haneda (HND)', 'Kansai International (KIX)', 'Chubu Centrair (NGO)'],
+    catGuidance: {
+      headline: 'Japan MAFF Cat Import Regulations & Cat Passport Japan Rules',
+      summary:
+        'Under Japanese MAFF Animal Quarantine Service (AQS) biosecurity regulations, importing cats to Japan requires ISO microchipping, 40-day advance notification, and an official endorsed export certificate. Cats from non-designated regions also require dual rabies vaccination and an approved FAVN titer with a 180-day wait to qualify for 0-day quarantine.',
+      rabiesRules:
+        'Cats entering from non-designated rabies countries must receive two inactivated rabies vaccines at least 30 days apart after microchipping, followed by an approved FAVN titer test (≥ 0.50 IU/mL).',
+      microchipRules:
+        '15-digit ISO 11784/11785 transponder (134.2 kHz) implanted prior to the first rabies shot and verified on all MAFF forms.',
+      quarantineRules:
+        '0 to 12 hours direct release if the 180-day titer wait is fulfilled. Up to 180 days quarantine at AQS airport quarantine kennels if arriving early.',
+      healthCertRules:
+        'Japanese MAFF Form AC or Form C completed and endorsed with sovereign veterinary seal within 10 days of flight.',
+      ageRestrictions:
+        'Pets must be at least 91 days (3 months) old before receiving their first rabies vaccine.',
+      checklist: [
+        'ISO 11784/11785 microchip implanted before any vaccinations.',
+        'Primary rabies vaccination administered at ≥ 91 days of age.',
+        'Booster rabies vaccination administered at least 30 days after the primary shot.',
+        'FAVN blood titer draw (≥ 0.50 IU/mL) processed at a MAFF-designated laboratory.',
+        '180-day waiting clock completed between blood draw date and Japan arrival.',
+        'Advance Notification of Animal Import submitted to AQS port at least 40 days before departure.',
+        'Official MAFF Form AC endorsed by sovereign veterinary authority within 10 days.',
+      ],
+    },
     faqs: [
-      { q: 'What is the 40-day advance notification rule for Japan?', a: 'Under Japanese law, you must submit an advance notification of animal arrival to the Animal Quarantine Service (AQS) at your intended port of entry at least 40 days prior to landing.' },
+      {
+        q: 'What is the 40-day advance notification rule for Japan?',
+        a: 'Under Japanese law, you must submit a formal "Notification of Inspection of Animals" to the Animal Quarantine Service (AQS) at your intended airport of entry (Narita, Haneda, Kansai, etc.) at least 40 days prior to landing. AQS will review your documents and issue an "Approval of Notification" without which airlines will deny boarding.',
+      },
+      {
+        q: 'How does the 180-day waiting period work for pet travel to Japan?',
+        a: 'The 180-day waiting clock begins on the exact date the blood sample was drawn for the FAVN rabies titer test (not the date results were received). If 180 full days have elapsed before arrival and the titer is ≥ 0.50 IU/mL, your pet is cleared in under 12 hours. If arriving on day 150, the pet must serve the remaining 30 days in MAFF airport quarantine at your expense.',
+      },
+      {
+        q: 'What is MAFF Form AC and who must complete and endorse it?',
+        a: 'MAFF Form AC (or Form C) is Japan’s official export veterinary certificate. It must be completed by a licensed USDA-accredited or Official Veterinarian and submitted to the exporting government authority (such as USDA APHIS via VEHCS or UK APHA) for official sovereign endorsement within 10 days of flight.',
+      },
+      {
+        q: 'What happens if my pet arrives in Japan before the 180-day titer wait is finished?',
+        a: 'If a dog or cat arrives in Japan before 180 days have passed from the FAVN blood draw date, the animal must complete the shortfall days in an AQS quarantine station at the airport of entry. The pet owner is responsible for all quarantine holding, feeding, and veterinary inspection fees.',
+      },
+      {
+        q: 'What vaccinations are required to bring a cat to Japan?',
+        a: 'Cats entering Japan from non-designated regions require two rabies vaccinations administered at least 30 days apart after ISO microchipping, plus an approved FAVN titer test. Core feline vaccines (FVRCP) and pre-flight parasite treatments are also strongly recommended.',
+      },
     ],
     statutoryRequirements: [
       {
@@ -1553,6 +1699,21 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         rules: ['Must submit formal arrival notification to AQS at landing airport at least 40 days before flight.'],
         protocol: 'Approval certificate issued by AQS.',
         sourceName: 'Japan MAFF AQS',
+        sourceUrl: 'https://www.maff.go.jp/aqs/english/animal/dog/index.html',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'jp-c-req-5',
+        category: 'HEALTH_CERTIFICATE',
+        categoryLabel: 'MAFF Form AC Sovereign Endorsement & Clinical Exam',
+        title: 'Official 10-Day Pre-Export Clinical Examination',
+        severity: 'BLOCKING',
+        rules: [
+          'Clinical exam must be conducted by an accredited veterinarian within 10 days (or within 48 hours for certain airlines) of export.',
+          'Official MAFF Form AC/Form C must be endorsed with government stamp/seal by competent exporting authority.',
+        ],
+        protocol: 'AQS Airport Desk: Original endorsed certificates verified against the Advance Notification Approval ledger.',
+        sourceName: 'Japan MAFF AQS Certification',
         sourceUrl: 'https://www.maff.go.jp/aqs/english/animal/dog/index.html',
         lastVerifiedAt: 'September 21, 2026',
       },
@@ -1804,8 +1965,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     authority: 'Department of Agriculture, Food and the Marine (DAFM)',
     authorityUrl: 'https://www.gov.ie/en/publication/21d40-pet-travel/',
     legalBasis: 'Regulation (EU) No 576/2013 & Irish Statutory Instrument No. 126/2020',
-    headline: 'DAFM Ireland Pet Travel & Biosecurity Regulations',
-    description: 'Official regulations for bringing dogs, cats, and ferrets into the Republic of Ireland. Details EU Annex IV requirements, mandatory tapeworm treatment for dogs, and advance compliance check bookings at Dublin and Cork airports.',
+    headline: 'DAFM Ireland Pet Travel & Biosecurity Regulations (2026 Guide)',
+    description: 'Official regulations for bringing dogs, cats, and ferrets into the Republic of Ireland under Department of Agriculture, Food and the Marine (DAFM) rules. Details EU Annex IV health certificate requirements, mandatory tapeworm (Praziquantel) treatment for dogs administered 24 to 120 hours before arrival, microchip authentication, and advance compliance check bookings at Dublin and Cork airports.',
     titerRequired: 'Exempt for Listed Countries',
     titerStatus: 'exempt',
     titerDetail: 'Listed countries (USA, UK, Canada, Australia, EU) do not require a rabies titer test.',
@@ -1817,7 +1978,26 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     certificateDetail: 'Must be issued by an authorized veterinarian and endorsed by government authorities within 10 days of arrival.',
     entryAirports: ['Dublin Airport (DUB)', 'Cork Airport (ORK)', 'Shannon Airport (SNN)'],
     faqs: [
-      { q: 'Is advance notice required for Ireland pet entry?', a: 'Yes. You must give at least 24 hours advance notice to the DAFM inspection portal at Dublin Airport to book an appointment for your pet’s physical compliance check.' },
+      {
+        q: 'Is advance notice required for Ireland pet entry?',
+        a: 'Yes. Under DAFM regulations, you must give at least 24 hours advance notice through the online DAFM portal or to the designated pet inspection team at Dublin (DUB), Cork (ORK), or Shannon (SNN) airport to schedule your pet’s physical compliance check.',
+      },
+      {
+        q: 'What is the mandatory tapeworm treatment rule for dogs entering Ireland?',
+        a: 'All dogs entering Ireland must be treated against Echinococcus multilocularis with an approved veterinary product containing Praziquantel. The treatment must be administered by a licensed veterinarian between 24 and 120 hours (1 to 5 days) before the scheduled arrival time in Ireland and recorded in Section II of the EU health certificate.',
+      },
+      {
+        q: 'Can I bring my pet on a ferry from Great Britain to Ireland?',
+        a: 'Yes. Irish Ferries and Stena Line operate pet-friendly ferry crossings between Great Britain (Holyhead, Fishguard, Cairnryan) and Ireland (Dublin, Rosslare, Belfast). Dogs require tapeworm treatment 24–120 hours prior, an Animal Health Certificate (AHC) or EU Pet Passport, and an ISO microchip.',
+      },
+      {
+        q: 'What are the cat travel rules for entering Ireland?',
+        a: 'Cats entering Ireland require a 15-digit ISO 11784/11785 microchip, a rabies vaccination administered at least 21 days prior to travel, and an official endorsed EU health certificate or EU pet passport. Cats are exempt from tapeworm treatment and rabies titer testing when arriving from listed origins.',
+      },
+      {
+        q: 'Does Ireland require quarantine for companion pets?',
+        a: 'No. Pets entering Ireland from listed third countries (such as the US, UK, and Canada) with compliant microchips, valid rabies vaccinations, endorsed paperwork, and verified tapeworm treatments are granted immediate release with 0 days quarantine after passing the DAFM port check.',
+      },
     ],
     statutoryRequirements: [
       {
@@ -1826,8 +2006,12 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         categoryLabel: 'Echinococcus Multilocularis Protocol for Ireland',
         title: 'Mandatory 24–120h Praziquantel Treatment',
         severity: 'BLOCKING',
-        rules: ['Administered by licensed vet 24–120 hours before arrival in Ireland.', 'Must contain Praziquantel.'],
-        protocol: 'Recorded in EU Annex IV Section II by accredited vet.',
+        applicableSpecies: 'DOG',
+        rules: [
+          'Must be administered by a licensed veterinarian between 24 and 120 hours prior to scheduled arrival in Ireland.',
+          'Must contain Praziquantel or an equivalent licensed product effective against Echinococcus multilocularis.',
+        ],
+        protocol: 'Recorded in EU Annex IV Section II by accredited vet with exact manufacturer, date, and hour of dosing.',
         sourceName: 'Irish DAFM',
         sourceUrl: 'https://www.gov.ie/en/publication/21d40-pet-travel/',
         lastVerifiedAt: 'September 21, 2026',
@@ -1856,9 +2040,40 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         sourceUrl: 'https://www.gov.ie/en/publication/21d40-pet-travel/',
         lastVerifiedAt: 'September 21, 2026',
       },
+      {
+        id: 'ie-c-req-4',
+        category: 'ADVANCE_NOTIFICATION',
+        categoryLabel: 'DAFM Advance Compliance Notice (24 Hours)',
+        title: 'Mandatory 24-Hour Port Notice Appointment',
+        severity: 'BLOCKING',
+        rules: [
+          'Travelers must notify DAFM pet inspection portal at least 24 hours prior to arrival.',
+          'Physical compliance appointment must be scheduled with airport or ferry port inspectors.',
+        ],
+        protocol: 'DAFM Appointment Confirmation: Presented alongside animal health paperwork at Dublin/Cork border.',
+        sourceName: 'Irish DAFM Border Inspection',
+        sourceUrl: 'https://www.gov.ie/en/publication/21d40-pet-travel/',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'ie-c-req-5',
+        category: 'HEALTH_CERTIFICATE',
+        categoryLabel: 'EU Annex IV Health Certificate Endorsement',
+        title: 'Official 10-Day Sovereign Endorsed Certificate',
+        severity: 'BLOCKING',
+        rules: [
+          'Must be completed by an authorized veterinarian within 10 days of entering the European Union.',
+          'Must be officially endorsed by competent exporting authority (e.g. USDA APHIS, UK APHA, CFIA).',
+        ],
+        protocol: 'DAFM Port Inspection: Verified at Dublin Airport Terminal 1/2 pet inspection rooms.',
+        sourceName: 'Irish DAFM Animal Health',
+        sourceUrl: 'https://www.gov.ie/en/publication/21d40-pet-travel/',
+        lastVerifiedAt: 'September 21, 2026',
+      },
     ],
     inboundCorridors: [
       { originName: 'United States', originFlag: '🇺🇸', corridorSlug: 'usa-to-ireland', leadTime: '21 Days + Tapeworm' },
+      { originName: 'United Kingdom', originFlag: '🇬🇧', corridorSlug: 'uk-to-ireland', leadTime: '24–120 Hours' },
     ],
   },
 
@@ -1871,8 +2086,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     authority: 'SENASICA & SADER (National Service of Agro-Alimentary Health, Safety and Quality)',
     authorityUrl: 'https://www.gob.mx/senasica/documentos/si-viajas-con-tu-mascota-194177',
     legalBasis: 'Federal Animal Health Law & SENASICA Pet Importation Guidelines',
-    headline: 'SENASICA Pet Entry Regulations for Mexico',
-    description: 'Official regulations for importing dogs and cats into Mexico. Covers SENASICA OISA airport inspection procedures, internal and external parasite treatment verifications, and rabies certificate standards.',
+    headline: 'SENASICA Pet Entry Regulations for Mexico (2026 Guide)',
+    description: 'Official regulations for importing dogs and cats into Mexico under SENASICA and SADER rules. Covers SENASICA OISA airport inspection procedures, internal and external parasite treatment verifications, rabies certificate standards, clean crate mandates, and commercial pet food entry restrictions.',
     titerRequired: 'Exempt / Not Required',
     titerStatus: 'exempt',
     titerDetail: 'Mexico does not require rabies antibody titer testing for companion dogs and cats.',
@@ -1884,7 +2099,26 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     certificateDetail: 'Must be issued by a licensed veterinarian on clinic letterhead or official government export form.',
     entryAirports: ['Mexico City International (MEX)', 'Cancún (CUN)', 'Guadalajara (GDL)', 'Puerto Vallarta (PVR)'],
     faqs: [
-      { q: 'Is a formal health certificate required for US pets entering Mexico?', a: 'Under current SENASICA rules, US and Canadian travelers entering Mexico with pets can present an active rabies certificate and undergo a free physical inspection by SENASICA officers at the airport OISA module.' },
+      {
+        q: 'Is a formal health certificate required for US pets entering Mexico?',
+        a: 'Under current SENASICA rules, US and Canadian travelers entering Mexico with personal pets (dogs and cats) do not need an official USDA-endorsed health certificate. Presenting proof of active rabies vaccination and parasite treatment for a free physical check at the SENASICA OISA airport module is sufficient.',
+      },
+      {
+        q: 'How does the SENASICA OISA inspection work at Mexican airports?',
+        a: 'Upon landing at Mexican airports (MEX, CUN, GDL, PVR), you must bring your pet in a clean carrier to the SENASICA Office of Animal Health Inspection (OISA). An official veterinarian will examine the pet for ectoparasites, wounds, and signs of infectious disease before issuing an official Zoosanitary Import Certificate (CIS).',
+      },
+      {
+        q: 'What parasite treatments are required for dogs and cats entering Mexico?',
+        a: 'SENASICA requires proof that the pet has received internal and external parasite treatment within the last 6 months. The veterinary record must specify the product brand name, active ingredient, and date of application.',
+      },
+      {
+        q: 'Can I bring dry dog or cat food into Mexico?',
+        a: 'SENASICA allows travelers to bring only a single open bag of dry commercial pet food (maximum 50 lbs / 22.6 kg) in its original labeled packaging. Loose homemade treats, unpackaged food, raw meat, and products containing ruminant ingredients from bovine spongiform encephalopathy (BSE) risk countries are strictly confiscated.',
+      },
+      {
+        q: 'Can I drive across the US-Mexico border with my dog or cat?',
+        a: 'Yes. Travelers driving across US-Mexico land ports of entry (e.g. Tijuana, Ciudad Juárez, Nuevo Laredo, or via Cross Border Xpress CBX) can enter with pets. SENASICA personnel will conduct a brief physical health check and verify rabies vaccination records at the crossing.',
+      },
     ],
     statutoryRequirements: [
       {
@@ -1893,7 +2127,10 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         categoryLabel: 'SENASICA External/Internal Parasite Mandate',
         title: 'Valid Parasite & Rabies Certification',
         severity: 'BLOCKING',
-        rules: ['Pet must be free of ectoparasites upon physical inspection.', 'Must show proof of recent internal and external parasite treatment.'],
+        rules: [
+          'Pet must be free of ectoparasites (ticks, fleas) upon physical inspection.',
+          'Must show veterinary proof of internal and external parasite treatment administered within 6 months.',
+        ],
         protocol: 'Physical inspection conducted by SENASICA veterinarian at OISA office.',
         sourceName: 'SENASICA Mexico',
         sourceUrl: 'https://www.gob.mx/senasica/documentos/si-viajas-con-tu-mascota-194177',
@@ -1917,9 +2154,41 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         categoryLabel: 'SENASICA OISA Veterinary Inspection',
         title: 'Airport Inspection & Health Verification',
         severity: 'BLOCKING',
-        rules: ['Pet must undergo a physical health verification by an official SENASICA inspector upon landing.', 'Must be carried in a clean carrier without food, bedding, or toys.'],
+        rules: [
+          'Pet must undergo a physical health verification by an official SENASICA inspector upon landing.',
+          'Must be carried in a clean carrier without bedding, soil, or organic agricultural items.',
+        ],
         protocol: 'OISA Animal Health Inspection Office at arrival airport.',
         sourceName: 'SENASICA Mexico',
+        sourceUrl: 'https://www.gob.mx/senasica/documentos/si-viajas-con-tu-mascota-194177',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'mx-c-req-4',
+        category: 'MICROCHIP',
+        categoryLabel: 'ISO 11784/11785 Microchip Identification',
+        title: '15-Digit ISO Transponder Standard',
+        severity: 'NON_BLOCKING',
+        rules: [
+          'A 15-digit ISO 11784/11785 microchip is strongly recommended and required by international airlines for flight check-in.',
+        ],
+        protocol: 'Scanned during OISA health verification if present.',
+        sourceName: 'SENASICA Pet Guidelines',
+        sourceUrl: 'https://www.gob.mx/senasica/documentos/si-viajas-con-tu-mascota-194177',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'mx-c-req-5',
+        category: 'IMPORT_RESTRICTIONS',
+        categoryLabel: 'SENASICA Pet Food & Biosecurity Regulations',
+        title: 'Commercial Dry Food Packaging Limits',
+        severity: 'NON_BLOCKING',
+        rules: [
+          'Only one open bag of commercial dry pet food (up to 50 lbs / 22.6 kg) allowed per pet in original sealed packaging.',
+          'Unpackaged homemade food, treats containing beef from restricted countries, and raw meat are confiscated.',
+        ],
+        protocol: 'OISA Baggage Desk: Agricultural inspectors verify package labeling at port of entry.',
+        sourceName: 'SENASICA Food Regulations',
         sourceUrl: 'https://www.gob.mx/senasica/documentos/si-viajas-con-tu-mascota-194177',
         lastVerifiedAt: 'September 21, 2026',
       },
@@ -1938,8 +2207,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     authority: 'Netherlands Food and Consumer Product Safety Authority (NVWA) & European Commission',
     authorityUrl: 'https://www.nvwa.nl/onderwerpen/honden-en-katten/reizen-met-honden-en-katten',
     legalBasis: 'Regulation (EU) No 576/2013 & Dutch Animal Health and Welfare Act',
-    headline: 'NVWA Netherlands Pet Movement & Schiphol Entry Requirements',
-    description: 'Official regulations for bringing companion pets into the Netherlands. Enforces EU 576/2013 standards, ISO microchip verification, 21-day rabies vaccine latency, and customs clearance procedures at Amsterdam Airport Schiphol Animal Hotel.',
+    headline: 'NVWA Netherlands Pet Movement & Schiphol Entry Requirements (2026 Guide)',
+    description: 'Official regulations for bringing companion pets into the Netherlands under NVWA and EU 576/2013 rules. Details ISO microchip verification, 21-day rabies vaccine latency, customs clearance procedures at Amsterdam Airport Schiphol Animal Hotel, and Dutch animal welfare behavioral standards.',
     titerRequired: 'Exempt for Listed Countries',
     titerStatus: 'exempt',
     titerDetail: 'Pets from EU and Annex II listed countries (e.g. USA, UK, Canada, Australia) are exempt from rabies titer testing.',
@@ -1951,7 +2220,26 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     certificateDetail: 'Must be issued by an authorized veterinarian and endorsed by government authorities.',
     entryAirports: ['Amsterdam Airport Schiphol (AMS)', 'Rotterdam The Hague (RTM)', 'Eindhoven (EIN)'],
     faqs: [
-      { q: 'Are any dog breeds banned from entering the Netherlands?', a: 'No. The Netherlands abolished its generic breed-specific ban (RAD) in 2008. All breeds are permitted provided they are well-behaved and accompanied by compliant EU health documentation.' },
+      {
+        q: 'Are any dog breeds banned from entering the Netherlands?',
+        a: 'No. The Netherlands abolished its generic breed-specific legislation (RAD) in 2008. All dog breeds (including Pitbulls and Staffies) are legally permitted to enter the Netherlands, provided they are accompanied by valid EU health documentation and do not exhibit aggressive behavior.',
+      },
+      {
+        q: 'How does pet clearance work at Amsterdam Airport Schiphol (KLM Animal Hotel)?',
+        a: 'Pets arriving as manifest cargo at Schiphol (AMS) are transferred directly to the KLM Animal Hotel—a dedicated 24/7 veterinary quarantine and handling station. NVWA veterinary officers inspect documentation and scan microchips before releasing pets to owners.',
+      },
+      {
+        q: 'What health certificates are required to bring a dog or cat to the Netherlands?',
+        a: 'Pets arriving from non-EU countries require an official EU Annex IV non-commercial health certificate completed by an authorized veterinarian and endorsed by sovereign authorities (e.g. USDA APHIS, UK APHA) within 10 days of travel.',
+      },
+      {
+        q: 'Does the Netherlands require a rabies titer test or quarantine?',
+        a: 'No. Companion pets traveling from listed third countries (such as the US, UK, Canada, and Australia) do not require a rabies titer test and are exempt from quarantine when standard health certificates and vaccines are verified.',
+      },
+      {
+        q: 'What are the cat travel and pet passport rules for the Netherlands?',
+        a: 'Cats entering the Netherlands require a 15-digit ISO 11784/11785 microchip, a valid rabies vaccination administered at least 21 days before departure, and an endorsed EU health certificate. Cats enter with 0 days quarantine.',
+      },
     ],
     statutoryRequirements: [
       {
@@ -1990,6 +2278,36 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         sourceUrl: 'https://www.nvwa.nl/onderwerpen/honden-en-katten/reizen-met-honden-en-katten',
         lastVerifiedAt: 'September 21, 2026',
       },
+      {
+        id: 'nl-c-req-4',
+        category: 'BORDER_INSPECTION',
+        categoryLabel: 'Amsterdam Schiphol KLM Animal Hotel BIP Clearance',
+        title: 'Airport Border Inspection Post Clearance',
+        severity: 'BLOCKING',
+        rules: [
+          'Cargo shipments must be processed through the Amsterdam Schiphol Animal Hotel Border Inspection Post.',
+          'In-cabin and baggage arrivals must report to the customs Red Channel for microchip scanning.',
+        ],
+        protocol: 'NVWA Customs Inspection: Microchip number matched to endorsed health certificate.',
+        sourceName: 'NVWA Border Control Post',
+        sourceUrl: 'https://www.nvwa.nl/onderwerpen/honden-en-katten/reizen-met-honden-en-katten',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'nl-c-req-5',
+        category: 'ANIMAL_WELFARE',
+        categoryLabel: 'Dutch Animal Health and Welfare Act (Wet dieren)',
+        title: 'Welfare & Non-Commercial Compliance Standards',
+        severity: 'NON_BLOCKING',
+        rules: [
+          'Movement must be non-commercial (maximum 5 animals per owner) without intent of sale.',
+          'Animals must be transported in humane, well-ventilated containers compliant with IATA LAR standards.',
+        ],
+        protocol: 'Welfare Inspection: Handled by NVWA inspectors upon airport arrival.',
+        sourceName: 'Dutch Ministry of Agriculture & NVWA',
+        sourceUrl: 'https://www.nvwa.nl/onderwerpen/honden-en-katten/reizen-met-honden-en-katten',
+        lastVerifiedAt: 'September 21, 2026',
+      },
     ],
     inboundCorridors: [
       { originName: 'United States', originFlag: '🇺🇸', corridorSlug: 'usa-to-netherlands', leadTime: '21 Days' },
@@ -2005,8 +2323,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     authority: 'Federal Food Safety and Veterinary Office (FSVO / BLV)',
     authorityUrl: 'https://www.blv.admin.ch/blv/en/home/tiere/reisen-mit-heimtieren.html',
     legalBasis: 'Federal Act on Epizootic Diseases & Ordinance on the Import of Companion Animals (EDAV)',
-    headline: 'Swiss FSVO (BLV) Pet Travel Regulations',
-    description: 'Official regulations for importing dogs and cats into Switzerland. Switzerland aligns directly with EU Regulation 576/2013 standards while strictly prohibiting the import of dogs with docked ears or tails.',
+    headline: 'Swiss FSVO (BLV) Pet Travel Regulations (2026 Guide)',
+    description: 'Official regulations for importing dogs and cats into Switzerland under Federal Food Safety and Veterinary Office (FSVO / BLV) rules. Switzerland aligns with EU Regulation 576/2013 standards while strictly enforcing the Animal Protection Ordinance (TSchV) ban on dogs with cropped ears or docked tails, and mandatory registration in the Swiss AMICUS database.',
     titerRequired: 'Exempt for Listed Countries',
     titerStatus: 'exempt',
     titerDetail: 'Pets from EU countries, USA, UK, Canada, and Australia are exempt from rabies titer testing.',
@@ -2018,16 +2336,38 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     certificateDetail: 'Must be issued by an authorized veterinarian and endorsed by government authorities.',
     entryAirports: ['Zurich Airport (ZRH)', 'Geneva Airport (GVA)', 'EuroAirport Basel (BSL)'],
     faqs: [
-      { q: 'Are dogs with docked ears or tails allowed into Switzerland?', a: 'No. Switzerland has a strict ban on importing dogs with cropped ears or docked tails. Exceptions exist only for short tourist visits or personal moves under specific FSVO authorization.' },
+      {
+        q: 'Are dogs with docked ears or tails allowed into Switzerland under TSchV?',
+        a: 'No. Under the Swiss Animal Protection Ordinance (TSchV), the importation of dogs with cropped ears or docked tails is strictly prohibited. Exceptions exist only for short tourist visits or personal relocations where the owner proves the surgical alteration occurred prior to ownership or before moving to Switzerland, subject to FSVO approval.',
+      },
+      {
+        q: 'What is the AMICUS database registration requirement for dogs in Switzerland?',
+        a: 'All dogs residing in Switzerland must be registered in the central Swiss canine database (AMICUS). Within 10 days of arriving in Switzerland, the owner must take the dog to a local Swiss veterinarian to read the microchip and register the animal in the AMICUS system.',
+      },
+      {
+        q: 'What health certificate is required to bring a dog or cat into Switzerland?',
+        a: 'Travelers from non-EU third countries require an official Swiss/EU Annex IV health certificate endorsed by their national sovereign veterinary authority (e.g. USDA APHIS, UK APHA) within 10 days of arrival.',
+      },
+      {
+        q: 'Does Switzerland require quarantine or rabies titer testing?',
+        a: 'No. Pets arriving from listed low-risk countries (such as the US, UK, Canada, and EU member states) do not require a rabies titer test and are exempt from quarantine.',
+      },
+      {
+        q: 'What are the cat entry requirements for Switzerland?',
+        a: 'Cats entering Switzerland require a 15-digit ISO microchip, a valid rabies vaccination administered at least 21 days before departure, and an endorsed health certificate. Cats are exempt from AMICUS database registration and tapeworm treatments.',
+      },
     ],
     statutoryRequirements: [
       {
         id: 'ch-c-req-1',
         category: 'HEALTH_CERTIFICATE',
         categoryLabel: 'Swiss FSVO Veterinary Clearance',
-        title: 'Swiss / EU Health Certificate & Docking Ban',
+        title: 'Swiss / EU Health Certificate & Standard EU Protocol',
         severity: 'BLOCKING',
-        rules: ['Must meet standard EU 576/2013 microchip and rabies requirements.', 'Dogs with docked ears or cropped tails are prohibited from permanent import.'],
+        rules: [
+          'Must meet standard EU 576/2013 microchip and 21-day rabies vaccination requirements.',
+          'Must be endorsed by sovereign veterinary authority within 10 days of arrival.',
+        ],
         protocol: 'Swiss Border Guard check upon airport arrival.',
         sourceName: 'Swiss FSVO (BLV)',
         sourceUrl: 'https://www.blv.admin.ch/blv/en/home/tiere/reisen-mit-heimtieren.html',
@@ -2055,6 +2395,38 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         protocol: 'Day 0 is vaccination date; Day 21 must be completed.',
         sourceName: 'Swiss FSVO (BLV)',
         sourceUrl: 'https://www.blv.admin.ch/blv/en/home/tiere/reisen-mit-heimtieren.html',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'ch-c-req-4',
+        category: 'BREED_RESTRICTIONS',
+        categoryLabel: 'Swiss Animal Protection Ordinance (TSchV) Ear/Tail Docking Ban',
+        title: 'Strict Prohibition on Cropped Ears & Docked Tails',
+        severity: 'BLOCKING',
+        applicableSpecies: 'DOG',
+        rules: [
+          'Under Swiss TSchV Art. 135, importing dogs with cropped ears or docked tails is strictly banned for permanent import.',
+          'Temporary tourist visitors may enter but must declare the dog to Swiss Customs upon arrival.',
+        ],
+        protocol: 'Customs & FSVO Border Assessment: Prohibited alterations may result in border turning or mandatory export.',
+        sourceName: 'Swiss FSVO Animal Protection',
+        sourceUrl: 'https://www.blv.admin.ch/blv/en/home/tiere/reisen-mit-heimtieren.html',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'ch-c-req-5',
+        category: 'CANINE_REGISTRATION',
+        categoryLabel: 'Mandatory Swiss AMICUS Canine Database Registration',
+        title: 'Post-Arrival Veterinary Registration (10 Days)',
+        severity: 'NON_BLOCKING',
+        applicableSpecies: 'DOG',
+        rules: [
+          'All dogs imported into Switzerland must be presented to a Swiss veterinarian within 10 days of arrival.',
+          'The veterinarian must register the owner and the dog’s microchip in the central AMICUS database.',
+        ],
+        protocol: 'Municipal Ledger: Municipal authorities cross-check dog ownership records against AMICUS registrations.',
+        sourceName: 'Swiss AMICUS Canine Registry & FSVO',
+        sourceUrl: 'https://www.amicus.ch',
         lastVerifiedAt: 'September 21, 2026',
       },
     ],
