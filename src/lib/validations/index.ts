@@ -113,3 +113,27 @@ export const razorpayWebhookSchema = z.object({
     }).optional(),
   }),
 });
+
+// ─── Trip Checkout ─────────────────────────────────────────────────────────────
+
+export const tripCheckoutRequestSchema = z.object({
+  tier: z.enum(['CERTIFIED_PASS', 'CONCIERGE']).optional().default('CERTIFIED_PASS'),
+  currency: z.enum(['GBP', 'USD', 'EUR', 'INR']).optional().default('GBP'),
+  email: z.string().email().optional(),
+  whatsappNumber: z.string().optional(),
+  urgency: z.enum(['STANDARD', 'HIGH', 'CRITICAL']).optional().default('HIGH'),
+  notes: z.string().optional(),
+});
+
+export type TripCheckoutRequest = z.infer<typeof tripCheckoutRequestSchema>;
+
+// ─── Polar Webhook ────────────────────────────────────────────────────────────
+
+export const polarWebhookSchema = z.object({
+  type: z.string(),
+  timestamp: z.union([z.string(), z.date()]).optional(),
+  data: z.record(z.string(), z.any()),
+});
+
+export type PolarWebhookPayload = z.infer<typeof polarWebhookSchema>;
+

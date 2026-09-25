@@ -96,8 +96,12 @@ describe('Trip Checkout & Payment Webhook Endpoints', () => {
     expect(data.amount).toBe(5900); // £59.00
     expect(data.currency).toBe('GBP');
     expect(data.tier).toBe('CONCIERGE');
-    expect(data.trip.conciergeStatus).toBe('IN_REVIEW');
-    expect(data.trip.whatsappNumber).toBe('+44 7123 998877');
+    if (data.isMock) {
+      expect(data.trip.conciergeStatus).toBe('IN_REVIEW');
+      expect(data.trip.whatsappNumber).toBe('+44 7123 998877');
+    } else {
+      expect(data.url).toBeDefined();
+    }
   });
 
   it('should process payment webhook and upgrade SavedTrip tier to CONCIERGE', async () => {

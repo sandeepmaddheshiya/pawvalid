@@ -1,13 +1,13 @@
 /**
  * POST /api/reports/checkout
  *
- * Creates a Razorpay order for a saved assessment.
- * Returns orderId + key for the Razorpay checkout widget.
+ * Creates a checkout session (Polar or Razorpay) for a saved assessment report.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { checkoutRequestSchema } from '@/lib/validations';
 import { db } from '@/lib/db';
+import { isPolarConfigured, createPolarReportCheckout } from '@/lib/polar';
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,62 +42,90 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if Razorpay keys are configured
+    // ─── 1. POLAR GATEWAY ──────────────────────────────────────────────────
+    if (isPolarConfigured()) {
+      try {
+        const checkout = await createPolarReportCheckout({
+          assessmentId,
+          email,
+        });
+
+        return NextResponse.json({
+          provider: 'polar',
+          url: checkout.url,
+          checkoutId: checkout.id,
+          amount,
+          currency,
+          isMock: false,
+          reportUrl: `/en/checker/${assessmentId}`,
+        });
+      } catch (polarErr: any) {
+        console.error('[Polar Report Checkout] Error:', polarErr);
+        if (!process.env.RAZORPAY_KEY_ID?.trim()) {
+          return NextResponse.json(
+            { error: polarErr.message || 'Failed to initialize Polar checkout' },
+            { status: 500 }
+          );
+        }
+      }
+    }
+
+    // ─── 2. RAZORPAY GATEWAY ───────────────────────────────────────────────
     const hasRazorpayKeys = Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET);
 
-    if (!hasRazorpayKeys) {
-      // Sandbox / Demo mode for local testing without active gateway credentials
-      const mockOrderId = `order_demo_${assessmentId.slice(0, 8)}_${Date.now()}`;
-      const mockPaymentId = `pay_demo_${Date.now()}`;
+    if (hasRazorpayKeys) {
+      const Razorpay = (await import('razorpay')).default;
+      const razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID!,
+        key_secret: process.env.RAZORPAY_KEY_SECRET!,
+      });
 
-      await db.assessment.update({
-        where: { id: assessmentId },
-        data: {
-          razorpayOrderId: mockOrderId,
-          paidReportId: mockPaymentId,
-          razorpayPaymentId: mockPaymentId,
+      const order = await razorpay.orders.create({
+        amount,
+        currency,
+        receipt: `pawvalid_${assessmentId}`,
+        notes: {
+          assessmentId,
+          email,
         },
       });
 
+      await db.assessment.update({
+        where: { id: assessmentId },
+        data: { razorpayOrderId: order.id },
+      });
+
       return NextResponse.json({
-        orderId: mockOrderId,
-        amount,
-        currency,
-        keyId: 'rzp_test_demo',
-        isMock: true,
+        provider: 'razorpay',
+        orderId: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        isMock: false,
         reportUrl: `/en/checker/${assessmentId}`,
       });
     }
 
-    // Create Razorpay order with live credentials
-    const Razorpay = (await import('razorpay')).default;
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID!,
-      key_secret: process.env.RAZORPAY_KEY_SECRET!,
-    });
+    // ─── 3. SANDBOX / DEMO MODE ────────────────────────────────────────────
+    const mockOrderId = `order_demo_${assessmentId.slice(0, 8)}_${Date.now()}`;
+    const mockPaymentId = `pay_demo_${Date.now()}`;
 
-    const order = await razorpay.orders.create({
-      amount,
-      currency,
-      receipt: `pawvalid_${assessmentId}`,
-      notes: {
-        assessmentId,
-        email,
+    await db.assessment.update({
+      where: { id: assessmentId },
+      data: {
+        razorpayOrderId: mockOrderId,
+        paidReportId: mockPaymentId,
+        razorpayPaymentId: mockPaymentId,
       },
     });
 
-    // Store the order ID on the assessment
-    await db.assessment.update({
-      where: { id: assessmentId },
-      data: { razorpayOrderId: order.id },
-    });
-
     return NextResponse.json({
-      orderId: order.id,
-      amount: order.amount,
-      currency: order.currency,
-      keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      isMock: false,
+      provider: 'mock',
+      orderId: mockOrderId,
+      amount,
+      currency,
+      keyId: 'test_demo',
+      isMock: true,
       reportUrl: `/en/checker/${assessmentId}`,
     });
   } catch (error) {

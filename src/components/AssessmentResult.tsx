@@ -63,6 +63,12 @@ export default function AssessmentResult({
         throw new Error(data.error || 'Failed to initiate checkout');
       }
 
+      if (data.url) {
+        setCheckoutMessage('Redirecting to secure Polar checkout...');
+        window.location.href = data.url;
+        return;
+      }
+
       // If in demo/dev mode without live keys, or on order created:
       setCheckoutMessage('Order created! Directing you to your permanent report...');
       setTimeout(() => {

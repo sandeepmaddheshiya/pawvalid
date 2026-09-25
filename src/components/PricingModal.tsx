@@ -277,6 +277,12 @@ export default function PricingModal({
           return;
         }
 
+        if (data.url && !data.isMock) {
+          setStatusMessage('✓ Redirecting to secure Polar checkout...');
+          window.location.href = data.url;
+          return;
+        }
+
         if (data.orderId && !data.isMock) {
           openRazorpayCheckout(data, activeTripId, isConciergeSelected ? 'CONCIERGE' : 'CERTIFIED_PASS');
           return;
