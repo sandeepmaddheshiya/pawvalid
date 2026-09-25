@@ -865,8 +865,8 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     authority: 'Department of Agriculture, Fisheries and Forestry (DAFF)',
     authorityUrl: 'https://www.agriculture.gov.au/biosecurity-trade/cats-dogs',
     legalBasis: 'Biosecurity Act 2015 & DAFF Companion Animal Import Policy',
-    headline: 'DAFF Biosecurity Dog and Cat Importation Regulations for Australia',
-    description: 'Australia enforces one of the world’s strictest biosecurity quarantine protocols. Covers DAFF Group 1/2/3 country classifications, mandatory import permits, RNATT rabies titer testing, external parasite protocols, and mandatory post-entry quarantine (PEQ) at Mickleham, Melbourne.',
+    headline: 'DAFF Biosecurity Dog and Cat Importation Regulations for Australia (Australian Pet Passport Guide)',
+    description: 'Australia enforces one of the world’s strictest biosecurity quarantine protocols. While Australian government authorities do not officially issue a single document called an "Australian pet passport," pet owners traveling to Australia must assemble an official biosecurity travel dossier. This statutory checklist encompasses DAFF Group 1/2/3 country classifications, mandatory DAFF Import Permits, RNATT rabies titer testing (with a mandatory 180-day waiting period), parasite elimination protocols, and post-entry quarantine (PEQ) reservations at Mickleham, Melbourne.',
     titerRequired: 'Mandatory RNATT (Group 3 Origins)',
     titerStatus: 'mandatory',
     titerDetail: 'Rabies Neutralising Antibody Titre (RNATT) blood test is mandatory for all Group 3 countries (e.g. USA, UK, Canada). Must be tested at a recognized laboratory (result ≥ 0.5 IU/ml). A minimum of 180 days must elapse between the RNATT blood draw and departure to qualify for the minimum 10-day quarantine stay.',
@@ -874,11 +874,40 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     quarantineDetail: 'All companion pets entering Australia from overseas must complete a minimum of 10 to 30 days mandatory post-entry quarantine (PEQ) at the single national quarantine facility in Mickleham (Melbourne), Victoria.',
     leadTime: '7–12 Months Minimum',
     leadTimeDetail: 'Microchip + rabies vaccines + RNATT test + 180-day waiting clock + DAFF import permit application + Mickleham quarantine booking + internal/external parasite treatments.',
-    certificateType: 'DAFF Veterinary Health Certificate & Biosecurity Import Permit',
-    certificateDetail: 'Official Australian Import Permit issued by DAFF, accompanied by government veterinary health certificates endorsed by the exporting nation (e.g. USDA APHIS, UK APHA).',
+    certificateType: 'DAFF Biosecurity Import Permit & Veterinary Health Dossier ("Pet Passport")',
+    certificateDetail: 'Australia does not recognize generic pet passport booklets alone. The official "Australian pet passport" dossier consists of a valid DAFF Biosecurity Import Permit accompanied by official veterinary health certificates endorsed by the exporting sovereign authority (e.g. USDA APHIS, UK APHA).',
     entryAirports: ['Melbourne Airport (MEL) - Direct bonded transfer to Mickleham Quarantine Facility'],
     restrictedBreeds: ['Dogo Argentino', 'Fila Brasileiro', 'Japanese Tosa', 'American Pit Bull Terrier', 'Pit Bull Terrier types', 'Perro de Presa Canario'],
+    catGuidance: {
+      headline: 'DAFF Cat Import Regulations & Australian Cat Passport Dossier',
+      summary:
+        'Cats entering Australia from Group 2 (rabies-free) or Group 3 (rabies-controlled) countries are subject to strict biosecurity protocols, requiring a DAFF Import Permit, RNATT titer test, and 10 to 30 days post-entry quarantine at Mickleham.',
+      rabiesRules:
+        'Cats from Group 3 countries (e.g. USA, Canada) require an RNATT rabies titer test (≥ 0.5 IU/mL) with a 180-day post-draw latency clock. Group 2 cats (e.g. New Zealand) are exempt from rabies vaccination.',
+      microchipRules:
+        'Mandatory 15-digit ISO 11784/11785 microchip that must be scanned prior to every blood draw and veterinary inspection.',
+      quarantineRules:
+        'Minimum 10 to 30 days mandatory post-entry quarantine (PEQ) at the Mickleham Quarantine Facility in Melbourne (MEL).',
+      healthCertRules:
+        'Official DAFF model veterinary certificate endorsed by exporting government authority plus approved DAFF Biosecurity Import Permit.',
+      ageRestrictions:
+        'Cats must be at least 8 weeks old at the time of import permit application and at least 180 days post-titer draw upon arrival.',
+      hybridCatRules:
+        'Domestic cat crosses with wild species (including Bengal cats F1–F4 and Savannah cats) are strictly prohibited from entering Australia under the EPBC Act. Bengal cats must be verified F5 generation or higher.',
+      checklist: [
+        'ISO 11784/11785 15-digit microchip implanted and verified.',
+        'RNATT Rabies Titer Test (≥ 0.5 IU/mL) + 180-day waiting period (Group 3).',
+        'DAFF Biosecurity Import Permit issued prior to booking flights.',
+        'Confirmed space reservation at Mickleham Post-Entry Quarantine (MEL).',
+        'Internal and external parasite treatments administered by a government-accredited vet.',
+        'Manifest cargo booking arriving directly into Melbourne Airport (MEL).',
+      ],
+    },
     faqs: [
+      {
+        q: 'Is there an official "Australian Pet Passport" for entering Australia?',
+        a: 'No. The Australian government (DAFF) does not issue or recognize a standard booklet called an "Australian pet passport." Instead, international pet travel to Australia requires a comprehensive document dossier comprising an official DAFF Biosecurity Import Permit, an RNATT rabies titer laboratory report (180-day wait), endorsed export health certificates from your origin country’s government veterinarian, and a confirmed reservation at the Mickleham Quarantine Facility in Melbourne.',
+      },
       { q: 'Can my pet fly directly to Sydney or Brisbane from overseas?', a: 'No. All companion cats and dogs entering Australia from overseas must land directly at Melbourne Airport (MEL) for bonded transfer to the Mickleham Post-Entry Quarantine Facility.' },
       { q: 'Can pets fly directly from India or non-approved countries to Australia?', a: 'No. Direct import from non-approved countries (such as India) is prohibited. Pets must first reside in an approved Group 3 country (such as Singapore, UK, USA) for at least 180 consecutive days before export.' },
     ],
