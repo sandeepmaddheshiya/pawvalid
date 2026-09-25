@@ -18,6 +18,18 @@ export interface InboundCorridorLink {
   leadTime: string;
 }
 
+export interface CatGuidance {
+  headline: string;
+  summary: string;
+  rabiesRules: string;
+  microchipRules: string;
+  quarantineRules: string;
+  healthCertRules: string;
+  ageRestrictions: string;
+  hybridCatRules?: string;
+  checklist: string[];
+}
+
 export interface DestinationCountryIntelligence {
   slug: string;
   name: string;
@@ -40,6 +52,7 @@ export interface DestinationCountryIntelligence {
   certificateDetail: string;
   entryAirports: string[];
   restrictedBreeds?: string[];
+  catGuidance?: CatGuidance;
   faqs: Array<{ q: string; a: string }>;
   statutoryRequirements: CountryStatutoryRule[];
   inboundCorridors: InboundCorridorLink[];
@@ -723,26 +736,72 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
     description: 'Statutory import guidelines enforced by the Canadian Food Inspection Agency (CFIA) and Canada Border Services Agency (CBSA). Governs rabies vaccination standards, microchip requirements, personal companion exceptions, and high-risk commercial rescue prohibitions.',
     titerRequired: 'Exempt for Personal Pets',
     titerStatus: 'exempt',
-    titerDetail: 'Canada does not require rabies antibody titer testing for personal companion dogs traveling with their owners.',
+    titerDetail: 'Canada does not require rabies antibody titer testing (FAVN/RNATT) for personal companion dogs and cats traveling with their owners.',
     quarantineDays: '0 Days Quarantine',
     quarantineDetail: 'Direct release upon CBSA document inspection and payment of the standard veterinary inspection fee at Canadian international airports.',
     leadTime: '30 Days Minimum',
-    leadTimeDetail: 'Rabies vaccine must be valid and administered at least 30 days prior to travel if it is a primary vaccination.',
+    leadTimeDetail: 'Rabies vaccine must be valid and administered at least 30 days prior to travel if it is a primary vaccination (mandatory for pets ≥ 3 months old).',
     certificateType: 'Official Rabies Certificate & Veterinary Health Certificate',
     certificateDetail: 'Must clearly state breed, color, sex, weight, microchip number, vaccine brand, serial number, and duration of immunity in English or French.',
     entryAirports: ['Toronto Pearson (YYZ)', 'Vancouver International (YVR)', 'Montréal-Trudeau (YUL)', 'Calgary International (YYC)'],
+    catGuidance: {
+      headline: 'CFIA Cat Import Regulations & Cat Passport Canada Rules',
+      summary:
+        'Under Canadian Food Inspection Agency (CFIA) and CBSA regulations, importing a domestic cat into Canada is streamlined compared to dogs, with zero mandatory quarantine and no rabies titer test required for personal companion felines.',
+      rabiesRules:
+        'Domestic cats 3 months of age or older entering Canada from countries not recognized as rabies-free must be accompanied by a valid rabies vaccination certificate signed by a licensed veterinarian. Cats under 3 months of age are exempt from rabies vaccination requirements.',
+      microchipRules:
+        'While ISO 11784/11785 microchipping is strongly recommended and required by commercial airlines for in-cabin and cargo transit, CFIA border regulations do not legally mandate microchips for personal pet cats if the physical description matches the licensed rabies certificate.',
+      quarantineRules:
+        '0 Days Quarantine. Pet cats enter Canada directly through CBSA customs at international airports upon physical document inspection and payment of the standard CBSA inspection fee (~$30 CAD + tax).',
+      healthCertRules:
+        'An official EU Pet Passport, UK Animal Health Certificate, USDA APHIS health certificate, or bilingual (English/French) veterinary certificate stating the cat’s breed, color, sex, weight, microchip number (if present), and rabies vaccine serial/lot details.',
+      ageRestrictions:
+        'Cats must be at least 3 months old to receive rabies vaccination. Kittens under 3 months may travel without rabies vaccines if accompanied by proof of age.',
+      hybridCatRules:
+        'Domestic cat crosses with wild felines (e.g. Bengal cats F1–F4 or Savannah cats) may require CITES export/import permits. F5 generation and beyond are classified as standard domestic cats by Environment and Climate Change Canada (ECCC).',
+      checklist: [
+        'Bilingual Rabies Certificate (English or French) with vaccine manufacturer, lot number, and validity duration.',
+        'Veterinary Health Certificate / Pet Passport detailing breed, coat color, sex, and age.',
+        'ISO 11784/11785 15-digit microchip (recommended and airline-mandated).',
+        'Proof of age if importing a kitten under 3 months old.',
+        'CBSA statutory pet inspection fee ($30 CAD + applicable GST/HST) payable upon arrival.',
+      ],
+    },
     faqs: [
-      { q: 'Is there a pet inspection fee at Canadian airports?', a: 'Yes. CBSA collects a statutory pet inspection fee (approx. $30 CAD + tax for the first animal) upon clearing customs.' },
-      { q: 'Can I bring a rescue dog from an unlisted country into Canada?', a: 'No. CFIA regulations prohibit the commercial import of dogs for adoption, resale, or rescue from countries at high risk for dog rabies.' },
+      {
+        q: 'What are the CFIA cat passport and health certificate requirements for Canada?',
+        a: 'To bring a cat into Canada, CFIA requires a rabies vaccination certificate or official pet passport (in English or French) signed by a licensed veterinarian for cats 3 months of age or older. The document must specify the cat’s breed, color, weight, vaccine trade name, lot number, and expiration date. Personal companion cats do not require a rabies titer test and are exempt from quarantine.',
+      },
+      {
+        q: 'Do cats need a microchip to enter Canada?',
+        a: 'CFIA does not legally mandate a microchip for personal pet cats if the physical description matches the veterinary rabies certificate; however, virtually all commercial airlines and international pet carriers require a standard 15-digit ISO 11784/11785 microchip for boarding.',
+      },
+      {
+        q: 'Can kittens under 3 months old travel to Canada without a rabies vaccine?',
+        a: 'Yes. Kittens under 3 months of age are exempt from rabies vaccination requirements upon entering Canada, provided the owner can present proof of the kitten’s age (such as a birth certificate or veterinary record).',
+      },
+      {
+        q: 'Is there a pet inspection fee at Canadian airports?',
+        a: 'Yes. CBSA collects a statutory pet inspection fee (approx. $30 CAD + tax for the first animal) upon clearing customs at ports of entry like Toronto Pearson (YYZ), Vancouver (YVR), and Montreal (YUL).',
+      },
+      {
+        q: 'Can I bring a rescue dog from an unlisted country into Canada?',
+        a: 'No. CFIA regulations prohibit the commercial import of dogs for adoption, resale, or rescue from countries at high risk for dog rabies.',
+      },
     ],
     statutoryRequirements: [
       {
         id: 'ca-c-req-1',
         category: 'RABIES_VACCINATION',
         categoryLabel: 'CFIA Rabies Certificate Mandate',
-        title: 'Bilingual Rabies Certificate',
+        title: 'Bilingual Rabies Certificate (Dogs & Cats ≥ 3 Months)',
         severity: 'BLOCKING',
-        rules: ['Must be in English or French and signed by a licensed veterinarian.', 'Must list animal identification, microchip number, vaccine trade name, and lot number.'],
+        rules: [
+          'Must be in English or French and signed by a licensed veterinarian.',
+          'Must list animal identification, microchip number, vaccine trade name, and lot number.',
+          'Primary rabies vaccine must be given at least 30 days prior to border entry.',
+        ],
         protocol: 'CBSA border officer checks documentation upon airport landing.',
         sourceName: 'Canadian Food Inspection Agency (CFIA)',
         sourceUrl: 'https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets',
@@ -754,7 +813,9 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
         categoryLabel: 'ISO 11784/11785 Microchip',
         title: 'Standard 15-Digit Microchip',
         severity: 'BLOCKING',
-        rules: ['Must have an ISO-compatible microchip implanted and recorded.'],
+        rules: [
+          'Must have an ISO-compatible microchip implanted and recorded (mandatory for dogs; strongly recommended and airline-required for cats).',
+        ],
         protocol: 'CBSA inspection at port of entry.',
         sourceName: 'CFIA',
         sourceUrl: 'https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets',
@@ -762,6 +823,22 @@ export const COUNTRIES: Record<string, DestinationCountryIntelligence> = {
       },
       {
         id: 'ca-c-req-3',
+        category: 'CAT_SPECIFIC',
+        categoryLabel: 'CFIA Domestic Cat Regulations',
+        title: 'Cat Passport & Rabies Rules (Canada Feline Policy)',
+        severity: 'BLOCKING',
+        rules: [
+          'Domestic cats ≥ 3 months require a licensed rabies certificate or pet passport in English or French.',
+          'Kittens < 3 months exempt from rabies vaccination with proof of age.',
+          'Zero mandatory quarantine and no FAVN titer test required for personal companion felines.',
+        ],
+        protocol: 'CBSA primary inspection post at YYZ, YVR, YUL, or YYC.',
+        sourceName: 'CFIA Animal Health Division',
+        sourceUrl: 'https://inspection.canada.ca/en/animal-health/terrestrial-animals/imports/pets',
+        lastVerifiedAt: 'September 21, 2026',
+      },
+      {
+        id: 'ca-c-req-4',
         category: 'CUSTOMS_FEE',
         categoryLabel: 'CBSA Port Inspection Fee',
         title: 'Statutory Airport Inspection Fee ($30 CAD)',

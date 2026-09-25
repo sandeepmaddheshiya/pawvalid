@@ -40,6 +40,14 @@ export async function generateMetadata({ params }: CountryPageProps): Promise<Me
   return {
     title,
     description,
+    keywords: [
+      `pet travel ${country.name.toLowerCase()}`,
+      `dog import ${country.name.toLowerCase()}`,
+      `cat passport ${country.name.toLowerCase()}`,
+      `pet passport ${country.name.toLowerCase()}`,
+      `${country.name.toLowerCase()} pet quarantine`,
+      `${country.authority.toLowerCase()}`,
+    ],
     alternates: getHreflangAlternates(`/countries/${country.slug}`),
     openGraph: {
       title,
@@ -393,6 +401,129 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
                   {country.name} does not maintain an outright statutory ban on specific dog breeds for non-commercial entry, provided all standard health certificate, microchip, and rabies vaccination statutes are strictly fulfilled.
                 </p>
               )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 8. DEDICATED CAT PASSPORT & FELINE REGULATIONS ─────────────── */}
+      <section id="cats" className="py-12 bg-[#F3F7F5] border-t border-emerald-900/10 scroll-mt-6">
+        <div className="section-container">
+          <div className="max-w-3xl mb-8">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-[11px] font-bold uppercase tracking-wider mb-2">
+              <span>🐱 Species-Specific Guide</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 tracking-tight">
+              {country.catGuidance?.headline || `Cat Passport & Feline Travel Rules for ${country.name}`}
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-600 mt-2 leading-relaxed">
+              {country.catGuidance?.summary ||
+                `Official statutory entry guidelines for domestic cats and kittens entering ${country.name}. Covers rabies vaccination, microchip requirements, pet passport validity, and quarantine exemptions.`}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {/* 1. Rabies & Kittens */}
+            <div className="bg-white rounded-2xl border border-zinc-200/90 p-5 shadow-2xs">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200/80">
+                  Rabies &amp; Age
+                </span>
+              </div>
+              <h3 className="font-serif text-sm font-bold text-zinc-900 mb-1.5">
+                Rabies Vaccine &amp; Kittens
+              </h3>
+              <p className="text-xs text-zinc-600 leading-relaxed">
+                {country.catGuidance?.rabiesRules ||
+                  `Standard rabies vaccination required for cats 3 months of age or older before entering ${country.name}.`}
+              </p>
+            </div>
+
+            {/* 2. Microchip Policy */}
+            <div className="bg-white rounded-2xl border border-zinc-200/90 p-5 shadow-2xs">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 border border-blue-200/80">
+                  Identification
+                </span>
+              </div>
+              <h3 className="font-serif text-sm font-bold text-zinc-900 mb-1.5">
+                Cat Microchip Standard
+              </h3>
+              <p className="text-xs text-zinc-600 leading-relaxed">
+                {country.catGuidance?.microchipRules ||
+                  `ISO 11784/11785 15-digit microchip is strongly recommended and mandatory for airline transport.`}
+              </p>
+            </div>
+
+            {/* 3. Quarantine & Titer */}
+            <div className="bg-white rounded-2xl border border-zinc-200/90 p-5 shadow-2xs">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+                  Quarantine &amp; Titer
+                </span>
+              </div>
+              <h3 className="font-serif text-sm font-bold text-zinc-900 mb-1.5">
+                Quarantine Duration
+              </h3>
+              <p className="text-xs text-zinc-600 leading-relaxed">
+                {country.catGuidance?.quarantineRules || country.quarantineDetail}
+              </p>
+            </div>
+
+            {/* 4. Health Certificate & Passports */}
+            <div className="bg-white rounded-2xl border border-zinc-200/90 p-5 shadow-2xs">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200/80">
+                  Documentation
+                </span>
+              </div>
+              <h3 className="font-serif text-sm font-bold text-zinc-900 mb-1.5">
+                Cat Passport &amp; Health Cert
+              </h3>
+              <p className="text-xs text-zinc-600 leading-relaxed">
+                {country.catGuidance?.healthCertRules || country.certificateDetail}
+              </p>
+            </div>
+          </div>
+
+          {/* Checklist & Hybrid Breeds Callout */}
+          <div className="bg-white rounded-2xl border border-emerald-200 p-6 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-7 space-y-3">
+              <h3 className="font-serif text-base font-bold text-zinc-900">
+                Statutory Cat Travel Checklist ({country.name})
+              </h3>
+              <ul className="space-y-2 text-xs text-zinc-700">
+                {(country.catGuidance?.checklist || [
+                  `Official bilingual veterinary health certificate or pet passport.`,
+                  `Valid rabies vaccination certificate with vaccine manufacturer and lot number.`,
+                  `15-digit ISO microchip recorded on all veterinary paperwork.`,
+                  `Statutory customs port inspection upon airport arrival.`,
+                ]).map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-emerald-600 font-bold shrink-0 mt-0.5">✓</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="lg:col-span-5 bg-zinc-50 rounded-xl p-4 border border-zinc-200 text-xs space-y-2">
+              <span className="font-bold text-zinc-900 uppercase tracking-wider text-[10px] block">
+                Hybrid Cat Breeds (Bengal &amp; Savannah)
+              </span>
+              <p className="text-zinc-600 leading-relaxed">
+                {country.catGuidance?.hybridCatRules ||
+                  `Domestic cat crosses with wild species (such as F1–F4 Bengal or Savannah cats) may require CITES permits. Check wildlife import regulations prior to flight.`}
+              </p>
+              <div className="pt-2">
+                <Link
+                  href={`/en/checker`}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-900 underline underline-offset-2"
+                >
+                  <span>Verify Cat Documents with AI Checker</span>
+                  <span>→</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
