@@ -175,78 +175,95 @@ export default function BrowseRequirementsChecklist({
   const checkerUrl = `/en/checker?origin=${originCode}&destination=${destCode}&petType=${species}`;
 
   return (
-    <div className="w-full space-y-6">
-      {/* ─── CONTROLS BAR: SPECIES + FILTER + UTILITIES ─── */}
-      <div className="bg-white rounded-2xl border border-zinc-200/90 p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        {/* Species Selector */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Pet Type:</span>
-          <div className="inline-flex p-1 bg-zinc-100 rounded-xl border border-zinc-200/80">
-            <button
-              type="button"
-              onClick={() => {
-                setSpecies('DOG');
-                setCheckedItems({});
-              }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                species === 'DOG'
-                  ? 'bg-white text-zinc-900 shadow-xs'
-                  : 'text-zinc-600 hover:text-zinc-900'
-              }`}
-            >
-              <span>🐕</span>
-              <span>Dog</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setSpecies('CAT');
-                setCheckedItems({});
-              }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                species === 'CAT'
-                  ? 'bg-white text-zinc-900 shadow-xs'
-                  : 'text-zinc-600 hover:text-zinc-900'
-              }`}
-            >
-              <span>🐈</span>
-              <span>Cat</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Filters & Actions */}
-        <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-between sm:justify-end">
-          <div className="inline-flex p-1 bg-zinc-100 rounded-xl border border-zinc-200/80 text-xs">
-            <button
-              type="button"
-              onClick={() => setFilterSeverity('ALL')}
-              className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
-                filterSeverity === 'ALL'
-                  ? 'bg-white text-zinc-900 shadow-xs font-semibold'
-                  : 'text-zinc-600 hover:text-zinc-900'
-              }`}
-            >
-              All Rules ({requirements.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilterSeverity('BLOCKING')}
-              className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
-                filterSeverity === 'BLOCKING'
-                  ? 'bg-white text-zinc-900 shadow-xs font-semibold'
-                  : 'text-zinc-600 hover:text-zinc-900'
-              }`}
-            >
-              Mandatory Only
-            </button>
+    <div className="w-full space-y-5">
+      {/* ─── UNIFIED READINESS TRACKER & CONTROLS ─── */}
+      <div className="bg-white rounded-xl border border-zinc-200/90 p-5 sm:p-6 shadow-2xs space-y-4">
+        
+        {/* Top Header: Title & Interactive Controls */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-zinc-100">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>Statutory Compliance Tracker</span>
+              </span>
+              <span className="text-xs text-zinc-400">•</span>
+              <span className="text-xs text-zinc-500 font-medium">
+                {origin} → {destination}
+              </span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-extrabold text-zinc-900 tracking-tight">
+              Interactive Entry Readiness Assessment
+            </h3>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          {/* Controls: Species Toggle + Severity Filter + Print/Reset */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+            {/* Species Toggle */}
+            <div className="inline-flex p-0.5 bg-zinc-100 rounded-lg border border-zinc-200">
+              <button
+                type="button"
+                onClick={() => {
+                  setSpecies('DOG');
+                  setCheckedItems({});
+                }}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                  species === 'DOG'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-600 hover:text-zinc-900'
+                }`}
+              >
+                <span>🐕</span>
+                <span>Dog</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSpecies('CAT');
+                  setCheckedItems({});
+                }}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                  species === 'CAT'
+                    ? 'bg-white text-zinc-900 shadow-2xs'
+                    : 'text-zinc-600 hover:text-zinc-900'
+                }`}
+              >
+                <span>🐈</span>
+                <span>Cat</span>
+              </button>
+            </div>
+
+            {/* Severity Filter */}
+            <div className="inline-flex p-0.5 bg-zinc-100 rounded-lg border border-zinc-200 text-xs">
+              <button
+                type="button"
+                onClick={() => setFilterSeverity('ALL')}
+                className={`px-2.5 py-1.5 rounded-md font-medium transition-all cursor-pointer ${
+                  filterSeverity === 'ALL'
+                    ? 'bg-white text-zinc-900 shadow-2xs font-semibold'
+                    : 'text-zinc-600 hover:text-zinc-900'
+                }`}
+              >
+                All Rules ({filteredRequirements.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterSeverity('BLOCKING')}
+                className={`px-2.5 py-1.5 rounded-md font-medium transition-all cursor-pointer ${
+                  filterSeverity === 'BLOCKING'
+                    ? 'bg-white text-zinc-900 shadow-2xs font-semibold'
+                    : 'text-zinc-600 hover:text-zinc-900'
+                }`}
+              >
+                Mandatory Only
+              </button>
+            </div>
+
+            {/* Print & Reset */}
             <button
               type="button"
               onClick={handlePrint}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition-colors cursor-pointer"
               title="Print or Save PDF"
             >
               <svg className="w-3.5 h-3.5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -259,100 +276,80 @@ export default function BrowseRequirementsChecklist({
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-2.5 py-1.5 rounded-xl text-xs font-medium text-zinc-500 hover:text-red-600 hover:bg-red-50 transition-colors"
+                className="px-2 py-1.5 rounded-lg text-xs font-medium text-zinc-500 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
               >
                 Reset
               </button>
             )}
           </div>
         </div>
-      </div>
 
-      {/* ─── LIVE READINESS & PROGRESS DASHBOARD ─── */}
-      <div className="bg-gradient-to-br from-slate-900 via-[#0E2342] to-slate-950 text-white rounded-2xl p-5 sm:p-7 shadow-md">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-          <div className="space-y-1.5 max-w-xl">
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-semibold">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Interactive Self-Assessment</span>
-            </div>
-            <h3 className="text-xl sm:text-2xl font-serif font-bold text-white tracking-tight">
-              {origin} → {destination} Compliance Readiness
-            </h3>
-            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-              Mark whether you have completed each statutory requirement or still need it. We compute your readiness according to {legalBasis}.
-            </p>
+        {/* Progress & Action Bar */}
+        <div className="space-y-2.5 pt-1">
+          {/* Multi-segment clean progress bar */}
+          <div className="w-full bg-zinc-100 rounded-full h-2.5 overflow-hidden flex">
+            {stats.haveCount > 0 && (
+              <div
+                className="bg-emerald-600 transition-all duration-300"
+                style={{ width: `${(stats.haveCount / (stats.total || 1)) * 100}%` }}
+                title={`${stats.haveCount} Completed`}
+              />
+            )}
+            {stats.needCount > 0 && (
+              <div
+                className="bg-amber-500 transition-all duration-300"
+                style={{ width: `${(stats.needCount / (stats.total || 1)) * 100}%` }}
+                title={`${stats.needCount} Need Action`}
+              />
+            )}
           </div>
 
-          {/* Meter Badge */}
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 flex items-center gap-4 min-w-[220px]">
-            <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                <path
-                  className="text-white/20"
-                  strokeWidth="3.5"
-                  stroke="currentColor"
-                  fill="none"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-                <path
-                  className={stats.score === 100 ? 'text-emerald-400' : stats.score > 50 ? 'text-amber-400' : 'text-blue-400'}
-                  strokeDasharray={`${stats.score}, 100`}
-                  strokeLinecap="round"
-                  strokeWidth="3.5"
-                  stroke="currentColor"
-                  fill="none"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-              </svg>
-              <span className="absolute font-bold text-sm text-white">{stats.score}%</span>
-            </div>
-            <div>
-              <span className="text-[10px] uppercase font-bold text-zinc-300 tracking-wider block">
-                Readiness Score
+          {/* Metric Badges & Action CTA */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 font-semibold text-zinc-900">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>{stats.haveCount}</span>
+                <span className="text-zinc-500 font-normal">Completed</span>
               </span>
-              <span className="font-bold text-sm text-white">
-                {stats.haveMandatoryCount} / {stats.totalMandatory} Mandatory
+
+              <span className="inline-flex items-center gap-1.5 font-semibold text-zinc-900">
+                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span>{stats.needCount}</span>
+                <span className="text-zinc-500 font-normal">Need Action</span>
               </span>
-              <span className="text-[11px] text-emerald-300 block mt-0.5">
-                {stats.needCount > 0 ? `${stats.needCount} items pending` : 'Ready to verify'}
+
+              <span className="inline-flex items-center gap-1.5 font-semibold text-zinc-900">
+                <span className="w-2 h-2 rounded-full bg-zinc-300"></span>
+                <span>{stats.total - stats.answeredCount}</span>
+                <span className="text-zinc-500 font-normal">Unchecked</span>
+              </span>
+
+              <span className="text-zinc-300 hidden sm:inline">|</span>
+
+              <span className="text-xs font-bold text-zinc-800">
+                Readiness: <span className={stats.score === 100 ? 'text-emerald-700' : stats.score > 0 ? 'text-amber-700' : 'text-zinc-600'}>{stats.score}%</span>
+                <span className="text-zinc-400 font-normal text-[11px] ml-1">({stats.haveMandatoryCount}/{stats.totalMandatory} Mandatory)</span>
               </span>
             </div>
+
+            <Link
+              href={checkerUrl}
+              className="inline-flex items-center justify-center gap-1.5 bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold px-4 py-2 rounded-lg text-xs transition-all shadow-2xs hover:shadow cursor-pointer shrink-0"
+            >
+              <span>Scan Documents with AI</span>
+              <span>→</span>
+            </Link>
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div className="mt-5 pt-5 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-4 text-zinc-300">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-              <strong>{stats.haveCount}</strong> Have It
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-              <strong>{stats.needCount}</strong> Need Action
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-zinc-500"></span>
-              <strong>{stats.total - stats.answeredCount}</strong> Unchecked
-            </span>
-          </div>
-
-          <Link
-            href={checkerUrl}
-            className="inline-flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs"
-          >
-            <span>Run Free Document Validation</span>
-            <span>→</span>
-          </Link>
-        </div>
       </div>
 
       {/* ─── DYNAMIC ACTION GUIDANCE BANNER ─── */}
       {stats.needCount > 0 && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/90 border border-amber-200/90 text-zinc-800 text-xs sm:text-sm shadow-2xs">
+        <div className="p-4 sm:p-5 rounded-xl bg-amber-50/90 border border-amber-200/90 text-zinc-800 text-xs sm:text-sm shadow-2xs">
           <div className="flex items-start gap-3">
-            <div className="w-7 h-7 rounded-lg bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center shrink-0 font-bold">
+            <div className="w-6 h-6 rounded-md bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center shrink-0 font-bold text-xs">
               !
             </div>
             <div className="space-y-1.5 flex-1">
@@ -362,9 +359,9 @@ export default function BrowseRequirementsChecklist({
               <p className="text-zinc-700 leading-relaxed text-xs">
                 To meet the departure timeline for <strong>{destination}</strong>, prioritize getting these items in place with your accredited veterinarian:
               </p>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1.5">
                 {stats.pendingActionItems.map((item) => (
-                  <li key={item.id} className="flex items-start gap-2 bg-white/80 p-2 rounded-lg border border-amber-200 text-xs">
+                  <li key={item.id} className="flex items-start gap-2 bg-white/80 p-2.5 rounded-lg border border-amber-200 text-xs">
                     <span className="text-amber-600 font-bold">→</span>
                     <div>
                       <strong className="font-semibold text-zinc-900">{item.title}</strong>
@@ -379,9 +376,9 @@ export default function BrowseRequirementsChecklist({
       )}
 
       {stats.allMandatorySatisfied && stats.totalMandatory > 0 && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-zinc-800 text-xs sm:text-sm shadow-2xs">
+        <div className="p-4 sm:p-5 rounded-xl bg-emerald-50 border border-emerald-200 text-zinc-800 text-xs sm:text-sm shadow-2xs">
           <div className="flex items-start gap-3">
-            <div className="w-7 h-7 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-800 flex items-center justify-center shrink-0 font-bold">
+            <div className="w-6 h-6 rounded-md bg-emerald-100 border border-emerald-300 text-emerald-800 flex items-center justify-center shrink-0 font-bold text-xs">
               ✓
             </div>
             <div className="space-y-1 flex-1">
@@ -394,7 +391,7 @@ export default function BrowseRequirementsChecklist({
               <div className="pt-2">
                 <Link
                   href={checkerUrl}
-                  className="inline-flex items-center gap-1.5 bg-[#0E2342] text-white font-semibold px-4 py-2 rounded-xl text-xs hover:bg-[#16345E] transition-all"
+                  className="inline-flex items-center gap-1.5 bg-[#0E2342] text-white font-semibold px-4 py-2 rounded-lg text-xs hover:bg-[#16345E] transition-all"
                 >
                   <span>Upload Paperwork to Validate</span>
                   <span>→</span>
@@ -406,7 +403,7 @@ export default function BrowseRequirementsChecklist({
       )}
 
       {/* ─── CHECKLIST ITEMS ─── */}
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         {filteredRequirements.map((req, idx) => {
           const status = checkedItems[req.id];
           const isHave = status === 'HAVE';
@@ -415,7 +412,7 @@ export default function BrowseRequirementsChecklist({
           return (
             <div
               key={req.id || idx}
-              className={`rounded-2xl border p-5 sm:p-6 transition-all text-left ${
+              className={`rounded-xl border p-4.5 sm:p-5 transition-all text-left ${
                 isHave
                   ? 'bg-emerald-50/40 border-emerald-300 shadow-2xs'
                   : isNeed
@@ -425,7 +422,7 @@ export default function BrowseRequirementsChecklist({
             >
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
                 <div className="flex items-start gap-3">
-                  <span className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs mt-0.5 ${
+                  <span className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 font-bold text-xs mt-0.5 ${
                     isHave
                       ? 'bg-emerald-600 text-white'
                       : isNeed
@@ -458,7 +455,7 @@ export default function BrowseRequirementsChecklist({
                   <button
                     type="button"
                     onClick={() => handleToggle(req.id, 'HAVE')}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       isHave
                         ? 'bg-emerald-600 text-white shadow-xs'
                         : 'bg-white border border-zinc-200 text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50/50'
@@ -471,7 +468,7 @@ export default function BrowseRequirementsChecklist({
                   <button
                     type="button"
                     onClick={() => handleToggle(req.id, 'NEED')}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       isNeed
                         ? 'bg-amber-600 text-white shadow-xs'
                         : 'bg-white border border-zinc-200 text-zinc-700 hover:border-amber-300 hover:bg-amber-50/50'
@@ -484,7 +481,7 @@ export default function BrowseRequirementsChecklist({
               </div>
 
               {/* Rules List */}
-              <div className="mb-4 pl-0 sm:pl-10 space-y-1.5">
+              <div className="mb-3 pl-0 sm:pl-9 space-y-1.5">
                 {req.rules.map((r, ri) => (
                   <div key={ri} className="flex items-start gap-2 text-xs sm:text-sm text-zinc-800 leading-relaxed">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#0E2342] mt-2 shrink-0"></span>
@@ -494,7 +491,7 @@ export default function BrowseRequirementsChecklist({
               </div>
 
               {/* Protocol Constraint Warning Box */}
-              <div className="ml-0 sm:ml-10 p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 text-xs text-zinc-700 mb-4 flex items-start gap-2.5">
+              <div className="ml-0 sm:ml-9 p-3 rounded-lg bg-zinc-50 border border-zinc-200 text-xs text-zinc-700 mb-3 flex items-start gap-2.5">
                 <svg className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
                 </svg>
@@ -505,7 +502,7 @@ export default function BrowseRequirementsChecklist({
               </div>
 
               {/* Authority Citation & Source */}
-              <div className="ml-0 sm:ml-10 pt-3 border-t border-zinc-100 flex items-center justify-between flex-wrap gap-2 text-xs text-zinc-500">
+              <div className="ml-0 sm:ml-9 pt-2.5 border-t border-zinc-100 flex items-center justify-between flex-wrap gap-2 text-xs text-zinc-500">
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-zinc-700">Source:</span>
                   <span>{req.sourceName}</span>
@@ -530,7 +527,7 @@ export default function BrowseRequirementsChecklist({
 
       {/* Breed Restriction alert if present and species is DOG */}
       {species === 'DOG' && restrictedBreeds && restrictedBreeds.length > 0 && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs text-amber-950 flex items-start gap-3">
+        <div className="p-4 sm:p-5 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-amber-950 flex items-start gap-3">
           <svg className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
           </svg>
