@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { getCurrentRequirementVersions } from '@/lib/requirements/queries';
 import BrowseRequirementsChecklist from '@/components/BrowseRequirementsChecklist';
+import FaqAccordion from '@/components/FaqAccordion';
 import { getFaqSchema, getBreadcrumbSchema, getHowToSchema } from '@/lib/seo/schema';
 import { CORRIDORS, type RouteIntelligence } from '@/lib/data/corridors';
 import { COUNTRIES } from '@/lib/data/countries';
@@ -847,28 +848,22 @@ export default async function RoutePage({ params }: RoutePageProps) {
       </section>
 
       {/* ─── 9. ROUTE SPECIFIC FAQS & ADVISORIES ────────────────────────── */}
-      <section className="py-12 sm:py-16 bg-zinc-50">
+      <section className="py-12 sm:py-16 bg-zinc-50 border-t border-zinc-200/80">
         <div className="section-container">
-          <div className="mb-8 text-center max-w-2xl mx-auto">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Practical Guidance</span>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 tracking-tight mt-0.5">
+          <div className="mb-8 sm:mb-10 text-center max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Practical Guidance
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
               Frequently Asked Questions: {display.from} to {display.to}
             </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-2">
+              Common questions about traveling on this specific pet transport corridor.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {display.faqs.map((faq, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-zinc-200/90 p-5 shadow-2xs">
-                <h4 className="font-bold text-sm text-zinc-900 mb-2 flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">Q:</span>
-                  <span>{faq.q}</span>
-                </h4>
-                <p className="text-xs text-zinc-600 leading-relaxed pl-5">
-                  {faq.a}
-                </p>
-              </div>
-            ))}
-          </div>
+          <FaqAccordion items={display.faqs} defaultOpenIndex={0} />
 
           {/* Breed Restriction Alert Box if present */}
           {display.restrictedBreeds && display.restrictedBreeds.length > 0 && (

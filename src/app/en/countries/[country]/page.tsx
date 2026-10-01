@@ -6,6 +6,7 @@ import { COUNTRIES, getCountryBySlug } from '@/lib/data/countries';
 import { CORRIDORS } from '@/lib/data/corridors';
 import BrowseRequirementsChecklist from '@/components/BrowseRequirementsChecklist';
 import CountryRouteFinder from '@/components/CountryRouteFinder';
+import FaqAccordion from '@/components/FaqAccordion';
 import {
   getFaqSchema,
   getBreadcrumbSchema,
@@ -586,76 +587,125 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
       </section>
 
       {/* ─── SECTION: ENTRY AIRPORTS & BREED RESTRICTIONS ────────────────── */}
-      <section id="ports-breeds" className="py-10 bg-white border-y border-zinc-200/80 scroll-mt-24">
+      <section id="ports-breeds" className="py-12 bg-white border-y border-zinc-200/80 scroll-mt-24">
         <div className="section-container">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="max-w-3xl mb-8">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Ports &amp; Breed Policies
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
+              Entry Ports &amp; Breed Restrictions
+            </h2>
+            <p className="text-sm text-zinc-600 mt-2 leading-relaxed">
+              Designated international entry airports equipped with veterinary inspection posts, plus statutory breed bans enforced under {country.legalBasis}.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
-            {/* Approved Entry Ports */}
-            <div className="p-5 sm:p-6 rounded-xl bg-zinc-50 border border-zinc-200/90 space-y-3.5">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#0E2342] text-white flex items-center justify-center font-bold text-sm">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+            {/* Left Column: Approved Entry Ports */}
+            <div className="lg:col-span-5 bg-white rounded-2xl border border-zinc-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-5">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 pb-3 border-b border-zinc-100">
+                  <div className="w-9 h-9 rounded-xl bg-zinc-100 text-[#0E2342] flex items-center justify-center font-bold text-sm shrink-0 border border-zinc-200/60">
+                    <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-zinc-900">
+                      Approved Ports of Entry
+                    </h3>
+                    <span className="text-xs text-zinc-500">
+                      Authorized Border Inspection Posts (BIPs)
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
-                    Border Control Posts (BIPs)
-                  </span>
-                  <h3 className="text-base font-bold text-zinc-900">
-                    Approved Ports of Entry in {country.name}
-                  </h3>
+                
+                <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                  All pets entering <strong>{country.name}</strong> must arrive at a designated international border post with on-site veterinary inspection:
+                </p>
+                
+                <div className="space-y-2.5">
+                  {country.entryAirports.map((port, idx) => (
+                    <div key={idx} className="flex items-start gap-3 bg-zinc-50/80 p-3.5 rounded-xl border border-zinc-200/70 text-xs text-zinc-900">
+                      <span className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                        ✈
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <span className="font-semibold block text-zinc-900">{port}</span>
+                        <span className="text-[11px] text-zinc-500 block mt-0.5">Official Veterinary Inspection Facility</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              
-              <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
-                Pets must arrive at designated international airports or seaports equipped with sovereign veterinary border inspection posts:
-              </p>
-              
-              <ul className="space-y-2 text-xs sm:text-sm text-zinc-800 font-medium">
-                {country.entryAirports.map((port, idx) => (
-                  <li key={idx} className="flex items-center gap-2.5 bg-white p-2.5 rounded-lg border border-zinc-200">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0"></span>
-                    <span>{port}</span>
-                  </li>
-                ))}
-              </ul>
+
+              <div className="p-3.5 bg-zinc-50 rounded-xl border border-zinc-200/70 text-xs text-zinc-600 space-y-1">
+                <span className="font-semibold text-zinc-800 block">Inspection Appointment:</span>
+                <span className="text-[11px] text-zinc-500 leading-relaxed block">
+                  Port veterinary inspection appointments must be reserved at least 5 working days prior to arrival via {country.authority} procedures.
+                </span>
+              </div>
             </div>
 
-            {/* Breed Restrictions or Biosecurity Notice */}
-            <div className="p-5 sm:p-6 rounded-xl bg-zinc-50 border border-zinc-200/90 space-y-3.5">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold text-sm">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {/* Right Column: Statutory Breed Restrictions */}
+            <div className="lg:col-span-7 bg-white rounded-2xl border border-zinc-200/80 p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-3 pb-3 border-b border-zinc-100">
+                <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-sm shrink-0 border border-amber-200/60">
+                  <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
-                    Statutory Breed Restrictions
-                  </span>
                   <h3 className="text-base font-bold text-zinc-900">
-                    Restricted Breeds &amp; Prohibitions
+                    Restricted &amp; Prohibited Breeds
                   </h3>
+                  <span className="text-xs text-zinc-500">
+                    Sovereign import prohibitions &amp; hybrid rules
+                  </span>
                 </div>
               </div>
 
               {country.restrictedBreeds && country.restrictedBreeds.length > 0 ? (
                 <>
                   <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
-                    National legislation strictly prohibits or restricts the entry of specific dog breeds and feline hybrids:
+                    Under biosecurity regulations in <strong>{country.name}</strong>, importing the following breeds, their direct crosses, and wild feline hybrids is prohibited:
                   </p>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                     {country.restrictedBreeds.map((breed, bIdx) => (
-                      <span key={bIdx} className="px-2.5 py-1 rounded-md bg-amber-50 text-amber-900 border border-amber-200/80 text-xs font-semibold">
-                        {breed}
-                      </span>
+                      <div
+                        key={bIdx}
+                        className="flex items-start gap-2.5 bg-zinc-50/80 px-3.5 py-2.5 rounded-xl border border-zinc-200/70 text-xs font-medium text-zinc-800"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 mt-1.5"></span>
+                        <span className="leading-snug">{breed}</span>
+                      </div>
                     ))}
+                  </div>
+
+                  <div className="p-3.5 bg-rose-50/60 rounded-xl border border-rose-200/70 text-xs text-rose-950 flex items-start gap-2.5">
+                    <svg className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div>
+                      <span className="font-bold">Border Enforcement Notice:</span>
+                      <span className="ml-1 text-rose-900/90 leading-relaxed block sm:inline">
+                        Prohibited breeds detected during border inspection will be refused entry and subject to mandatory re-export at the owner&apos;s expense.
+                      </span>
+                    </div>
                   </div>
                 </>
               ) : (
-                <div className="bg-white p-3.5 rounded-lg border border-zinc-200 text-xs sm:text-sm text-zinc-600 leading-relaxed">
-                  {country.name} does not enforce an outright statutory ban on specific dog breeds for non-commercial companion animals, provided standard ISO microchip, rabies vaccination, and health certificate protocols are fulfilled.
+                <div className="bg-zinc-50/80 p-4 rounded-xl border border-zinc-200/70 text-xs text-zinc-600 leading-relaxed space-y-2">
+                  <p className="font-semibold text-zinc-800">No Outright Breed Prohibitions</p>
+                  <p>
+                    {country.name} does not enforce an outright statutory ban on specific domestic dog breeds for companion animals, provided standard ISO microchip, rabies vaccination, and health certificate protocols are fulfilled.
+                  </p>
                 </div>
               )}
             </div>
@@ -664,119 +714,195 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
         </div>
       </section>
 
-      {/* ─── SECTION: DEDICATED CAT PASSPORT & FELINE REGULATIONS ────────── */}
-      <section id="cats" className="py-12 bg-gradient-to-b from-[#F3F7F5] to-[#FAFAFA] border-b border-zinc-200/80 scroll-mt-24">
+      {/* ─── SECTION: CAT PASSPORT & FELINE REGULATIONS ─────────────────── */}
+      <section id="cats" className="py-12 bg-[#FAFAFA] border-b border-zinc-200/80 scroll-mt-24">
         <div className="section-container">
           <div className="max-w-3xl mb-8">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider mb-2">
-              <span>🐱 Species-Specific Protocol</span>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Cat Travel Guidelines
+              </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
-              {country.catGuidance?.headline || `Cat Passport & Feline Travel Rules for ${country.name}`}
+            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
+              {country.catGuidance?.headline || `Cat Passport & Travel Requirements for ${country.name}`}
             </h2>
-            <p className="text-sm text-zinc-600 mt-1.5 leading-relaxed">
+            <p className="text-sm text-zinc-600 mt-2 leading-relaxed">
               {country.catGuidance?.summary ||
-                `Official statutory entry guidelines for domestic cats and kittens entering ${country.name}. Covers rabies vaccination, microchip requirements, pet passport validity, and quarantine exemptions.`}
+                `Official statutory entry guidelines for domestic cats and kittens entering ${country.name}. Covers core feline immunization (FVRCP), ISO microchip verification, pet passport validity, and quarantine rules.`}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
-            {/* 1. Rabies & Age */}
-            <div className="bg-white rounded-xl border border-zinc-200/90 p-4 shadow-2xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-200 inline-block mb-2.5">
-                Rabies &amp; Age
-              </span>
-              <h3 className="text-xs sm:text-sm font-bold text-zinc-900 mb-1">
-                Rabies Vaccine &amp; Kittens
-              </h3>
-              <p className="text-xs text-zinc-600 leading-relaxed">
-                {country.catGuidance?.rabiesRules ||
-                  `Standard rabies vaccination required for cats 3 months of age or older before entering ${country.name}.`}
-              </p>
-            </div>
+            {/* Left Column: Core Feline Health Protocols */}
+            <div className="lg:col-span-7 bg-white rounded-2xl border border-zinc-200/80 p-6 sm:p-7 shadow-xs space-y-5">
+              <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-zinc-100 text-[#0E2342] flex items-center justify-center font-bold text-sm shrink-0 border border-zinc-200/60">
+                    <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-zinc-900">
+                      Veterinary Health Protocols
+                    </h3>
+                    <p className="text-xs text-zinc-500">Core requirements for feline entry</p>
+                  </div>
+                </div>
+                <span className="text-[11px] font-semibold text-zinc-500 bg-zinc-100 px-2.5 py-1 rounded-md">
+                  4 Key Protocols
+                </span>
+              </div>
 
-            {/* 2. Microchip Standard */}
-            <div className="bg-white rounded-xl border border-zinc-200/90 p-4 shadow-2xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-200 inline-block mb-2.5">
-                Identification
-              </span>
-              <h3 className="text-xs sm:text-sm font-bold text-zinc-900 mb-1">
-                Cat Microchip Standard
-              </h3>
-              <p className="text-xs text-zinc-600 leading-relaxed">
-                {country.catGuidance?.microchipRules ||
-                  `ISO 11784/11785 15-digit microchip is strongly recommended and mandatory for airline transport.`}
-              </p>
-            </div>
+              <div className="space-y-4 divide-y divide-zinc-100">
+                
+                {/* 1. Identification & Microchip */}
+                <div className="pt-4 first:pt-0 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <span className="w-6 h-6 rounded-full bg-zinc-100 text-zinc-700 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 border border-zinc-200/60">
+                      1
+                    </span>
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <h4 className="text-sm font-bold text-zinc-900">
+                        ISO 11784/11785 Microchip Standard
+                      </h4>
+                      <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                        {country.catGuidance?.microchipRules ||
+                          `Mandatory 15-digit ISO 11784/11785 transponder (134.2 kHz) implanted prior to any rabies or core feline vaccinations.`}
+                      </p>
+                      {country.catGuidance?.ageRestrictions && (
+                        <div className="mt-2 text-xs text-zinc-600 bg-zinc-50 border border-zinc-200/70 rounded-lg px-3 py-2 flex items-start gap-2">
+                          <span className="font-semibold text-zinc-900 shrink-0">Age Limit:</span>
+                          <span>{country.catGuidance.ageRestrictions}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
-            {/* 3. Quarantine & Titer */}
-            <div className="bg-white rounded-xl border border-zinc-200/90 p-4 shadow-2xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 inline-block mb-2.5">
-                Quarantine &amp; Titer
-              </span>
-              <h3 className="text-xs sm:text-sm font-bold text-zinc-900 mb-1">
-                Quarantine Duration
-              </h3>
-              <p className="text-xs text-zinc-600 leading-relaxed">
-                {country.catGuidance?.quarantineRules || country.quarantineDetail}
-              </p>
-            </div>
+                {/* 2. Core Vaccines & Rabies */}
+                <div className="pt-4 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <span className="w-6 h-6 rounded-full bg-zinc-100 text-zinc-700 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 border border-zinc-200/60">
+                      2
+                    </span>
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <h4 className="text-sm font-bold text-zinc-900">
+                        FVRCP &amp; Rabies Immunization
+                      </h4>
+                      <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                        {country.catGuidance?.rabiesRules ||
+                          `Core feline vaccination (FVRCP) and valid rabies immunization administered according to sovereign biosecurity intervals.`}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            {/* 4. Health Certificate & Passports */}
-            <div className="bg-white rounded-xl border border-zinc-200/90 p-4 shadow-2xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-200 inline-block mb-2.5">
-                Documentation
-              </span>
-              <h3 className="text-xs sm:text-sm font-bold text-zinc-900 mb-1">
-                Cat Passport &amp; Health Cert
-              </h3>
-              <p className="text-xs text-zinc-600 leading-relaxed">
-                {country.catGuidance?.healthCertRules || country.certificateDetail}
-              </p>
-            </div>
+                {/* 3. Quarantine Duration & Accommodations */}
+                <div className="pt-4 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <span className="w-6 h-6 rounded-full bg-zinc-100 text-zinc-700 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 border border-zinc-200/60">
+                      3
+                    </span>
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <h4 className="text-sm font-bold text-zinc-900">
+                        Quarantine &amp; Direct Release Assessment
+                      </h4>
+                      <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                        {country.catGuidance?.quarantineRules || country.quarantineDetail}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-          </div>
+                {/* 4. Veterinary Certificate & Permits */}
+                <div className="pt-4 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <span className="w-6 h-6 rounded-full bg-zinc-100 text-zinc-700 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 border border-zinc-200/60">
+                      4
+                    </span>
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <h4 className="text-sm font-bold text-zinc-900">
+                        Official Health Certificate &amp; Import Licences
+                      </h4>
+                      <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                        {country.catGuidance?.healthCertRules || country.certificateDetail}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-          {/* Checklist & Hybrid Breeds Callout */}
-          <div className="bg-white rounded-xl border border-emerald-200 p-5 sm:p-6 shadow-2xs grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <div className="lg:col-span-7 space-y-3">
-              <h3 className="text-sm sm:text-base font-bold text-zinc-900">
-                Statutory Cat Travel Checklist ({country.name})
-              </h3>
-              <ul className="space-y-2 text-xs sm:text-sm text-zinc-700">
-                {(country.catGuidance?.checklist || [
-                  `Official bilingual veterinary health certificate or pet passport.`,
-                  `Valid rabies vaccination certificate with vaccine manufacturer and lot number.`,
-                  `15-digit ISO microchip recorded on all veterinary paperwork.`,
-                  `Statutory customs port inspection upon airport arrival.`,
-                ]).map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-emerald-600 font-bold shrink-0 mt-0.5">✓</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="lg:col-span-5 bg-zinc-50 rounded-lg p-4 border border-zinc-200 text-xs space-y-2.5">
-              <span className="font-bold text-zinc-900 uppercase tracking-wider text-[11px] block">
-                Hybrid Cat Breeds (Bengal &amp; Savannah)
-              </span>
-              <p className="text-zinc-600 leading-relaxed">
-                {country.catGuidance?.hybridCatRules ||
-                  `Domestic cat crosses with wild species (such as F1–F4 Bengal or Savannah cats) may require CITES permits. Check wildlife import regulations prior to flight.`}
-              </p>
-              <div className="pt-1">
-                <Link
-                  href={checkerHref}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-950 underline underline-offset-2"
-                >
-                  <span>Verify Cat Documents with Document Checker</span>
-                  <span>→</span>
-                </Link>
               </div>
             </div>
+
+            {/* Right Column: Pre-Travel Checklist & Advisory */}
+            <div className="lg:col-span-5 space-y-4">
+              
+              {/* Pre-Travel Checklist */}
+              <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 sm:p-6 shadow-xs space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    <h3 className="text-sm font-bold text-zinc-900">
+                      Pre-Travel Checklist
+                    </h3>
+                  </div>
+                  <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">
+                    {(country.catGuidance?.checklist || [1, 2, 3, 4, 5]).length} Steps
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {(country.catGuidance?.checklist || [
+                    `15-digit ISO 11784/11785 microchip implanted before any vaccinations or blood draws.`,
+                    `FVRCP core feline immunization (Feline Rhinotracheitis, Calicivirus, Panleukopenia) administered prior to export.`,
+                    `Valid rabies vaccination certificate with vaccine manufacturer and lot number.`,
+                    `Official veterinary health certificate endorsed by exporting government authority.`,
+                    `Statutory customs port inspection upon airport arrival at designated Border Inspection Post.`,
+                  ]).map((item, idx) => (
+                    <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-zinc-700">
+                      <span className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center justify-center font-semibold text-[11px] shrink-0 mt-0.5">
+                        {idx + 1}
+                      </span>
+                      <span className="leading-relaxed">{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-3 border-t border-zinc-100">
+                  <Link
+                    href={checkerHref}
+                    className="w-full inline-flex items-center justify-center gap-2 bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm py-2.5 px-4 rounded-xl shadow-xs transition-all cursor-pointer text-center"
+                  >
+                    <span>Check Cat Travel Compliance</span>
+                    <span>→</span>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Hybrid Cat Restrictions Callout (Clean Alert) */}
+              {country.catGuidance?.hybridCatRules && (
+                <div className="bg-amber-50/60 rounded-xl border border-amber-200/80 p-4 space-y-1.5 text-xs">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <h4 className="font-bold text-amber-950 text-xs sm:text-sm">
+                      Prohibited Hybrid Breeds (Bengal &amp; Savannah)
+                    </h4>
+                  </div>
+                  <p className="text-zinc-700 leading-relaxed text-[11px] sm:text-xs">
+                    {country.catGuidance.hybridCatRules}
+                  </p>
+                </div>
+              )}
+
+            </div>
+
           </div>
         </div>
       </section>
@@ -883,26 +1009,20 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
       {/* ─── SECTION: FREQUENTLY ASKED QUESTIONS ─────────────────────────── */}
       <section id="faqs" className="py-12 sm:py-16 scroll-mt-24">
         <div className="section-container">
-          <div className="max-w-2xl mx-auto text-center mb-8">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">Practical Guidance</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight mt-1">
+          <div className="max-w-2xl mx-auto text-center mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Practical Guidance
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
               Frequently Asked Questions: {country.name} Pet Import
             </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-2">
+              Key biosecurity rules, quarantine exemptions, and veterinary documentation explained.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto">
-            {country.faqs.map((faq, i) => (
-              <div key={i} className="bg-white rounded-xl border border-zinc-200/90 p-5 shadow-2xs hover:shadow-xs transition-all space-y-2">
-                <h3 className="font-bold text-sm sm:text-base text-zinc-900 flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold text-base leading-none">Q.</span>
-                  <span>{faq.q}</span>
-                </h3>
-                <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed pl-5">
-                  {faq.a}
-                </p>
-              </div>
-            ))}
-          </div>
+          <FaqAccordion items={country.faqs} defaultOpenIndex={0} />
         </div>
       </section>
 
@@ -926,43 +1046,91 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
         </div>
       </section>
 
-      {/* ─── SECTION: BOTTOM HIGH-CONVERTING CTA BANNER ──────────────────── */}
-      <section className="py-12 bg-white border-t border-zinc-200/80">
+      {/* ─── SECTION: BOTTOM CTA ─────────────────────────────────────────── */}
+      <section className="py-12 sm:py-16 bg-white border-t border-zinc-200/80">
         <div className="section-container">
-          <div className="bg-gradient-to-br from-[#08162A] via-[#0E2342] to-[#0A1A30] text-white rounded-2xl p-7 sm:p-10 border border-zinc-800 shadow-lg text-center relative overflow-hidden">
-            
-            {/* Background decorative glow circles */}
-            <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#0E2342]/30 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
-
-            <div className="max-w-2xl mx-auto relative z-10 space-y-3.5">
-              <span className="inline-block px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">
-                Destination Compliance Engine
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                Traveling to {country.name} with your pet?
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed max-w-xl mx-auto">
-                Upload your pet&apos;s vaccination records and microchip certificate. We scan your paperwork against official {country.authority} border rules to verify date sequences, rabies latency, and health certificate deadlines.
-              </p>
+          <div className="bg-zinc-50/90 rounded-2xl border border-zinc-200/90 p-6 sm:p-8 lg:p-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
               
-              <div className="pt-2">
-                <Link
-                  href={checkerHref}
-                  className="inline-flex items-center gap-2 bg-[#0FA958] hover:bg-[#0D8E4A] text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-lg shadow-md hover:shadow-emerald-500/25 transition-all active:scale-[0.99] cursor-pointer"
-                >
-                  <span>Run Free {country.name} Compliance Assessment</span>
-                  <span>→</span>
-                </Link>
+              {/* Left Column */}
+              <div className="lg:col-span-7 space-y-4">
+                <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200/70">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span>Document Pre-Screening</span>
+                </div>
+
+                <div className="space-y-1.5">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
+                    Verify Your Pet&apos;s Documents for {country.name}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                    Upload your pet&apos;s vaccination records, titer reports, and microchip certificates. We check date sequences and mandatory waiting periods against official {country.authority} rules before your veterinary appointment.
+                  </p>
+                </div>
+
+                <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <Link
+                    href={checkerHref}
+                    className="inline-flex items-center justify-center gap-2 bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-xs transition-colors cursor-pointer text-center"
+                  >
+                    <span>Check Travel Compliance Free</span>
+                    <span>→</span>
+                  </Link>
+                </div>
+
+                <div className="pt-1 flex items-center gap-4 text-xs text-zinc-500 flex-wrap">
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-emerald-600 font-bold">✓</span>
+                    <span>No credit card required</span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-emerald-600 font-bold">✓</span>
+                    <span>Instant date sequence check</span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-emerald-600 font-bold">✓</span>
+                    <span>{country.code} 2026 standards</span>
+                  </span>
+                </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-center gap-3 text-[11px] text-zinc-400 flex-wrap">
-                <span>✓ Verified against {country.legalBasis.split('&')[0].trim()}</span>
-                <span>•</span>
-                <span>✓ Instant PDF Gap Analysis</span>
-                <span>•</span>
-                <span>✓ No Credit Card Required</span>
+              {/* Right Column: Clean White Verification Card */}
+              <div className="lg:col-span-5">
+                <div className="bg-white rounded-xl border border-zinc-200/90 p-5 space-y-3 shadow-2xs">
+                  <div className="flex items-center justify-between pb-2.5 border-b border-zinc-100">
+                    <span className="text-xs font-bold text-zinc-800">
+                      Automated Pre-Check
+                    </span>
+                    <span className="text-xs font-medium text-zinc-500">
+                      {country.flag} {country.name}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs text-zinc-600">
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-700 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 border border-emerald-200/80">
+                        ✓
+                      </span>
+                      <span>Microchip implantation preceding rabies vaccinations</span>
+                    </div>
+
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-700 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 border border-emerald-200/80">
+                        ✓
+                      </span>
+                      <span>Rabies titer threshold (≥ 0.50 IU/mL) &amp; waiting clocks</span>
+                    </div>
+
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-700 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 border border-emerald-200/80">
+                        ✓
+                      </span>
+                      <span>Official health certificate timeline and endorsement window</span>
+                    </div>
+                  </div>
+                </div>
               </div>
+
             </div>
           </div>
         </div>

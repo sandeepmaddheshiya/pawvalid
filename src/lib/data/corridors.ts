@@ -63,6 +63,8 @@ export interface RouteIntelligence {
   restrictedBreeds?: string[];
   airlinePolicies?: RouteAirlinePolicy[];
   transitAdvice?: RouteTransitAdvice;
+  originGuideSlug?: string;
+  destGuideSlug?: string;
   timelineSteps: TimelineStep[];
   faqs: Array<{ q: string; a: string }>;
   statutoryRequirements: StatutoryRule[];

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getAllCountries } from '@/lib/data/countries';
 import CountryDirectorySearch from '@/components/CountryDirectorySearch';
+import FaqAccordion from '@/components/FaqAccordion';
 import { getBreadcrumbSchema, getFaqSchema } from '@/lib/seo/schema';
 import { getHreflangAlternates } from '@/lib/seo/hreflang';
 
@@ -223,57 +224,106 @@ export default function CountriesIndexPage() {
       {/* ─── 5. FREQUENTLY ASKED QUESTIONS ──────────────────────────────── */}
       <section className="py-12 sm:py-16">
         <div className="section-container">
-          <div className="mb-8 text-center max-w-2xl mx-auto">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">FAQ</span>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-900 tracking-tight mt-0.5">
+          <div className="mb-8 sm:mb-10 text-center max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Frequently Asked Questions
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
               Destination Country Pet Import FAQs
             </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-2">
+              Learn about global biosecurity tiers, quarantine waiting periods, and airline paperwork.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {DIRECTORY_FAQS.map((faq, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-zinc-200/90 p-5 shadow-2xs">
-                <h4 className="font-bold text-sm text-zinc-900 mb-2 flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">Q:</span>
-                  <span>{faq.q}</span>
-                </h4>
-                <p className="text-xs text-zinc-600 leading-relaxed pl-5">
-                  {faq.a}
-                </p>
-              </div>
-            ))}
-          </div>
+          <FaqAccordion items={DIRECTORY_FAQS} defaultOpenIndex={0} />
         </div>
       </section>
 
       {/* ─── 6. CONVERSION BANNER ────────────────────────────────────────── */}
-      <section className="py-12 bg-white border-t border-zinc-200/80">
+      <section className="py-12 sm:py-16 bg-white border-t border-zinc-200/80">
         <div className="section-container">
-          <div className="bg-[#08162A] text-white rounded-3xl p-8 sm:p-12 border border-white/10 shadow-xl text-center relative overflow-hidden">
-            <div className="max-w-2xl mx-auto relative z-10">
-              <span className="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-4 border border-emerald-500/30">
-                Automated Route Scanner
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-3">
-                Unsure if your pet meets your destination country\'s laws?
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed mb-6">
-                Upload your pet\'s vaccination certificate and microchip records. We verify rabies vaccination timelines, 21-day latency clocks, and government health certificate deadlines in seconds.
-              </p>
-              <Link
-                href="/en/assessment"
-                className="inline-flex items-center gap-2 bg-[#0FA958] hover:bg-[#0D8E4A] text-white font-bold text-sm px-6 py-3.5 rounded-xl shadow-lg transition-all active:scale-98 cursor-pointer"
-              >
-                <span>Run Free Route Compliance Assessment</span>
-                <span>→</span>
-              </Link>
-              <div className="mt-4 flex items-center justify-center gap-4 text-[11px] text-zinc-400 flex-wrap">
-                <span>✓ Verified to Official Border Statutes</span>
-                <span>•</span>
-                <span>✓ Instant PDF Export</span>
-                <span>•</span>
-                <span>✓ No Credit Card Required</span>
+          <div className="bg-zinc-50/90 rounded-2xl border border-zinc-200/90 p-6 sm:p-8 lg:p-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
+              
+              <div className="lg:col-span-7 space-y-4">
+                <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200/70">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span>Automated Route Scanner</span>
+                </div>
+
+                <div className="space-y-1.5">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight">
+                    Unsure if your pet meets international entry laws?
+                  </h2>
+                  <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                    Upload your pet&apos;s vaccination records and microchip certificates. We verify rabies vaccination dates, mandatory 21-day latency clocks, titer windows, and sovereign health certificate deadlines in seconds.
+                  </p>
+                </div>
+
+                <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <Link
+                    href="/en/checker"
+                    className="inline-flex items-center justify-center gap-2 bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-xs transition-colors cursor-pointer text-center"
+                  >
+                    <span>Run Route Assessment Free</span>
+                    <span>→</span>
+                  </Link>
+                </div>
+
+                <div className="pt-1 flex items-center gap-4 text-xs text-zinc-500 flex-wrap">
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-emerald-600 font-bold">✓</span>
+                    <span>Verified border statutes</span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-emerald-600 font-bold">✓</span>
+                    <span>Instant date gap analysis</span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-emerald-600 font-bold">✓</span>
+                    <span>No credit card required</span>
+                  </span>
+                </div>
               </div>
+
+              <div className="lg:col-span-5">
+                <div className="bg-white rounded-xl border border-zinc-200/90 p-5 space-y-3 shadow-2xs">
+                  <div className="flex items-center justify-between pb-2.5 border-b border-zinc-100">
+                    <span className="text-xs font-bold text-zinc-800">
+                      Automated Verification
+                    </span>
+                    <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">
+                      120+ Destinations
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs text-zinc-600">
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-700 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 border border-emerald-200/80">
+                        ✓
+                      </span>
+                      <span>Origin risk tier classification (Rabies-free, controlled, unlisted)</span>
+                    </div>
+
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-700 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 border border-emerald-200/80">
+                        ✓
+                      </span>
+                      <span>Quarantine avoidance eligibility (0-day direct release checks)</span>
+                    </div>
+
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-700 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5 border border-emerald-200/80">
+                        ✓
+                      </span>
+                      <span>Endorsement checklist and mandatory pre-flight timeline</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
