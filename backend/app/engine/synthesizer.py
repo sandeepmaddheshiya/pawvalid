@@ -18,6 +18,12 @@ def build_synthesis(
     # 1. Empathetic Narrative Summary
     crit_count = blocker_summary["criticalBlockersCount"]
     req_count = blocker_summary["requiredActionsCount"]
+    doc_audit = facts.doc_audit or []
+
+    unrecognized = [d["filename"] for d in doc_audit if d.get("status") == "NO_IDENTITY_DETECTED"]
+    unrec_note = ""
+    if unrecognized:
+        unrec_note = f" Notice: The uploaded file{'s' if len(unrecognized) > 1 else ''} ({', '.join(unrecognized)}) did not contain recognizable pet identification, microchip transponder, or veterinary vaccination records."
 
     if crit_count > 0:
         what_this_means = (
@@ -25,6 +31,7 @@ def build_synthesis(
             f"There {'is' if crit_count == 1 else 'are'} {crit_count} critical compliance blocker{'s' if crit_count > 1 else ''} "
             f"that must be resolved before booking flights or entering border control. "
             f"Your earliest possible legal flight date is estimated as {earliest_date} once prerequisites are fulfilled."
+            f"{unrec_note}"
         )
     elif req_count > 0:
         what_this_means = (

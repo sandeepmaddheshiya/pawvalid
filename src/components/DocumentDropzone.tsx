@@ -179,131 +179,88 @@ function buildDynamicScanResult(
 ): ScanResult {
   const fromObj = COUNTRIES.find((c) => c.code === options?.originCode) || { name: 'United Kingdom', flag: '🇬🇧' };
   const toObj = COUNTRIES.find((c) => c.code === options?.destinationCode) || { name: 'Germany', flag: '🇩🇪' };
-  const activePetName = options?.petName?.trim() || 'Milo';
+  const activePetName = options?.petName?.trim() || 'My Pet';
   const activeSpecies = options?.species || 'DOG';
-  const activeBreed = options?.breed?.trim() || (activeSpecies === 'CAT' ? 'Domestic Shorthair' : 'Golden Retriever');
-  const activeBirthday = options?.birthday?.trim() || '2023-04-12';
-  const activeDate = options?.departureDate || '2026-10-15';
+  const activeBreed = options?.breed?.trim() || (activeSpecies === 'CAT' ? 'Domestic Shorthair' : 'Companion Animal');
+  const activeBirthday = options?.birthday?.trim() || null;
+  const activeDate = options?.departureDate || null;
+
+  // Evaluate uploaded document categories based on keywords
+  let hasRecognizedChip = false;
+  let hasRecognizedRabies = false;
+  let hasRecognizedTiter = false;
+  let hasRecognizedHealthCert = false;
+  let hasRecognizedDeclaration = false;
 
   const docAudit = items.length > 0
     ? items.map((item) => {
         const lower = item.name.toLowerCase();
-        let detectedType = 'Veterinary Travel Document';
-        let summary = `Official record (${item.size}, ${item.pages} ${item.pages === 1 ? 'page' : 'pages'}) processed and verified.`;
+        let detectedType = 'Unrecognized Document (Non-Veterinary)';
+        let status: 'VALID_DATA_FOUND' | 'NO_IDENTITY_DETECTED' = 'NO_IDENTITY_DETECTED';
+        let summary = `${item.name} was scanned, but no veterinary stamps, microchip ID, or vaccination records were detected.`;
 
         if (lower.includes('annex') || lower.includes('eu_annex')) {
           detectedType = 'EU Annex IV Health Certificate';
-          summary = 'Official veterinary certificate endorsed for non-commercial EU entry.';
-        } else if (lower.includes('declaration') || lower.includes('owner')) {
+          status = 'VALID_DATA_FOUND';
+          summary = 'Official veterinary certificate for non-commercial EU entry.';
+          hasRecognizedHealthCert = true;
+        } else if (lower.includes('declaration') || lower.includes('owner_dec') || lower.includes('owner-dec')) {
           detectedType = 'Owner Non-Commercial Movement Declaration';
-          summary = 'Owner declaration verifying non-commercial travel within 5-day window.';
-        } else if (lower.includes('rabies') || lower.includes('vaccin')) {
-          detectedType = 'Rabies Vaccination Certificate';
-          summary = 'Active rabies booster vaccine verified with mandatory 21-day latency period met.';
+          status = 'VALID_DATA_FOUND';
+          summary = 'Owner declaration for non-commercial travel within 5-day window.';
+          hasRecognizedDeclaration = true;
         } else if (lower.includes('titer') || lower.includes('favn') || lower.includes('rnatt') || lower.includes('serolog')) {
           detectedType = 'FAVN Rabies Antibody Titer Report';
-          summary = 'Serology level (0.82 IU/ml) meeting WHO / EU entry threshold (≥ 0.50 IU/ml).';
-        } else if (lower.includes('microchip') || lower.includes('chip') || lower.includes('iso')) {
+          status = 'VALID_DATA_FOUND';
+          summary = 'Rabies antibody titer serology test report.';
+          hasRecognizedTiter = true;
+        } else if (lower.includes('rabies') || lower.includes('vaccin') || lower.includes('vax') || lower.includes('rabisin') || lower.includes('defensor')) {
+          detectedType = 'Rabies Vaccination Certificate';
+          status = 'VALID_DATA_FOUND';
+          summary = 'Rabies vaccination record.';
+          hasRecognizedRabies = true;
+        } else if (lower.includes('microchip') || lower.includes('chip') || lower.includes('transponder') || lower.includes('iso11784')) {
           detectedType = 'ISO 11784/11785 Microchip Registration';
-          summary = '15-digit ISO microchip transponder registered prior to vaccination.';
-        } else if (lower.includes('passport')) {
+          status = 'VALID_DATA_FOUND';
+          summary = '15-digit ISO microchip transponder registration.';
+          hasRecognizedChip = true;
+        } else if (lower.includes('passport') || lower.includes('passeport')) {
           detectedType = 'Official Pet Passport';
-          summary = 'Pet identity docket, physical description, and veterinary records verified.';
-        } else if (lower.includes('health') || lower.includes('certificate')) {
+          status = 'VALID_DATA_FOUND';
+          summary = 'Official pet passport containing identity and vaccination sections.';
+          hasRecognizedChip = true;
+          hasRecognizedRabies = true;
+        } else if (lower.includes('health_cert') || lower.includes('health-cert') || lower.includes('vet_cert') || lower.includes('vet-cert') || lower.includes('ahc') || (lower.includes('health') && lower.includes('cert')) || (lower.includes('veterinary') && lower.includes('cert'))) {
           detectedType = 'Veterinary Health Inspection Certificate';
-          summary = 'Clinical fitness examination recorded by official veterinarian within departure window.';
+          status = 'VALID_DATA_FOUND';
+          summary = 'Veterinary health certificate and clinical examination.';
+          hasRecognizedHealthCert = true;
+        } else if (lower.includes('pet') || lower.includes('animal') || lower.includes('dog') || lower.includes('cat')) {
+          detectedType = 'General Pet Record / Photo';
+          status = 'NO_IDENTITY_DETECTED';
+          summary = `${item.name} recognized as pet photo/record, but lacking specific microchip ID or vaccine dates.`;
         }
 
         return {
           filename: item.name,
           detected_type: detectedType,
-          status: 'VALID_DATA_FOUND',
-          summary: summary,
+          status,
+          summary,
         };
       })
-    : [
-        {
-          filename: 'Uploaded Pet Record',
-          detected_type: 'Veterinary Travel Document',
-          status: 'VALID_DATA_FOUND',
-          summary: 'Veterinary travel records processed and verified.',
-        },
-      ];
+    : [];
 
-  const primaryDoc = items[0]?.name || 'Uploaded Document';
-  const getDocFor = (kw: string, fallbackIdx = 0) => {
-    const match = items.find((it) => it.name.toLowerCase().includes(kw));
-    return match ? match.name : (items[fallbackIdx]?.name || primaryDoc);
-  };
+  const hasAnyValidDoc = docAudit.some((d) => d.status === 'VALID_DATA_FOUND');
+  const hasRecognizedRecords = hasAnyValidDoc || hasRecognizedChip || hasRecognizedRabies;
+  const isAllUnrecognized = items.length > 0 && !hasRecognizedRecords;
+  const petDetected = Boolean(options?.petName?.trim()) || hasRecognizedRecords;
 
-  const transitRules: ComplianceItem[] = (options?.transitCodes || []).map((tCode) => {
-    const c = COUNTRIES.find((x) => x.code === tCode) || { name: tCode, flag: '' };
-    if (tCode === 'SG') {
-      return {
-        ruleId: 'SG_NPARKS_TRANSIT_001',
-        name: 'Singapore AVS Transshipment License',
-        category: 'TRANSIT',
-        scope: 'TRANSIT',
-        status: 'REQUIRED_ACTION',
-        severity: 'REQUIRED_ACTION',
-        statusBadge: 'License Required',
-        whatToDo: 'Obtain AVS transshipment license from Singapore NParks.',
-        details: 'All live animals transiting Changi Airport require an active transshipment license and CAPQ booking if transit exceeds 4 hours.',
-        authority: 'Singapore NParks / AVS',
-        deadlines: 'Apply at least 14 days before transit',
-        sourceUrl: 'https://www.nparks.gov.sg/avs/animals/animal-health-and-welfare/export-and-transshipment-of-animals',
-      };
-    }
-    if (tCode === 'GB') {
-      return {
-        ruleId: 'UK_DEFRA_TRANSIT_001',
-        name: 'UK DEFRA Manifest Cargo Transit Protocol',
-        category: 'TRANSIT',
-        scope: 'TRANSIT',
-        status: 'REQUIRED_ACTION',
-        severity: 'REQUIRED_ACTION',
-        statusBadge: 'Manifest Cargo Only',
-        whatToDo: 'Confirm flight booking as manifest cargo (DEFRA requirement).',
-        details: 'DEFRA strictly enforces manifest cargo for all pet transit through British airports. In-cabin or excess baggage transit is strictly prohibited.',
-        authority: 'UK Animal & Plant Health Agency (APHA)',
-        deadlines: 'Required upon flight booking',
-        sourceUrl: 'https://www.gov.uk/bring-pet-to-great-britain',
-      };
-    }
-    if (['DE', 'FR', 'NL', 'ES', 'IT'].includes(tCode)) {
-      return {
-        ruleId: `EU_TRANSIT_BIP_${tCode}`,
-        name: `${c.name} EU Transit Animal Lounge Inspection`,
-        category: 'TRANSIT',
-        scope: 'TRANSIT',
-        status: 'VERIFIED',
-        severity: 'COMPLIANT',
-        statusBadge: '✓ Hub Cleared',
-        whatToDo: `Maintain airside connection docket for ${c.name}.`,
-        details: `Airside pet connection and veterinary inspection facility verified for ${c.name} hub.`,
-        authority: 'Regulation (EU) 2017/625',
-        deadlines: 'During connection',
-        sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-      };
-    }
-    return {
-      ruleId: `TRANSIT_${tCode}_DECLARATION`,
-      name: `${c.name} Airside Transit Declaration`,
-      category: 'TRANSIT',
-      scope: 'TRANSIT',
-      status: 'VERIFIED',
-      severity: 'COMPLIANT',
-      statusBadge: '✓ Airside Valid',
-      whatToDo: `Maintain sealed crate and international transit status through ${c.name}.`,
-      details: `Pet remains in international customs transit without exiting airport boundary in ${c.name}.`,
-      authority: 'IATA Live Animals Regulations (LAR)',
-      deadlines: 'During flight connection',
-      sourceUrl: 'https://www.iata.org/en/programs/cargo/live-animals/',
-    };
-  });
+  // Build rules based on genuine extracted evidence
+  const standardRules: ComplianceItem[] = [];
 
-  const standardRules: ComplianceItem[] = [
-    {
+  // 1. Microchip Rule
+  if (hasRecognizedChip) {
+    standardRules.push({
       ruleId: 'ISO_MICROCHIP',
       name: 'ISO 11784/11785 Microchip',
       category: 'IDENTIFICATION',
@@ -311,13 +268,32 @@ function buildDynamicScanResult(
       status: 'VERIFIED',
       severity: 'COMPLIANT',
       statusBadge: '✓ Verified',
-      whatToDo: 'Verify 15-digit ISO microchip transponder code.',
-      details: '15-digit transponder #985141002847192 confirmed before vaccination.',
-      authority: 'Regulation (EU) No 576/2013',
+      whatToDo: 'Microchip transponder documented.',
+      details: '15-digit ISO 11784/11785 microchip transponder record identified.',
+      authority: 'Regulation (EU) No 576/2013 / International Pet Standards',
       deadlines: 'Required prior to vaccination',
       sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-    },
-    {
+    });
+  } else {
+    standardRules.push({
+      ruleId: 'ISO_MICROCHIP',
+      name: 'ISO 11784/11785 Microchip',
+      category: 'IDENTIFICATION',
+      scope: 'ARRIVING',
+      status: 'CRITICAL_BLOCKER',
+      severity: 'CRITICAL_BLOCKER',
+      statusBadge: '🔴 Critical Blocker',
+      whatToDo: 'Schedule 15-digit ISO microchip implantation immediately before administering travel vaccines.',
+      details: 'Missing 15-digit ISO 11784/11785 microchip transponder record. Microchip must be implanted before rabies vaccination.',
+      authority: 'Regulation (EU) No 576/2013 / International Pet Standards',
+      deadlines: 'Must be implanted before rabies vaccination',
+      sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
+    });
+  }
+
+  // 2. Rabies Vaccine Rule
+  if (hasRecognizedRabies) {
+    standardRules.push({
       ruleId: 'RABIES_VACCINE',
       name: 'Rabies Vaccination & 21-Day Latency',
       category: 'VACCINATIONS',
@@ -325,57 +301,198 @@ function buildDynamicScanResult(
       status: 'VERIFIED',
       severity: 'COMPLIANT',
       statusBadge: '✓ Verified',
-      whatToDo: 'Maintain up-to-date rabies immunization.',
-      details: 'Booster administered 2024-05-10, valid through 2027-05-10.',
-      authority: 'Regulation (EU) No 576/2013',
+      whatToDo: 'Maintain active rabies booster.',
+      details: 'Rabies vaccination record identified.',
+      authority: 'Regulation (EU) No 576/2013 / Destination Statutes',
       deadlines: 'Minimum 21 days before departure',
       sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-    },
-    {
-      ruleId: 'FAVN_TITER',
-      name: 'FAVN Rabies Serum Antibody Titer',
-      category: 'TESTS',
+    });
+  } else {
+    standardRules.push({
+      ruleId: 'RABIES_VACCINE',
+      name: 'Rabies Vaccination & Mandatory 21-Day Waiting Period',
+      category: 'VACCINATIONS',
       scope: 'ARRIVING',
-      status: 'VERIFIED',
-      severity: 'COMPLIANT',
-      statusBadge: '✓ 0.82 IU/ml (Passed)',
-      whatToDo: 'Obtain FAVN antibody titer from approved laboratory.',
-      details: 'Serology report verified from approved laboratory (≥ 0.50 IU/ml standard).',
-      authority: 'WOAH / EU Reference Laboratories',
-      deadlines: 'Valid for lifetime of pet with continuous booster',
+      status: 'CRITICAL_BLOCKER',
+      severity: 'CRITICAL_BLOCKER',
+      statusBadge: '🔴 Critical Blocker',
+      whatToDo: 'Administer rabies vaccine and observe mandatory 21-day latency period.',
+      details: 'No valid rabies vaccination record detected in uploaded documentation.',
+      authority: 'Regulation (EU) No 576/2013 Annex III',
+      deadlines: 'At least 21 days before departure',
       sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-    },
-    {
-      ruleId: 'EU_ANNEX_IV',
-      name: 'EU Annex IV Veterinary Health Certificate',
+    });
+  }
+
+  // 3. Health Certificate Rule
+  if (hasRecognizedHealthCert) {
+    standardRules.push({
+      ruleId: 'EU_HEALTH_CERT',
+      name: 'Official Animal Health Certificate',
       category: 'DOCUMENTS',
       scope: 'ARRIVING',
       status: 'VERIFIED',
       severity: 'COMPLIANT',
       statusBadge: '✓ Endorsed',
-      whatToDo: 'Official veterinary health inspection within 10 days of travel.',
-      details: 'Official veterinarian signature and government endorsement seal verified.',
-      authority: 'EU Commission Implementing Regulation 577/2013',
-      deadlines: 'Issued within 10 days of entry',
+      whatToDo: 'Official veterinary inspection verified.',
+      details: 'Health certificate documentation identified.',
+      authority: 'Regulation (EU) 2026/131 / Export Authorities',
+      deadlines: 'Issued within 10 days of travel',
       sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
-    },
-    {
+    });
+  } else {
+    standardRules.push({
+      ruleId: 'EU_HEALTH_CERT',
+      name: 'Official Veterinary Health Certificate',
+      category: 'DOCUMENTS',
+      scope: 'ARRIVING',
+      status: 'REQUIRED_ACTION',
+      severity: 'REQUIRED_ACTION',
+      statusBadge: '🟡 Required Action',
+      whatToDo: 'Book official health examination within 10 days of departure with an accredited veterinarian.',
+      details: 'Official accredited health certificate and government endorsement required prior to flight.',
+      authority: 'Regulation (EU) 2026/131 Annex IV Model Certificate',
+      deadlines: 'Issued within 10 days of departure',
+      sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
+    });
+  }
+
+  // 4. Destination specific rules (e.g. Tapeworm treatment if destination requires it)
+  const isTapewormDest = ['GB', 'IE', 'NO', 'FI', 'MT'].includes(options?.destinationCode || '');
+  if (isTapewormDest) {
+    standardRules.push({
       ruleId: 'TAPEWORM_TREATMENT',
-      name: 'Echinococcus Multilocularis Treatment',
+      name: 'Echinococcus Multilocularis (Tapeworm) Treatment',
       category: 'TREATMENTS',
       scope: 'ARRIVING',
       status: 'REQUIRED_ACTION',
       severity: 'REQUIRED_ACTION',
-      statusBadge: '24h–120h Window',
-      whatToDo: 'Administer praziquantel by registered veterinarian.',
-      details: 'Must be administered by an official veterinarian between 24h and 120h before entering Germany.',
+      statusBadge: '🟡 24h–120h Window',
+      whatToDo: 'Administer Praziquantel by registered veterinarian between 24h and 120h before arrival.',
+      details: 'Mandatory tapeworm treatment required for entry.',
       authority: 'Commission Delegated Regulation (EU) 2018/772',
       deadlines: '24–120 hours before arrival',
       sourceUrl: 'https://ec.europa.eu/food/animals/pet-movement',
+    });
+  }
+
+  // 5. Logistics / Crate Rules
+  const logisticsRules: ComplianceItem[] = [
+    {
+      ruleId: 'IATA_CRATE',
+      name: 'IATA Compliant Pet Travel Crate (CR-82)',
+      category: 'LOGISTICS',
+      scope: 'LOGISTICS',
+      status: 'TRAVEL_DAY_ACTION',
+      severity: 'TRAVEL_DAY_ACTION',
+      statusBadge: '✈️ Travel-Day',
+      whatToDo: 'Verify travel crate is IATA CR-82 compliant with 4-sided ventilation and metal hardware.',
+      details: 'Airlines strictly enforce IATA Live Animals Regulations (LAR) crate dimensions and construction.',
+      authority: 'IATA Live Animals Regulations (LAR)',
+      deadlines: 'Day of departure',
+      sourceUrl: 'https://www.iata.org/en/programs/cargo/live-animals/',
     },
   ];
 
-  const data = {
+  const transitRules: ComplianceItem[] = (options?.transitCodes || []).map((tCode) => {
+    const c = COUNTRIES.find((x) => x.code === tCode) || { name: tCode, flag: '' };
+    return {
+      ruleId: `TRANSIT_${tCode}`,
+      name: `${c.name} Transit Compliance Protocol`,
+      category: 'TRANSIT',
+      scope: 'TRANSIT',
+      status: 'REQUIRED_ACTION',
+      severity: 'REQUIRED_ACTION',
+      statusBadge: 'Transit Verification',
+      whatToDo: `Maintain airside connection documentation for transit through ${c.name}.`,
+      details: `Live animal transit rules apply when connecting through ${c.name}.`,
+      authority: 'International Airport Handling Protocol',
+      deadlines: 'During connection',
+      sourceUrl: 'https://www.iata.org',
+    };
+  });
+
+  const allRules = [...standardRules, ...transitRules, ...logisticsRules];
+  const criticalCount = allRules.filter((r) => r.severity === 'CRITICAL_BLOCKER').length;
+  const requiredCount = allRules.filter((r) => r.severity === 'REQUIRED_ACTION').length;
+  const travelDayCount = allRules.filter((r) => r.severity === 'TRAVEL_DAY_ACTION').length;
+  const verifiedCount = allRules.filter((r) => r.severity === 'COMPLIANT' || r.status === 'VERIFIED').length;
+
+  const overallStatus = criticalCount > 0 ? 'CRITICAL_BLOCKER' : (requiredCount > 0 ? 'ACTION_REQUIRED' : 'VERIFIED');
+  
+  // Calculate earliest flight date honestly
+  let earliestFlightDate = 'Prerequisites Required Before Date Can Be Calculated';
+  let earliestFlightDateSubtitle = 'Microchip implantation and primary rabies vaccination (with 21-day waiting period) must be completed first.';
+  
+  if (criticalCount === 0) {
+    earliestFlightDate = activeDate || 'Ready for Veterinary Booking';
+    earliestFlightDateSubtitle = 'Prerequisites satisfied. Complete remaining veterinary health checks within flight window.';
+  }
+
+  const statusHeadline = criticalCount > 0
+    ? `PREPARATION NEEDED — ${criticalCount} critical compliance blocker${criticalCount > 1 ? 's' : ''} must be completed`
+    : (requiredCount > 0
+      ? `PREPARATION IN PROGRESS — ${requiredCount} short-lead action${requiredCount > 1 ? 's' : ''} remaining`
+      : 'ALL MANDATORY PREREQUISITES SATISFIED');
+
+  // Timeline Milestones
+  const timelineMilestones = [];
+  if (hasRecognizedChip) {
+    timelineMilestones.push({
+      date: 'Completed',
+      title: '15-Digit ISO Microchip Implant',
+      status: 'DONE',
+      description: 'Microchip transponder record verified.'
+    });
+  } else {
+    timelineMilestones.push({
+      date: 'Immediate Action',
+      title: '15-Digit ISO Microchip Implant',
+      status: 'CRITICAL_BLOCKER',
+      description: 'Action Required: Transponder must be implanted prior to rabies vaccination.'
+    });
+  }
+
+  if (hasRecognizedRabies) {
+    timelineMilestones.push({
+      date: 'Completed',
+      title: 'Rabies Vaccination',
+      status: 'DONE',
+      description: 'Active rabies immunization verified.'
+    });
+  } else {
+    timelineMilestones.push({
+      date: 'Step 2 (After Chip)',
+      title: 'Rabies Vaccination (21-Day Clock)',
+      status: 'CRITICAL_BLOCKER',
+      description: 'Action Required: Administer vaccine and observe mandatory 21-day latency period.'
+    });
+  }
+
+  timelineMilestones.push({
+    date: '10 Days Before Flight',
+    title: 'Veterinary Health Examination & Certificate',
+    status: 'REQUIRED_ACTION',
+    description: 'Book official clinical examination and endorsement within 10 days of travel.'
+  });
+
+  timelineMilestones.push({
+    date: criticalCount === 0 ? (activeDate || 'Travel Date') : 'Target Travel Date',
+    title: 'Cleared For Departure',
+    status: 'GOAL',
+    description: 'All statutory requirements fulfilled for border entry.'
+  });
+
+  const unrecognizedDocs = docAudit.filter(d => d.status === 'NO_IDENTITY_DETECTED').map(d => d.filename);
+  const unrecNote = unrecognizedDocs.length > 0
+    ? ` Notice: The uploaded file${unrecognizedDocs.length > 1 ? 's' : ''} (${unrecognizedDocs.join(', ')}) did not contain recognizable pet identification, microchip transponder, or veterinary vaccination records.`
+    : '';
+
+  const whatThisMeans = criticalCount > 0
+    ? `We analyzed your documents for your ${activeSpecies === 'CAT' ? 'cat' : 'dog'}'s journey from ${fromObj.name} to ${toObj.name}. There are ${criticalCount} critical compliance blockers that must be resolved before booking flights or entering border control.${unrecNote}`
+    : `We evaluated route requirements for travel from ${fromObj.name} to ${toObj.name}. Foundational prerequisites appear in order. Complete remaining short-lead health exams before departure.`;
+
+  return {
     status: 'success',
     route: {
       origin: `${fromObj.name} (${fromObj.flag})`,
@@ -386,99 +503,77 @@ function buildDynamicScanResult(
       }),
       departureDate: activeDate,
     },
-    petDetected: true,
+    petDetected,
+    hasRecognizedRecords,
+    isAllUnrecognized,
     petProfile: {
       name: activePetName,
       species: activeSpecies,
       breed: activeBreed,
       birthday: activeBirthday,
-      ageMonths: 36,
-      weightKg: activeSpecies === 'CAT' ? 4.5 : 28.5,
-      microchipNumber: '985141002847192',
-      microchipDate: '2023-04-12',
-      rabiesVaccineDate: '2024-05-10',
-      rabiesVaccineType: 'BOOSTER',
-      dhppVaccinationDate: '2024-05-10',
+      microchipNumber: hasRecognizedChip ? 'Documented in Records' : null,
+      microchipDate: null,
+      rabiesVaccinationDate: hasRecognizedRabies ? 'Active in Records' : null,
+      rabiesVaccinationType: hasRecognizedRabies ? 'VERIFIED' : null,
     },
     factsWithConfidence: {
-      species: { value: activeSpecies, confidence: 0.99, status: 'VERIFIED', sourceDocument: getDocFor('passport', 0), needsConfirmation: false },
-      petName: { value: activePetName, confidence: 0.99, status: 'VERIFIED', sourceDocument: getDocFor('passport', 0), needsConfirmation: false },
-      breed: { value: activeBreed, confidence: 0.98, status: 'VERIFIED', sourceDocument: getDocFor('passport', 0), needsConfirmation: false },
-      microchipNumber: { value: '985141002847192', confidence: 1.0, status: 'VERIFIED', sourceDocument: getDocFor('chip', 0), needsConfirmation: false },
-      microchipDate: { value: '2023-04-12', confidence: 0.99, status: 'VERIFIED', sourceDocument: getDocFor('chip', 0), needsConfirmation: false },
-      rabiesVaccinationDate: { value: '2024-05-10', confidence: 1.0, status: 'VERIFIED', sourceDocument: getDocFor('rabies', 0), needsConfirmation: false },
-      rabiesVaccinationType: { value: 'BOOSTER', confidence: 0.95, status: 'VERIFIED', sourceDocument: getDocFor('rabies', 0), needsConfirmation: false },
-      rabiesValidityEnd: { value: '2027-05-10', confidence: 0.95, status: 'VERIFIED', sourceDocument: getDocFor('rabies', 0), needsConfirmation: false },
-      rabiesTiterDate: { value: '2024-06-15', confidence: 0.99, status: 'VERIFIED', sourceDocument: getDocFor('titer', 0), needsConfirmation: false },
-      rabiesTiterLevel: { value: 0.82, confidence: 0.99, status: 'VERIFIED', sourceDocument: getDocFor('titer', 0), needsConfirmation: false },
-      tapewormTreatmentDate: { value: null, confidence: 0.0, status: 'NOT_FOUND', sourceDocument: 'Pending Vet Administration', needsConfirmation: false },
-      hasOfficialHealthCertificate: { value: true, confidence: 0.98, status: 'VERIFIED', sourceDocument: getDocFor('health', 0), needsConfirmation: false },
-      hasNonCommercialDeclaration: { value: true, confidence: 0.98, status: 'VERIFIED', sourceDocument: getDocFor('declaration', 0), needsConfirmation: false },
+      species: { value: activeSpecies, confidence: 0.95, status: 'VERIFIED', sourceDocument: 'User Input', needsConfirmation: false },
+      petName: { value: activePetName, confidence: options?.petName ? 0.95 : 0.0, status: options?.petName ? 'VERIFIED' : 'NOT_FOUND', sourceDocument: 'User Input', needsConfirmation: false },
+      breed: { value: activeBreed, confidence: 0.90, status: 'VERIFIED', sourceDocument: 'User Input', needsConfirmation: false },
+      microchipNumber: { value: hasRecognizedChip ? 'VERIFIED_IN_RECORDS' : null, confidence: hasRecognizedChip ? 0.9 : 0.0, status: hasRecognizedChip ? 'VERIFIED' : 'NOT_FOUND', sourceDocument: 'Uploaded Docs', needsConfirmation: !hasRecognizedChip },
+      rabiesVaccinationDate: { value: hasRecognizedRabies ? 'ACTIVE' : null, confidence: hasRecognizedRabies ? 0.9 : 0.0, status: hasRecognizedRabies ? 'VERIFIED' : 'NOT_FOUND', sourceDocument: 'Uploaded Docs', needsConfirmation: !hasRecognizedRabies },
+      hasOfficialHealthCertificate: { value: hasRecognizedHealthCert, confidence: hasRecognizedHealthCert ? 0.9 : 0.0, status: hasRecognizedHealthCert ? 'VERIFIED' : 'NOT_FOUND', sourceDocument: 'Uploaded Docs', needsConfirmation: !hasRecognizedHealthCert },
     },
     stats: {
       documentsDetectedCount: Math.max(1, items.length),
-      overallStatus: 'ACTION_REQUIRED',
-      statusHeadline: 'PREPARATION IN PROGRESS — 1 vet window action remaining before departure',
-      needsHumanReview: false,
-      earliestFlightDate: 'September 15, 2026',
+      overallStatus,
+      statusHeadline,
+      needsHumanReview: criticalCount > 0 || unrecognizedDocs.length > 0,
+      earliestFlightDate,
       earliestFlightDateTitle: 'Earliest Estimated Travel Date',
-      earliestFlightDateSubtitle: 'Based on verified rabies vaccination, valid FAVN antibody titer test, and EU entry rules.',
-      disclaimer: 'Airline booking and vet clinic appointment times may affect your actual departure date.',
+      earliestFlightDateSubtitle,
+      disclaimer: 'Official border control officers require accredited physical certificates upon check-in.',
       blockerSummary: {
-        criticalBlockersCount: 0,
-        requiredActionsCount: 1,
-        travelDayActionsCount: 1,
-        completedVerifiedCount: Math.max(1, items.length),
+        criticalBlockersCount: criticalCount,
+        requiredActionsCount: requiredCount,
+        travelDayActionsCount: travelDayCount,
+        completedVerifiedCount: verifiedCount,
       },
-      confidenceLevel: 'High',
+      confidenceLevel: criticalCount === 0 ? 'High' : 'Preliminary',
     },
-    timelineMilestones: [
-      { date: '2023-04-12', title: '15-Digit ISO Microchip Implant', status: 'DONE', description: 'Transponder 985141002847192 successfully registered.' },
-      { date: '2024-05-10', title: 'Rabies Booster Vaccination', status: 'DONE', description: 'Booster valid until May 2027 with mandatory 21-day latency cleared.' },
-      { date: '2024-06-15', title: 'FAVN Rabies Titer Test (0.82 IU/ml)', status: 'DONE', description: 'Exceeds WHO 0.50 IU/ml standard, approved laboratory serology.' },
-      { date: 'September 10–13, 2026', title: 'Tapeworm (Echinococcus) Vet Window', status: 'REQUIRED_ACTION', description: 'Administer Praziquantel by official vet between 24h and 120h prior to entry.' },
-      { date: 'September 15, 2026', title: 'Cleared For Departure', status: 'GOAL', description: 'All prerequisites satisfied for seamless border control clearance.' },
-    ],
+    timelineMilestones,
     complianceChecklist: {
-      all: [...standardRules, ...transitRules],
+      all: allRules,
       leaving: [],
       transit: transitRules,
       arriving: standardRules,
-      logistics: [],
+      logistics: logisticsRules,
     },
     readinessReport: {
-      whatThisMeans: `Compliance verification complete for ${activePetName}. Foundational medical and identity prerequisites satisfied for travel from ${fromObj.name} to ${toObj.name}${options?.transitCodes && options.transitCodes.length > 0 ? ` with layovers in ${options.transitCodes.map(code => COUNTRIES.find(c => c.code === code)?.name || code).join(', ')}` : ''}. Final veterinary tapeworm treatment window (24h–120h before departure) remains before departure.`,
-      whereThingsStand: [
-        { requirement: '15-Digit ISO Microchip', category: 'IDENTIFICATION', scope: 'ARRIVING', whatToDo: 'Confirm transponder', statusBadge: '✓ Verified', status: 'VERIFIED', severity: 'COMPLIANT', details: 'Transponder code verified in official records.' },
-        { requirement: 'Rabies Booster Vaccine', category: 'VACCINATIONS', scope: 'ARRIVING', whatToDo: 'Ensure active booster', statusBadge: '✓ Active', status: 'VERIFIED', severity: 'COMPLIANT', details: 'Vaccination valid through May 2027.' },
-        { requirement: 'FAVN Antibody Titer', category: 'TESTS', scope: 'ARRIVING', whatToDo: 'Maintain antibody level', statusBadge: '✓ 0.82 IU/ml', status: 'VERIFIED', severity: 'COMPLIANT', details: 'Antibody level exceeds EU threshold.' },
-        { requirement: 'Tapeworm Treatment', category: 'TREATMENTS', scope: 'ARRIVING', whatToDo: 'Administer Praziquantel', statusBadge: 'Action Required', status: 'REQUIRED_ACTION', severity: 'REQUIRED_ACTION', details: 'Visit vet 1–5 days before flight for Praziquantel dosage.' },
-        ...transitRules.map((tr) => ({
-          requirement: tr.name,
-          category: tr.category,
-          scope: tr.scope,
-          whatToDo: tr.whatToDo,
-          statusBadge: tr.statusBadge,
-          status: tr.status,
-          severity: tr.severity,
-          details: tr.details,
-        })),
-      ],
+      whatThisMeans,
+      whereThingsStand: allRules.map(r => ({
+        requirement: r.name,
+        category: r.category,
+        scope: r.scope,
+        whatToDo: r.whatToDo,
+        statusBadge: r.statusBadge,
+        status: r.status,
+        severity: r.severity,
+        details: r.details,
+      })),
       documentAudit: docAudit,
       nextSteps: [
-        'Schedule your veterinary appointment 2–4 days before departure for the tapeworm treatment.',
-        'Carry physical copies of your veterinary travel documents and pet passport during travel.',
-        ...(transitRules.length > 0 ? ['Verify layover airline pet lounge transfer & transshipment permits at intermediate airports.'] : []),
+        ...(criticalCount > 0 ? ['CRITICAL: Schedule 15-digit ISO microchip implantation before administering rabies vaccine.', 'CRITICAL: Administer rabies vaccination and observe mandatory 21-day latency period.'] : []),
+        'Book official veterinary health examination within 10 days of departure.',
+        'Verify airline-specific live animal crate specifications (IATA LAR).',
       ],
       travelDayPrep: [
-        'Ensure your pet carrier meets airline IATA regulations.',
-        'Keep the signed veterinary documents and Digital Travel Verification Pass easily accessible at check-in.',
-        ...(transitRules.length > 0 ? ['Have transit declarations and layover permits ready for flight connection checks.'] : []),
+        'Assemble original physical veterinary certificates in a waterproof travel folder.',
+        'Ensure travel crate has 4-sided ventilation, metal nuts/bolts, and attached water bowl.',
+        'Arrive at airport 3–4 hours prior to departure for veterinary and airline document check-in.',
       ],
     },
   };
-
-  return data as unknown as ScanResult;
 }
 
 export default function DocumentDropzone({ onScanComplete }: DocumentDropzoneProps) {
@@ -784,7 +879,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
         const fallbackTimeout = new Promise<ScanResult>((resolve) => {
           setTimeout(() => {
             resolve(buildDynamicScanResult(uploadedItems, routeOptions));
-          }, 6000);
+          }, 30000);
         });
 
         scanResultPromise = Promise.race([apiCall, fallbackTimeout]).catch(() => {
@@ -819,10 +914,10 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
 
         await sleep(delayPerDoc);
 
-        // Stage 2: Document i is verified with green checkmark
+        // Stage 2: Document i is extracted/scanned
         setUploadedItems((prev) =>
           prev.map((item, idx) =>
-            idx === i ? { ...item, status: 'verified', analysisStep: 'Verified' } : item
+            idx === i ? { ...item, status: 'verified', analysisStep: 'Processed' } : item
           )
         );
 
@@ -831,7 +926,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
 
       // Mark all completed (never exceed itemsCount)
       setCurrentScanningIdx(itemsCount);
-      setCurrentStepText('✓ All documents verified. Generating compliance dossier...');
+      setCurrentStepText('✓ Processing complete. Synthesizing compliance dossier...');
 
       // 3. Await API / synthesis response
       const data = await scanResultPromise;
@@ -1423,7 +1518,7 @@ export default function DocumentDropzone({ onScanComplete }: DocumentDropzonePro
                                 </span>
                               ) : isVerified ? (
                                 <span className="text-zinc-500 font-medium">
-                                  {item.pages} pages • <span className="text-[#0FA958] font-bold">Verified</span>
+                                  {item.pages} pages • <span className="text-teal-700 font-semibold">Processed</span>
                                 </span>
                               ) : (
                                 <span className="text-zinc-400">

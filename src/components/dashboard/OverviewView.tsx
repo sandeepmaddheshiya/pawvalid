@@ -96,7 +96,7 @@ export default function OverviewView({
                 <p className="text-xs text-zinc-500 mt-0.5">
                   ISO Transponder:{' '}
                   <span className="font-mono font-bold text-zinc-800">
-                    {petProfile?.microchipNumber || '985112003456789'}
+                    {petProfile?.microchipNumber || 'Not Recorded'}
                   </span>
                 </p>
               </div>

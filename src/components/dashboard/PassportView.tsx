@@ -266,11 +266,11 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                 <span className="text-[10px] sm:text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
                   ISO 11784/11785 Microchip Transponder
                 </span>
-                <span className="font-mono text-xs sm:text-sm font-bold text-zinc-900 block mt-1 break-all">
-                  {pet.microchipNumber || '985141002847192'}
+                <span className={`font-mono text-xs sm:text-sm font-bold block mt-1 break-all ${pet.microchipNumber ? 'text-zinc-900' : 'text-red-700'}`}>
+                  {pet.microchipNumber || 'Not Recorded'}
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-medium text-emerald-700 block mt-0.5">
-                  ✓ 15-Digit FDX-B Verified Standard
+                <span className={`text-[10px] sm:text-[11px] font-medium block mt-0.5 ${pet.microchipNumber ? 'text-emerald-700' : 'text-red-600'}`}>
+                  {pet.microchipNumber ? '✓ 15-Digit FDX-B Verified Standard' : '🔴 Transponder Required Prior to Travel'}
                 </span>
               </div>
 
@@ -279,10 +279,10 @@ export default function PassportView({ trip, userEmail }: PassportViewProps) {
                   Implantation Date &amp; Sequence
                 </span>
                 <span className="text-xs sm:text-sm font-semibold text-zinc-900 block mt-1">
-                  {pet.microchipDate || '12 Apr 2023'}
+                  {pet.microchipDate || 'Pending Documentation'}
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-medium text-emerald-700 block mt-0.5">
-                  ✓ Implanted prior to primary rabies vaccine
+                <span className={`text-[10px] sm:text-[11px] font-medium block mt-0.5 ${pet.microchipDate ? 'text-emerald-700' : 'text-zinc-500'}`}>
+                  {pet.microchipDate ? '✓ Implanted prior to primary rabies vaccine' : 'Implant date verified during health cert issuance'}
                 </span>
               </div>
             </div>

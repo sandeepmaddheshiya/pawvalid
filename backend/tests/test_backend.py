@@ -346,4 +346,102 @@ def test_india_outbound_regulatory_corridors():
     assert "IN_AQCS_EXPORT_001" in leaving_au
     assert "AU_DAFF_NON_APPROVED_IN_001" in arriving_au
 
+def test_unrecognized_non_veterinary_document_handling():
+    """
+    Verifies that non-veterinary/arbitrary uploads (e.g. npm.pdf, coding manuals, invoices)
+    are recognized as Unrecognized Document (Non-Veterinary), marked NO_IDENTITY_DETECTED,
+    and DO NOT fabricate fake pet identities, microchips, or rabies vaccines.
+    """
+    from app.parsers.doc_extractor import ExtractedDocument
+    from app.engine.entity_extractor import regex_fallback_extract
+
+    random_doc = ExtractedDocument(
+        filename="npm_package_manifest.pdf",
+        content_type="application/pdf",
+        raw_text="package.json dependencies: react 19, next 15, tailwindcss, vitest. Scripts: build, dev, start, lint.",
+        detected_type=classify_document("package.json dependencies react next vitest", "npm_package_manifest.pdf")
+    )
+
+    assert random_doc.detected_type == "Unrecognized Document (Non-Veterinary)"
+
+    facts = regex_fallback_extract([random_doc])
+    assert facts.species == "UNKNOWN"
+    assert facts.pet_name is None
+    assert facts.microchip_number is None
+    assert facts.rabies_date is None
+
+    assert len(facts.doc_audit) == 1
+    assert facts.doc_audit[0]["status"] == "NO_IDENTITY_DETECTED"
+    assert facts.doc_audit[0]["detected_type"] == "Unrecognized Document (Non-Veterinary)"
+    assert "no pet identification" in facts.doc_audit[0]["summary"].lower()
+
+def test_scan_api_with_unrecognized_document():
+    """
+    End-to-end API test uploading a non-pet document (e.g. npm.pdf).
+    Checks that the scan returns critical blockers for missing chip & rabies,
+    and petDetected is False.
+    """
+    dummy_pdf_content = b"%PDF-1.4 npm package manager documentation and build instructions"
+    
+    response = client.post(
+        "/api/v1/scan",
+        files=[("files", ("npm.pdf", dummy_pdf_content, "application/pdf"))],
+        data={
+            "origin_country": "United Kingdom",
+            "destination_country": "Germany",
+            "species": "DOG"
+        }
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["stats"]["overallStatus"] in ["CRITICAL_BLOCKER", "NOT_READY"]
+    assert data["stats"]["blockerSummary"]["criticalBlockersCount"] >= 1
+    assert data["petProfile"]["microchipNumber"] is None
+    assert data["petProfile"]["rabiesVaccinationDate"] is None
+    assert data.get("hasRecognizedRecords") is False
+    assert data.get("isAllUnrecognized") is True
+    assert len(data["readinessReport"]["documentAudit"]) == 1
+    assert data["readinessReport"]["documentAudit"][0]["status"] == "NO_IDENTITY_DETECTED"
+
+def test_payment_receipt_not_treated_as_pet_record():
+    """
+    Verifies that a payment receipt (e.g. Stripe/Razorpay receipt with customer name: Sandeep)
+    is NOT classified as a pet health certificate and does NOT extract the human payer name as pet name.
+    """
+    from app.parsers.doc_extractor import ExtractedDocument
+    from app.engine.entity_extractor import regex_fallback_extract
+
+    receipt_text = """
+    TAX INVOICE / PAYMENT RECEIPT
+    Receipt ID: RCT-2026-98421
+    Date: 2026-09-28
+    Customer Name: Sandeep
+    Billed To: Sandeep Maddheshiya
+    Payment Method: Visa ending in 4242
+    Description: Cloud Services Monthly Subscription
+    Total Paid: $49.00
+    Status: Paid
+    Certificate of Electronic Payment
+    """
+
+    receipt_doc = ExtractedDocument(
+        filename="payment_receipt_sandeep.pdf",
+        content_type="application/pdf",
+        raw_text=receipt_text,
+        detected_type=classify_document(receipt_text, "payment_receipt_sandeep.pdf")
+    )
+
+    assert receipt_doc.detected_type == "Unrecognized Document (Non-Veterinary)"
+
+    facts = regex_fallback_extract([receipt_doc])
+    assert facts.pet_name is None, f"Expected pet_name to be None, got: {facts.pet_name}"
+    assert facts.species == "UNKNOWN"
+    assert facts.microchip_number is None
+    assert facts.rabies_date is None
+    assert facts.doc_audit[0]["status"] == "NO_IDENTITY_DETECTED"
+
+
+
 

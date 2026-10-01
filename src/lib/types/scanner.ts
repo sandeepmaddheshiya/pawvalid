@@ -17,6 +17,7 @@ export interface PetProfile {
   species: string;
   name?: string | null;
   breed?: string | null;
+  birthday?: string | null;
   microchipNumber?: string | null;
   microchipDate?: string | null;
   rabiesVaccinationDate?: string | null;
@@ -127,4 +128,6 @@ export interface ScanResult {
     logistics: ComplianceItem[];
   };
   readinessReport: ReadinessReport;
+  hasRecognizedRecords?: boolean;
+  isAllUnrecognized?: boolean;
 }

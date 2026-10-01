@@ -61,7 +61,7 @@ export default function CrateView({ trip, onTripUpdated }: CrateViewProps) {
   const weightKg = trip?.petProfile?.weightKg || trip?.weightKg;
   const origin = trip?.origin || trip?.route?.origin || 'United Kingdom';
   const destination = trip?.destination || trip?.route?.destination || 'Germany';
-  const microchip = trip?.petProfile?.microchipNumber || '985141002847192';
+  const microchip = trip?.petProfile?.microchipNumber || 'Not Recorded';
   const ownerEmail = trip?.userEmail || 'traveler@example.com';
 
   const derived = deriveDefaultMeasurements(species, breed, weightKg);

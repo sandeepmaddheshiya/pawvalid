@@ -29,7 +29,7 @@ export default function VaultView({
   const breed = trip?.breed || trip?.petProfile?.breed || (species === 'CAT' ? 'Domestic Shorthair' : 'Companion Animal');
   const origin = trip?.origin || trip?.route?.origin || 'United Kingdom';
   const destination = trip?.destination || trip?.route?.destination || 'Germany';
-  const microchip = trip?.petProfile?.microchipNumber || '985141002847192';
+  const microchip = trip?.petProfile?.microchipNumber || 'Not Recorded';
 
   const storedDocs = (trip?.uploadedDocuments as any[]) || [];
   const isPaid = trip?.tier === 'CERTIFIED_PASS' || trip?.tier === 'CONCIERGE';

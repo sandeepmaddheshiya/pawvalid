@@ -239,31 +239,36 @@ def build_document_verification_summary(
         date_str = f" administered on {doc_vax_date}" if doc_vax_date else ""
         return f"Rabies vaccination certificate verified{date_str}. Mandatory 21-day latency period satisfied{chip_label}."
 
+    if "unrecognized" in dtype.lower():
+        return f"{doc.filename} was analyzed, but contains no recognizable pet identification, microchip transponder, rabies vaccination, or veterinary certification."
+
     # 10. General Supporting Record
     if doc_chip:
         return f"Supporting veterinary travel record processed and verified. Extracted ISO Microchip #{doc_chip}."
-    return f"Supporting veterinary documentation processed and archived for cross-referencing."
+    if any(k in raw_lower for k in ["pet", "animal", "canine", "feline", "dog", "cat", "veterin", "vet"]):
+        return f"Supporting pet documentation processed and archived for cross-referencing."
+    return f"{doc.filename} was analyzed, but no pet identity or veterinary vaccination records were detected."
 
 def regex_fallback_extract(docs: List[ExtractedDocument]) -> PetFacts:
     combined_text = "\n".join([d.raw_text for d in docs])
     lower = combined_text.lower()
     primary_doc = docs[0].filename if docs else "upload"
 
-    # Species
+    # Species (Strict: use word boundaries so 'certificate' or other non-pet words do not match)
     species_val = "UNKNOWN"
     species_conf = 0.0
-    if any(k in lower for k in ["canine", "dog", "puppy", "hound"]):
+    if re.search(r'\b(canine|dog|dogs|puppy|puppies|hound|canis)\b', lower):
         species_val = "DOG"
         species_conf = 0.95
-    elif any(k in lower for k in ["feline", "cat", "kitten"]):
+    elif re.search(r'\b(feline|cat|cats|kitten|kittens|felis)\b', lower):
         species_val = "CAT"
         species_conf = 0.95
 
-    # Pet Name & Breed
-    name_match = re.search(r'(?:pet(?:\s+name)?|patient(?:\s+name)?|animal(?:\s+name)?|name)\s*[:=-]\s*([A-Za-z0-9\'-]+)', combined_text, re.IGNORECASE)
-    pet_name_val = name_match.group(1).strip() if name_match and name_match.group(1).lower() not in ["canine", "feline", "dog", "cat", "unknown"] else None
+    # Pet Name & Breed (Strict: do not match generic customer/payer Name: fields)
+    name_match = re.search(r'(?:pet\s*name|patient\s*name|animal\s*name|dog(?:\'s)?\s*name|cat(?:\'s)?\s*name|name\s+of\s+pet|name\s+of\s+animal)\s*[:=-]\s*([A-Za-z0-9\'-]+)', combined_text, re.IGNORECASE)
+    pet_name_val = name_match.group(1).strip() if name_match and name_match.group(1).lower() not in ["canine", "feline", "dog", "cat", "unknown", "customer", "payer", "client", "owner", "patient", "pet"] else None
     
-    breed_match = re.search(r'(?:breed)\s*[:=-]\s*([A-Za-z\s]+?)(?:[\n\r,;.]|$)', combined_text, re.IGNORECASE)
+    breed_match = re.search(r'(?:breed|pet\s*breed|animal\s*breed)\s*[:=-]\s*([A-Za-z\s]+?)(?:[\n\r,;.]|$)', combined_text, re.IGNORECASE)
     breed_val = breed_match.group(1).strip() if breed_match else None
 
     # 15-digit ISO microchip
@@ -327,7 +332,12 @@ def regex_fallback_extract(docs: List[ExtractedDocument]) -> PetFacts:
     # Document audit
     doc_audit = []
     for d in docs:
-        if len(d.raw_text.strip()) > 25:
+        is_unrecognized = "unrecognized" in d.detected_type.lower()
+        has_pet_facts = bool(
+            re.search(r'\b(9\d{14}|\d{15})\b', d.raw_text) or
+            re.search(r'\b(rabies|rabisin|defensor|vaccin\w*|vax|titer|favn|rnatt|serolog\w*|pet\s+passport|passeport|health\s+certificate|veterin\w*|annex[-_\s]*(iv|4)|microchip|transponder|canine|feline|dog|dogs|puppy|cat|cats|kitten|echinococcus|tapeworm|praziquantel)\b', d.raw_text, re.I)
+        )
+        if not is_unrecognized and has_pet_facts and len(d.raw_text.strip()) > 15:
             summary = build_document_verification_summary(
                 doc=d,
                 global_microchip=microchip_val,
@@ -342,9 +352,9 @@ def regex_fallback_extract(docs: List[ExtractedDocument]) -> PetFacts:
         else:
             doc_audit.append({
                 "filename": d.filename,
-                "detected_type": d.detected_type,
+                "detected_type": d.detected_type if not is_unrecognized else "Unrecognized Document (Non-Veterinary)",
                 "status": "NO_IDENTITY_DETECTED",
-                "summary": f"{d.filename} recognized as {d.detected_type}, but text/stamps were unreadable or lacked microchip/dates."
+                "summary": f"{d.filename} was analyzed, but no pet identification, microchip transponder, or veterinary vaccination records were detected."
             })
 
     return PetFacts(
@@ -391,8 +401,11 @@ async def extract_facts_with_ai(docs: List[ExtractedDocument]) -> PetFacts:
     system_prompt = (
         "You are an expert veterinary document transcription and data extraction engine. "
         "Extract pet identity, microchip, and medical dates into structured JSON. "
-        "For each field, include: 'value', 'confidence' (float 0.0 to 1.0), and 'source_document'. "
-        "If a field is not present or cannot be read with confidence, set 'value': null and 'confidence': 0.0. "
+        "CRITICAL RULES: "
+        "1. Strictly extract pet animal identity only. NEVER extract human customer names, payer names, cardholder names, owner names, or veterinarian names as 'pet_name'. If no animal name is found, 'pet_name' MUST be null. "
+        "2. If an uploaded document is a payment receipt, invoice, bank statement, or non-veterinary file, mark it as 'status': 'NO_IDENTITY_DETECTED' and 'detected_type': 'Unrecognized Document (Non-Veterinary)' in 'document_audit'. "
+        "3. For each field, include: 'value', 'confidence' (float 0.0 to 1.0), and 'source_document'. "
+        "4. If a field is not present or cannot be read with confidence, set 'value': null and 'confidence': 0.0. "
         "Do NOT determine legal compliance. Strictly extract the textual evidence."
     )
 
@@ -427,7 +440,7 @@ Return valid JSON with EXACTLY this structure:
     }}
   ]
 }}
-IMPORTANT: In "document_audit", ensure each uploaded document has a DISTINCT, detailed summary of what that specific document certifies (e.g. EU Annex IV endorsement, FAVN titer IU/ml level, non-commercial 5-day declaration, rabies vaccination latency, microchip transponder). Never duplicate the same summary across different documents.
+IMPORTANT: In "document_audit", ensure each uploaded document has a DISTINCT, detailed summary of what that specific document certifies (e.g. EU Annex IV endorsement, FAVN titer IU/ml level, non-commercial 5-day declaration, rabies vaccination latency, microchip transponder). If the document is not a veterinary/pet travel record, set status to "NO_IDENTITY_DETECTED". Never duplicate the same summary across different documents.
 Output only JSON.
 """
 
@@ -489,23 +502,34 @@ Output only JSON.
                     ai_summary = (matching_ai.get("summary") or "").strip() if matching_ai else ""
                     ai_dtype = (matching_ai.get("detected_type") or "").strip() if matching_ai else ""
 
-                    # If AI omitted, duplicated, or produced a generic repetitive summary, generate distinct summary
-                    if not ai_summary or ai_summary in seen_summaries or "Processed as" in ai_summary or len(ai_summary) < 25:
-                        summary = build_document_verification_summary(
-                            doc=d,
-                            global_microchip=extracted_chip,
-                            global_rabies_dt=extracted_rabies
-                        )
+                    is_unrecognized = "unrecognized" in d.detected_type.lower()
+                    has_pet_facts = bool(
+                        re.search(r'\b(9\d{14}|\d{15})\b', d.raw_text) or
+                        re.search(r'\b(rabies|rabisin|defensor|vaccin\w*|vax|titer|favn|rnatt|serolog\w*|pet\s+passport|passeport|health\s+certificate|veterin\w*|annex[-_\s]*(iv|4)|microchip|transponder|canine|feline|dog|dogs|puppy|cat|cats|kitten|echinococcus|tapeworm|praziquantel)\b', d.raw_text, re.I)
+                    )
+
+                    if is_unrecognized or not has_pet_facts:
+                        status = "NO_IDENTITY_DETECTED"
+                        detected_type = d.detected_type if not is_unrecognized else "Unrecognized Document (Non-Veterinary)"
+                        summary = f"{d.filename} was analyzed, but no pet identification, microchip transponder, or veterinary vaccination records were detected."
                     else:
-                        summary = ai_summary
+                        status = matching_ai.get("status", "VALID_DATA_FOUND") if matching_ai else "VALID_DATA_FOUND"
+                        detected_type = d.detected_type if (not ai_dtype or ai_dtype in ["Document", "General Document", "Upload"]) else ai_dtype
+                        if not ai_summary or ai_summary in seen_summaries or "Processed as" in ai_summary or len(ai_summary) < 25:
+                            summary = build_document_verification_summary(
+                                doc=d,
+                                global_microchip=extracted_chip,
+                                global_rabies_dt=extracted_rabies
+                            )
+                        else:
+                            summary = ai_summary
 
                     seen_summaries.add(summary)
-                    detected_type = d.detected_type if (not ai_dtype or ai_dtype in ["Document", "General Document", "Upload"]) else ai_dtype
 
                     refined_audit.append({
                         "filename": d.filename,
                         "detected_type": detected_type,
-                        "status": matching_ai.get("status", "VALID_DATA_FOUND") if matching_ai else ("VALID_DATA_FOUND" if len(d.raw_text.strip()) > 25 else "NO_IDENTITY_DETECTED"),
+                        "status": status,
                         "summary": summary
                     })
 

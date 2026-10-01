@@ -1,4 +1,5 @@
 import io
+import re
 import base64
 from typing import Dict, Any, Optional
 from pypdf import PdfReader
@@ -33,62 +34,50 @@ class ExtractedDocument:
         }
 
 def classify_document(text: str, filename: str) -> str:
-    fn_lower = filename.lower()
-    text_lower = text.lower()
-    combined = f"{fn_lower} {text_lower}"
+    # Normalize separators (underscores, dashes, dots) to spaces for clean token boundaries
+    normalized = re.sub(r'[-_./\\]+', ' ', f"{filename} {text}").lower()
 
     # 1. Titer / Serology Lab Report (Prioritize before Rabies, because titer reports always contain 'rabies')
-    if any(k in fn_lower for k in ["titer", "favn", "rnatt", "serolog"]) or \
-       any(k in text_lower for k in ["titer", "favn", "rnatt", "serology", "antibody titration", "fluorescent antibody"]):
+    if re.search(r'\b(titer|favn|rnatt|serology|antibody\s+titration|fluorescent\s+antibody)\b', normalized):
         return "Rabies Titer (FAVN/RNATT) Lab Report"
 
     # 2. EU Annex IV Health Certificate
-    if any(k in fn_lower for k in ["annex_iv", "annex-iv", "annex iv", "annex4", "annex_4"]) or \
-       any(k in text_lower for k in ["annex iv", "annex 4", "model animal health certificate", "non-commercial movement into a member state"]):
+    if re.search(r'\b(annex\s*(iv|4)|model\s+animal\s+health\s+certificate|non\s*commercial\s+movement\s+into\s+a\s+member\s+state)\b', normalized):
         return "EU Annex IV Health Certificate"
 
     # 3. Owner Non-Commercial Declaration
-    if any(k in fn_lower for k in ["declaration", "owner_dec", "owner-dec", "non_commercial", "non-commercial"]) or \
-       any(k in text_lower for k in ["owner declaration", "non-commercial declaration", "declaration of owner", "declaration of non-commercial", "5-day window", "5 days of the movement"]):
+    if re.search(r'\b(owner\s+declaration|non\s*commercial\s+declaration|declaration\s+of\s+owner|owner\s*dec|5\s*day\s+window|5\s+days\s+of\s+the\s+movement)\b', normalized):
         return "Non-Commercial Owner Declaration"
 
     # 4. Official Pet Passport
-    if any(k in fn_lower for k in ["passport", "passeport", "pet_pass"]) or \
-       any(k in text_lower for k in ["pet passport", "passeport pour animaux", "official pet passport", "veterinary passport"]):
+    if re.search(r'\b(pet\s+passport|passeport\s+pour\s+animaux|official\s+pet\s+passport|veterinary\s+passport|pet\s*pass)\b', normalized):
         return "Official Pet Passport"
 
     # 5. Official Veterinary Health Certificate (General/Non-Annex)
-    if any(k in fn_lower for k in ["health_cert", "health-cert", "healthcert", "vet_cert", "ahc"]) or \
-       any(k in text_lower for k in ["veterinary health certificate", "animal health certificate", "official health certificate", "certificate of veterinary inspection", "fit to travel", "clinical examination"]):
+    if re.search(r'\b(veterinary\s+health\s+certificate|animal\s+health\s+certificate|official\s+health\s+certificate|health\s+certificate|certificate\s+of\s+veterinary\s+inspection|clinical\s+examination\s+for\s+travel|fit\s+to\s+travel|health\s*cert)\b', normalized):
         return "Official Veterinary Health Certificate"
 
     # 6. Government Export / Endorsement Permit
-    if any(k in fn_lower for k in ["export", "permit", "daff", "endorsement", "import_permit"]) or \
-       any(k in text_lower for k in ["export permit", "notice of intention", "daff", "usda endorsed", "aphis form", "import permit"]):
+    if re.search(r'\b(export\s+permit|notice\s+of\s+intention|daff\s+permit|usda\s+endorsed|aphis\s+form|aphis\s+7001|import\s+permit)\b', normalized):
         return "Government Export / Endorsement Permit"
 
     # 7. Internal Parasite / Tapeworm Treatment Record
-    if any(k in fn_lower for k in ["tapeworm", "echinococcus", "worm", "deworm", "parasite"]) or \
-       any(k in text_lower for k in ["echinococcus", "praziquantel", "tapeworm", "parasite treatment"]):
+    if re.search(r'\b(tapeworm|echinococcus|praziquantel|deworming|parasite\s+treatment)\b', normalized):
         return "Internal Parasite / Tapeworm Treatment Record"
 
     # 8. Microchip Registration Record
-    if any(k in fn_lower for k in ["microchip", "chip", "transponder", "iso11784"]) or \
-       any(k in text_lower for k in ["transponder implantation", "microchip registration", "petlog", "avid", "homeagain", "identichip", "iso 11784", "iso 11785"]):
+    if re.search(r'\b(microchip|transponder\s+implantation|transponder\s+number|transponder|iso\s*11784|iso\s*11785|petlog|avid\s+chip|homeagain|identichip)\b', normalized) or re.search(r'\b(9\d{14}|\d{15})\b', normalized):
         return "Microchip Registration Record"
 
     # 9. Rabies / Vaccination Certificate
-    if any(k in fn_lower for k in ["rabies", "vaccin", "vax", "immunis"]) or \
-       any(k in text_lower for k in ["rabies", "vaccination", "immunisation", "rabisin", "defensor", "nobivac rabies", "dhpp"]):
+    if re.search(r'\b(rabies|rabisin|defensor|nobivac|dhpp|dhppil|vaccination|vaccine|vaccines|vax|immunisation|immunization)\b', normalized):
         return "Rabies / Vaccination Certificate"
 
-    # 10. Fallbacks based on weaker keyword occurrences
-    if any(k in combined for k in ["microchip", "transponder"]):
-        return "Microchip Registration Record"
-    if any(k in combined for k in ["health certificate", "certificate"]):
-        return "Official Veterinary Health Certificate"
+    # 10. Fallbacks based on word-boundary pet markers
+    if re.search(r'\b(pet|pets|animal|animals|canine|feline|dog|dogs|puppy|puppies|cat|cats|kitten|kittens|veterinary|veterinarian|vet|vets)\b', normalized):
+        return "General Pet Record / Photo"
 
-    return "General Pet Record / Photo"
+    return "Unrecognized Document (Non-Veterinary)"
 
 def extract_from_bytes(file_bytes: bytes, filename: str, content_type: str) -> ExtractedDocument:
     ext = filename.split(".")[-1].lower() if "." in filename else ""

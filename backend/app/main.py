@@ -134,6 +134,9 @@ async def scan_documents(
 
     all_evals = readiness["evaluations"]
 
+    has_recognized_records = any(d.get("status") == "VALID_DATA_FOUND" for d in facts.doc_audit) or bool(facts.microchip_number) or bool(facts.rabies_date)
+    is_all_unrecognized = (len(extracted_docs) > 0) and not has_recognized_records
+
     # 8. Format final comprehensive response
     return {
         "status": "success",
@@ -143,7 +146,9 @@ async def scan_documents(
             "transitCountries": transits,
             "departureDate": departure_date
         },
-        "petDetected": facts.species != "UNKNOWN" or bool(facts.microchip_number) or bool(facts.pet_name) or bool(pet_name),
+        "petDetected": bool(pet_name) or (has_recognized_records and (facts.species != "UNKNOWN" or bool(facts.microchip_number) or bool(facts.pet_name))),
+        "hasRecognizedRecords": has_recognized_records,
+        "isAllUnrecognized": is_all_unrecognized,
         "petProfile": {
             "species": facts.species if facts.species != "UNKNOWN" else (species.upper() if species else "DOG"),
             "name": facts.pet_name or pet_name or "My Pet",

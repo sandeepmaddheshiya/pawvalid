@@ -157,7 +157,8 @@ def evaluate_evidence(
                 severity = "COMPLETED"
                 status_badge = "✓ Verified"
                 what_to_do = "Species verified."
-                details = f"Pet identified as {species.capitalize()} from documents."
+                is_from_doc = sp_field.source_document not in ["User Input", "Unknown"] and sp_field.confidence >= 0.8
+                details = f"Pet identified as {species.capitalize()} from veterinary records." if is_from_doc else f"Pet species designated as {species.capitalize()} for route rules."
                 deadlines = "Completed"
             else:
                 status = "REQUIRED_ACTION"
