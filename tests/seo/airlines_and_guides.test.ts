@@ -85,9 +85,10 @@ describe('Comprehensive Content Expansion (Airlines, Guides & Corridors)', () =>
   });
 
   describe('Bilateral International Corridors (CORRIDORS)', () => {
-    it('provides 50 statutory corridors covering North America, Europe, Asia, and Oceania', () => {
+    it('provides statutory corridors covering North America, Europe, Asia, and Oceania', () => {
       const corridorKeys = Object.keys(CORRIDORS);
-      expect(corridorKeys.length).toBe(50);
+      expect(corridorKeys.length).toBeGreaterThanOrEqual(50);
+      expect(corridorKeys.length).toBe(62);
 
       expect(corridorKeys).toContain('usa-to-germany');
       expect(corridorKeys).toContain('usa-to-uk');

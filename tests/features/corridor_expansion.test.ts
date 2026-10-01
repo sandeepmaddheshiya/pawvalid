@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { CORRIDORS } from '@/lib/data/corridors';
 
-describe('50 Global Pet Travel Compliance Corridors', () => {
-  it('contains exactly 50 validated international corridors', () => {
+describe('Global Pet Travel Compliance Corridors', () => {
+  it('contains validated international corridors (at least 50 corridors)', () => {
     const keys = Object.keys(CORRIDORS);
-    expect(keys.length).toBe(50);
+    expect(keys.length).toBeGreaterThanOrEqual(50);
+    expect(keys.length).toBe(62);
   });
 
   it('ensures every corridor contains all mandatory statutory properties', () => {
