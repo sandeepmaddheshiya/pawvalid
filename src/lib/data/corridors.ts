@@ -5695,4 +5695,1422 @@ export const CORRIDORS: Record<string, RouteIntelligence> = {
       }
     ]
   }
+,
+  "australia-to-singapore": {
+  "slug": "australia-to-singapore",
+  "from": "Australia",
+  "to": "Singapore",
+  "fromFlag": "🇦🇺",
+  "toFlag": "🇸🇬",
+  "originCode": "AU",
+  "destCode": "SG",
+  "originGuideSlug": "australia",
+  "destGuideSlug": "singapore",
+  "region": "Oceania → Southeast Asia",
+  "authority": "Animal & Veterinary Service (AVS / NParks Singapore) & Australian DAFF",
+  "legalBasis": "Animals and Birds Act (Cap. 7) & AVS Pet Import Biosecurity Framework (Category A)",
+  "description": "Comprehensive statutory guidelines for importing dogs and cats from Australia to Singapore. Because Australia is classified as an AVS Category A (Rabies-Free) sovereign territory, compliant pets are exempt from rabies titer testing and benefit from 0 days quarantine (direct home release upon Changi inspection).",
+  "titerRequired": "Exempt (Category A Rabies-Free)",
+  "titerStatus": "exempt",
+  "titerDetail": "No rabies serology titer (RNATT) is required for pets residing continuously in Australia for at least 6 months prior to export.",
+  "quarantineDays": "0 Days (Direct Release upon Changi Clearance)",
+  "quarantineDetail": "Direct release following veterinary document audit and physical clinical inspection at Changi Animal & Plant Quarantine Station (CAPQ).",
+  "leadTime": "3–4 Weeks",
+  "leadTimeDetail": "ISO microchip + Australian DAFF Export Health Certificate + Singapore AVS Electronic Import Licence (issued within 30 days of arrival).",
+  "certificateType": "AVS Veterinary Certificate (Category A) & DAFF Official Export Certificate",
+  "certificateDetail": "Must hold an approved AVS Import Licence and an Australian DAFF government-endorsed veterinary export certificate.",
+  "entryAirports": [
+    "Singapore Changi Airport (SIN - CAPQ Inspection Station)"
+  ],
+  "restrictedBreeds": [
+    "Pit Bull Terrier",
+    "Akita",
+    "Tosa",
+    "Dogo Argentino",
+    "Fila Brasileiro",
+    "Boerboel",
+    "Neapolitan Mastiff"
+  ],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "30 Days Before Departure",
+      "title": "ISO Microchip & Continuous Residency",
+      "description": "Verify 15-digit ISO 11784/11785 microchip and confirm 6 months continuous residency in Australia."
+    },
+    {
+      "step": 2,
+      "timing": "Within 30 Days of Arrival",
+      "title": "AVS Electronic Import Licence",
+      "description": "Submit import application through Singapore GoBusiness Licensing / NParks portal."
+    },
+    {
+      "step": 3,
+      "timing": "10 Days Before Flight",
+      "title": "DAFF Clinical Exam & Endorsement",
+      "description": "Accredited vet conducts health examination and submits export certificate to DAFF for official government seal."
+    },
+    {
+      "step": 4,
+      "timing": "2–7 Days Before Departure",
+      "title": "Internal & External Parasite Treatments",
+      "description": "Administer approved parasite treatments for nematode/cestode worms, fleas, and ticks as mandated by AVS."
+    },
+    {
+      "step": 5,
+      "timing": "At Least 5 Days Before Arrival",
+      "title": "Book Changi CAPQ Inspection",
+      "description": "Submit inspection appointment via NParks Intelligent Food Approval & Safety Tracking (iFAST) portal."
+    },
+    {
+      "step": 6,
+      "timing": "Arrival Day at Changi Airport",
+      "title": "Border Clearance & Direct Release",
+      "description": "AVS officers verify microchip and DAFF health papers at Changi CAPQ for immediate release."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Singapore Airlines",
+      "code": "SQ",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Pets accepted as checked baggage or manifest cargo on direct flights from Sydney, Melbourne, Brisbane, and Perth.",
+      "feeEstimate": "AUD $350–$650 depending on crate dimensions",
+      "airlineGuideSlug": "singapore-airlines"
+    },
+    {
+      "name": "Qantas Airways",
+      "code": "QF",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Carried via Qantas Freight on direct trans-Tasman and Southeast Asian routes.",
+      "feeEstimate": "AUD $400–$750",
+      "airlineGuideSlug": "qantas"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Direct Non-Stop Flights Strongly Advised",
+    "layoverRules": "Transit through third countries non-compliant with Category A may trigger Category C quarantine. Always choose non-stop flights from Australian international hubs.",
+    "directVsTransit": "Direct flights from SYD/MEL/BNE/PER to SIN preserve Category A zero-quarantine status."
+  },
+  "faqs": [
+    {
+      "q": "Does a dog traveling from Australia to Singapore need quarantine?",
+      "a": "No. Because Australia is designated an AVS Category A rabies-free country, dogs and cats that have continuously resided in Australia for 6 months undergo 0 days quarantine and are released directly at Changi Airport."
+    },
+    {
+      "q": "Is a rabies titer test required for Australian pets entering Singapore?",
+      "a": "No, pets traveling directly from Australia are exempt from rabies serology titer (RNATT) testing."
+    },
+    {
+      "q": "How do I book border inspection at Singapore Changi Airport?",
+      "a": "Border inspection must be booked at least 5 working days in advance via the NParks iFAST online portal."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "au-sg-req-1",
+      "category": "AVS_IMPORT_LICENCE",
+      "categoryLabel": "Singapore AVS Import Authorization",
+      "title": "Official AVS Electronic Import Licence",
+      "severity": "BLOCKING",
+      "rules": [
+        "Must obtain an electronic Import Licence via the Singapore GoBusiness Licensing portal.",
+        "Licence is valid for 30 days from date of issuance.",
+        "Arrival must occur within the valid licence window."
+      ],
+      "protocol": "Airlines verify AVS Import Licence before boarding at Australian airports.",
+      "sourceName": "Singapore Animal & Veterinary Service (AVS)",
+      "sourceUrl": "https://www.nparks.gov.sg/avs/pets/bringing-animals-into-singapore-and-exporting/bringing-in-dogs-and-cats",
+      "lastVerifiedAt": "September 21, 2026"
+    },
+    {
+      "id": "au-sg-req-2",
+      "category": "DAFF_HEALTH_CERTIFICATE",
+      "categoryLabel": "Australian Government Endorsement",
+      "title": "DAFF International Veterinary Export Certificate",
+      "severity": "BLOCKING",
+      "rules": [
+        "Microchip must be 15-digit ISO 11784/11785 compliant.",
+        "Health examination by registered vet within 7 days of departure.",
+        "Certificate must bear official stamp and seal of an Australian DAFF Veterinary Officer."
+      ],
+      "protocol": "Changi CAPQ inspection officers inspect original paper certificates upon landing.",
+      "sourceName": "Australian Department of Agriculture, Fisheries and Forestry (DAFF)",
+      "sourceUrl": "https://www.agriculture.gov.au/biosecurity-trade/export/live-animals/companion-animals",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "india-to-singapore": {
+  "slug": "india-to-singapore",
+  "from": "India",
+  "to": "Singapore",
+  "fromFlag": "🇮🇳",
+  "toFlag": "🇸🇬",
+  "originCode": "IN",
+  "destCode": "SG",
+  "originGuideSlug": "india",
+  "destGuideSlug": "singapore",
+  "region": "South Asia → Southeast Asia",
+  "authority": "Animal & Veterinary Service (AVS / NParks Singapore) & AQCS India",
+  "legalBasis": "Animals and Birds Act (Cap. 7) & AVS Pet Import Biosecurity Framework (Category D)",
+  "description": "Statutory biosecurity requirements for relocating companion pets from India to Singapore. India is classified under AVS Category D (Non-Listed / High-Risk Rabies Territory). Relocation mandates ISO 11784/11785 microchipping, two inactivated rabies vaccinations, mandatory RNATT titer testing (≥ 0.50 IU/mL), advance CAPQ quarantine facility booking, and a mandatory 30-day quarantine stay at Sembawang / Changi Animal & Plant Quarantine Station.",
+  "titerRequired": "Mandatory RNATT (≥ 0.50 IU/mL)",
+  "titerStatus": "mandatory",
+  "titerDetail": "Blood drawn for RNATT serology at least 30 days after rabies vaccination and within 6 months prior to arrival. Must achieve antibody titer level ≥ 0.50 IU/mL from an AVS-recognized laboratory.",
+  "quarantineDays": "30 Days Mandatory (CAPQ / Sembawang)",
+  "quarantineDetail": "Mandatory 30-day quarantine accommodation at the Animal Quarantine Centre (CAPQ / Sembawang). Due to high demand, quarantine accommodation must be reserved at least 3–4 months in advance.",
+  "leadTime": "4–6 Months Minimum",
+  "leadTimeDetail": "Microchip + primary rabies vaccine + booster vaccine + RNATT blood draw + 3-month quarantine reservation wait + AVS Import Licence + AQCS export certificate.",
+  "certificateType": "AVS Veterinary Certificate (Category D) & AQCS Export Health Certificate",
+  "certificateDetail": "Veterinary certificate endorsed by the Government of India Animal Quarantine and Certification Services (AQCS) and valid AVS Import Licence.",
+  "entryAirports": [
+    "Singapore Changi Airport (SIN - CAPQ Facility)"
+  ],
+  "restrictedBreeds": [
+    "Pit Bull Terrier",
+    "Akita",
+    "Tosa",
+    "Dogo Argentino",
+    "Fila Brasileiro",
+    "Boerboel",
+    "Neapolitan Mastiff"
+  ],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "6 Months Before Departure",
+      "title": "ISO Microchip & Dual Rabies Vaccinations",
+      "description": "Implant 15-digit ISO microchip. Administer initial rabies vaccination followed by booster at approved interval."
+    },
+    {
+      "step": 2,
+      "timing": "At Least 30 Days Post-Vaccination",
+      "title": "RNATT Serology Blood Draw",
+      "description": "Collect serum sample and submit to AVS/OIE approved laboratory for FAVN/RNATT testing (must score ≥ 0.50 IU/mL)."
+    },
+    {
+      "step": 3,
+      "timing": "3–4 Months Before Arrival",
+      "title": "Reserve CAPQ Quarantine Space",
+      "description": "Submit quarantine booking via Singapore NParks Quarantine Management System (QMS)."
+    },
+    {
+      "step": 4,
+      "timing": "30 Days Before Departure",
+      "title": "Apply for AVS Import Licence",
+      "description": "Apply for official Singapore import licence online via GoBusiness Licensing portal."
+    },
+    {
+      "step": 5,
+      "timing": "Within 7 Days of Departure",
+      "title": "AQCS Inspection & Export Endorsement",
+      "description": "Obtain official Export Health Certificate from Indian Animal Quarantine and Certification Services (AQCS)."
+    },
+    {
+      "step": 6,
+      "timing": "Arrival Day at Changi Airport",
+      "title": "Direct Transfer to CAPQ Quarantine",
+      "description": "AVS ground handlers escort pet from tarmac directly to CAPQ quarantine facility for the 30-day statutory stay."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Singapore Airlines",
+      "code": "SQ",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Accepts pets as manifest cargo from Mumbai, Delhi, Bengaluru, and Chennai to Singapore.",
+      "feeEstimate": "INR ₹35,000–₹65,000 depending on crate volume",
+      "airlineGuideSlug": "singapore-airlines"
+    },
+    {
+      "name": "Air India",
+      "code": "AI",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Accepts pets as manifest cargo under IATA Live Animals Regulations (LAR).",
+      "feeEstimate": "INR ₹30,000–₹55,000",
+      "airlineGuideSlug": "air-india"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Direct Non-Stop Flights Highly Recommended",
+    "layoverRules": "Transit through intermediate hubs requires strict compliance with transshipment permits and climate regulations.",
+    "directVsTransit": "Direct flights from Indian metro hubs (BOM/DEL/BLR/MAA) directly into Singapore minimize cargo transfer stress."
+  },
+  "faqs": [
+    {
+      "q": "How long is the quarantine for pets coming from India to Singapore?",
+      "a": "All dogs and cats entering Singapore from India must undergo a statutory 30-day quarantine at the Sembawang / Changi Animal & Plant Quarantine Station (CAPQ)."
+    },
+    {
+      "q": "When should I book the quarantine kennel at CAPQ Singapore?",
+      "a": "Quarantine slots are strictly limited and must be booked at least 3 months in advance via the NParks QMS portal as soon as your titer result and travel dates are known."
+    },
+    {
+      "q": "Which rabies blood titer test is required for India export?",
+      "a": "An RNATT (Rabies Neutralization Antibody Titer Test) is mandatory, showing at least 0.50 IU/mL, drawn at least 30 days post-vaccination."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "in-sg-req-1",
+      "category": "RNATT_TITER_TEST",
+      "categoryLabel": "Rabies Serology Titer Mandate",
+      "title": "Mandatory RNATT Rabies Serology (≥ 0.50 IU/mL)",
+      "severity": "BLOCKING",
+      "rules": [
+        "Blood drawn at least 30 days after rabies vaccination.",
+        "Result must be ≥ 0.50 IU/mL from an AVS-approved laboratory.",
+        "Valid for 6 months from the date of blood collection."
+      ],
+      "protocol": "Audited by AVS prior to issuing the electronic Import Licence.",
+      "sourceName": "Singapore Animal & Veterinary Service (AVS)",
+      "sourceUrl": "https://www.nparks.gov.sg/avs/pets/bringing-animals-into-singapore-and-exporting/bringing-in-dogs-and-cats",
+      "lastVerifiedAt": "September 21, 2026"
+    },
+    {
+      "id": "in-sg-req-2",
+      "category": "CAPQ_QUARANTINE_BOOKING",
+      "categoryLabel": "Mandatory Quarantine Reservation",
+      "title": "CAPQ Quarantine Station Space Reservation",
+      "severity": "BLOCKING",
+      "rules": [
+        "Must hold a confirmed reservation letter from Sembawang Animal Quarantine Station / CAPQ.",
+        "Minimum 30-day quarantine stay required for Category D origins."
+      ],
+      "protocol": "Airlines will deny check-in without confirmed CAPQ quarantine reservation.",
+      "sourceName": "NParks Quarantine Management System (QMS)",
+      "sourceUrl": "https://www.nparks.gov.sg/avs/pets/bringing-animals-into-singapore-and-exporting/bringing-in-dogs-and-cats",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "mexico-to-usa": {
+  "slug": "mexico-to-usa",
+  "from": "Mexico",
+  "to": "United States",
+  "fromFlag": "🇲🇽",
+  "toFlag": "🇺🇸",
+  "originCode": "MX",
+  "destCode": "US",
+  "originGuideSlug": "mexico",
+  "destGuideSlug": "united-states",
+  "region": "Latin America → North America",
+  "authority": "US Centers for Disease Control and Prevention (CDC) & USDA APHIS",
+  "legalBasis": "CDC Dog Importation Regulations (42 CFR Part 71) & USDA Animal Welfare Act",
+  "description": "Statutory requirements for bringing dogs and cats from Mexico into the United States under CDC 2024–2026 biosecurity regulations. Because Mexico is categorized as a high-risk rabies country for dogs, all dogs mandate ISO 11784/11785 microchips, valid CDC Rabies Vaccination forms, minimum 6 months age, online CDC Dog Import Form receipts, and clearance at CDC-approved entry ports.",
+  "titerRequired": "Recommended / Conditional for Unvaccinated",
+  "titerStatus": "conditional",
+  "titerDetail": "Rabies titer test (FAVN) is required if vaccinated in Mexico and seeking direct release without CDC animal care facility quarantine.",
+  "quarantineDays": "0–28 Days (Depends on Vaccination Origin & Titer)",
+  "quarantineDetail": "Dogs vaccinated in the US with USDA endorsement have 0 days quarantine. Dogs vaccinated in Mexico without titer require reservation at a CDC-registered Animal Care Facility for 28-day quarantine.",
+  "leadTime": "1–3 Months",
+  "leadTimeDetail": "Microchip + rabies vaccine administered ≥ 28 days before travel + CDC Dog Import Form submission + SENASICA veterinary export clearance.",
+  "certificateType": "CDC Rabies & Microchip Record or USDA Endorsed Export Form",
+  "certificateDetail": "Official CDC Rabies and Microchip Record signed by an accredited Mexican veterinarian and SENASICA export certificate.",
+  "entryAirports": [
+    "Los Angeles (LAX)",
+    "Houston (IAH)",
+    "Miami (MIA)",
+    "Dallas/Fort Worth (DFW)",
+    "New York (JFK)"
+  ],
+  "restrictedBreeds": [],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "At Least 2–3 Months Before Travel",
+      "title": "ISO Microchip & Rabies Vaccination",
+      "description": "Implant 15-digit ISO microchip prior to rabies vaccination. Dog must be at least 12 weeks old at vaccination."
+    },
+    {
+      "step": 2,
+      "timing": "At Least 30 Days Post-Vaccination",
+      "title": "Rabies Serology Titer (If Required)",
+      "description": "Draw blood for FAVN titer test at approved laboratory if seeking reservation-free entry."
+    },
+    {
+      "step": 3,
+      "timing": "2–10 Days Before Departure",
+      "title": "CDC Dog Import Form & SENASICA Exam",
+      "description": "Complete free online CDC Dog Import Form receipt and obtain SENASICA veterinary health certificate in Mexico."
+    },
+    {
+      "step": 4,
+      "timing": "Day of Travel",
+      "title": "Border Inspection / Airport Arrival",
+      "description": "Present CDC receipt, microchip number, and SENASICA export certificate to US Customs and Border Protection (CBP)."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Aeromexico",
+      "code": "AM",
+      "inCabinAllowed": true,
+      "cargoAllowed": true,
+      "maxInCabinWeightKg": 9,
+      "notes": "Accepts small dogs and cats in-cabin on flights to US gateway airports with valid CDC documentation.",
+      "feeEstimate": "USD $135–$175",
+      "airlineGuideSlug": "aeromexico"
+    },
+    {
+      "name": "United Airlines",
+      "code": "UA",
+      "inCabinAllowed": true,
+      "cargoAllowed": false,
+      "notes": "In-cabin pets accepted on non-stop cross-border routes.",
+      "feeEstimate": "USD $150 each way",
+      "airlineGuideSlug": "united-airlines"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Land Border vs Airport Entry Rules",
+    "layoverRules": "Dogs entering via land border ports from Mexico must arrive at designated commercial inspection ports if requiring CDC veterinary physical verification.",
+    "directVsTransit": "Non-stop flights directly from Mexico City (MEX), Guadalajara (GDL), or Monterrey (MTY) to CDC-approved US airports streamline clearance."
+  },
+  "faqs": [
+    {
+      "q": "Can puppies under 6 months enter the US from Mexico?",
+      "a": "No. Under CDC regulations, all dogs entering the United States from Mexico or any country must be at least 6 months of age at the time of entry."
+    },
+    {
+      "q": "What forms do I need to cross the US-Mexico border with a dog?",
+      "a": "You must have an approved CDC Dog Import Form receipt, proof of ISO microchip, and valid rabies vaccination documentation."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "mx-us-req-1",
+      "category": "CDC_IMPORT_FORM",
+      "categoryLabel": "CDC Dog Import Rule Mandate",
+      "title": "Mandatory CDC Dog Import Form Submission",
+      "severity": "BLOCKING",
+      "rules": [
+        "Must complete the online CDC Dog Import Form receipt prior to departure.",
+        "Dog must be at least 6 months of age upon arrival in the United States.",
+        "Microchip must be 15-digit ISO 11784/11785 compliant."
+      ],
+      "protocol": "Verified by airlines prior to boarding and US CBP at land borders and airports.",
+      "sourceName": "US CDC Dog Importation Guidelines",
+      "sourceUrl": "https://www.cdc.gov/importation/dogs/enter-the-us.html",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "france-to-canada": {
+  "slug": "france-to-canada",
+  "from": "France",
+  "to": "Canada",
+  "fromFlag": "🇫🇷",
+  "toFlag": "🇨🇦",
+  "originCode": "FR",
+  "destCode": "CA",
+  "originGuideSlug": "france",
+  "destGuideSlug": "canada",
+  "region": "Western Europe → North America",
+  "authority": "Canadian Food Inspection Agency (CFIA) & French Ministry of Agriculture",
+  "legalBasis": "Health of Animals Act & Regulations & CFIA Pet Importation Policy",
+  "description": "Official statutory requirements for importing companion animals from France into Canada. Under CFIA regulations, dogs and cats from France require an EU Pet Passport with valid rabies vaccination administered at least 21 days prior to departure, ISO microchip verification, and border inspection by Canada Border Services Agency (CBSA) / CFIA.",
+  "titerRequired": "Exempt (EU Member State)",
+  "titerStatus": "exempt",
+  "titerDetail": "No rabies antibody titer test is mandated for pets entering Canada from France.",
+  "quarantineDays": "0 Days (Direct Release upon Border Clearance)",
+  "quarantineDetail": "Direct release upon successful document verification and physical inspection by CBSA / CFIA at Canadian international airports.",
+  "leadTime": "3–4 Weeks",
+  "leadTimeDetail": "ISO microchip + rabies vaccination administered at least 21 days before departure + EU Pet Passport completion.",
+  "certificateType": "EU Pet Passport (French) or Official CFIA Bilingual Certificate",
+  "certificateDetail": "Valid European Union Pet Passport showing up-to-date rabies immunization and ISO microchip details.",
+  "entryAirports": [
+    "Montreal-Trudeau International Airport (YUL)",
+    "Toronto Pearson International Airport (YYZ)",
+    "Vancouver International Airport (YVR)",
+    "Calgary International Airport (YYC)"
+  ],
+  "restrictedBreeds": [
+    "Ontario Province Pit Bull Ban (Breed Specific Legislation)"
+  ],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "At Least 30 Days Before Travel",
+      "title": "ISO Microchip & Rabies Immunization",
+      "description": "Ensure pet is implanted with a 15-digit ISO 11784/11785 microchip and vaccinated against rabies (minimum 21-day wait before travel)."
+    },
+    {
+      "step": 2,
+      "timing": "10 Days Before Departure",
+      "title": "Veterinary Health Exam",
+      "description": "French licensed veterinarian certifies health section in EU Pet Passport."
+    },
+    {
+      "step": 3,
+      "timing": "Arrival in Canada",
+      "title": "CBSA / CFIA Border Inspection",
+      "description": "Present EU Pet Passport to CBSA officers. Pay standard CFIA pet inspection fee (approx. CAD $30 + tax)."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Air France",
+      "code": "AF",
+      "inCabinAllowed": true,
+      "cargoAllowed": true,
+      "maxInCabinWeightKg": 8,
+      "notes": "Accepts small dogs and cats in-cabin on direct flights from Paris (CDG) to Montreal and Toronto.",
+      "feeEstimate": "EUR €125–€200",
+      "airlineGuideSlug": "air-france"
+    },
+    {
+      "name": "Air Canada",
+      "code": "AC",
+      "inCabinAllowed": true,
+      "cargoAllowed": true,
+      "maxInCabinWeightKg": 10,
+      "notes": "Permits in-cabin and checked baggage travel on trans-Atlantic routes.",
+      "feeEstimate": "CAD $100–$270",
+      "airlineGuideSlug": "air-canada"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Direct Trans-Atlantic Routing",
+    "layoverRules": "Direct non-stop flights from Paris (CDG) to Montreal (YUL) or Toronto (YYZ) prevent transit complications.",
+    "directVsTransit": "Direct flights ensure rapid CBSA entry clearance."
+  },
+  "faqs": [
+    {
+      "q": "Does my pet need quarantine when entering Canada from France?",
+      "a": "No. Pets from France with valid EU Pet Passports and rabies vaccinations are released directly upon arrival with 0 days quarantine."
+    },
+    {
+      "q": "Is an import permit required for personal pets entering Canada?",
+      "a": "No import permit is required for personal companion dogs and cats over 3 months of age from France."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "fr-ca-req-1",
+      "category": "RABIES_VACCINATION",
+      "categoryLabel": "CFIA Rabies Immunization Mandate",
+      "title": "Valid Rabies Vaccination in EU Pet Passport",
+      "severity": "BLOCKING",
+      "rules": [
+        "Pet must be at least 3 months old at vaccination date.",
+        "Primary vaccine must be administered at least 21 days before entry into Canada.",
+        "Must clearly state animal description, microchip number, vaccine trade name, batch number, and expiry date."
+      ],
+      "protocol": "Audited by CBSA border agents at Canadian ports of entry.",
+      "sourceName": "Canadian Food Inspection Agency (CFIA)",
+      "sourceUrl": "https://inspection.canada.ca/animal-health/terrestrial-animals/imports/import-policies/live-animals/pet-imports",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "canada-to-australia": {
+  "slug": "canada-to-australia",
+  "from": "Canada",
+  "to": "Australia",
+  "fromFlag": "🇨🇦",
+  "toFlag": "🇦🇺",
+  "originCode": "CA",
+  "destCode": "AU",
+  "originGuideSlug": "canada",
+  "destGuideSlug": "australia",
+  "region": "North America → Oceania",
+  "authority": "Australian Department of Agriculture, Fisheries and Forestry (DAFF) & CFIA",
+  "legalBasis": "Biosecurity Act 2015 & DAFF Group 3 Approved Rabies Country Standards",
+  "description": "Rigorous statutory biosecurity guidelines for moving dogs and cats from Canada to Australia under DAFF Group 3 standards. Requires 15-digit ISO microchip, rabies vaccination, RNATT blood titer test, mandatory 180-day pre-export waiting period from blood draw, DAFF Import Permit, CFIA endorsed health certificate, and mandatory 10–30 days quarantine at the Mickleham Post Entry Quarantine (PEQ) Facility in Melbourne.",
+  "titerRequired": "Mandatory RNATT (≥ 0.50 IU/mL)",
+  "titerStatus": "mandatory",
+  "titerDetail": "Blood drawn for RNATT serology test at CFIA-approved laboratory. Must achieve ≥ 0.50 IU/mL and wait a mandatory 180 days before entering Australia to qualify for minimum 10-day PEQ stay.",
+  "quarantineDays": "10–30 Days (Mickleham PEQ Melbourne)",
+  "quarantineDetail": "All animals must land at Melbourne International Airport (MEL) and transfer directly to the Mickleham Post Entry Quarantine Facility.",
+  "leadTime": "7–9 Months Minimum",
+  "leadTimeDetail": "Microchip + rabies vaccine + RNATT blood draw + 180-day waiting period + DAFF import permit + Mickleham space reservation + CFIA endorsement.",
+  "certificateType": "DAFF Veterinary Health Certificate & CFIA Official Endorsement",
+  "certificateDetail": "Must hold an official Australian DAFF Import Permit and CFIA-stamped veterinary health certificate.",
+  "entryAirports": [
+    "Melbourne Airport (MEL - Direct transfer to Mickleham PEQ)"
+  ],
+  "restrictedBreeds": [
+    "Dogo Argentino",
+    "Fila Brasileiro",
+    "Japanese Tosa",
+    "Pit Bull Terrier",
+    "American Pit Bull",
+    "Presa Canario"
+  ],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "7–9 Months Before Departure",
+      "title": "ISO Microchip & Rabies Vaccination",
+      "description": "Implant ISO microchip and administer inactivated rabies vaccine."
+    },
+    {
+      "step": 2,
+      "timing": "At Least 30 Days Post-Vaccination",
+      "title": "RNATT Serology Blood Draw",
+      "description": "Collect blood sample for RNATT test. 180-day statutory countdown to Australia departure begins on the date blood is drawn."
+    },
+    {
+      "step": 3,
+      "timing": "5–6 Months Before Departure",
+      "title": "Apply for DAFF Import Permit",
+      "description": "Submit application and RNATT lab report to Australian DAFF portal."
+    },
+    {
+      "step": 4,
+      "timing": "3–4 Months Before Departure",
+      "title": "Reserve Mickleham Quarantine Kennel",
+      "description": "Book mandatory quarantine accommodation at Mickleham Post Entry Quarantine Facility in Melbourne."
+    },
+    {
+      "step": 5,
+      "timing": "Within 5 Days of Departure",
+      "title": "Final CFIA Health Exam & Endorsement",
+      "description": "Accredited vet performs final clinical exam, parasite treatments, and obtains official CFIA endorsement."
+    },
+    {
+      "step": 6,
+      "timing": "Arrival at Melbourne Airport",
+      "title": "Transfer to Mickleham PEQ Facility",
+      "description": "DAFF biosecurity officers receive pet on tarmac and transport directly to Mickleham for the 10-day quarantine stay."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Air Canada Cargo",
+      "code": "AC",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Must arrive in Australia as manifest cargo directly to Melbourne (MEL).",
+      "feeEstimate": "CAD $1,800–$3,500 depending on crate volume",
+      "airlineGuideSlug": "air-canada"
+    },
+    {
+      "name": "Qantas Airways",
+      "code": "QF",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Operates trans-Pacific cargo pet flights into Melbourne Airport.",
+      "feeEstimate": "CAD $2,000–$3,800",
+      "airlineGuideSlug": "qantas"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Must Land in Melbourne (MEL)",
+    "layoverRules": "By Australian law, all imported companion animals requiring PEQ must enter Australia through Melbourne International Airport (MEL).",
+    "directVsTransit": "No domestic Australian flights permitted prior to completing quarantine at Mickleham."
+  },
+  "faqs": [
+    {
+      "q": "Can my pet do quarantine in Sydney or Brisbane?",
+      "a": "No. The only companion animal post-entry quarantine facility in Australia is at Mickleham in Melbourne. All pets must land at Melbourne (MEL)."
+    },
+    {
+      "q": "Why is the lead time so long for Australia?",
+      "a": "Australia requires a 180-day waiting period from the date of the successful RNATT rabies blood draw before entry to qualify for the 10-day quarantine stay."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "ca-au-req-1",
+      "category": "DAFF_IMPORT_PERMIT",
+      "categoryLabel": "Australian Government Import Permit",
+      "title": "Valid Australian DAFF Import Permit",
+      "severity": "BLOCKING",
+      "rules": [
+        "Must hold a valid DAFF Import Permit issued by Australian biosecurity authorities.",
+        "Import permit takes 20–40 working days to process."
+      ],
+      "protocol": "Airlines will strictly reject manifest cargo bookings without a confirmed DAFF Import Permit.",
+      "sourceName": "Australian Department of Agriculture, Fisheries and Forestry",
+      "sourceUrl": "https://www.agriculture.gov.au/biosecurity-trade/import/goods/live-animals/dogs-cats",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "singapore-to-australia": {
+  "slug": "singapore-to-australia",
+  "from": "Singapore",
+  "to": "Australia",
+  "fromFlag": "🇸🇬",
+  "toFlag": "🇦🇺",
+  "originCode": "SG",
+  "destCode": "AU",
+  "originGuideSlug": "singapore",
+  "destGuideSlug": "australia",
+  "region": "Southeast Asia → Oceania",
+  "authority": "Australian Department of Agriculture, Fisheries and Forestry (DAFF) & AVS Singapore",
+  "legalBasis": "Biosecurity Act 2015 & DAFF Group 2 Approved Rabies-Free Country Standards",
+  "description": "Statutory biosecurity protocol for moving dogs and cats from Singapore to Australia. Under Australian DAFF standards, Singapore is recognized as a Group 2 (Approved Rabies-Free) country. Pets that have resided continuously in Singapore for 6 months do NOT require a rabies antibody titer (RNATT) test, but require an Australian DAFF Import Permit, AVS export certification, and a mandatory 10-day quarantine stay at Mickleham Post Entry Quarantine Facility in Melbourne.",
+  "titerRequired": "Exempt (Group 2 Rabies-Free)",
+  "titerStatus": "exempt",
+  "titerDetail": "No rabies antibody titer (RNATT) is required for dogs and cats residing continuously in Singapore for at least 6 months before departure.",
+  "quarantineDays": "10 Days Mandatory (Mickleham PEQ Melbourne)",
+  "quarantineDetail": "Mandatory 10-day post-entry quarantine at the Australian Government Mickleham Quarantine Facility in Melbourne.",
+  "leadTime": "2–3 Months",
+  "leadTimeDetail": "ISO microchip + continuous 6-month residency verification + DAFF Import Permit application + Mickleham quarantine booking + AVS export certificate.",
+  "certificateType": "Australian DAFF Import Permit & AVS Export Health Certificate",
+  "certificateDetail": "Must hold an approved DAFF Import Permit and an AVS-stamped export certificate.",
+  "entryAirports": [
+    "Melbourne Airport (MEL - Direct transfer to Mickleham PEQ)"
+  ],
+  "restrictedBreeds": [
+    "Pit Bull Terrier",
+    "Japanese Tosa",
+    "Dogo Argentino",
+    "Fila Brasileiro",
+    "Presa Canario"
+  ],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "2–3 Months Before Departure",
+      "title": "ISO Microchip & DAFF Permit Application",
+      "description": "Verify 15-digit microchip and submit Australian DAFF Import Permit application online."
+    },
+    {
+      "step": 2,
+      "timing": "6–8 Weeks Before Departure",
+      "title": "Reserve Mickleham PEQ Accommodation",
+      "description": "Book mandatory 10-day kennel or cattery at Mickleham Quarantine Facility in Melbourne."
+    },
+    {
+      "step": 3,
+      "timing": "Within 5 Days of Departure",
+      "title": "AVS Veterinary Exam & Export Permit",
+      "description": "Accredited vet conducts physical exam, applies external/internal parasite treatments, and obtains AVS export endorsement."
+    },
+    {
+      "step": 4,
+      "timing": "Departure from Changi Airport",
+      "title": "Manifest Cargo Flight to Melbourne",
+      "description": "Pet flies as manifest cargo direct from Singapore (SIN) to Melbourne (MEL)."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Singapore Airlines Cargo",
+      "code": "SQ",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Operates daily direct manifest cargo flights from Singapore Changi (SIN) to Melbourne (MEL).",
+      "feeEstimate": "SGD $1,200–$2,400",
+      "airlineGuideSlug": "singapore-airlines"
+    },
+    {
+      "name": "Qantas Airways",
+      "code": "QF",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Accepts live animal manifest cargo shipments on direct SIN to MEL routes.",
+      "feeEstimate": "SGD $1,400–$2,600",
+      "airlineGuideSlug": "qantas"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Direct Non-Stop Cargo Flight Required",
+    "layoverRules": "Must fly direct to Melbourne (MEL) without transiting non-approved Group 1/2 territories.",
+    "directVsTransit": "Direct SIN-MEL non-stop flights ensure seamless transfer into Mickleham PEQ custody."
+  },
+  "faqs": [
+    {
+      "q": "Does a dog from Singapore need a rabies titer test for Australia?",
+      "a": "No. Because Singapore is classified as a Group 2 approved rabies-free territory by Australia, pets with 6 months continuous residency in Singapore are exempt from RNATT blood tests."
+    },
+    {
+      "q": "How long is quarantine in Australia for pets from Singapore?",
+      "a": "The quarantine duration is 10 days at the Mickleham Post Entry Quarantine Facility in Melbourne."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "sg-au-req-1",
+      "category": "DAFF_IMPORT_PERMIT",
+      "categoryLabel": "Australian Government Import Authorization",
+      "title": "Australian DAFF Group 2 Import Permit",
+      "severity": "BLOCKING",
+      "rules": [
+        "Must hold an approved DAFF Import Permit issued for Singapore origin.",
+        "Must prove continuous residency in Singapore for at least 6 months prior to export."
+      ],
+      "protocol": "Checked by Singapore Airlines / Qantas cargo agents prior to departure.",
+      "sourceName": "Australian DAFF",
+      "sourceUrl": "https://www.agriculture.gov.au/biosecurity-trade/import/goods/live-animals/dogs-cats",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "india-to-uae": {
+  "slug": "india-to-uae",
+  "from": "India",
+  "to": "United Arab Emirates",
+  "fromFlag": "🇮🇳",
+  "toFlag": "🇦🇪",
+  "originCode": "IN",
+  "destCode": "AE",
+  "originGuideSlug": "india",
+  "destGuideSlug": "united-arab-emirates",
+  "region": "South Asia → Middle East",
+  "authority": "Ministry of Climate Change and Environment (MOCCAE UAE) & AQCS India",
+  "legalBasis": "Federal Law No. (22) of 2016 concerning the Regulation of Ownership of Dangerous Animals & MOCCAE Import Regulations",
+  "description": "Statutory biosecurity standards for importing pets from India to the United Arab Emirates. India is categorized under MOCCAE High-Risk Rabies origins. Moving a dog or cat mandates an ISO 11784/11785 microchip, rabies vaccination, an RNATT antibody titer test (≥ 0.50 IU/mL) with a mandatory 90-day waiting period from blood draw, an official MOCCAE Import Permit, and manifest cargo arrival at approved UAE international airports.",
+  "titerRequired": "Mandatory RNATT (≥ 0.50 IU/mL)",
+  "titerStatus": "mandatory",
+  "titerDetail": "Blood drawn for RNATT at least 30 days post-vaccination. Must score ≥ 0.50 IU/mL and wait a mandatory 90 days before arrival in the UAE.",
+  "quarantineDays": "0 Days (Direct Release with Compliant RNATT & Permit)",
+  "quarantineDetail": "Direct release at Dubai (DXB) or Abu Dhabi (AUH) customs upon MOCCAE veterinary document verification and clinical inspection.",
+  "leadTime": "4–5 Months Minimum",
+  "leadTimeDetail": "Microchip + rabies vaccination + RNATT blood draw + 90-day wait + MOCCAE import permit + AQCS export certification.",
+  "certificateType": "MOCCAE Import Permit & Government of India AQCS Export Health Certificate",
+  "certificateDetail": "Valid MOCCAE electronic import permit (valid for 30 days) and AQCS export certificate with veterinary health endorsement.",
+  "entryAirports": [
+    "Dubai International Airport (DXB - Cargo Village / Dnata)",
+    "Abu Dhabi International Airport (AUH - Cargo Terminal)"
+  ],
+  "restrictedBreeds": [
+    "Pit Bull Terrier",
+    "American Staffordshire Terrier",
+    "American Bully",
+    "Doberman Pinscher",
+    "Rottweiler",
+    "Boxer",
+    "Dogo Argentino",
+    "Fila Brasileiro",
+    "Tosa",
+    "Mastiff breeds"
+  ],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "4–5 Months Before Departure",
+      "title": "ISO Microchip & Rabies Vaccine",
+      "description": "Implant 15-digit microchip and administer inactivated rabies vaccination (dog/cat must be at least 12 weeks old)."
+    },
+    {
+      "step": 2,
+      "timing": "At Least 30 Days Post-Vaccine",
+      "title": "RNATT Serology Blood Draw",
+      "description": "Collect blood sample and test at EU/MOCCAE-approved laboratory. 90-day mandatory waiting period commences on blood draw date."
+    },
+    {
+      "step": 3,
+      "timing": "30 Days Before Departure",
+      "title": "Apply for MOCCAE Import Permit",
+      "description": "Apply for electronic import permit via MOCCAE online services portal."
+    },
+    {
+      "step": 4,
+      "timing": "Within 5–7 Days of Departure",
+      "title": "AQCS Examination & Endorsement",
+      "description": "Accredited vet administers internal/external parasite treatments and obtains AQCS Export Certificate."
+    },
+    {
+      "step": 5,
+      "timing": "Day of Travel",
+      "title": "Manifest Cargo Flight to DXB / AUH",
+      "description": "Ship pet as manifested air cargo. MOCCAE veterinary officer inspects paperwork and pet at the cargo terminal for direct release."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Emirates SkyCargo",
+      "code": "EK",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "State-of-the-art live animal care facility at Emirates SkyCentral (DXB). Accepts manifest cargo from Mumbai, Delhi, Bengaluru, etc.",
+      "feeEstimate": "INR ₹40,000–₹75,000",
+      "airlineGuideSlug": "emirates"
+    },
+    {
+      "name": "Etihad Cargo",
+      "code": "EY",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Dedicated LiveAnimals service with temperature-controlled transit via Abu Dhabi (AUH).",
+      "feeEstimate": "INR ₹38,000–₹70,000",
+      "airlineGuideSlug": "etihad"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Manifest Cargo Only into the UAE",
+    "layoverRules": "UAE law strictly forbids personal companion pets in passenger cabins on commercial flights arriving into the country (service dogs exempted with prior clearance).",
+    "directVsTransit": "Direct flights from Indian airports into Dubai (DXB) or Abu Dhabi (AUH) avoid transit heat delays."
+  },
+  "faqs": [
+    {
+      "q": "Can pets travel in-cabin to Dubai from India?",
+      "a": "No. Under UAE federal import regulations, all imported companion animals must arrive as manifest cargo under an Air Waybill (AWB)."
+    },
+    {
+      "q": "How long is the rabies titer waiting period for the UAE?",
+      "a": "The UAE enforces a strict 90-day (3-month) waiting period from the date of the RNATT blood draw before the animal is permitted to arrive in the country."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "in-ae-req-1",
+      "category": "RNATT_90_DAY_RULE",
+      "categoryLabel": "MOCCAE 90-Day Titer Wait Mandate",
+      "title": "RNATT Rabies Serology with 90-Day Waiting Period",
+      "severity": "BLOCKING",
+      "rules": [
+        "Blood drawn at least 30 days after rabies vaccination.",
+        "Result must be ≥ 0.50 IU/mL from an approved international laboratory.",
+        "Must wait at least 90 days from blood collection date before entering the UAE."
+      ],
+      "protocol": "MOCCAE portal validates 90-day window before issuing the Import Permit.",
+      "sourceName": "UAE Ministry of Climate Change and Environment (MOCCAE)",
+      "sourceUrl": "https://www.moccae.gov.ae/en/services/export-import-services/import-permit-pets.aspx",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "canada-to-uae": {
+  "slug": "canada-to-uae",
+  "from": "Canada",
+  "to": "United Arab Emirates",
+  "fromFlag": "🇨🇦",
+  "toFlag": "🇦🇪",
+  "originCode": "CA",
+  "destCode": "AE",
+  "originGuideSlug": "canada",
+  "destGuideSlug": "united-arab-emirates",
+  "region": "North America → Middle East",
+  "authority": "Ministry of Climate Change and Environment (MOCCAE UAE) & CFIA Canada",
+  "legalBasis": "Federal Law No. (22) of 2016 & MOCCAE Animal Importation Standards",
+  "description": "Statutory requirements for relocating dogs and cats from Canada to the United Arab Emirates. Canada is classified as a rabies-controlled origin under MOCCAE. Relocation mandates an ISO 11784/11785 microchip, valid rabies vaccination, RNATT rabies antibody titer test (≥ 0.50 IU/mL), official MOCCAE Import Permit, CFIA endorsed veterinary health certificate, and arrival as manifest cargo at Dubai (DXB) or Abu Dhabi (AUH).",
+  "titerRequired": "Mandatory RNATT (≥ 0.50 IU/mL)",
+  "titerStatus": "mandatory",
+  "titerDetail": "Rabies titer test (RNATT/FAVN) showing ≥ 0.50 IU/mL drawn at least 30 days post-vaccination. For rabies-controlled origins like Canada, entry is permitted without the 90-day waiting period once valid titer is achieved.",
+  "quarantineDays": "0 Days (Direct Release upon Cargo Inspection)",
+  "quarantineDetail": "Direct release at DXB / AUH cargo customs with compliant MOCCAE permit and CFIA documentation.",
+  "leadTime": "2–3 Months",
+  "leadTimeDetail": "ISO microchip + rabies vaccine + RNATT blood test + MOCCAE import permit + CFIA endorsement + manifest cargo booking.",
+  "certificateType": "MOCCAE Import Permit & CFIA Bilingual Export Certificate",
+  "certificateDetail": "Approved MOCCAE electronic import permit and official CFIA-endorsed veterinary certificate.",
+  "entryAirports": [
+    "Dubai International Airport (DXB)",
+    "Abu Dhabi International Airport (AUH)"
+  ],
+  "restrictedBreeds": [
+    "Pit Bull Terrier",
+    "American Bully",
+    "Staffordshire Terrier",
+    "Doberman Pinscher",
+    "Rottweiler",
+    "Dogo Argentino",
+    "Fila Brasileiro",
+    "Tosa"
+  ],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "2–3 Months Before Departure",
+      "title": "ISO Microchip & Rabies Vaccination",
+      "description": "Implant 15-digit microchip and administer inactivated rabies vaccination."
+    },
+    {
+      "step": 2,
+      "timing": "At Least 30 Days Post-Vaccine",
+      "title": "RNATT Serology Blood Draw",
+      "description": "Draw blood for RNATT/FAVN test at approved laboratory (result must be ≥ 0.50 IU/mL)."
+    },
+    {
+      "step": 3,
+      "timing": "30 Days Before Departure",
+      "title": "MOCCAE Import Permit",
+      "description": "Submit online import permit application via the UAE MOCCAE portal."
+    },
+    {
+      "step": 4,
+      "timing": "Within 5–7 Days of Departure",
+      "title": "CFIA Examination & Endorsement",
+      "description": "Accredited vet conducts health exam, applies internal/external parasite treatments, and obtains CFIA stamp."
+    },
+    {
+      "step": 5,
+      "timing": "Day of Travel",
+      "title": "Arrival as Manifest Cargo",
+      "description": "Pet lands at DXB or AUH cargo terminal. MOCCAE inspector clears paperwork for immediate release."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Emirates SkyCargo",
+      "code": "EK",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Direct non-stop live animal flights from Toronto (YYZ) and Montreal (YUL) to Dubai (DXB).",
+      "feeEstimate": "CAD $1,500–$2,800",
+      "airlineGuideSlug": "emirates"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Direct Non-Stop Cargo Routing",
+    "layoverRules": "Direct flights from Toronto (YYZ) or Montreal (YUL) to Dubai (DXB) prevent transit exposure to extreme heat.",
+    "directVsTransit": "Direct flights minimize live animal layover stress."
+  },
+  "faqs": [
+    {
+      "q": "Does a Canadian pet need to wait 90 days after the rabies titer to enter the UAE?",
+      "a": "No. Because Canada is classified as a rabies-controlled country, pets from Canada can enter as soon as the valid RNATT titer result (≥ 0.50 IU/mL) is issued."
+    },
+    {
+      "q": "Can I bring my pet as excess baggage into Dubai?",
+      "a": "No, all pets entering the UAE must arrive strictly as manifest cargo under an Air Waybill (AWB)."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "ca-ae-req-1",
+      "category": "MOCCAE_IMPORT_PERMIT",
+      "categoryLabel": "UAE Federal Import Permit",
+      "title": "Official MOCCAE Electronic Import Permit",
+      "severity": "BLOCKING",
+      "rules": [
+        "Must possess an electronic Import Permit issued by UAE MOCCAE.",
+        "Permit is valid for 30 days from date of issuance.",
+        "Must arrive through Dubai (DXB) or Abu Dhabi (AUH) cargo terminals."
+      ],
+      "protocol": "Verified by airline cargo agents prior to departure from Canada.",
+      "sourceName": "UAE MOCCAE",
+      "sourceUrl": "https://www.moccae.gov.ae/en/services/export-import-services/import-permit-pets.aspx",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "usa-to-vietnam": {
+  "slug": "usa-to-vietnam",
+  "from": "United States",
+  "to": "Vietnam",
+  "fromFlag": "🇺🇸",
+  "toFlag": "🇻🇳",
+  "originCode": "US",
+  "destCode": "VN",
+  "originGuideSlug": "united-states",
+  "destGuideSlug": "vietnam",
+  "region": "North America → Southeast Asia",
+  "authority": "Department of Animal Health (DAH Vietnam / MARD) & USDA APHIS",
+  "legalBasis": "Law on Veterinary Medicine No. 79/2015/QH13 & Circular 25/2016/TT-BNNPTNT",
+  "description": "Statutory biosecurity regulations for bringing companion dogs and cats from the United States to Vietnam. Governed by the Department of Animal Health (DAH / MARD). Requires a 15-digit ISO 11784/11785 microchip, rabies vaccination administered between 30 days and 12 months prior to entry, USDA APHIS endorsed International Health Certificate (Form 7001 / VEHCS), and airport border inspection at Tan Son Nhat (SGN) or Noi Bai (HAN). With compliant paperwork, pets enjoy 0 days quarantine.",
+  "titerRequired": "Exempt / Recommended",
+  "titerStatus": "exempt",
+  "titerDetail": "Rabies titer (RNATT) test is not statutory mandated by Vietnamese authorities for pets with valid USDA health certificates and rabies records.",
+  "quarantineDays": "0 Days (Direct Release upon Airport Inspection)",
+  "quarantineDetail": "Direct release at Tan Son Nhat (SGN), Noi Bai (HAN), or Da Nang (DAD) following DAH veterinary inspection and payment of border quarantine fee.",
+  "leadTime": "3–4 Weeks",
+  "leadTimeDetail": "ISO microchip + rabies vaccination administered ≥ 30 days prior to travel + USDA APHIS veterinary exam and VEHCS endorsement.",
+  "certificateType": "USDA APHIS Endorsed Health Certificate (Form 7001 / VEHCS)",
+  "certificateDetail": "Bilingual or standard international veterinary certificate issued by an accredited US veterinarian and endorsed by USDA APHIS.",
+  "entryAirports": [
+    "Ho Chi Minh City - Tan Son Nhat International Airport (SGN)",
+    "Hanoi - Noi Bai International Airport (HAN)",
+    "Da Nang International Airport (DAD)"
+  ],
+  "restrictedBreeds": [],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "30–60 Days Before Departure",
+      "title": "ISO Microchip & Rabies Vaccination",
+      "description": "Implant 15-digit ISO microchip and administer rabies vaccination at least 30 days before flight."
+    },
+    {
+      "step": 2,
+      "timing": "7–10 Days Before Departure",
+      "title": "USDA Accredited Vet Exam",
+      "description": "Accredited vet performs health examination, applies external/internal parasite treatment, and completes health certificate."
+    },
+    {
+      "step": 3,
+      "timing": "5–7 Days Before Departure",
+      "title": "USDA APHIS VEHCS Endorsement",
+      "description": "Submit certificate electronically through VEHCS to obtain official USDA government endorsement."
+    },
+    {
+      "step": 4,
+      "timing": "Arrival in Vietnam",
+      "title": "DAH Airport Inspection & Clearance",
+      "description": "Present original endorsed certificate and pet to DAH Animal Quarantine Officer for immediate release."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Korean Air",
+      "code": "KE",
+      "inCabinAllowed": true,
+      "cargoAllowed": true,
+      "maxInCabinWeightKg": 7,
+      "notes": "Permits in-cabin and checked baggage pets with transit through Seoul Incheon (ICN) to SGN/HAN.",
+      "feeEstimate": "USD $200–$300",
+      "airlineGuideSlug": "korean-air"
+    },
+    {
+      "name": "Japan Airlines",
+      "code": "JL",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Accepts pets as checked baggage / cargo via Tokyo Haneda (HND) / Narita (NRT).",
+      "feeEstimate": "USD $250–$400",
+      "airlineGuideSlug": "japan-airlines"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Transit via Asian Hubs (ICN/HND/TPE)",
+    "layoverRules": "When transiting Seoul, Tokyo, or Taipei, pets remaining in airline custody do not enter foreign territory or trigger additional transit visas.",
+    "directVsTransit": "Choose transits with under 4 hours layover to ensure comfortable connections."
+  },
+  "faqs": [
+    {
+      "q": "Is there quarantine for pets entering Vietnam from the USA?",
+      "a": "No. Companion dogs and cats with valid USDA APHIS endorsed health certificates and rabies vaccinations are cleared directly upon arrival with 0 days quarantine."
+    },
+    {
+      "q": "How long before travel must the rabies vaccine be given?",
+      "a": "The rabies vaccination must be administered at least 30 days before arrival in Vietnam and within the previous 12 months."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "us-vn-req-1",
+      "category": "USDA_HEALTH_CERTIFICATE",
+      "categoryLabel": "USDA APHIS Endorsement Mandate",
+      "title": "USDA APHIS Endorsed International Health Certificate",
+      "severity": "BLOCKING",
+      "rules": [
+        "Microchip must be 15-digit ISO 11784/11785 compliant.",
+        "Rabies vaccine administered at least 30 days and no more than 12 months prior to entry.",
+        "Must bear official USDA APHIS electronic or embossed government endorsement."
+      ],
+      "protocol": "Inspected by DAH Veterinary Quarantine Officers at Tan Son Nhat (SGN) and Noi Bai (HAN).",
+      "sourceName": "Vietnam Department of Animal Health (DAH / MARD)",
+      "sourceUrl": "http://cucthuyi.gov.vn",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "uk-to-vietnam": {
+  "slug": "uk-to-vietnam",
+  "from": "United Kingdom",
+  "to": "Vietnam",
+  "fromFlag": "🇬🇧",
+  "toFlag": "🇻🇳",
+  "originCode": "GB",
+  "destCode": "VN",
+  "originGuideSlug": "united-kingdom",
+  "destGuideSlug": "vietnam",
+  "region": "Western Europe → Southeast Asia",
+  "authority": "Department of Animal Health (DAH Vietnam) & DEFRA / APHA UK",
+  "legalBasis": "Law on Veterinary Medicine No. 79/2015/QH13 & UK Export Health Regulations",
+  "description": "Official statutory biosecurity guidelines for traveling with dogs and cats from the UK to Vietnam. Under Vietnamese DAH regulations, compliant pets traveling from the UK require an ISO microchip, rabies vaccination administered at least 30 days prior to departure, an Official Export Health Certificate issued by an Official Veterinarian (OV) and stamped by DEFRA/APHA, and border clearance at Tan Son Nhat (SGN) or Noi Bai (HAN). Quarantine is 0 days upon arrival.",
+  "titerRequired": "Exempt (UK Direct)",
+  "titerStatus": "exempt",
+  "titerDetail": "Rabies titer test is not statutory required by Vietnam for companion pets with valid DEFRA-endorsed export health certificates.",
+  "quarantineDays": "0 Days (Direct Release upon DAH Clearance)",
+  "quarantineDetail": "Direct release at SGN or HAN following border veterinary inspection.",
+  "leadTime": "3–4 Weeks",
+  "leadTimeDetail": "ISO microchip + rabies vaccine administered ≥ 30 days before flight + DEFRA / APHA export health certificate application and OV examination.",
+  "certificateType": "DEFRA / APHA Official Export Health Certificate",
+  "certificateDetail": "Great Britain export health certificate certified by a DEFRA Official Veterinarian.",
+  "entryAirports": [
+    "Tan Son Nhat International Airport (SGN)",
+    "Noi Bai International Airport (HAN)"
+  ],
+  "restrictedBreeds": [],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "30 Days Before Departure",
+      "title": "ISO Microchip & Rabies Vaccination",
+      "description": "Implant 15-digit microchip and administer rabies vaccine at least 30 days prior to travel."
+    },
+    {
+      "step": 2,
+      "timing": "10 Days Before Departure",
+      "title": "APHA Export Certificate Application",
+      "description": "Apply for official Great Britain Export Health Certificate via DEFRA / APHA online portal."
+    },
+    {
+      "step": 3,
+      "timing": "Within 7 Days of Departure",
+      "title": "Official Veterinarian (OV) Exam",
+      "description": "OV performs physical health inspection, verifies parasite treatments, and signs the DEFRA certificate."
+    },
+    {
+      "step": 4,
+      "timing": "Arrival in Vietnam",
+      "title": "DAH Quarantine Inspection",
+      "description": "DAH border veterinarians inspect papers at SGN or HAN airport for immediate release."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Vietnam Airlines",
+      "code": "VN",
+      "inCabinAllowed": true,
+      "cargoAllowed": true,
+      "maxInCabinWeightKg": 8,
+      "notes": "Direct non-stop flights from London Heathrow (LHR) to Hanoi (HAN) and Ho Chi Minh City (SGN).",
+      "feeEstimate": "GBP £150–£280",
+      "airlineGuideSlug": "vietnam-airlines"
+    },
+    {
+      "name": "Qatar Airways",
+      "code": "QR",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Live animal manifest cargo service via Hamad International Airport (DOH).",
+      "feeEstimate": "GBP £350–£600",
+      "airlineGuideSlug": "qatar-airways"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Direct Flights from London (LHR)",
+    "layoverRules": "Vietnam Airlines direct flights from Heathrow avoid Middle Eastern or Asian layovers.",
+    "directVsTransit": "Direct LHR to SGN/HAN routes minimize travel time to under 12 hours."
+  },
+  "faqs": [
+    {
+      "q": "Do dogs from the UK require quarantine in Vietnam?",
+      "a": "No, dogs and cats entering Vietnam from the UK with valid DEFRA export certificates are released directly with 0 days quarantine."
+    },
+    {
+      "q": "What airline options are available from the UK to Vietnam with pets?",
+      "a": "Vietnam Airlines operates direct non-stop flights from London Heathrow (LHR) to Hanoi (HAN) and Ho Chi Minh City (SGN) accepting in-cabin pets up to 8kg and manifest cargo."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "uk-vn-req-1",
+      "category": "DEFRA_EXPORT_CERTIFICATE",
+      "categoryLabel": "UK DEFRA / APHA Export Certification",
+      "title": "Official DEFRA Export Health Certificate",
+      "severity": "BLOCKING",
+      "rules": [
+        "Microchip must be 15-digit ISO 11784/11785 compliant.",
+        "Rabies vaccination administered at least 30 days before departure.",
+        "Signed by a registered DEFRA Official Veterinarian (OV)."
+      ],
+      "protocol": "Verified by airline staff at London Heathrow and DAH officers upon arrival in Vietnam.",
+      "sourceName": "UK Animal and Plant Health Agency (APHA)",
+      "sourceUrl": "https://www.gov.uk/export-health-certificates",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "australia-to-vietnam": {
+  "slug": "australia-to-vietnam",
+  "from": "Australia",
+  "to": "Vietnam",
+  "fromFlag": "🇦🇺",
+  "toFlag": "🇻🇳",
+  "originCode": "AU",
+  "destCode": "VN",
+  "originGuideSlug": "australia",
+  "destGuideSlug": "vietnam",
+  "region": "Oceania → Southeast Asia",
+  "authority": "Department of Animal Health (DAH Vietnam) & Australian DAFF",
+  "legalBasis": "Law on Veterinary Medicine No. 79/2015/QH13 & Australian Export Biosecurity Regulations",
+  "description": "Statutory pet travel standards from Australia to Vietnam. Under Vietnamese DAH guidelines, pets from Australia require an ISO microchip, rabies vaccination administered at least 30 days prior to departure, an Australian DAFF endorsed International Health Certificate, and airport inspection at Tan Son Nhat (SGN) or Noi Bai (HAN). Quarantine is 0 days upon arrival.",
+  "titerRequired": "Exempt (Australia Direct)",
+  "titerStatus": "exempt",
+  "titerDetail": "No rabies titer test required for pets traveling with official Australian DAFF export health certification.",
+  "quarantineDays": "0 Days (Direct Release upon DAH Clearance)",
+  "quarantineDetail": "Direct release at Tan Son Nhat (SGN) or Noi Bai (HAN) following airport quarantine inspection.",
+  "leadTime": "3–4 Weeks",
+  "leadTimeDetail": "ISO microchip + rabies vaccine administered ≥ 30 days before flight + DAFF export health examination and government endorsement.",
+  "certificateType": "Australian DAFF Official Export Health Certificate",
+  "certificateDetail": "Government-sealed international veterinary health certificate issued by Australian DAFF.",
+  "entryAirports": [
+    "Tan Son Nhat International Airport (SGN)",
+    "Noi Bai International Airport (HAN)"
+  ],
+  "restrictedBreeds": [],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "30 Days Before Departure",
+      "title": "ISO Microchip & Rabies Vaccination",
+      "description": "Implant 15-digit microchip and administer rabies vaccination at least 30 days before flight."
+    },
+    {
+      "step": 2,
+      "timing": "7–10 Days Before Departure",
+      "title": "DAFF Export Examination",
+      "description": "Accredited Australian veterinarian conducts clinical health inspection and parasite treatments."
+    },
+    {
+      "step": 3,
+      "timing": "Within 5 Days of Departure",
+      "title": "DAFF Government Endorsement",
+      "description": "Obtain official DAFF government seal on the export health certificate."
+    },
+    {
+      "step": 4,
+      "timing": "Arrival in Vietnam",
+      "title": "DAH Clearance & Direct Release",
+      "description": "DAH border veterinary officer inspects paperwork and releases pet directly."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Vietnam Airlines",
+      "code": "VN",
+      "inCabinAllowed": true,
+      "cargoAllowed": true,
+      "maxInCabinWeightKg": 8,
+      "notes": "Direct non-stop flights from Sydney (SYD), Melbourne (MEL), and Perth (PER) to Ho Chi Minh City (SGN) and Hanoi (HAN).",
+      "feeEstimate": "AUD $250–$450",
+      "airlineGuideSlug": "vietnam-airlines"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Direct Non-Stop Flights from Australia",
+    "layoverRules": "Non-stop flights from Sydney or Melbourne directly to Ho Chi Minh City take approximately 8.5 hours.",
+    "directVsTransit": "Direct flights ensure minimal animal travel fatigue."
+  },
+  "faqs": [
+    {
+      "q": "Does a dog from Australia need quarantine in Vietnam?",
+      "a": "No. Dogs and cats from Australia with valid DAFF export certificates and rabies vaccinations enter Vietnam with 0 days quarantine."
+    },
+    {
+      "q": "Is rabies vaccination mandatory for pets from Australia entering Vietnam?",
+      "a": "Yes. Even though Australia is rabies-free, Vietnamese DAH statutory regulations require all imported dogs and cats to have an inactivated rabies vaccination administered at least 30 days prior to entry."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "au-vn-req-1",
+      "category": "DAFF_EXPORT_CERTIFICATE",
+      "categoryLabel": "Australian Government DAFF Export Certification",
+      "title": "Australian DAFF Official Export Certificate",
+      "severity": "BLOCKING",
+      "rules": [
+        "Microchip must be 15-digit ISO 11784/11785 compliant.",
+        "Rabies vaccine administered at least 30 days prior to travel.",
+        "Must bear official Australian DAFF Veterinary Officer seal."
+      ],
+      "protocol": "Audited by DAH border quarantine veterinarians at SGN/HAN.",
+      "sourceName": "Australian DAFF",
+      "sourceUrl": "https://www.agriculture.gov.au/biosecurity-trade/export/live-animals/companion-animals",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+},
+  "singapore-to-vietnam": {
+  "slug": "singapore-to-vietnam",
+  "from": "Singapore",
+  "to": "Vietnam",
+  "fromFlag": "🇸🇬",
+  "toFlag": "🇻🇳",
+  "originCode": "SG",
+  "destCode": "VN",
+  "originGuideSlug": "singapore",
+  "destGuideSlug": "vietnam",
+  "region": "Southeast Asia → Southeast Asia",
+  "authority": "Department of Animal Health (DAH Vietnam) & AVS Singapore",
+  "legalBasis": "Law on Veterinary Medicine No. 79/2015/QH13 & Animals and Birds Act (Cap. 7)",
+  "description": "Statutory biosecurity protocol for moving companion pets from Singapore to Vietnam. Under Vietnamese DAH regulations, companion dogs and cats from Singapore require an ISO microchip, rabies vaccination administered at least 30 days prior to arrival, an official Singapore AVS Export Health Certificate and Export Permit, and airport inspection at Tan Son Nhat (SGN) or Noi Bai (HAN). Quarantine is 0 days upon arrival.",
+  "titerRequired": "Exempt (Singapore Direct)",
+  "titerStatus": "exempt",
+  "titerDetail": "Rabies titer testing is exempt for pets traveling directly with valid AVS export health documentation.",
+  "quarantineDays": "0 Days (Direct Release upon DAH Clearance)",
+  "quarantineDetail": "Direct release at SGN or HAN following border veterinary inspection.",
+  "leadTime": "3–4 Weeks",
+  "leadTimeDetail": "ISO microchip + rabies vaccine administered ≥ 30 days before flight + AVS export licence application and veterinary health examination.",
+  "certificateType": "AVS Official Veterinary Export Certificate & Export Permit",
+  "certificateDetail": "Issued and endorsed by Singapore Animal & Veterinary Service (AVS / NParks).",
+  "entryAirports": [
+    "Tan Son Nhat International Airport (SGN)",
+    "Noi Bai International Airport (HAN)"
+  ],
+  "restrictedBreeds": [],
+  "timelineSteps": [
+    {
+      "step": 1,
+      "timing": "30 Days Before Departure",
+      "title": "ISO Microchip & Rabies Vaccination",
+      "description": "Implant 15-digit microchip and administer rabies vaccination at least 30 days prior to travel."
+    },
+    {
+      "step": 2,
+      "timing": "14 Days Before Departure",
+      "title": "Apply for AVS Export Permit",
+      "description": "Submit export licence application online through Singapore GoBusiness Licensing portal."
+    },
+    {
+      "step": 3,
+      "timing": "Within 7 Days of Departure",
+      "title": "AVS Veterinary Health Inspection",
+      "description": "Accredited vet conducts clinical examination, applies parasite treatments, and obtains AVS export health certificate."
+    },
+    {
+      "step": 4,
+      "timing": "Arrival in Vietnam",
+      "title": "DAH Airport Inspection & Release",
+      "description": "DAH border officer verifies microchip and AVS papers for direct release."
+    }
+  ],
+  "airlinePolicies": [
+    {
+      "name": "Singapore Airlines",
+      "code": "SQ",
+      "inCabinAllowed": false,
+      "cargoAllowed": true,
+      "notes": "Direct non-stop flights from Singapore Changi (SIN) to Ho Chi Minh City (SGN) and Hanoi (HAN) (flight time under 2.5 hours).",
+      "feeEstimate": "SGD $250–$450",
+      "airlineGuideSlug": "singapore-airlines"
+    },
+    {
+      "name": "Vietnam Airlines",
+      "code": "VN",
+      "inCabinAllowed": true,
+      "cargoAllowed": true,
+      "maxInCabinWeightKg": 8,
+      "notes": "Accepts small dogs and cats in-cabin on direct SIN to SGN/HAN routes.",
+      "feeEstimate": "SGD $180–$320",
+      "airlineGuideSlug": "vietnam-airlines"
+    }
+  ],
+  "transitAdvice": {
+    "headline": "Short 2-Hour Direct Flight",
+    "layoverRules": "Non-stop flights between Singapore and Vietnam take only 2 hours, making travel extremely smooth.",
+    "directVsTransit": "Direct flights ensure rapid DAH clearance at SGN or HAN."
+  },
+  "faqs": [
+    {
+      "q": "Is there quarantine for pets moving from Singapore to Vietnam?",
+      "a": "No, companion dogs and cats with valid AVS export health certificates and rabies records enter Vietnam with 0 days quarantine."
+    },
+    {
+      "q": "How far in advance must I apply for the AVS Export Licence in Singapore?",
+      "a": "You should apply for the AVS export licence via Singapore GoBusiness Licensing at least 14 days before your scheduled departure date."
+    }
+  ],
+  "statutoryRequirements": [
+    {
+      "id": "sg-vn-req-1",
+      "category": "AVS_EXPORT_CERTIFICATE",
+      "categoryLabel": "Singapore AVS Export Certification",
+      "title": "Official AVS Veterinary Export Certificate",
+      "severity": "BLOCKING",
+      "rules": [
+        "Microchip must be 15-digit ISO 11784/11785 compliant.",
+        "Rabies vaccine administered at least 30 days prior to travel.",
+        "Must hold valid AVS Export Permit from NParks Singapore."
+      ],
+      "protocol": "Inspected at Changi departure and DAH border arrival in Vietnam.",
+      "sourceName": "Singapore Animal & Veterinary Service (AVS)",
+      "sourceUrl": "https://www.nparks.gov.sg/avs/pets/bringing-animals-into-singapore-and-exporting/exporting-dogs-and-cats",
+      "lastVerifiedAt": "September 21, 2026"
+    }
+  ]
+}
 };

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { COUNTRIES, getCountryBySlug } from '@/lib/data/countries';
+import { CORRIDORS } from '@/lib/data/corridors';
 import BrowseRequirementsChecklist from '@/components/BrowseRequirementsChecklist';
 import CountryRouteFinder from '@/components/CountryRouteFinder';
 import {
@@ -446,9 +447,9 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
 
       {/* ─── SECTION: INBOUND FLIGHT CORRIDORS ───────────────────────────── */}
       {country.inboundCorridors.length > 0 && (
-        <section id="corridors" className="py-10 bg-white border-y border-zinc-200/80 scroll-mt-24">
+        <section id="corridors" className="py-12 bg-white border-y border-zinc-200/80 scroll-mt-24">
           <div className="section-container">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 block">
                   Origin-Specific Routes
@@ -456,8 +457,11 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
                 <h2 className="text-xl sm:text-2xl font-extrabold text-zinc-900 tracking-tight">
                   Verified Inbound Corridors to {country.name}
                 </h2>
+                <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+                  Statutory entry timelines, titer rules, and quarantine mandates from major departure hubs.
+                </p>
               </div>
-              <span className="text-xs font-semibold text-zinc-500 bg-zinc-100 px-2.5 py-1 rounded-md border border-zinc-200 self-start sm:self-auto">
+              <span className="text-xs font-semibold text-zinc-600 bg-zinc-100 px-3 py-1 rounded-md border border-zinc-200 self-start sm:self-auto shrink-0">
                 {country.inboundCorridors.length} Verified Corridors
               </span>
             </div>
@@ -472,27 +476,76 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
                 />
               </div>
 
-              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {country.inboundCorridors.map((c) => (
-                  <Link
-                    key={c.corridorSlug}
-                    href={`/en/pet-travel/${c.corridorSlug}`}
-                    className="group bg-zinc-50 hover:bg-white rounded-xl border border-zinc-200/90 hover:border-emerald-500/60 p-4 shadow-2xs hover:shadow-xs transition-all flex items-center justify-between cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl leading-none">{c.originFlag}</div>
-                      <div>
-                        <h3 className="text-sm font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors">
-                          {c.originName} → {country.name}
-                        </h3>
-                        <span className="text-xs text-zinc-500">Lead time: {c.leadTime}</span>
+              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {country.inboundCorridors.map((c) => {
+                  const corr = CORRIDORS[c.corridorSlug];
+                  const isDirectRelease =
+                    corr?.quarantineDays?.toLowerCase().startsWith('0') ||
+                    corr?.quarantineDays?.toLowerCase().includes('direct release') ||
+                    corr?.quarantineDays?.toLowerCase().includes('0 days');
+                  
+                  const quarantineBadge = isDirectRelease
+                    ? '0-Day Release'
+                    : corr?.quarantineDays
+                    ? corr.quarantineDays.split('(')[0].trim()
+                    : 'Route Specific';
+
+                  const titerLabel = corr?.titerStatus === 'exempt'
+                    ? 'Exempt'
+                    : corr?.titerStatus === 'mandatory'
+                    ? 'Mandatory RNATT'
+                    : 'Conditional';
+
+                  return (
+                    <Link
+                      key={c.corridorSlug}
+                      href={`/en/pet-travel/${c.corridorSlug}`}
+                      className="group bg-zinc-50/70 hover:bg-white rounded-xl border border-zinc-200/90 hover:border-zinc-300 p-4 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between cursor-pointer"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="text-xl leading-none shrink-0">{c.originFlag}</span>
+                            <span className="text-zinc-300 font-bold text-xs">→</span>
+                            <span className="text-xl leading-none shrink-0">{country.flag}</span>
+                            <h3 className="text-xs font-bold text-zinc-900 truncate group-hover:text-emerald-800 transition-colors">
+                              {c.originName}
+                            </h3>
+                          </div>
+                          <span
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 ${
+                              isDirectRelease
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/80'
+                                : 'bg-amber-50 text-amber-800 border border-amber-200/80'
+                            }`}
+                          >
+                            {quarantineBadge}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 pt-2.5 border-t border-zinc-200/70 text-[11px]">
+                          <div>
+                            <span className="text-zinc-400 block font-medium">Rabies Titer:</span>
+                            <span className="font-semibold text-zinc-800 truncate block">
+                              {titerLabel}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-zinc-400 block font-medium">Lead Time:</span>
+                            <span className="font-semibold text-zinc-800 block">
+                              {c.leadTime}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="w-7 h-7 rounded-md bg-white group-hover:bg-emerald-50 text-zinc-400 group-hover:text-emerald-700 flex items-center justify-center font-bold text-xs border border-zinc-200 group-hover:border-emerald-200 transition-all shrink-0">
-                      →
-                    </div>
-                  </Link>
-                ))}
+
+                      <div className="pt-3 mt-3 border-t border-zinc-200/70 flex items-center justify-between text-xs font-semibold text-[#0E2342] group-hover:text-emerald-700 transition-colors">
+                        <span>View Statutory Guide</span>
+                        <span className="group-hover:translate-x-1 transition-transform font-bold text-zinc-400 group-hover:text-emerald-700">→</span>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>

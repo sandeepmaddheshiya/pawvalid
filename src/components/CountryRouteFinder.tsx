@@ -7,7 +7,6 @@ interface OriginOption {
   code: string;
   name: string;
   flag: string;
-  corridorSlug?: string;
   categoryNote?: string;
   titerRequired?: string;
   quarantineDays?: string;
@@ -19,19 +18,17 @@ const COMMON_ORIGINS: OriginOption[] = [
     code: 'US',
     name: 'United States',
     flag: '🇺🇸',
-    corridorSlug: 'usa-to-singapore',
-    categoryNote: 'Category C (Rabies Controlled)',
-    titerRequired: 'Mandatory RNATT (≥ 0.50 IU/mL)',
-    quarantineDays: '10–30 Days (CAPQ)',
+    categoryNote: 'Rabies Controlled Origin',
+    titerRequired: 'RNATT / Titre Window Applicable',
+    quarantineDays: '10–30 Days (Route Specific)',
     leadTime: '3–6 Months',
   },
   {
     code: 'GB',
     name: 'United Kingdom',
     flag: '🇬🇧',
-    corridorSlug: 'uk-to-singapore',
-    categoryNote: 'Category A (Rabies-Free)',
-    titerRequired: 'Exempt (No Titer Test)',
+    categoryNote: 'Rabies-Free / Part 1 Listed',
+    titerRequired: 'Exempt on Low-Risk Corridors',
     quarantineDays: '0 Days (Direct Release)',
     leadTime: '1 Month',
   },
@@ -39,9 +36,8 @@ const COMMON_ORIGINS: OriginOption[] = [
     code: 'AU',
     name: 'Australia',
     flag: '🇦🇺',
-    corridorSlug: 'australia-to-singapore',
-    categoryNote: 'Category A (Rabies-Free)',
-    titerRequired: 'Exempt (No Titer Test)',
+    categoryNote: 'Rabies-Free Island Territory',
+    titerRequired: 'Exempt on Low-Risk Corridors',
     quarantineDays: '0 Days (Direct Release)',
     leadTime: '1 Month',
   },
@@ -49,45 +45,43 @@ const COMMON_ORIGINS: OriginOption[] = [
     code: 'CA',
     name: 'Canada',
     flag: '🇨🇦',
-    corridorSlug: 'usa-to-singapore',
-    categoryNote: 'Category C (Rabies Controlled)',
-    titerRequired: 'Mandatory RNATT (≥ 0.50 IU/mL)',
-    quarantineDays: '10–30 Days (CAPQ)',
-    leadTime: '3–6 Months',
+    categoryNote: 'Rabies Controlled Origin',
+    titerRequired: 'RNATT / Titre Window Applicable',
+    quarantineDays: 'Route Specific',
+    leadTime: '2–4 Months',
   },
   {
     code: 'IN',
     name: 'India',
     flag: '🇮🇳',
-    corridorSlug: 'india-to-singapore',
-    categoryNote: 'Category D (High Rabies Risk)',
+    categoryNote: 'Non-Listed High Rabies Origin',
     titerRequired: 'Mandatory RNATT (≥ 0.50 IU/mL)',
-    quarantineDays: '30 Days Mandatory',
-    leadTime: '6 Months',
+    quarantineDays: '30 Days Mandatory PEQ',
+    leadTime: '4–6 Months',
   },
   {
     code: 'AE',
     name: 'United Arab Emirates',
     flag: '🇦🇪',
-    categoryNote: 'Category D (Non-Listed)',
+    categoryNote: 'Unlisted Origin',
     titerRequired: 'Mandatory RNATT (≥ 0.50 IU/mL)',
-    quarantineDays: '30 Days Mandatory',
-    leadTime: '4–6 Months',
+    quarantineDays: 'Route Specific',
+    leadTime: '3–5 Months',
   },
   {
     code: 'DE',
     name: 'Germany / EU',
     flag: '🇩🇪',
-    categoryNote: 'Category C (EU Member)',
-    titerRequired: 'Mandatory RNATT (≥ 0.50 IU/mL)',
-    quarantineDays: '10–30 Days',
-    leadTime: '3–4 Months',
+    categoryNote: 'EU Harmonized Biosecurity',
+    titerRequired: 'Exempt / Standard Protocol',
+    quarantineDays: '0–10 Days',
+    leadTime: '1–3 Months',
   },
   {
     code: 'JP',
     name: 'Japan',
     flag: '🇯🇵',
-    categoryNote: 'Category B (Rabies-Free Island)',
+    categoryNote: 'Rabies-Free Island Territory',
     titerRequired: 'Exempt / Vaccine Only',
     quarantineDays: '0 Days (Direct Release)',
     leadTime: '1–2 Months',
@@ -118,9 +112,11 @@ export default function CountryRouteFinder({
   const selectedOrigin =
     COMMON_ORIGINS.find((o) => o.code === selectedOriginCode) || COMMON_ORIGINS[0];
 
-  // Check if a dedicated corridor guide exists
+  // Dynamically match corridor from the provided inboundCorridors for this destination
   const matchedCorridor = inboundCorridors.find(
-    (c) => c.originName.toLowerCase().includes(selectedOrigin.name.toLowerCase().split(' ')[0])
+    (c) =>
+      c.originName.toLowerCase().includes(selectedOrigin.name.toLowerCase().split(' ')[0]) ||
+      selectedOrigin.name.toLowerCase().includes(c.originName.toLowerCase().split(' ')[0])
   );
 
   const routeGuideHref = matchedCorridor
@@ -129,7 +125,7 @@ export default function CountryRouteFinder({
 
   return (
     <div className="bg-white rounded-xl border border-zinc-200/90 p-5 shadow-2xs space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
+      <div className="flex items-center justify-between pb-3.5 border-b border-zinc-100">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block">
             Instant Route Lookup
@@ -138,8 +134,8 @@ export default function CountryRouteFinder({
             Check Rules from Your Origin
           </h3>
         </div>
-        <span className="text-xs font-semibold text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded-md border border-zinc-200">
-          → {destFlag} {destCode}
+        <span className="text-xs font-semibold text-zinc-700 bg-zinc-100 px-2.5 py-1 rounded-md border border-zinc-200 shrink-0">
+          To: {destFlag} {destName}
         </span>
       </div>
 
@@ -155,7 +151,7 @@ export default function CountryRouteFinder({
               id="origin-country-select"
               value={selectedOriginCode}
               onChange={(e) => setSelectedOriginCode(e.target.value)}
-              className="w-full bg-zinc-50 border border-zinc-200 text-zinc-900 text-xs font-medium rounded-lg px-3 py-2.5 appearance-none focus:outline-none focus:ring-1 focus:ring-zinc-900 focus:bg-white cursor-pointer pr-8"
+              className="w-full bg-zinc-50/80 hover:bg-white border border-zinc-200 text-zinc-900 text-xs font-medium rounded-lg px-3 py-2.5 appearance-none focus:outline-none focus:ring-1 focus:ring-zinc-900 focus:bg-white cursor-pointer pr-8 transition-colors"
             >
               {COMMON_ORIGINS.map((origin) => (
                 <option key={origin.code} value={origin.code}>
@@ -163,7 +159,7 @@ export default function CountryRouteFinder({
                 </option>
               ))}
             </select>
-            <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400 text-xs">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400 text-xs">
               ▼
             </div>
           </div>
@@ -180,7 +176,7 @@ export default function CountryRouteFinder({
               onClick={() => setPetType('DOG')}
               className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                 petType === 'DOG'
-                  ? 'bg-zinc-900 text-white border-zinc-900 shadow-2xs'
+                  ? 'bg-[#0E2342] text-white border-[#0E2342] shadow-2xs'
                   : 'bg-zinc-50 text-zinc-700 border-zinc-200 hover:bg-zinc-100'
               }`}
             >
@@ -192,7 +188,7 @@ export default function CountryRouteFinder({
               onClick={() => setPetType('CAT')}
               className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                 petType === 'CAT'
-                  ? 'bg-zinc-900 text-white border-zinc-900 shadow-2xs'
+                  ? 'bg-[#0E2342] text-white border-[#0E2342] shadow-2xs'
                   : 'bg-zinc-50 text-zinc-700 border-zinc-200 hover:bg-zinc-100'
               }`}
             >
@@ -204,28 +200,28 @@ export default function CountryRouteFinder({
       </div>
 
       {/* Dynamic Statutory Summary Box */}
-      <div className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200 space-y-2 text-xs">
-        <div className="flex items-center justify-between">
-          <span className="font-bold text-zinc-900">
+      <div className="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/90 space-y-2 text-xs">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <span className="font-bold text-zinc-900 text-xs">
             {selectedOrigin.flag} {selectedOrigin.name} → {destFlag} {destName}
           </span>
           {selectedOrigin.categoryNote && (
-            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-              {selectedOrigin.categoryNote.split('(')[0].trim()}
+            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 shrink-0">
+              {selectedOrigin.categoryNote}
             </span>
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-zinc-200/70 text-[11px]">
+        <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-zinc-200/80 text-[11px]">
           <div>
             <span className="text-zinc-400 block font-medium">Rabies Titer:</span>
-            <span className="font-semibold text-zinc-800">
+            <span className="font-semibold text-zinc-800 truncate block">
               {selectedOrigin.titerRequired || 'Standard Protocol'}
             </span>
           </div>
           <div>
             <span className="text-zinc-400 block font-medium">Quarantine:</span>
-            <span className="font-semibold text-zinc-800">
+            <span className="font-semibold text-zinc-800 block">
               {selectedOrigin.quarantineDays || '0 Days'}
             </span>
           </div>
