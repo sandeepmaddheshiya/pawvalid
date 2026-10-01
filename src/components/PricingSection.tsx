@@ -198,59 +198,59 @@ export default function PricingSection() {
           </div>
 
           {/* ─── CARD 3: PRIORITY EXPERT REVIEW (£59) ─────────────────────── */}
-          <div className="bg-[#0D2040] text-white rounded-3xl p-6 sm:p-7 shadow-md flex flex-col justify-between border border-white/10">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-zinc-200 shadow-xs flex flex-col justify-between hover:border-zinc-300 transition-all">
             <div>
               {/* Icon & Title */}
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-amber-300">
+                <div className="w-9 h-9 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-600">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-white">
+                  <h3 className="font-bold text-base text-[#0E2342]">
                     Priority Expert Review
                   </h3>
-                  <p className="text-[11px] text-zinc-300 italic">
+                  <p className="text-[11px] text-zinc-400 italic">
                     &ldquo;Please have a human check it for me.&rdquo;
                   </p>
                 </div>
               </div>
 
               {/* Price */}
-              <div className="my-5 pb-4 border-b border-white/10">
-                <span className="font-sans text-3xl sm:text-4xl font-black text-white">
+              <div className="my-5 pb-4 border-b border-zinc-100">
+                <span className="font-sans text-3xl sm:text-4xl font-black text-[#0E2342]">
                   £59
                 </span>
-                <p className="text-[11px] text-zinc-300 mt-0.5">
+                <p className="text-[11px] text-zinc-500 mt-0.5">
                   Have a human specialist check your paperwork
                 </p>
               </div>
 
               {/* Feature Bullets (Clean & Punchy) */}
-              <div className="space-y-2.5 text-xs text-zinc-200 mb-6">
+              <div className="space-y-2.5 text-xs text-zinc-600 mb-6">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-emerald-400 font-bold text-xs">✓</span>
-                  <span className="font-medium text-zinc-400">Everything in £19</span>
+                  <span className="text-[#0FA958] font-bold text-xs">✓</span>
+                  <span className="font-medium text-zinc-500">Everything in £19</span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <span className="text-emerald-400 font-bold text-xs">✓</span>
-                  <span className="font-semibold text-white">Human document review</span>
+                  <span className="text-[#0FA958] font-bold text-xs">✓</span>
+                  <span className="font-semibold text-zinc-900">Human document review</span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <span className="text-emerald-400 font-bold text-xs">✓</span>
-                  <span className="font-semibold text-white">Expert-reviewed seal</span>
+                  <span className="text-[#0FA958] font-bold text-xs">✓</span>
+                  <span className="font-semibold text-zinc-900">Expert-reviewed seal</span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <span className="text-emerald-400 font-bold text-xs">✓</span>
+                  <span className="text-[#0FA958] font-bold text-xs">✓</span>
                   <span>24-hour priority review</span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <span className="text-emerald-400 font-bold text-xs">✓</span>
+                  <span className="text-[#0FA958] font-bold text-xs">✓</span>
                   <span>WhatsApp support</span>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <span className="text-emerald-400 font-bold text-xs">✓</span>
+                  <span className="text-[#0FA958] font-bold text-xs">✓</span>
                   <span>Complex-route review</span>
                 </div>
               </div>
@@ -260,7 +260,7 @@ export default function PricingSection() {
             <button
               type="button"
               onClick={() => handleOpenPlan('Priority Expert Review')}
-              className="w-full py-2.5 rounded-xl bg-[#183664] hover:bg-[#1E437C] text-white border border-white/20 font-bold text-xs shadow-xs transition-all active:scale-98 cursor-pointer text-center"
+              className="w-full py-2.5 rounded-xl border border-zinc-300 hover:border-zinc-400 bg-white hover:bg-zinc-50 text-zinc-800 font-semibold text-xs transition-all active:scale-98 cursor-pointer text-center"
             >
               Get Priority Review — £59 →
             </button>

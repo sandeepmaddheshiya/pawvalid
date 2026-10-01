@@ -368,15 +368,15 @@ export default function PricingModal({
           {/* Card 2: Priority Expert Review (£59) */}
           <div
             onClick={() => handleSelectTier('Priority Expert Review')}
-            className={`h-full rounded-2xl p-6 transition-all cursor-pointer flex flex-col justify-between relative border-2 ${
+            className={`h-full rounded-2xl p-6 transition-all cursor-pointer flex flex-col justify-between relative border-2 bg-white ${
               isConciergeSelected
-                ? 'border-amber-400 bg-[#0E2342] text-white shadow-xl ring-2 ring-amber-400/30'
-                : 'border-zinc-300 bg-zinc-900 text-white hover:border-zinc-400'
+                ? 'border-[#0FA958] shadow-xl ring-2 ring-[#0FA958]/20'
+                : 'border-zinc-200 hover:border-zinc-300'
             }`}
           >
             <div className="flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-3">
-                <span className="inline-flex px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
+                <span className="inline-flex px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-700 text-[10px] font-bold uppercase tracking-wider">
                   ★ Recommended For Complex Routes
                 </span>
                 <input
@@ -384,71 +384,71 @@ export default function PricingModal({
                   name="tier"
                   checked={isConciergeSelected}
                   onChange={() => handleSelectTier('Priority Expert Review')}
-                  className="accent-amber-400 w-4 h-4 cursor-pointer mt-0.5"
+                  className="accent-[#0FA958] w-4 h-4 cursor-pointer mt-0.5"
                 />
               </div>
 
-              <h3 className="font-serif text-xl font-bold text-white">
+              <h3 className="font-serif text-xl font-bold text-[#0E2342]">
                 Priority Expert Review
               </h3>
-              <p className="text-xs text-zinc-300 mt-0.5 leading-relaxed">
+              <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">
                 Everything automated + a human specialist reviewing your case.
               </p>
 
               <div className="my-4 flex items-baseline gap-1.5">
-                <span className="font-serif text-3xl sm:text-4xl font-extrabold text-amber-400">
+                <span className="font-sans text-3xl sm:text-4xl font-extrabold text-[#0E2342]">
                   {prices.concierge}
                 </span>
-                <span className="text-xs text-zinc-400 font-medium">one-time / trip</span>
+                <span className="text-xs text-zinc-500 font-medium">one-time / trip</span>
               </div>
 
-              <ul className="space-y-2.5 text-xs text-zinc-200 pt-2 border-t border-white/10 flex-1">
+              <ul className="space-y-2.5 text-xs text-zinc-700 pt-2 border-t border-zinc-100 flex-1">
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-white">Includes Full Complete Travel Plan:</strong> All checklists,
+                    <strong className="text-zinc-900">Includes Full Complete Travel Plan:</strong> All checklists,
                     digital verification pass, document vault, reminders, and comprehensive dossier.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-white">Dedicated Specialist Review:</strong> A dedicated specialist
+                    <strong className="text-zinc-900">Dedicated Specialist Review:</strong> A dedicated specialist
                     reviews the submitted travel documents, veterinary records, stamps, and relevant dates.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-white">Expert-Reviewed Seal:</strong> Confirms that the submitted
+                    <strong className="text-zinc-900">Expert-Reviewed Seal:</strong> Confirms that the submitted
                     documents were manually reviewed by a Pet Travel Specialist.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-white">24-Hour Priority Review:</strong> Fast-tracked review
+                    <strong className="text-zinc-900">24-Hour Priority Review:</strong> Fast-tracked review
                     turnaround with actionable notes on complex or conflicting records.
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-400 font-bold text-sm leading-none shrink-0">✓</span>
+                  <span className="text-[#0FA958] font-bold text-sm leading-none shrink-0">✓</span>
                   <div>
-                    <strong className="text-white">Priority WhatsApp Support:</strong> Real-time direct
+                    <strong className="text-zinc-900">Priority WhatsApp Support:</strong> Real-time direct
                     messaging leading up to flight day for airline requirement questions.
                   </div>
                 </li>
               </ul>
             </div>
 
-            <div className="pt-5 mt-auto border-t border-white/10">
+            <div className="pt-5 mt-auto border-t border-zinc-200/80">
               <button
                 type="button"
                 onClick={() => handleSelectTier('Priority Expert Review')}
                 className={`w-full py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-xs cursor-pointer ${
                   isConciergeSelected
-                    ? 'bg-amber-400 hover:bg-amber-300 text-zinc-950 font-bold'
-                    : 'bg-white/10 hover:bg-white/20 text-white'
+                    ? 'bg-[#0FA958] hover:bg-[#0D8E4A] text-white font-bold'
+                    : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
                 }`}
               >
                 {isConciergeSelected
