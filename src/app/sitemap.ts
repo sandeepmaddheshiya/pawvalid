@@ -197,6 +197,84 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }));
 
+  // 8. Localized Pages (de, fr, es)
+  const otherLocales = ['de', 'fr', 'es'] as const;
+  const localizedPages: MetadataRoute.Sitemap = [];
+
+  for (const locale of otherLocales) {
+    localizedPages.push(
+      {
+        url: `${baseUrl}/${locale}/checker`,
+        lastModified: new Date('2026-09-21T00:00:00.000Z'),
+        changeFrequency: 'daily',
+        priority: 0.8,
+      },
+      {
+        url: `${baseUrl}/${locale}/countries`,
+        lastModified: new Date('2026-09-21T00:00:00.000Z'),
+        changeFrequency: 'weekly',
+        priority: 0.8,
+      },
+      {
+        url: `${baseUrl}/${locale}/pet-travel`,
+        lastModified: new Date('2026-09-21T00:00:00.000Z'),
+        changeFrequency: 'weekly',
+        priority: 0.8,
+      },
+      {
+        url: `${baseUrl}/${locale}/about`,
+        lastModified: new Date('2026-09-21T00:00:00.000Z'),
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      },
+      {
+        url: `${baseUrl}/${locale}/editorial-policy`,
+        lastModified: new Date('2026-09-21T00:00:00.000Z'),
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      }
+    );
+
+    // Localized Country Pages
+    for (const [slug, country] of Object.entries(COUNTRIES)) {
+      let lastModified = new Date('2026-09-21T00:00:00.000Z');
+      if (country.statutoryRequirements && country.statutoryRequirements.length > 0) {
+        const timestamps = country.statutoryRequirements
+          .map((r) => new Date(r.lastVerifiedAt).getTime())
+          .filter((t) => !isNaN(t));
+        if (timestamps.length > 0) {
+          lastModified = new Date(Math.max(...timestamps));
+        }
+      }
+      localizedPages.push({
+        url: `${baseUrl}/${locale}/countries/${slug}`,
+        lastModified,
+        changeFrequency: 'weekly',
+        priority: 0.75,
+      });
+    }
+
+    // Localized Corridor Pages
+    for (const slug of routeSlugs) {
+      const corridor = CORRIDORS[slug];
+      let lastModified = new Date('2026-09-21T00:00:00.000Z');
+      if (corridor && corridor.statutoryRequirements && corridor.statutoryRequirements.length > 0) {
+        const timestamps = corridor.statutoryRequirements
+          .map((r) => new Date(r.lastVerifiedAt).getTime())
+          .filter((t) => !isNaN(t));
+        if (timestamps.length > 0) {
+          lastModified = new Date(Math.max(...timestamps));
+        }
+      }
+      localizedPages.push({
+        url: `${baseUrl}/${locale}/pet-travel/${slug}`,
+        lastModified,
+        changeFrequency: 'weekly',
+        priority: 0.75,
+      });
+    }
+  }
+
   return [
     ...corePages,
     ...countryPages,
@@ -205,5 +283,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...guidePages,
     ...toolPages,
     ...blogPages,
+    ...localizedPages,
   ];
 }

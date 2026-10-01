@@ -145,7 +145,11 @@ describe('Polar.sh Checkout & Webhook Integration', () => {
       body: JSON.stringify(webhookPayload),
     });
 
+    const origSecret = process.env.POLAR_WEBHOOK_SECRET;
+    delete process.env.POLAR_WEBHOOK_SECRET;
+
     const res = await polarWebhookRoute(req);
+    process.env.POLAR_WEBHOOK_SECRET = origSecret;
     expect(res.status).toBe(200);
 
     const data = await res.json();
@@ -213,7 +217,11 @@ describe('Polar.sh Checkout & Webhook Integration', () => {
       body: JSON.stringify(webhookPayload),
     });
 
+    const origSecret = process.env.POLAR_WEBHOOK_SECRET;
+    delete process.env.POLAR_WEBHOOK_SECRET;
+
     const res = await polarWebhookRoute(req);
+    process.env.POLAR_WEBHOOK_SECRET = origSecret;
     expect(res.status).toBe(200);
 
     const data = await res.json();

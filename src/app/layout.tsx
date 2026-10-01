@@ -1,9 +1,35 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { Inter, Newsreader, Outfit, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { getOrganizationSchema, getSoftwareApplicationSchema } from '@/lib/seo/schema';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  display: 'swap',
+  style: ['normal', 'italic'],
+  variable: '--font-newsreader',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-outfit',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-mono',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://pawvalid.online'),
@@ -88,7 +114,11 @@ export default function RootLayout({
   const appSchema = getSoftwareApplicationSchema();
 
   return (
-    <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
+    <html
+      lang="en"
+      className={`scroll-smooth ${inter.variable} ${newsreader.variable} ${outfit.variable} ${jetbrainsMono.variable} font-sans`}
+      data-scroll-behavior="smooth"
+    >
       <head>
         <script
           type="application/ld+json"

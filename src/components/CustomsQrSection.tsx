@@ -2,7 +2,19 @@
 
 import React from 'react';
 import Link from 'next/link';
-import QrCode from '@/components/QrCode';
+import dynamic from 'next/dynamic';
+
+const QrCode = dynamic(() => import('@/components/QrCode'), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="flex items-center justify-center bg-zinc-50 border border-zinc-200 rounded-lg animate-pulse"
+      style={{ width: 160, height: 160 }}
+    >
+      <span className="text-[10px] text-zinc-400">Loading QR...</span>
+    </div>
+  ),
+});
 
 export default function CustomsQrSection() {
   const verificationUrl = typeof window !== 'undefined'
