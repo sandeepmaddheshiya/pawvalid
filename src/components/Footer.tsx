@@ -104,6 +104,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/en/pet-immigration-requirements-by-country" className="hover:text-white transition-colors">
+                  Pet Immigration Rules (Comparison Matrix)
+                </Link>
+              </li>
+              <li>
                 <Link href="/en/pet-travel" className="hover:text-white transition-colors">
                   Travel Corridors (50 Routes)
                 </Link>
