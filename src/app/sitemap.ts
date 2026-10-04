@@ -75,6 +75,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/en/import-pet-to-singapore`,
+      lastModified: new Date('2026-10-04T00:00:00.000Z'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/importing-cats-to-singapore`,
+      lastModified: new Date('2026-10-04T00:00:00.000Z'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/en/tools`,
       lastModified: new Date('2026-09-21T00:00:00.000Z'),
       changeFrequency: 'weekly',

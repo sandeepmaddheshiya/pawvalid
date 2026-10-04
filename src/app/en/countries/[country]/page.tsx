@@ -873,7 +873,16 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
                   ))}
                 </div>
 
-                <div className="pt-3 border-t border-zinc-100">
+                <div className="pt-3 border-t border-zinc-100 space-y-2">
+                  {country.slug === 'singapore' && (
+                    <Link
+                      href="/en/importing-cats-to-singapore"
+                      className="w-full inline-flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200/80 font-semibold text-xs sm:text-sm py-2.5 px-4 rounded-xl transition-all cursor-pointer text-center"
+                    >
+                      <span>Read Full Singapore Cat Import Guide</span>
+                      <span>→</span>
+                    </Link>
+                  )}
                   <Link
                     href={checkerHref}
                     className="w-full inline-flex items-center justify-center gap-2 bg-[#0E2342] hover:bg-[#16345E] text-white font-semibold text-xs sm:text-sm py-2.5 px-4 rounded-xl shadow-xs transition-all cursor-pointer text-center"
@@ -928,6 +937,32 @@ export default async function DestinationCountryPage({ params }: CountryPageProp
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {country.slug === 'singapore' && (
+              <Link
+                href="/en/import-pet-to-singapore"
+                className="group bg-emerald-50/50 hover:bg-white rounded-xl border border-emerald-200/90 hover:border-emerald-600/60 p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      AVS Master Guide
+                    </span>
+                    <span className="text-[11px] text-zinc-500 font-medium">12 min read</span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-zinc-900 group-hover:text-emerald-800 transition-colors mb-1.5">
+                    How to Import a Pet to Singapore (2026)
+                  </h3>
+                  <p className="text-xs text-zinc-600 leading-relaxed">
+                    Complete AVS category rules, GoBusiness licence filing, Sembawang SAQS quarantine reservation, and dog licensing.
+                  </p>
+                </div>
+                <div className="pt-3 mt-3 border-t border-zinc-200/80 flex items-center justify-between text-xs font-bold text-zinc-900 group-hover:text-emerald-700">
+                  <span>Read Singapore Guide</span>
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </Link>
+            )}
+
             {/* Guide 1: FAVN Titer Guide */}
             <Link
               href="/en/guides/rabies-titer-test-favn-guide"
