@@ -109,6 +109,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/en/pet-travel-certificate" className="hover:text-white transition-colors">
+                  Pet Travel Certificates (AHC vs Passport)
+                </Link>
+              </li>
+              <li>
                 <Link href="/en/pet-travel" className="hover:text-white transition-colors">
                   Travel Corridors (50 Routes)
                 </Link>

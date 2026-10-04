@@ -931,6 +931,27 @@ export default function PetImmigrationRequirementsByCountryPage() {
               </ul>
             </div>
           </div>
+
+          {/* Cross-Link Card to Pet Travel Certificate Explainer */}
+          <div className="mt-10 p-6 rounded-2xl bg-gradient-to-r from-[#0A192F] to-[#102A4C] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+            <div className="space-y-1 text-left">
+              <span className="text-emerald-400 font-bold text-xs uppercase tracking-wider block">
+                Veterinary Paperwork Explainer
+              </span>
+              <h4 className="text-lg sm:text-xl font-bold text-white">
+                Confused between Pet Passports, AHCs, and Export Certificates?
+              </h4>
+              <p className="text-xs sm:text-sm text-zinc-300 max-w-2xl leading-relaxed">
+                Learn the statutory differences, who can legally sign them (Official Veterinarians), mandatory USDA/CFIA endorsements, and the strict 10-day validity clock.
+              </p>
+            </div>
+            <Link
+              href="/en/pet-travel-certificate"
+              className="shrink-0 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs px-5 py-3 rounded-xl transition-all text-center w-full md:w-auto"
+            >
+              Read Certificate Guide →
+            </Link>
+          </div>
         </div>
       </section>
 
