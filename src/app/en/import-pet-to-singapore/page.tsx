@@ -1024,6 +1024,14 @@ export default function ImportPetToSingaporePage() {
                     <span>View Singapore Country Rules</span>
                     <span>→</span>
                   </Link>
+
+                  <Link
+                    href="/en/pet-export-singapore"
+                    className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-zinc-50 hover:bg-zinc-100 text-emerald-800 border border-emerald-200/80 font-semibold text-xs rounded-xl transition-all"
+                  >
+                    <span>Leaving Singapore? Outbound Export Guide</span>
+                    <span>→</span>
+                  </Link>
                 </div>
 
                 <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400">
