@@ -860,37 +860,55 @@ export default function BringPetsToAustraliaPage() {
                 </Link>
               </div>
 
-              {/* Related Route Guides */}
+              {/* Related Australia Cluster Guides */}
               <div className="pt-4 border-t border-zinc-100 space-y-2">
                 <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
-                  Related Biosecurity Guides
+                  Australian Biosecurity Sub-Guides
                 </span>
                 <ul className="text-xs space-y-2 text-zinc-600">
                   <li>
                     <Link
-                      href="/en/pet-immigration-requirements-by-country"
+                      href="/en/australia-pet-import-permit"
                       className="text-emerald-700 hover:text-emerald-800 font-medium hover:underline flex items-center gap-1"
                     >
                       <span>→</span>
-                      <span>Global Pet Immigration Rules by Country</span>
+                      <span>Australia Pet Import Permit (How to Apply)</span>
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/en/pet-export-singapore"
+                      href="/en/australia-pet-quarantine"
                       className="text-emerald-700 hover:text-emerald-800 font-medium hover:underline flex items-center gap-1"
                     >
                       <span>→</span>
-                      <span>Exporting Pets From Singapore (Group 2 Origin)</span>
+                      <span>Mickleham Quarantine: What to Expect</span>
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/en/import-pet-to-singapore"
+                      href="/en/australian-quarantine-for-dogs"
                       className="text-emerald-700 hover:text-emerald-800 font-medium hover:underline flex items-center gap-1"
                     >
                       <span>→</span>
-                      <span>Importing Pets to Singapore (AVS Guide)</span>
+                      <span>Australian Quarantine for Dogs (Rules &amp; Prep)</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/en/cat-quarantine-australia"
+                      className="text-emerald-700 hover:text-emerald-800 font-medium hover:underline flex items-center gap-1"
+                    >
+                      <span>→</span>
+                      <span>Cat Quarantine in Australia (Requirements)</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/en/australian-pet-passport"
+                      className="text-emerald-700 hover:text-emerald-800 font-medium hover:underline flex items-center gap-1"
+                    >
+                      <span>→</span>
+                      <span>Is There an Australian Pet Passport? (Myth-Busting)</span>
                     </Link>
                   </li>
                 </ul>

@@ -99,6 +99,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/en/australia-pet-import-permit`,
+      lastModified: new Date('2026-10-14T00:00:00.000Z'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/australia-pet-quarantine`,
+      lastModified: new Date('2026-10-14T00:00:00.000Z'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/australian-quarantine-for-dogs`,
+      lastModified: new Date('2026-10-14T00:00:00.000Z'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/cat-quarantine-australia`,
+      lastModified: new Date('2026-10-14T00:00:00.000Z'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/en/australian-pet-passport`,
+      lastModified: new Date('2026-10-14T00:00:00.000Z'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/en/tools`,
       lastModified: new Date('2026-09-21T00:00:00.000Z'),
       changeFrequency: 'weekly',
