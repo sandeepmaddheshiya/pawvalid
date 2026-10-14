@@ -106,7 +106,7 @@ export default function DigitalPetPassportSection() {
 
           {/* Right Column: Interactive Digital Passport Card (Clean Light Enterprise Aesthetic) */}
           <div className="lg:col-span-6 flex justify-center lg:justify-end">
-            <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-xl border border-zinc-200/90 text-left space-y-5 relative">
+            <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow duration-300 border border-zinc-200/90 text-left space-y-5 relative">
               {/* Passport Header */}
               <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
                 <div className="flex items-center gap-3">
